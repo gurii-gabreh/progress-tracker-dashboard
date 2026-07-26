@@ -9,7 +9,9 @@
   - https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit
   - **人がタスクを追加する場所。** 現状のツールではRoutineからこのシートへの書き込みができないため、シートは「入力専用」として使う
 - **ステータスの正本**: `data/tasks.json`（このリポジトリで管理。Routineがここを読み書きする）
-- **ダッシュボード**: `dashboard.html`（`data/tasks.json` の内容を埋め込んだ静的ページ。Claude Artifactとして公開しスマホからも閲覧可能）
+- **ダッシュボード**: `dashboard.html`（`data/tasks.json` の内容を埋め込んだ静的ページ）
+  - Claude Artifact: https://claude.ai/code/artifact/b395634a-ff68-44cb-a667-92c53448c992
+  - GitHub Pages: https://gurii-gabreh.github.io/progress-tracker-dashboard/（mainにpushするたびGitHub Actionsで自動デプロイ）
 - **自動実装**: Routine（定期実行）がスプレッドシートの新規タスクを取り込みつつ、`data/tasks.json` を見て優先度の高い未着手タスクから実装を進める
 
 ## タスクの種別
