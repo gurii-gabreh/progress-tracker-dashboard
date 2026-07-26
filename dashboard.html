@@ -23,144 +23,103 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #14161c;
-      --surface: #1b1e27;
-      --surface-2: #22252f;
-      --border: #30333e;
-      --text: #e7e8ee;
-      --text-muted: #969cab;
-      --accent: #8fa1ff;
-      --accent-soft: #262b45;
-      --status-done-bg: #143528;
-      --status-done-fg: #4fd399;
-      --status-doing-bg: #17263f;
-      --status-doing-fg: #7fabfd;
-      --status-todo-bg: #22252f;
-      --status-todo-fg: #969cab;
-      --status-skip-bg: #3a2a10;
-      --status-skip-fg: #f0a94e;
+      --bg: #14161c; --surface: #1b1e27; --surface-2: #22252f; --border: #30333e;
+      --text: #e7e8ee; --text-muted: #969cab; --accent: #8fa1ff; --accent-soft: #262b45;
+      --status-done-bg: #143528; --status-done-fg: #4fd399;
+      --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
+      --status-todo-bg: #22252f; --status-todo-fg: #969cab;
+      --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #14161c;
-    --surface: #1b1e27;
-    --surface-2: #22252f;
-    --border: #30333e;
-    --text: #e7e8ee;
-    --text-muted: #969cab;
-    --accent: #8fa1ff;
-    --accent-soft: #262b45;
-    --status-done-bg: #143528;
-    --status-done-fg: #4fd399;
-    --status-doing-bg: #17263f;
-    --status-doing-fg: #7fabfd;
-    --status-todo-bg: #22252f;
-    --status-todo-fg: #969cab;
-    --status-skip-bg: #3a2a10;
-    --status-skip-fg: #f0a94e;
+    --bg: #14161c; --surface: #1b1e27; --surface-2: #22252f; --border: #30333e;
+    --text: #e7e8ee; --text-muted: #969cab; --accent: #8fa1ff; --accent-soft: #262b45;
+    --status-done-bg: #143528; --status-done-fg: #4fd399;
+    --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
+    --status-todo-bg: #22252f; --status-todo-fg: #969cab;
+    --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
   :root[data-theme="light"] {
-    --bg: #f3f4f7;
-    --surface: #ffffff;
-    --surface-2: #eceef3;
-    --border: #dcdfe6;
-    --text: #1b1e27;
-    --text-muted: #5b6172;
-    --accent: #33449c;
-    --accent-soft: #e4e7fb;
-    --status-done-bg: #e1f5ec;
-    --status-done-fg: #157a4a;
-    --status-doing-bg: #e4edfd;
-    --status-doing-fg: #2054c4;
-    --status-todo-bg: #eceef3;
-    --status-todo-fg: #5b6172;
-    --status-skip-bg: #fdf0e0;
-    --status-skip-fg: #a05a08;
+    --bg: #f3f4f7; --surface: #ffffff; --surface-2: #eceef3; --border: #dcdfe6;
+    --text: #1b1e27; --text-muted: #5b6172; --accent: #33449c; --accent-soft: #e4e7fb;
+    --status-done-bg: #e1f5ec; --status-done-fg: #157a4a;
+    --status-doing-bg: #e4edfd; --status-doing-fg: #2054c4;
+    --status-todo-bg: #eceef3; --status-todo-fg: #5b6172;
+    --status-skip-bg: #fdf0e0; --status-skip-fg: #a05a08;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
   }
 
   * { box-sizing: border-box; }
   body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
+    margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-    line-height: 1.5;
-    padding: 28px 20px 64px;
+    line-height: 1.5; padding: 24px 0 64px;
   }
 
-  .wrap { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  .wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; padding: 0 16px; }
 
   header { display: flex; flex-direction: column; gap: 4px; }
-  header .eyebrow {
-    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-muted); font-weight: 600;
-  }
-  header h1 { margin: 0; font-size: 26px; font-weight: 700; text-wrap: balance; }
-  header .meta { color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+  header .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  header h1 { margin: 0; font-size: 22px; font-weight: 700; text-wrap: balance; }
+  header .meta { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
   header .meta a { color: var(--accent); text-decoration: none; }
   header .meta a:hover { text-decoration: underline; }
 
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
+  .stat-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .stat-pill {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 12px 6px 6px; box-shadow: var(--shadow); white-space: nowrap;
   }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 18px 16px;
-    box-shadow: var(--shadow);
-    display: flex; flex-direction: column; gap: 10px;
+  .stat-pill .avatar { width: 22px; height: 22px; }
+  .stat-pill .name { font-size: 12px; font-weight: 700; }
+  .stat-pill .pct { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; }
+
+  .avatar {
+    width: 34px; height: 34px; border-radius: 8px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: #fff;
   }
-  .stat-card .repo-name {
-    font-weight: 700; font-size: 15px; word-break: break-word;
+
+  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-btn {
+    font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted);
+    cursor: pointer;
   }
-  .stat-card .progress-row {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .feed {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow); overflow: hidden;
   }
-  .stat-card .progress-pct {
-    font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent);
-  }
-  .stat-card .progress-frac { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .bar-track {
-    height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden;
-  }
-  .bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
-  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .feed-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .feed-row:last-child { border-bottom: none; }
+  .feed-row .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .feed-row .top-line { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+  .feed-row .repo-tag { font-weight: 700; font-size: 13px; }
+  .feed-row .type-tag { font-size: 11px; color: var(--text-muted); }
+  .feed-row .task-text { font-size: 13.5px; color: var(--text); }
+  .feed-row .task-text.muted { color: var(--text-muted); font-style: italic; }
+  .feed-row .meta-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .feed-row .note { font-size: 12px; color: var(--text-muted); }
+  .feed-row .note a { color: var(--accent); text-decoration: none; }
+  .feed-row .note a:hover { text-decoration: underline; }
+
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
-    display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums;
+    display: inline-flex; align-items: center; gap: 4px;
   }
   .chip.done { background: var(--status-done-bg); color: var(--status-done-fg); }
   .chip.doing { background: var(--status-doing-bg); color: var(--status-doing-fg); }
   .chip.todo { background: var(--status-todo-bg); color: var(--status-todo-fg); }
   .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
 
-  section.tasks { display: flex; flex-direction: column; gap: 14px; }
-  section.tasks h2 { font-size: 15px; margin: 0; color: var(--text-muted); font-weight: 700; letter-spacing: 0.02em; }
+  .empty { padding: 28px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
 
-  .repo-block {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    box-shadow: var(--shadow); overflow: hidden;
-  }
-  .repo-block .repo-header {
-    padding: 12px 16px; font-weight: 700; font-size: 14px;
-    border-bottom: 1px solid var(--border); background: var(--surface-2);
-  }
-  table { width: 100%; border-collapse: collapse; }
-  .table-scroll { overflow-x: auto; }
-  th, td { text-align: left; padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
-  th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
-  tr:last-child td { border-bottom: none; }
-  td.priority { font-variant-numeric: tabular-nums; }
-  td.updated { color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  td.note { color: var(--text-muted); }
-
-  footer { color: var(--text-muted); font-size: 12px; text-align: center; padding-top: 8px; }
+  footer { color: var(--text-muted); font-size: 12px; text-align: center; padding-top: 4px; }
 </style>
 
 <div class="wrap">
@@ -173,17 +132,11 @@
     </div>
   </header>
 
-  <div id="stat-grid" class="stat-grid"></div>
+  <div id="stat-strip" class="stat-strip"></div>
 
-  <section class="tasks">
-    <h2>コード実装</h2>
-    <div id="code-blocks" style="display:flex; flex-direction:column; gap:14px;"></div>
-  </section>
+  <div id="filter-row" class="filter-row"></div>
 
-  <section class="tasks">
-    <h2>調査・資料作成</h2>
-    <div id="research-block" style="display:flex; flex-direction:column; gap:14px;"></div>
-  </section>
+  <div id="feed" class="feed"></div>
 
   <footer>Routineが定期実行のたびにこのダッシュボードを更新します</footer>
 </div>
@@ -199,111 +152,122 @@
     { repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "スプレッドシートにタスクを追加してください", output: "" }
   ];
 
-  const codeTasks = TASKS.filter(t => KNOWN_REPOS.includes(t.repo));
-  const researchTasks = TASKS.filter(t => !KNOWN_REPOS.includes(t.repo));
-
   const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip" };
+  const STATUS_ORDER = ["進行中", "未着手", "スキップ", "完了"];
+  const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
+
+  const REPO_COLORS = {
+    "progress-tracker-dashboard": "#33449c",
+    "kizashi": "#c2410c",
+    "supermarket-price-tracker": "#0f766e",
+  };
+  const RESEARCH_COLOR = "#7c3aed";
+
+  function isCode(t) { return KNOWN_REPOS.includes(t.repo); }
+  function avatarColor(t) { return isCode(t) ? (REPO_COLORS[t.repo] || "#5b6172") : RESEARCH_COLOR; }
+  function avatarLabel(t) { return isCode(t) ? "💻" : "📝"; }
 
   function chip(status) {
     const cls = STATUS_CLASS[status] || "todo";
     return `<span class="chip ${cls}">${status}</span>`;
   }
 
-  function groupByRepo(tasks) {
-    const map = new Map();
-    tasks.forEach(t => {
-      if (!map.has(t.repo)) map.set(t.repo, []);
-      map.get(t.repo).push(t);
+  function sortedTasks(list) {
+    return [...list].sort((a, b) => {
+      const s = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+      if (s !== 0) return s;
+      return (PRIORITY_ORDER[a.priority] ?? 9) - (PRIORITY_ORDER[b.priority] ?? 9);
     });
-    return [...map.entries()].map(([repo, tasks]) => ({ repo, tasks }));
   }
 
   function renderStats() {
-    const grid = document.getElementById("stat-grid");
-    const groups = groupByRepo(codeTasks);
-    const cards = groups.map(g => {
-      const total = g.tasks.length;
-      const done = g.tasks.filter(t => t.status === "完了").length;
+    const strip = document.getElementById("stat-strip");
+    const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
+    const pills = repos.map(repo => {
+      const tasks = TASKS.filter(t => t.repo === repo);
+      const total = tasks.length;
+      const done = tasks.filter(t => t.status === "完了").length;
       const pct = total ? Math.round((done / total) * 100) : 0;
-      const counts = g.tasks.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
-      const chips = Object.entries(counts)
-        .map(([status, n]) => `${chip(status)}<span style="font-size:11px;color:var(--text-muted)">×${n}</span>`)
-        .join("");
+      const color = REPO_COLORS[repo] || "#5b6172";
       return `
-        <div class="stat-card">
-          <div class="repo-name">${g.repo}</div>
-          <div class="progress-row">
-            <span class="progress-pct">${pct}%</span>
-            <span class="progress-frac">${done}/${total} 完了</span>
-          </div>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-          <div class="chip-row">${chips}</div>
+        <div class="stat-pill">
+          <div class="avatar" style="width:22px;height:22px;font-size:11px;background:${color}">${repo.slice(0, 2).toUpperCase()}</div>
+          <span class="name">${repo}</span>
+          <span class="pct">${pct}%</span>
         </div>`;
     });
-
-    const rTotal = researchTasks.length;
-    const rDone = researchTasks.filter(t => t.status === "完了").length;
-    const rPct = rTotal ? Math.round((rDone / rTotal) * 100) : 0;
-    if (rTotal) {
-      cards.push(`
-        <div class="stat-card">
-          <div class="repo-name">調査・資料作成</div>
-          <div class="progress-row">
-            <span class="progress-pct">${rPct}%</span>
-            <span class="progress-frac">${rDone}/${rTotal} 完了</span>
-          </div>
-          <div class="bar-track"><div class="bar-fill" style="width:${rPct}%"></div></div>
+    const research = TASKS.filter(t => !isCode(t));
+    if (research.length) {
+      const done = research.filter(t => t.status === "完了").length;
+      const pct = Math.round((done / research.length) * 100);
+      pills.push(`
+        <div class="stat-pill">
+          <div class="avatar" style="width:22px;height:22px;font-size:11px;background:${RESEARCH_COLOR}">📝</div>
+          <span class="name">調査・資料</span>
+          <span class="pct">${pct}%</span>
         </div>`);
     }
-    grid.innerHTML = cards.join("");
+    strip.innerHTML = pills.join("");
   }
 
-  function taskTable(tasks, { showOutput } = {}) {
-    return `
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>タスク</th><th>優先度</th><th>ステータス</th><th>最終更新</th>
-              ${showOutput ? "<th>成果物</th>" : ""}
-              <th>備考</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tasks.map(t => `
-              <tr>
-                <td>${t.task}</td>
-                <td class="priority">${t.priority}</td>
-                <td>${chip(t.status)}</td>
-                <td class="updated">${t.updated}</td>
-                ${showOutput ? `<td class="note">${t.output ? `<a href="${t.output}" target="_blank" rel="noopener">リンク</a>` : "-"}</td>` : ""}
-                <td class="note">${t.note}</td>
-              </tr>`).join("")}
-          </tbody>
-        </table>
-      </div>`;
+  let activeFilter = "all";
+
+  function renderFilters() {
+    const row = document.getElementById("filter-row");
+    const options = [
+      ["all", "すべて"],
+      ["code", "💻 コード実装"],
+      ["research", "📝 調査・資料作成"],
+    ];
+    row.innerHTML = options.map(([key, label]) =>
+      `<button class="filter-btn${activeFilter === key ? " active" : ""}" data-filter="${key}">${label}</button>`
+    ).join("");
+    row.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter;
+        renderFilters();
+        renderFeed();
+      });
+    });
   }
 
-  function renderCodeBlocks() {
-    const wrap = document.getElementById("code-blocks");
-    const groups = groupByRepo(codeTasks);
-    wrap.innerHTML = groups.map(g => `
-      <div class="repo-block">
-        <div class="repo-header">${g.repo}</div>
-        ${taskTable(g.tasks)}
-      </div>`).join("") || `<div class="repo-block"><div class="repo-header">タスクなし</div></div>`;
-  }
+  function renderFeed() {
+    const feed = document.getElementById("feed");
+    let list = TASKS;
+    if (activeFilter === "code") list = list.filter(isCode);
+    if (activeFilter === "research") list = list.filter(t => !isCode(t));
+    list = sortedTasks(list);
 
-  function renderResearchBlock() {
-    const wrap = document.getElementById("research-block");
-    if (!researchTasks.length) {
-      wrap.innerHTML = `<div class="repo-block"><div class="repo-header">タスクなし</div></div>`;
+    if (!list.length) {
+      feed.innerHTML = `<div class="empty">タスクがありません</div>`;
       return;
     }
-    wrap.innerHTML = `<div class="repo-block">${taskTable(researchTasks, { showOutput: true })}</div>`;
+
+    feed.innerHTML = list.map(t => {
+      const color = avatarColor(t);
+      const isPlaceholder = t.task.startsWith("(");
+      return `
+        <div class="feed-row">
+          <div class="avatar" style="background:${color}">${avatarLabel(t)}</div>
+          <div class="content">
+            <div class="top-line">
+              <span class="repo-tag">${t.repo}</span>
+              <span class="type-tag">${isCode(t) ? "コード実装" : "調査・資料作成"}</span>
+            </div>
+            <div class="task-text${isPlaceholder ? " muted" : ""}">${t.task}</div>
+            <div class="meta-line">
+              ${chip(t.status)}
+              ${t.priority !== "-" ? `<span>優先度: ${t.priority}</span>` : ""}
+              ${t.updated !== "-" ? `<span>${t.updated}</span>` : ""}
+              ${t.output ? `<a href="${t.output}" target="_blank" rel="noopener">成果物を見る</a>` : ""}
+            </div>
+            ${t.note ? `<div class="note">${t.note}</div>` : ""}
+          </div>
+        </div>`;
+    }).join("");
   }
 
   renderStats();
-  renderCodeBlocks();
-  renderResearchBlock();
+  renderFilters();
+  renderFeed();
 </script>
