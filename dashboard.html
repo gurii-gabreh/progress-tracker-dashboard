@@ -176,35 +176,31 @@
   <div id="stat-grid" class="stat-grid"></div>
 
   <section class="tasks">
-    <h2>タスク一覧</h2>
-    <div id="repo-blocks" style="display:flex; flex-direction:column; gap:14px;"></div>
+    <h2>コード実装</h2>
+    <div id="code-blocks" style="display:flex; flex-direction:column; gap:14px;"></div>
+  </section>
+
+  <section class="tasks">
+    <h2>調査・資料作成</h2>
+    <div id="research-block" style="display:flex; flex-direction:column; gap:14px;"></div>
   </section>
 
   <footer>Routineが定期実行のたびにこのダッシュボードを更新します</footer>
 </div>
 
 <script>
-  // データはRoutine実行のたびにここを更新する（スプレッドシートの内容と同期）
-  const DATA = [
-    {
-      repo: "progress-tracker-dashboard",
-      tasks: [
-        { task: "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)", priority: "高", status: "完了", updated: "2026-07-26", note: "Routine構築はこの後" }
-      ]
-    },
-    {
-      repo: "kizashi",
-      tasks: [
-        { task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "ここに実装したいタスクを追加してください" }
-      ]
-    },
-    {
-      repo: "supermarket-price-tracker",
-      tasks: [
-        { task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "ここに実装したいタスクを追加してください" }
-      ]
-    }
+  // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
+  // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
+  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker"];
+
+  const TASKS = [
+    { repo: "progress-tracker-dashboard", task: "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)", priority: "高", status: "完了", updated: "2026-07-26", note: "Routine構築はこの後", output: "" },
+    { repo: "kizashi", task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "スプレッドシートにタスクを追加してください", output: "" },
+    { repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "スプレッドシートにタスクを追加してください", output: "" }
   ];
+
+  const codeTasks = TASKS.filter(t => KNOWN_REPOS.includes(t.repo));
+  const researchTasks = TASKS.filter(t => !KNOWN_REPOS.includes(t.repo));
 
   const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip" };
 
@@ -213,22 +209,29 @@
     return `<span class="chip ${cls}">${status}</span>`;
   }
 
+  function groupByRepo(tasks) {
+    const map = new Map();
+    tasks.forEach(t => {
+      if (!map.has(t.repo)) map.set(t.repo, []);
+      map.get(t.repo).push(t);
+    });
+    return [...map.entries()].map(([repo, tasks]) => ({ repo, tasks }));
+  }
+
   function renderStats() {
     const grid = document.getElementById("stat-grid");
-    grid.innerHTML = DATA.map(repoEntry => {
-      const total = repoEntry.tasks.length;
-      const done = repoEntry.tasks.filter(t => t.status === "完了").length;
+    const groups = groupByRepo(codeTasks);
+    const cards = groups.map(g => {
+      const total = g.tasks.length;
+      const done = g.tasks.filter(t => t.status === "完了").length;
       const pct = total ? Math.round((done / total) * 100) : 0;
-      const counts = repoEntry.tasks.reduce((acc, t) => {
-        acc[t.status] = (acc[t.status] || 0) + 1;
-        return acc;
-      }, {});
+      const counts = g.tasks.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
       const chips = Object.entries(counts)
         .map(([status, n]) => `${chip(status)}<span style="font-size:11px;color:var(--text-muted)">×${n}</span>`)
         .join("");
       return `
         <div class="stat-card">
-          <div class="repo-name">${repoEntry.repo}</div>
+          <div class="repo-name">${g.repo}</div>
           <div class="progress-row">
             <span class="progress-pct">${pct}%</span>
             <span class="progress-frac">${done}/${total} 完了</span>
@@ -236,34 +239,71 @@
           <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
           <div class="chip-row">${chips}</div>
         </div>`;
-    }).join("");
+    });
+
+    const rTotal = researchTasks.length;
+    const rDone = researchTasks.filter(t => t.status === "完了").length;
+    const rPct = rTotal ? Math.round((rDone / rTotal) * 100) : 0;
+    if (rTotal) {
+      cards.push(`
+        <div class="stat-card">
+          <div class="repo-name">調査・資料作成</div>
+          <div class="progress-row">
+            <span class="progress-pct">${rPct}%</span>
+            <span class="progress-frac">${rDone}/${rTotal} 完了</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${rPct}%"></div></div>
+        </div>`);
+    }
+    grid.innerHTML = cards.join("");
   }
 
-  function renderTables() {
-    const wrap = document.getElementById("repo-blocks");
-    wrap.innerHTML = DATA.map(repoEntry => `
+  function taskTable(tasks, { showOutput } = {}) {
+    return `
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>タスク</th><th>優先度</th><th>ステータス</th><th>最終更新</th>
+              ${showOutput ? "<th>成果物</th>" : ""}
+              <th>備考</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tasks.map(t => `
+              <tr>
+                <td>${t.task}</td>
+                <td class="priority">${t.priority}</td>
+                <td>${chip(t.status)}</td>
+                <td class="updated">${t.updated}</td>
+                ${showOutput ? `<td class="note">${t.output ? `<a href="${t.output}" target="_blank" rel="noopener">リンク</a>` : "-"}</td>` : ""}
+                <td class="note">${t.note}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderCodeBlocks() {
+    const wrap = document.getElementById("code-blocks");
+    const groups = groupByRepo(codeTasks);
+    wrap.innerHTML = groups.map(g => `
       <div class="repo-block">
-        <div class="repo-header">${repoEntry.repo}</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr><th>タスク</th><th>優先度</th><th>ステータス</th><th>最終更新</th><th>備考</th></tr>
-            </thead>
-            <tbody>
-              ${repoEntry.tasks.map(t => `
-                <tr>
-                  <td>${t.task}</td>
-                  <td class="priority">${t.priority}</td>
-                  <td>${chip(t.status)}</td>
-                  <td class="updated">${t.updated}</td>
-                  <td class="note">${t.note}</td>
-                </tr>`).join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>`).join("");
+        <div class="repo-header">${g.repo}</div>
+        ${taskTable(g.tasks)}
+      </div>`).join("") || `<div class="repo-block"><div class="repo-header">タスクなし</div></div>`;
+  }
+
+  function renderResearchBlock() {
+    const wrap = document.getElementById("research-block");
+    if (!researchTasks.length) {
+      wrap.innerHTML = `<div class="repo-block"><div class="repo-header">タスクなし</div></div>`;
+      return;
+    }
+    wrap.innerHTML = `<div class="repo-block">${taskTable(researchTasks, { showOutput: true })}</div>`;
   }
 
   renderStats();
-  renderTables();
+  renderCodeBlocks();
+  renderResearchBlock();
 </script>

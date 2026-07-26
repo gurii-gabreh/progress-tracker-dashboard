@@ -1,41 +1,33 @@
 {
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit",
-  "repos": [
+  "knownRepos": ["kizashi", "supermarket-price-tracker", "progress-tracker-dashboard"],
+  "tasks": [
     {
       "repo": "progress-tracker-dashboard",
-      "tasks": [
-        {
-          "task": "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)",
-          "priority": "高",
-          "status": "完了",
-          "updated": "2026-07-26",
-          "note": "Routine構築はこの後"
-        }
-      ]
+      "task": "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-07-26",
+      "note": "Routine構築はこの後",
+      "output": ""
     },
     {
       "repo": "kizashi",
-      "tasks": [
-        {
-          "task": "(タスク未登録)",
-          "priority": "-",
-          "status": "未着手",
-          "updated": "-",
-          "note": "スプレッドシートにタスクを追加してください"
-        }
-      ]
+      "task": "(タスク未登録)",
+      "priority": "-",
+      "status": "未着手",
+      "updated": "-",
+      "note": "スプレッドシートにタスクを追加してください",
+      "output": ""
     },
     {
       "repo": "supermarket-price-tracker",
-      "tasks": [
-        {
-          "task": "(タスク未登録)",
-          "priority": "-",
-          "status": "未着手",
-          "updated": "-",
-          "note": "スプレッドシートにタスクを追加してください"
-        }
-      ]
+      "task": "(タスク未登録)",
+      "priority": "-",
+      "status": "未着手",
+      "updated": "-",
+      "note": "スプレッドシートにタスクを追加してください",
+      "output": ""
     }
   ]
 }
