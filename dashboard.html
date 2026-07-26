@@ -103,6 +103,13 @@
   }
   .task-group { border-bottom: 1px solid var(--border); }
   .task-group:last-child { border-bottom: none; }
+  .task-group.done { opacity: 0.6; }
+
+  .section-divider {
+    padding: 8px 16px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--text-muted); background: var(--surface-2); border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
 
   .feed-row {
     display: flex; gap: 10px; padding: 12px 16px; cursor: default;
@@ -345,14 +352,22 @@
     let list = TASKS;
     if (activeFilter === "code") list = list.filter(isCode);
     if (activeFilter === "research") list = list.filter(t => !isCode(t));
-    list = sortNodes(list);
 
     if (!list.length) {
       feed.innerHTML = `<div class="empty">タスクがありません</div>`;
       return;
     }
 
-    feed.innerHTML = list.map((t, i) => `<div class="task-group">${renderRow(t, `${i}`)}</div>`).join("");
+    const pending = sortNodes(list.filter(t => aggregateStatus(t) !== "完了"));
+    const done = sortNodes(list.filter(t => aggregateStatus(t) === "完了"));
+
+    let html = pending.map((t, i) => `<div class="task-group">${renderRow(t, `p${i}`)}</div>`).join("");
+    if (done.length) {
+      html += `<div class="section-divider">完了 (${done.length})</div>`;
+      html += done.map((t, i) => `<div class="task-group done">${renderRow(t, `d${i}`)}</div>`).join("");
+    }
+    if (!pending.length && !done.length) html = `<div class="empty">タスクがありません</div>`;
+    feed.innerHTML = html;
 
     feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
       btn.addEventListener("click", (e) => {
