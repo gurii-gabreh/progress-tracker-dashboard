@@ -10,6 +10,8 @@
     --text-muted: #5b6172;
     --accent: #33449c;
     --accent-soft: #e4e7fb;
+    --knowledge-bg: #fbf9f0;
+    --knowledge-border: #e6dfc2;
     --status-done-bg: #e1f5ec;
     --status-done-fg: #157a4a;
     --status-doing-bg: #e4edfd;
@@ -25,6 +27,7 @@
     :root {
       --bg: #14161c; --surface: #1b1e27; --surface-2: #22252f; --border: #30333e;
       --text: #e7e8ee; --text-muted: #969cab; --accent: #8fa1ff; --accent-soft: #262b45;
+      --knowledge-bg: #232016; --knowledge-border: #47401f;
       --status-done-bg: #143528; --status-done-fg: #4fd399;
       --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
       --status-todo-bg: #22252f; --status-todo-fg: #969cab;
@@ -35,6 +38,7 @@
   :root[data-theme="dark"] {
     --bg: #14161c; --surface: #1b1e27; --surface-2: #22252f; --border: #30333e;
     --text: #e7e8ee; --text-muted: #969cab; --accent: #8fa1ff; --accent-soft: #262b45;
+    --knowledge-bg: #232016; --knowledge-border: #47401f;
     --status-done-bg: #143528; --status-done-fg: #4fd399;
     --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
     --status-todo-bg: #22252f; --status-todo-fg: #969cab;
@@ -44,6 +48,7 @@
   :root[data-theme="light"] {
     --bg: #f3f4f7; --surface: #ffffff; --surface-2: #eceef3; --border: #dcdfe6;
     --text: #1b1e27; --text-muted: #5b6172; --accent: #33449c; --accent-soft: #e4e7fb;
+    --knowledge-bg: #fbf9f0; --knowledge-border: #e6dfc2;
     --status-done-bg: #e1f5ec; --status-done-fg: #157a4a;
     --status-doing-bg: #e4edfd; --status-doing-fg: #2054c4;
     --status-todo-bg: #eceef3; --status-todo-fg: #5b6172;
@@ -73,15 +78,16 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
     padding: 6px 12px 6px 6px; box-shadow: var(--shadow); white-space: nowrap;
   }
-  .stat-pill .avatar { width: 22px; height: 22px; }
   .stat-pill .name { font-size: 12px; font-weight: 700; }
   .stat-pill .pct { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; }
 
   .avatar {
-    width: 34px; height: 34px; border-radius: 8px; flex: 0 0 auto;
+    width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 700; color: #fff;
+    font-size: 11px; font-weight: 700; color: #fff;
   }
+  .avatar.lg { width: 34px; height: 34px; border-radius: 8px; font-size: 15px; }
+  .avatar.sm { width: 24px; height: 24px; border-radius: 6px; font-size: 11px; }
 
   .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
   .filter-btn {
@@ -95,18 +101,36 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     box-shadow: var(--shadow); overflow: hidden;
   }
-  .feed-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .feed-row:last-child { border-bottom: none; }
-  .feed-row .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .feed-row .top-line { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
-  .feed-row .repo-tag { font-weight: 700; font-size: 13px; }
-  .feed-row .type-tag { font-size: 11px; color: var(--text-muted); }
-  .feed-row .task-text { font-size: 13.5px; color: var(--text); }
-  .feed-row .task-text.muted { color: var(--text-muted); font-style: italic; }
-  .feed-row .meta-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .feed-row .note { font-size: 12px; color: var(--text-muted); }
-  .feed-row .note a { color: var(--accent); text-decoration: none; }
-  .feed-row .note a:hover { text-decoration: underline; }
+  .task-group { border-bottom: 1px solid var(--border); }
+  .task-group:last-child { border-bottom: none; }
+
+  .feed-row {
+    display: flex; gap: 10px; padding: 12px 16px; cursor: default;
+  }
+  .feed-row.clickable { cursor: pointer; }
+  .feed-row.clickable:hover { background: var(--surface-2); }
+  .feed-row.child { padding-left: 12px; position: relative; }
+  .feed-row.child::before {
+    content: ""; position: absolute; left: 33px; top: 0; bottom: 0; width: 1px; background: var(--border);
+  }
+
+  .chevron-btn {
+    flex: 0 0 auto; width: 22px; height: 22px; border: none; background: none; cursor: pointer;
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; transition: transform 0.15s ease;
+  }
+  .chevron-btn.open { transform: rotate(90deg); }
+  .chevron-spacer { flex: 0 0 auto; width: 22px; }
+
+  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .top-line { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+  .repo-tag { font-weight: 700; font-size: 13px; }
+  .type-tag { font-size: 11px; color: var(--text-muted); }
+  .subtask-count { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .task-text { font-size: 13.5px; color: var(--text); }
+  .task-text.muted { color: var(--text-muted); font-style: italic; }
+  .meta-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
 
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -116,6 +140,17 @@
   .chip.doing { background: var(--status-doing-bg); color: var(--status-doing-fg); }
   .chip.todo { background: var(--status-todo-bg); color: var(--status-todo-fg); }
   .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+
+  .knowledge-panel {
+    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    background: var(--knowledge-bg); border: 1px solid var(--knowledge-border);
+    font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 6px;
+  }
+  .knowledge-panel .k-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .knowledge-panel .k-detail { white-space: pre-wrap; }
+  .knowledge-panel .k-note { color: var(--text-muted); }
+  .knowledge-panel .k-output a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .knowledge-panel .k-output a:hover { text-decoration: underline; }
 
   .empty { padding: 28px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
 
@@ -133,23 +168,49 @@
   </header>
 
   <div id="stat-strip" class="stat-strip"></div>
-
   <div id="filter-row" class="filter-row"></div>
-
   <div id="feed" class="feed"></div>
 
-  <footer>Routineが定期実行のたびにこのダッシュボードを更新します</footer>
+  <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
 </div>
 
 <script>
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
+  // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
+  // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
   const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker"];
 
   const TASKS = [
-    { repo: "progress-tracker-dashboard", task: "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)", priority: "高", status: "完了", updated: "2026-07-26", note: "Routine構築はこの後", output: "" },
-    { repo: "kizashi", task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "スプレッドシートにタスクを追加してください", output: "" },
-    { repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手", updated: "-", note: "スプレッドシートにタスクを追加してください", output: "" }
+    {
+      repo: "progress-tracker-dashboard", task: "初期セットアップ", priority: "高", status: "完了",
+      updated: "2026-07-26", note: "", detail: "", output: "",
+      subtasks: [
+        {
+          task: "スプレッドシート作成", priority: "高", status: "完了", updated: "2026-07-26", note: "",
+          detail: "Google Driveに「実装進捗管理シート」を作成(CSVアップロードでGoogle Sheetsに変換)。列: Repo, Task, 優先度, ステータス, 最終更新日時, 備考。Google DriveコネクタにはファイルのUPDATE手段が無いため、既存シートへの書き込みはできない前提で設計。そのためシートは人がタスクを追加する「入力専用」とし、ステータスの正本はリポジトリ内のdata/tasks.jsonに置くことにした。",
+          output: "https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit"
+        },
+        {
+          task: "ダッシュボード雛形作成", priority: "高", status: "完了", updated: "2026-07-26", note: "",
+          detail: "dashboard.htmlをリポジトリ内に作成し、Claude Artifactとして公開。当初はリポジトリ別テーブル表示だったが、Slackのフィードのように「一行1タスク」で読める形が良いとのフィードバックを受けて、フラットなフィード表示に変更。さらに親タスク/子タスクの階層表示と、タスクごとの実装詳細(ナレッジ)をクリックで展開できる形に発展させた。",
+          output: "https://claude.ai/code/artifact/b395634a-ff68-44cb-a667-92c53448c992"
+        },
+        {
+          task: "Routine設定", priority: "高", status: "完了", updated: "2026-07-26", note: "",
+          detail: "平日9/12/15/18時(JST)に自動実行するRoutineを作成。新規セッションを都度立ち上げる方式だとこの組織ではconnectors(Google Drive等)の権限委譲ができなかったため、このセッション自体を定期的に再開する自己バインド方式(persist_session)に変更して解決。Routineは(1)スプレッドシートの新規タスクをtasks.jsonへ取り込み、(2)Repo欄が既知のリポジトリ名ならコード実装(ブランチ+PR)、それ以外なら調査・資料作成タスクとして処理、(3)問題が起きたタスクはスキップして次へ進む、という設計。",
+          output: ""
+        }
+      ]
+    },
+    {
+      repo: "kizashi", task: "(タスク未登録)", priority: "-", status: "未着手",
+      updated: "-", note: "スプレッドシートにタスクを追加してください", detail: "", output: ""
+    },
+    {
+      repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手",
+      updated: "-", note: "スプレッドシートにタスクを追加してください", detail: "", output: ""
+    }
   ];
 
   const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip" };
@@ -172,45 +233,27 @@
     return `<span class="chip ${cls}">${status}</span>`;
   }
 
-  function sortedTasks(list) {
+  function aggregateStatus(t) {
+    if (!t.subtasks || !t.subtasks.length) return t.status;
+    const statuses = t.subtasks.map(s => s.status);
+    if (statuses.every(s => s === "完了")) return "完了";
+    if (statuses.some(s => s === "進行中")) return "進行中";
+    if (statuses.some(s => s === "未着手")) return statuses.some(s => s === "完了") ? "進行中" : "未着手";
+    return "スキップ";
+  }
+
+  function sortNodes(list) {
     return [...list].sort((a, b) => {
-      const s = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+      const sa = aggregateStatus(a), sb = aggregateStatus(b);
+      const s = STATUS_ORDER.indexOf(sa) - STATUS_ORDER.indexOf(sb);
       if (s !== 0) return s;
       return (PRIORITY_ORDER[a.priority] ?? 9) - (PRIORITY_ORDER[b.priority] ?? 9);
     });
   }
 
-  function renderStats() {
-    const strip = document.getElementById("stat-strip");
-    const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
-    const pills = repos.map(repo => {
-      const tasks = TASKS.filter(t => t.repo === repo);
-      const total = tasks.length;
-      const done = tasks.filter(t => t.status === "完了").length;
-      const pct = total ? Math.round((done / total) * 100) : 0;
-      const color = REPO_COLORS[repo] || "#5b6172";
-      return `
-        <div class="stat-pill">
-          <div class="avatar" style="width:22px;height:22px;font-size:11px;background:${color}">${repo.slice(0, 2).toUpperCase()}</div>
-          <span class="name">${repo}</span>
-          <span class="pct">${pct}%</span>
-        </div>`;
-    });
-    const research = TASKS.filter(t => !isCode(t));
-    if (research.length) {
-      const done = research.filter(t => t.status === "完了").length;
-      const pct = Math.round((done / research.length) * 100);
-      pills.push(`
-        <div class="stat-pill">
-          <div class="avatar" style="width:22px;height:22px;font-size:11px;background:${RESEARCH_COLOR}">📝</div>
-          <span class="name">調査・資料</span>
-          <span class="pct">${pct}%</span>
-        </div>`);
-    }
-    strip.innerHTML = pills.join("");
-  }
-
   let activeFilter = "all";
+  const openGroups = new Set();   // key: group toggle path -> subtasks visible
+  const openDetails = new Set();  // key: node path -> knowledge panel visible
 
   function renderFilters() {
     const row = document.getElementById("filter-row");
@@ -231,40 +274,102 @@
     });
   }
 
+  function renderStats() {
+    const strip = document.getElementById("stat-strip");
+    const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
+    const pills = repos.map(repo => {
+      const t = TASKS.find(t => t.repo === repo);
+      const units = t.subtasks && t.subtasks.length ? t.subtasks : [t];
+      const total = units.length;
+      const done = units.filter(u => u.status === "完了").length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      const color = REPO_COLORS[repo] || "#5b6172";
+      return `
+        <div class="stat-pill">
+          <div class="avatar" style="background:${color}">${repo.slice(0, 2).toUpperCase()}</div>
+          <span class="name">${repo}</span>
+          <span class="pct">${pct}%</span>
+        </div>`;
+    });
+    strip.innerHTML = pills.join("");
+  }
+
+  function knowledgePanel(node) {
+    if (!node.note && !node.detail && !node.output) return "";
+    return `
+      <div class="knowledge-panel">
+        <div class="k-label">実装ナレッジ</div>
+        ${node.detail ? `<div class="k-detail">${node.detail}</div>` : ""}
+        ${node.note ? `<div class="k-note">${node.note}</div>` : ""}
+        ${node.output ? `<div class="k-output"><a href="${node.output}" target="_blank" rel="noopener">成果物を見る →</a></div>` : ""}
+      </div>`;
+  }
+
+  function renderRow(node, path, { child } = {}) {
+    const hasChildren = node.subtasks && node.subtasks.length > 0;
+    const hasKnowledge = !!(node.note || node.detail || node.output);
+    const status = aggregateStatus(node);
+    const groupOpen = openGroups.has(path);
+    const detailOpen = openDetails.has(path);
+    const isPlaceholder = node.task.startsWith("(");
+
+    let html = `<div class="feed-row${hasKnowledge ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasKnowledge ? path : ""}">`;
+    if (hasChildren) {
+      html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
+    } else {
+      html += `<div class="chevron-spacer"></div>`;
+    }
+    html += `<div class="avatar ${child ? "sm" : "lg"}" style="background:${avatarColor(node)}">${avatarLabel(node)}</div>`;
+    html += `<div class="content">`;
+    html += `<div class="top-line">`;
+    if (!child) html += `<span class="repo-tag">${node.repo}</span><span class="type-tag">${isCode(node) ? "コード実装" : "調査・資料作成"}</span>`;
+    if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
+    html += `</div>`;
+    html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.task}</div>`;
+    html += `<div class="meta-line">${chip(status)}`;
+    if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
+    if (node.updated !== "-") html += `<span>${node.updated}</span>`;
+    if (hasKnowledge) html += `<span class="has-knowledge">${detailOpen ? "ナレッジを閉じる ▲" : "ナレッジを見る ▼"}</span>`;
+    html += `</div></div></div>`;
+
+    if (detailOpen) html += knowledgePanel(node);
+
+    if (hasChildren && groupOpen) {
+      html += node.subtasks.map((sub, i) => renderRow(sub, `${path}.${i}`, { child: true })).join("");
+    }
+    return html;
+  }
+
   function renderFeed() {
     const feed = document.getElementById("feed");
     let list = TASKS;
     if (activeFilter === "code") list = list.filter(isCode);
     if (activeFilter === "research") list = list.filter(t => !isCode(t));
-    list = sortedTasks(list);
+    list = sortNodes(list);
 
     if (!list.length) {
       feed.innerHTML = `<div class="empty">タスクがありません</div>`;
       return;
     }
 
-    feed.innerHTML = list.map(t => {
-      const color = avatarColor(t);
-      const isPlaceholder = t.task.startsWith("(");
-      return `
-        <div class="feed-row">
-          <div class="avatar" style="background:${color}">${avatarLabel(t)}</div>
-          <div class="content">
-            <div class="top-line">
-              <span class="repo-tag">${t.repo}</span>
-              <span class="type-tag">${isCode(t) ? "コード実装" : "調査・資料作成"}</span>
-            </div>
-            <div class="task-text${isPlaceholder ? " muted" : ""}">${t.task}</div>
-            <div class="meta-line">
-              ${chip(t.status)}
-              ${t.priority !== "-" ? `<span>優先度: ${t.priority}</span>` : ""}
-              ${t.updated !== "-" ? `<span>${t.updated}</span>` : ""}
-              ${t.output ? `<a href="${t.output}" target="_blank" rel="noopener">成果物を見る</a>` : ""}
-            </div>
-            ${t.note ? `<div class="note">${t.note}</div>` : ""}
-          </div>
-        </div>`;
-    }).join("");
+    feed.innerHTML = list.map((t, i) => `<div class="task-group">${renderRow(t, `${i}`)}</div>`).join("");
+
+    feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = btn.dataset.groupToggle;
+        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-detail-toggle]").forEach(row => {
+      const key = row.dataset.detailToggle;
+      if (!key) return;
+      row.addEventListener("click", () => {
+        if (openDetails.has(key)) openDetails.delete(key); else openDetails.add(key);
+        renderFeed();
+      });
+    });
   }
 
   renderStats();

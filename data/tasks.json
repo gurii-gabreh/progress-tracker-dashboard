@@ -4,12 +4,42 @@
   "tasks": [
     {
       "repo": "progress-tracker-dashboard",
-      "task": "初期セットアップ(スプレッドシート・ダッシュボード雛形作成)",
+      "task": "初期セットアップ",
       "priority": "高",
       "status": "完了",
       "updated": "2026-07-26",
-      "note": "Routine構築はこの後",
-      "output": ""
+      "note": "",
+      "detail": "",
+      "output": "",
+      "subtasks": [
+        {
+          "task": "スプレッドシート作成",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-07-26",
+          "note": "",
+          "detail": "Google Driveに「実装進捗管理シート」を作成(CSVアップロードでGoogle Sheetsに変換)。列: Repo, Task, 優先度, ステータス, 最終更新日時, 備考。Google DriveコネクタにはファイルのUPDATE手段が無いため、既存シートへの書き込みはできない前提で設計。そのためシートは人がタスクを追加する「入力専用」とし、ステータスの正本はリポジトリ内のdata/tasks.jsonに置くことにした。",
+          "output": "https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit"
+        },
+        {
+          "task": "ダッシュボード雛形作成",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-07-26",
+          "note": "",
+          "detail": "dashboard.htmlをリポジトリ内に作成し、Claude Artifactとして公開。当初はリポジトリ別テーブル表示だったが、Slackのフィードのように「一行1タスク」で読める形が良いとのフィードバックを受けて、フラットなフィード表示(アイコン+リポジトリ名+タスク文+ステータスチップ)に変更。さらに親タスク/子タスクの階層表示と、タスクごとの実装詳細(ナレッジ)をクリックで展開できる形に発展させた。",
+          "output": "https://claude.ai/code/artifact/b395634a-ff68-44cb-a667-92c53448c992"
+        },
+        {
+          "task": "Routine設定",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-07-26",
+          "note": "",
+          "detail": "平日9/12/15/18時(JST)に自動実行するRoutineを作成。新規セッションを都度立ち上げる方式だとこの組織ではconnectors(Google Drive等)の権限委譲ができなかったため、このセッション自体を定期的に再開する自己バインド方式(persist_session)に変更して解決。Routineは(1)スプレッドシートの新規タスクをtasks.jsonへ取り込み、(2)Repo欄が既知のリポジトリ名ならコード実装(ブランチ+PR)、それ以外なら調査・資料作成タスクとして処理、(3)問題が起きたタスクはスキップして次へ進む、という設計。",
+          "output": ""
+        }
+      ]
     },
     {
       "repo": "kizashi",
@@ -18,6 +48,7 @@
       "status": "未着手",
       "updated": "-",
       "note": "スプレッドシートにタスクを追加してください",
+      "detail": "",
       "output": ""
     },
     {
@@ -27,6 +58,7 @@
       "status": "未着手",
       "updated": "-",
       "note": "スプレッドシートにタスクを追加してください",
+      "detail": "",
       "output": ""
     }
   ]
