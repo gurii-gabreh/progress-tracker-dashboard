@@ -163,6 +163,44 @@
   .empty { padding: 28px 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
 
   footer { color: var(--text-muted); font-size: 12px; text-align: center; padding-top: 4px; }
+
+  .handoff-btn {
+    font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+    border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer;
+  }
+  .handoff-btn:hover { background: var(--accent-soft); }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(20, 20, 25, 0.5);
+    display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100;
+  }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow); max-width: 560px; width: 100%; max-height: 85vh;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .modal-header h2 { margin: 0; font-size: 15px; font-weight: 700; }
+  .modal-close {
+    border: none; background: none; color: var(--text-muted); font-size: 18px; cursor: pointer;
+    width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto;
+  }
+  .modal-close:hover { background: var(--surface-2); }
+  .modal-body { padding: 14px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .modal-body textarea {
+    width: 100%; min-height: 260px; resize: vertical; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; line-height: 1.6; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  }
+  .modal-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .modal-copy-btn {
+    font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+    border: none; background: var(--accent); color: #fff; cursor: pointer;
+  }
+  .modal-copy-btn.copied { background: var(--status-done-fg); }
 </style>
 
 <div class="wrap">
@@ -181,6 +219,8 @@
 
   <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
 </div>
+
+<div id="modal-root"></div>
 
 <script>
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
@@ -314,7 +354,8 @@
       </div>`;
   }
 
-  function renderRow(node, path, { child } = {}) {
+  function renderRow(node, path, { child, repo } = {}) {
+    const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
     const hasKnowledge = !!(node.note || node.detail || node.output);
     const status = aggregateStatus(node);
@@ -339,6 +380,7 @@
     if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated !== "-") html += `<span>${node.updated}</span>`;
     if (hasKnowledge) html += `<span class="has-knowledge">${detailOpen ? "ナレッジを閉じる ▲" : "ナレッジを見る ▼"}</span>`;
+    if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
     html += `</div></div></div>`;
 
     if (detailOpen) html += knowledgePanel(node);
@@ -357,7 +399,7 @@
       if (!shown.length) {
         html += `<div class="empty small">${activeTab === "done" ? "完了した子タスクはありません" : "未完了の子タスクはありません"}</div>`;
       } else {
-        html += shown.map(sub => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, { child: true })).join("");
+        html += shown.map(sub => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, { child: true, repo: effectiveRepo })).join("");
       }
     }
     return html;
@@ -400,6 +442,86 @@
         if (openDetails.has(key)) openDetails.delete(key); else openDetails.add(key);
         renderFeed();
       });
+    });
+    feed.querySelectorAll("[data-handoff]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const node = findNodeByPath(btn.dataset.handoff);
+        showHandoffModal(buildHandoffText(node, btn.dataset.handoffRepo));
+      });
+    });
+  }
+
+  function findNodeByPath(path) {
+    const parts = path.split(".").map(Number);
+    let node = TASKS[parts[0]];
+    for (let i = 1; i < parts.length; i++) node = node.subtasks[parts[i]];
+    return node;
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function buildHandoffText(node, repo) {
+    const status = aggregateStatus(node);
+    return [
+      "【タスク引継ぎ】",
+      `リポジトリ: ${repo}`,
+      `タスク: ${node.task}`,
+      `優先度: ${node.priority}`,
+      `現在のステータス: ${status}`,
+      `最終更新: ${node.updated}`,
+      `備考: ${node.note || "(なし)"}`,
+      "",
+      "これまでの実装ナレッジ:",
+      node.detail || "(まだ記録なし)",
+      "",
+      `成果物: ${node.output || "(なし)"}`,
+      "",
+      "---",
+      "上記の状況を踏まえて、このタスクの実装を続けてください。不明点や問題があれば教えてください。",
+    ].join("\n");
+  }
+
+  function showHandoffModal(text) {
+    const root = document.getElementById("modal-root");
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>引継ぎプロンプト</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <textarea id="handoff-textarea" readonly>${escapeHtml(text)}</textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-copy-btn" id="modal-copy-btn">コピー</button>
+          </div>
+        </div>
+      </div>`;
+
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
+    });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+
+    document.getElementById("modal-copy-btn").addEventListener("click", async (e) => {
+      const textarea = document.getElementById("handoff-textarea");
+      textarea.select();
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(textarea.value);
+        copied = true;
+      } catch (err) {
+        try { copied = document.execCommand("copy"); } catch (err2) { copied = false; }
+      }
+      const btn = e.currentTarget;
+      btn.textContent = copied ? "コピーしました ✓" : "コピー不可(手動で選択してください)";
+      btn.classList.toggle("copied", copied);
+      setTimeout(() => { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
     });
   }
 
