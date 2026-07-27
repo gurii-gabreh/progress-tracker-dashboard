@@ -170,6 +170,32 @@
   }
   .handoff-btn:hover { background: var(--accent-soft); }
 
+  .add-task-btn {
+    font-size: 11px; font-weight: 600; padding: 1px 9px; border-radius: 999px;
+    border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted); cursor: pointer;
+    margin-left: auto;
+  }
+  .add-task-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .chip.new { background: var(--accent-soft); color: var(--accent); }
+
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-field label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+  .form-field input[type="text"], .form-field select, .form-field textarea {
+    padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text); font-size: 13px; font-family: inherit;
+  }
+  .form-error { font-size: 12px; color: var(--status-skip-fg); }
+  .modal-submit-btn {
+    font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+    border: none; background: var(--accent); color: #fff; cursor: pointer;
+  }
+  .modal-submit-btn:disabled { opacity: 0.6; cursor: default; }
+  .modal-cancel-btn {
+    font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+    border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer;
+  }
+
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(20, 20, 25, 0.5);
     display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100;
@@ -261,8 +287,14 @@
     }
   ];
 
-  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip" };
-  const STATUS_ORDER = ["進行中", "未着手", "スキップ", "完了"];
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing" };
+  const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了"];
+
+  // ダッシュボードから追加した新規タスクをスプレッドシートの依頼タスクタブへ反映するためのGASエンドポイント。
+  // このファイルは公開リポジトリにあるため、このトークンは「追記のみ」の最小権限として運用すること
+  // (依頼タスク行の削除・完了シートへの移動など強い操作はこのエンドポイントからは呼び出さない)。
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbyBq4sD_LZBbgRhGpYYcDzve3jLOJ0_lrxlT89bFHjFlUWhgO975uArRicaveEJMKP9/exec";
+  const GAS_TOKEN = "8a2fad1907b8d935f758ede8f66d05d7";
   const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
 
   const REPO_COLORS = {
@@ -372,7 +404,7 @@
     html += `<div class="avatar ${child ? "sm" : "lg"}" style="background:${avatarColor(node)}">${avatarLabel(node)}</div>`;
     html += `<div class="content">`;
     html += `<div class="top-line">`;
-    if (!child) html += `<span class="repo-tag">${node.repo}</span><span class="type-tag">${isCode(node) ? "コード実装" : "調査・資料作成"}</span>`;
+    if (!child) html += `<span class="repo-tag">${node.repo}</span><span class="type-tag">${isCode(node) ? "コード実装" : "調査・資料作成"}</span><button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}">＋ 新規タスク</button>`;
     if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
     html += `</div>`;
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.task}</div>`;
@@ -417,7 +449,8 @@
       return;
     }
 
-    feed.innerHTML = list.map((t, i) => `<div class="task-group">${renderRow(t, `${i}`)}</div>`).join("");
+    // パスのルートは常に元のTASKS配列でのindexを使う(フィルタ/並び替えでlistの順序がTASKSとズレるため)
+    feed.innerHTML = list.map((t) => `<div class="task-group">${renderRow(t, `${TASKS.indexOf(t)}`)}</div>`).join("");
 
     feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -448,6 +481,12 @@
         e.stopPropagation();
         const node = findNodeByPath(btn.dataset.handoff);
         showHandoffModal(buildHandoffText(node, btn.dataset.handoffRepo));
+      });
+    });
+    feed.querySelectorAll("[data-add-parent]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showAddTaskModal(btn.dataset.addParent, btn.dataset.addRepo);
       });
     });
   }
@@ -523,6 +562,86 @@
       btn.classList.toggle("copied", copied);
       setTimeout(() => { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
     });
+  }
+
+  function showAddTaskModal(parentPath, repo) {
+    const root = document.getElementById("modal-root");
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>新規タスク追加(${repo})</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-field">
+              <label for="new-task-text">タスク内容</label>
+              <input type="text" id="new-task-text" placeholder="例: ログイン画面の実装" />
+            </div>
+            <div class="form-field">
+              <label for="new-task-priority">優先度</label>
+              <select id="new-task-priority">
+                <option value="高">高</option>
+                <option value="中" selected>中</option>
+                <option value="低">低</option>
+              </select>
+            </div>
+            <div id="new-task-error" class="form-error"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-cancel-btn" id="modal-cancel-btn">キャンセル</button>
+            <button class="modal-submit-btn" id="modal-submit-btn">追加</button>
+          </div>
+        </div>
+      </div>`;
+
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
+    });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    document.getElementById("modal-cancel-btn").addEventListener("click", closeModal);
+
+    document.getElementById("modal-submit-btn").addEventListener("click", () => {
+      const textInput = document.getElementById("new-task-text");
+      const task = textInput.value.trim();
+      const priority = document.getElementById("new-task-priority").value;
+      const errorEl = document.getElementById("new-task-error");
+      if (!task) {
+        errorEl.textContent = "タスク内容を入力してください";
+        return;
+      }
+      addNewTask(parentPath, repo, task, priority);
+      closeModal();
+    });
+  }
+
+  function addNewTask(parentPath, repo, task, priority) {
+    const parent = findNodeByPath(parentPath);
+    if (!parent.subtasks) parent.subtasks = [];
+    const today = new Date().toISOString().slice(0, 10);
+    const newTask = { task, priority, status: "新規", updated: today, note: "", detail: "", output: "" };
+    parent.subtasks.push(newTask);
+    openGroups.add(parentPath);
+    renderFeed();
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        newTasks: [{ repo, task, priority, status: "対応中", requestedAt: today, note: "" }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("sync failed");
+        newTask.status = "対応中";
+        renderFeed();
+      })
+      .catch(() => {
+        newTask.note = "スプレッドシートへの自動同期に失敗しました。お手数ですが手動で追加してください。";
+        renderFeed();
+      });
   }
 
   renderStats();
