@@ -18,11 +18,17 @@
 
 ## ルームマッピング(ルーム設定タブと同じ内容をここにも記録)
 
-| Repo | ルーム |
-|---|---|
-| progress-tracker-dashboard | このセッション(session_01XXySCiFKeZdazYy97NxMim) |
-| kizashi | (未作成 — セットアップ待ち) |
-| supermarket-price-tracker | (未作成 — セットアップ待ち) |
+自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01JC7QYoVtYZinJov5Eqw8jQ、平日9時JST)。
+このセッション(session_01XXySCiFKeZdazYy97NxMim)は設計・手動作業用の会話で、自動実行のRoutineはもう持たない。
+
+| Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
+|---|---|---|
+| progress-tracker-dashboard | このセッション | session_01DDATKE77mbQxkj4HUZ91Gt |
+| kizashi(結/ゆい) | session_01EttsGp4ZSP11U5i8kkKPwA | session_01DDATKE77mbQxkj4HUZ91Gt |
+| supermarket-price-tracker | session_01LeHQUz9gH8bU9uVNdJBBF5 | session_01DDATKE77mbQxkj4HUZ91Gt |
+| gemini-monitor | (未作成) | session_01DDATKE77mbQxkj4HUZ91Gt |
+
+※ Routineを別セッションに紐付けること自体はプラットフォーム制約で不可のため、「アプリごとに専用の自動実行ルーム」は実現していない。上記の手動作業用ルームは、問題が起きたタスクを人が直接引き継いで作業する時に使う。
 
 ## 現在の状態(暫定)
 
