@@ -77,6 +77,7 @@
   header .meta { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
   header .meta a { color: var(--accent); text-decoration: none; }
   header .meta a:hover { text-decoration: underline; }
+  .settings-caption { font-size: 11px; color: var(--text-muted); }
 
   .stat-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
   .stat-pill {
@@ -192,6 +193,13 @@
     background: var(--surface-2); color: var(--text); font-size: 13px; font-family: inherit;
   }
   .form-error { font-size: 12px; color: var(--status-skip-fg); }
+  .settings-note {
+    font-size: 12px; color: var(--text-muted); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .settings-note p { margin: 0; }
+  .settings-note b { color: var(--text); }
   .modal-submit-btn {
     font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
     border: none; background: var(--accent); color: #fff; cursor: pointer;
@@ -239,13 +247,14 @@
   <header>
     <div class="header-top">
       <div class="eyebrow">Progress Tracker</div>
-      <button class="settings-btn" id="open-settings-btn">⚙ Routine設定</button>
+      <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
     </div>
     <h1>実装進捗ダッシュボード</h1>
     <div class="meta">
       最終更新: <span id="updated-at">2026-07-26</span> ・
       データ元: <a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>
     </div>
+    <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
   </header>
 
   <div id="stat-strip" class="stat-strip"></div>
@@ -663,10 +672,11 @@
             <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
           </div>
           <div class="modal-body">
-            <p style="margin:0; font-size:12px; color:var(--text-muted);">
-              このページから直接は反映できません(Claude Codeのセッション設定を書き換える公開APIが無いため)。
-              以下を入力すると依頼文が作成されるので、それをコピーしてClaude Codeのチャットに貼ってください。
-            </p>
+            <div class="settings-note">
+              <p><b>この設定はここでは自動反映されません。</b></p>
+              <p>Claude Codeのセッション(Routine)のスケジュールを書き換える公開APIがこのページから呼べないため、ダッシュボード側だけでは変更を完結できません。</p>
+              <p>下のフォームに希望を入力して「依頼文を作成」を押すと、変更依頼のテキストが生成されます。それをコピーして、Routineを動かしているClaude Codeのチャット(このセッション)に貼り付けてください。貼り付けた内容を私が読み取り、実際のRoutine設定(実行頻度・時刻)をその場で変更します。</p>
+            </div>
             <div class="form-field">
               <label for="routine-freq">1日の実行回数</label>
               <select id="routine-freq">
