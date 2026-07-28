@@ -67,6 +67,7 @@
 
   header { display: flex; flex-direction: column; gap: 4px; }
   .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .header-actions { display: flex; gap: 6px; }
   header .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
   .settings-btn {
     font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px;
@@ -177,6 +178,13 @@
   }
   .handoff-btn:hover { background: var(--accent-soft); }
 
+  .urgent-btn {
+    font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+    border: 1px solid var(--status-skip-fg); background: transparent; color: var(--status-skip-fg); cursor: pointer;
+  }
+  .urgent-btn:hover { background: var(--status-skip-bg); }
+  .urgent-flag { color: var(--status-skip-fg); font-weight: 700; }
+
   .add-task-btn {
     font-size: 11px; font-weight: 600; padding: 1px 9px; border-radius: 999px;
     border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted); cursor: pointer;
@@ -247,7 +255,10 @@
   <header>
     <div class="header-top">
       <div class="eyebrow">Progress Tracker</div>
-      <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
+      <div class="header-actions">
+        <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
+        <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
+      </div>
     </div>
     <h1>実装進捗ダッシュボード</h1>
     <div class="meta">
@@ -425,11 +436,12 @@
     if (!child) html += `<span class="repo-tag">${node.repo}</span><span class="type-tag">${isCode(node) ? "コード実装" : "調査・資料作成"}</span><button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}">＋ 新規タスク</button>`;
     if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
     html += `</div>`;
-    html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.task}</div>`;
+    html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.task}</div>`;
     html += `<div class="meta-line">${chip(status)}`;
     if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated !== "-") html += `<span>${node.updated}</span>`;
     if (hasKnowledge) html += `<span class="has-knowledge">${detailOpen ? "ナレッジを閉じる ▲" : "ナレッジを見る ▼"}</span>`;
+    if (!isPlaceholder && status !== "完了") html += `<button class="urgent-btn" data-urgent="${path}" data-urgent-repo="${effectiveRepo}">⚡ 即実行</button>`;
     if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
     html += `</div></div></div>`;
 
@@ -505,6 +517,12 @@
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         showAddTaskModal(btn.dataset.addParent, btn.dataset.addRepo);
+      });
+    });
+    feed.querySelectorAll("[data-urgent]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        markTaskUrgent(btn.dataset.urgent, btn.dataset.urgentRepo);
       });
     });
   }
@@ -662,6 +680,83 @@
       });
   }
 
+  function markTaskUrgent(path, repo) {
+    const node = findNodeByPath(path);
+    node.urgent = true;
+    renderFeed();
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ token: GAS_TOKEN, markUrgent: [{ repo, task: node.task }] }),
+    }).catch(() => { /* スプレッドシート側への反映は失敗してもチャットでの依頼で代替できる */ });
+
+    const text = [
+      "【即実行の依頼】",
+      `リポジトリ: ${repo}`,
+      `タスク: ${node.task}`,
+      `優先度: ${node.priority}`,
+      `備考: ${node.note || "(なし)"}`,
+      "",
+      "このタスクを次回の定期実行を待たず、今すぐ実行してください。",
+    ].join("\n");
+    showHandoffModal(text, "即実行 依頼文");
+  }
+
+  function mergeSheetTasksIntoView(pendingRows) {
+    let addedCount = 0;
+    pendingRows.forEach((row) => {
+      const repo = row.repo;
+      const isTrue = (v) => v === true || v === "TRUE" || v === "true";
+      let parent = TASKS.find((t) => t.repo === repo);
+      if (!parent) {
+        parent = { repo, task: `(${repo}向けタスク)`, priority: "-", status: "未着手", updated: "-", note: "", detail: "", output: "", subtasks: [] };
+        TASKS.push(parent);
+      }
+      if (!parent.subtasks) parent.subtasks = [];
+      const exists = parent.subtasks.some((s) => s.task === row.task) || parent.task === row.task;
+      if (!exists && row.task) {
+        parent.subtasks.push({
+          task: row.task,
+          priority: row.priority || "-",
+          status: row.status || "未着手",
+          updated: row.requestedAt || "-",
+          note: row.note || "",
+          detail: "",
+          output: "",
+          urgent: isTrue(row.urgent),
+        });
+        addedCount++;
+      }
+    });
+    return addedCount;
+  }
+
+  function refreshFromSheet() {
+    const btn = document.getElementById("refresh-btn");
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "更新中...";
+
+    fetch(`${GAS_URL}?action=list`)
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        const added = mergeSheetTasksIntoView(data.pending || []);
+        renderStats();
+        renderFeed();
+        btn.textContent = added > 0 ? `✓ ${added}件追加` : "✓ 変化なし";
+      })
+      .catch(() => {
+        btn.textContent = "更新失敗";
+      })
+      .finally(() => {
+        setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 2500);
+      });
+  }
+
   function showRoutineSettingsModal() {
     const root = document.getElementById("modal-root");
     root.innerHTML = `
@@ -736,6 +831,7 @@
   }
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
+  document.getElementById("refresh-btn").addEventListener("click", refreshFromSheet);
 
   renderStats();
   renderFilters();
