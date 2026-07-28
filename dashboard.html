@@ -282,7 +282,7 @@
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
   // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
-  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker"];
+  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor"];
 
   const TASKS = [
     {
@@ -313,6 +313,10 @@
     {
       repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手",
       updated: "-", note: "スプレッドシートにタスクを追加してください", detail: "", output: ""
+    },
+    {
+      repo: "gemini-monitor", task: "現状、午前0~1時までしか測定していないが、それを1日目午前0~11、次の日は午後12~23時のように修正して", priority: "高", status: "未着手",
+      updated: "2026-07-28", note: "", detail: "", output: ""
     }
   ];
 
@@ -330,6 +334,7 @@
     "progress-tracker-dashboard": "#33449c",
     "kizashi": "#c2410c",
     "supermarket-price-tracker": "#0f766e",
+    "gemini-monitor": "#a21caf",
   };
   const RESEARCH_COLOR = "#7c3aed";
 
