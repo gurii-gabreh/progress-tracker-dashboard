@@ -26,6 +26,7 @@
 | progress-tracker-dashboard | このセッション | session_01DDATKE77mbQxkj4HUZ91Gt |
 | kizashi(結/ゆい) | session_01EttsGp4ZSP11U5i8kkKPwA | session_01DDATKE77mbQxkj4HUZ91Gt |
 | supermarket-price-tracker | session_01LeHQUz9gH8bU9uVNdJBBF5 | session_01DDATKE77mbQxkj4HUZ91Gt |
+| gemini-monitor | (未作成) | session_01DDATKE77mbQxkj4HUZ91Gt |
 | ai-research-radar | (専用ルームなし) | Routineでは処理しない(下記参照) |
 
 ※ Routineを別セッションに紐付けること自体はプラットフォーム制約で不可のため、「アプリごとに専用の自動実行ルーム」は実現していない。上記の手動作業用ルームは、問題が起きたタスクを人が直接引き継いで作業する時に使う。
@@ -48,7 +49,7 @@
 
 スプレッドシートの `Repo` 欄の値で自動的に分類される。
 
-- **既知のリポジトリ名**（`kizashi` / `supermarket-price-tracker` / `progress-tracker-dashboard`）→ **コード実装タスク**。ブランチを切って実装し、PRを作成する
+- **既知のリポジトリ名**（`kizashi` / `supermarket-price-tracker` / `gemini-monitor` / `progress-tracker-dashboard`）→ **コード実装タスク**。ブランチを切って実装し、PRを作成する
 - **`ai-research-radar`** → **このRoutineでは処理しない**。`gurii-gabreh/ai-research-radar`リポジトリの`gas/Code.gs`(スプレッドシートにバインドしたGoogle Apps Script)がGemini APIで1日1回自動調査し、依頼タスクタブのステータスも直接更新する専用の仕組みがあるため、`data/tasks.json`にも取り込まず完全に無視する(重複処理を避けるため)
 - **それ以外の文言**（例: `調査`, `資料作成`）→ **調査・資料作成タスク**。コードは書かず、調査結果や資料（pptx/pdf/docx等）を作成し、Googleドライブ等に保存してリンクを`成果物`に記録する。リポジトリへのPRは作らない
 
@@ -65,6 +66,7 @@
 
 - gurii-gabreh/kizashi
 - gurii-gabreh/supermarket-price-tracker
+- gurii-gabreh/gemini-monitor
 - gurii-gabreh/progress-tracker-dashboard（本アプリ自身）
 
 ## AI調査(Gemini)の別系統について
@@ -76,7 +78,7 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
 **引き継ぎ事項**: 自動実行Routine(`trig_01JC7QYoVtYZinJov5Eqw8jQ`, session_01DDATKE77mbQxkj4HUZ91Gt)の
-プロンプトは、この変更に合わせて「管理対象リポジトリ」から`gemini-monitor`を削除し、
-「タスクの種別判定」に`ai-research-radar`を無視するルールを追加する必要があるが、
-このセッションはそのRoutineの所有セッションではないため`update_trigger`で直接編集できなかった。
-該当セッション側で本READMEの内容に合わせてプロンプトを更新すること。
+プロンプトに、「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを
+追加する必要があるが、このセッションはそのRoutineの所有セッションではないため
+`update_trigger`で直接編集できなかった。`gemini-monitor`は既存の別プロジェクト(測定系)なので
+そのまま維持し、触らないこと。該当セッション側で本READMEの内容に合わせてプロンプトを更新すること。
