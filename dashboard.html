@@ -156,6 +156,15 @@
   .chip.doing { background: var(--status-doing-bg); color: var(--status-doing-fg); }
   .chip.todo { background: var(--status-todo-bg); color: var(--status-todo-fg); }
   .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+  .chip.manual-setup { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+
+  .manual-setup-panel {
+    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    background: var(--status-skip-bg); border: 1px solid var(--status-skip-fg);
+    font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 4px;
+  }
+  .manual-setup-panel .m-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--status-skip-fg); }
+  .manual-setup-panel .m-body { white-space: pre-wrap; }
 
   .knowledge-panel {
     margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
@@ -281,6 +290,9 @@
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
+  // manualSetup: タスク完了後に人が手動で行う必要がある設定・作業がある場合、その内容を書く(例:
+  // 「APIキーをスクリプトプロパティに設定」「GitHub PagesのSourceをGitHub Actionsに設定」等)。
+  // 設定されていると、detailを開かなくても一覧上で⚠バッジと内容がそのまま見える。
   // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
   const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor"];
 
@@ -317,8 +329,9 @@
     {
       repo: "gemini-monitor", task: "現状、午前0〜1時までしか測定していないが、それを1日目午前0〜11、次の日は午後12〜23時のように修正して", priority: "高", status: "完了",
       updated: "2026-07-29", note: "PR: https://github.com/gurii-gabreh/gemini-monitor/pull/1",
-      detail: "調査したところ、フロント(index.html)には「測定時間帯」の手動トグル(0〜12時/12〜24時)がありsaveSettingsでtime_slotパラメータを送っていたが、GAS側(gas/Code.gs)のgetSettings/saveSettings/runMeasurementのどれもtime_slotを一切参照しておらず、実際の測定は常に24時間フルで行われていた(=無料枠節約を謳ったUIが実際には機能していなかった)。依頼は「1日目は午前0〜11時、次の日は午後12〜23時」という日替わり交互パターンだったため、静的な手動切り替えではなく自動切り替えとして実装することにした。gas/Code.gsにgetMeasurementWindow(date)を追加し、JST基準の通し日数(エポックからの経過日数)の偶奇で「午前(0〜11時)」「午後(12〜23時)」を判定、runMeasurement()の先頭でisWithinMeasurementWindow()により時間帯外なら即returnしてAPI呼び出し自体をスキップするようにした。時間トリガー(everyHours)自体は引き続き毎時発火する設計のままとし(トリガー削除・再作成のコストを避けるため)、実行のたびに時間帯判定でフィルタする方式にした。フロント側は実挙動と乖離していた手動トグルUIを撤去し、同じ日替わりロジックをJSでも計算して「本日の測定時間帯」を表示するだけの読み取り専用表示に変更、saveSettingsからtime_slotパラメータの送信も削除した。GAS環境固有API(SpreadsheetApp等)に依存するため実機での動作確認はできておらず、node --checkによる構文チェックのみ実施済み。GASへのデプロイ後、初回のトリガー実行で意図通りスキップ/実行が切り替わるか確認が必要。",
-      output: ""
+      detail: "調査したところ、フロント(index.html)には「測定時間帯」の手動トグル(0〜12時/12〜24時)がありsaveSettingsでtime_slotパラメータを送っていたが、GAS側(gas/Code.gs)のgetSettings/saveSettings/runMeasurementのどれもtime_slotを一切参照しておらず、実際の測定は常に24時間フルで行われていた(=無料枠節約を謳ったUIが実際には機能していなかった)。依頼は「1日目は午前0〜11時、次の日は午後12〜23時」という日替わり交互パターンだったため、静的な手動切り替えではなく自動切り替えとして実装することにした。gas/Code.gsにgetMeasurementWindow(date)を追加し、JST基準の通し日数(エポックからの経過日数)の偶奇で「午前(0〜11時)」「午後(12〜23時)」を判定、runMeasurement()の先頭でisWithinMeasurementWindow()により時間帯外なら即returnしてAPI呼び出し自体をスキップするようにした。時間トリガー(everyHours)自体は引き続き毎時発火する設計のままとし(トリガー削除・再作成のコストを避けるため)、実行のたびに時間帯判定でフィルタする方式にした。フロント側は実挙動と乖離していた手動トグルUIを撤去し、同じ日替わりロジックをJSでも計算して「本日の測定時間帯」を表示するだけの読み取り専用表示に変更、saveSettingsからtime_slotパラメータの送信も削除した。GAS環境固有API(SpreadsheetApp等)に依存するため実機での動作確認はできておらず、node --checkによる構文チェックのみ実施済み。",
+      output: "",
+      manualSetup: "PRをマージ後、GASエディタで最新コードを貼り直してデプロイし、初回のトリガー実行で意図通り午前/午後の時間帯でスキップ・実行が切り替わるか確認してください。"
     }
   ];
 
@@ -445,6 +458,7 @@
     html += `</div>`;
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.task}</div>`;
     html += `<div class="meta-line">${chip(status)}`;
+    if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
     if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated !== "-") html += `<span>${node.updated}</span>`;
     if (hasKnowledge) html += `<span class="has-knowledge">${detailOpen ? "ナレッジを閉じる ▲" : "ナレッジを見る ▼"}</span>`;
@@ -452,6 +466,9 @@
     if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
     html += `</div></div></div>`;
 
+    if (node.manualSetup) {
+      html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
+    }
     if (detailOpen) html += knowledgePanel(node);
 
     if (hasChildren && groupOpen) {
