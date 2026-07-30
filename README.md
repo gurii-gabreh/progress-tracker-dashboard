@@ -93,7 +93,7 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項(1・2は対応済み、3・4は未対応)**: 旧Routineが削除されていたため2026-07-30に
+**引き継ぎ事項(1〜4すべて対応済み)**: 旧Routineが削除されていたため2026-07-30に
 session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`として再作成した。
 1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加 → **反映済み**
    (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持)
@@ -101,18 +101,26 @@ session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`とし�
    フィールドで具体的に何をすべきか明記するルールを追加 → **反映済み**(上記「運用ルール」7を参照)
 3. 各実行のたびに、全タスクの`comments`配列に新しい`author: "user"`コメントが無いか確認し、
    あれば内容に応じて対応(manualSetup解消 or タスク再オープン)した上で`author: "routine"`の
-   返信コメントを追記するルールを追加する(運用ルール8) → **未対応**。ダッシュボード側は
-   `addComment`のPOST送信と、`?action=list`のGETレスポンスに含まれる`comments`配列
-   (`[{ repo, task, author, text, at }, ...]`)を読んで各タスクの`comments`にマージする処理
-   まで実装済み(ページを開くたびに自動で静かに取り込む)。残っているのはGAS本体側で
-   「コメント」タブ(列: `Repo, Task, 発言者, 本文, 日時`)への追記処理と、`?action=list`の
-   レスポンスに`comments`配列を含める処理、そしてRoutineプロンプト側の反応ロジックの3つ。
-4. **依頼タスクタブ⇄完了タブ間の移動が実際には行われていない** → **未対応**。2026-07-30時点で
-   スプレッドシートを確認したところ、完了タブは列見出しのみで中身が空、依頼タスクタブの
-   `gemini-monitor`行も実際は完了済みなのに「未着手」のまま残っている。実装ナレッジ・成果物は
-   `data/tasks.json`にしか存在せず、目標アーキテクチャ(上記「依頼タスクタブ」「完了タブ」の説明)
-   通りには動いていない。GAS_URLの既存トークンはコメントにある通り「追記のみの最小権限」で
-   意図的にこの操作を許可していないため、別のGASアクション(例:
-   `{ token, completeTasks: [{ repo, task, completedDate, note, detail, output }] }`を受けて
-   依頼タスクタブから該当行を削除し完了タブに実装ナレッジ・成果物付きで追記する)を追加し、
-   Routineがタスク完了のたびにこれを呼ぶようにする必要がある。
+   返信コメントを追記するルールを追加する(運用ルール8) → **反映済み**(2026-07-30)。
+   GAS本体(`gas/Code.gs`)に`doPost`の`addComment`アクション(「コメント」タブへの追記、
+   無ければ作成)と、`listTasks()`(`?action=list`)のレスポンスへの`comments`配列追加を実装した。
+   ダッシュボード側は元々`addComment`のPOST送信と`comments`配列のマージ処理まで実装済みだった
+   ため、これで書き込み・読み取りの両方が揃った。Routineプロンプト側にも「GAS連携(コメント確認・
+   完了タブ同期)」の手順を追加し、毎回`?action=list`で`comments`を取得して`data/tasks.json`の
+   各タスクノードの`comments`配列と突き合わせ(既読管理は「そのタスクに、ユーザーコメントより
+   `at`が新しい`author: routine`の返信が既にあるか」で判定)、未対応の`author: user`コメントが
+   あればmanualSetup解消 or タスク再オープンを行った上で`author: routine`の返信を「コメント」
+   タブと`data/tasks.json`の両方に追記するようにした。
+4. **依頼タスクタブ⇄完了タブ間の移動が実際には行われていない** → **反映済み**(2026-07-30)。
+   GAS本体に`completeTasks`アクション(`{ token, completeTasks: [{ repo, task, completedDate,
+   note, detail, output }] }`)を追加した。依頼タスクタブから該当行(repo+task一致)を削除し、
+   完了タブに優先度・完了日・備考・実装ナレッジ・成果物を付けて追記する(既に完了タブに同じ
+   repo+taskの行があれば上書き更新)。Routineプロンプト側にも、(a)タスクを`完了`にする際は
+   必ず`completeTasks`を呼ぶルールと、(b)毎回の実行で`data/tasks.json`上`完了`だが完了タブに
+   未反映のタスクが無いか確認し、あれば`completeTasks`で埋め合わせるルール(過去にこの仕組みが
+   無かった時期に完了した`gemini-monitor`行などのバックフィルを兼ねる)を追加した。
+
+いずれもGAS本体側の変更(`gas/Code.gs`)を含むため、**「タスクごとの簡易チャットスレッド機能
+(コメント)」タスクのmanualSetupにある手動デプロイが完了するまでは、`addComment`・`completeTasks`
+とも実際には動作しない**。デプロイ後の初回Routine実行で、コメント同期と完了タブへのバックフィル
+(`gemini-monitor`行の移動などを含む)が自動的に走る想定。
