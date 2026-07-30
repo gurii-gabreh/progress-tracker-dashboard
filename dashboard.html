@@ -166,6 +166,32 @@
   .manual-setup-panel .m-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--status-skip-fg); }
   .manual-setup-panel .m-body { white-space: pre-wrap; }
 
+  .comment-thread {
+    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 8px;
+  }
+  .comment-thread .c-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .comment-list { display: flex; flex-direction: column; gap: 6px; }
+  .comment-bubble { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 8px; max-width: 90%; }
+  .comment-bubble.user { align-self: flex-end; background: var(--accent-soft); }
+  .comment-bubble.routine { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
+  .comment-bubble .c-meta { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+  .comment-bubble .c-text { white-space: pre-wrap; }
+  .comment-empty { font-size: 11.5px; color: var(--text-muted); }
+  .comment-form { display: flex; gap: 6px; }
+  .comment-form textarea {
+    flex: 1; min-height: 34px; max-height: 120px; resize: vertical; padding: 6px 9px;
+    border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); font-size: 12.5px; font-family: inherit;
+  }
+  .comment-send-btn {
+    font-size: 12px; font-weight: 600; padding: 0 14px; border-radius: 8px;
+    border: none; background: var(--accent); color: #fff; cursor: pointer; flex: 0 0 auto;
+  }
+  .comment-send-btn:disabled { opacity: 0.5; cursor: default; }
+  .meta-line .has-comments { color: var(--accent); }
+
   .knowledge-panel {
     margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
     background: var(--knowledge-bg); border: 1px solid var(--knowledge-border);
@@ -293,6 +319,9 @@
   // manualSetup: タスク完了後に人が手動で行う必要がある設定・作業がある場合、その内容を書く(例:
   // 「APIキーをスクリプトプロパティに設定」「GitHub PagesのSourceをGitHub Actionsに設定」等)。
   // 設定されていると、detailを開かなくても一覧上で⚠バッジと内容がそのまま見える。
+  // comments: タスクごとの簡易チャットスレッド。[{author: "user"|"routine", text, at}]の配列。
+  // 人がエラー報告・追加指示・完了報告などをタスク単位で書き込め、Routineは次回実行時にこれを読んで
+  // 反映し、対応内容を routine側の発言として追記する想定。
   // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
   const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor"];
 
@@ -447,16 +476,38 @@
       </div>`;
   }
 
+  function commentThread(node, path, repo) {
+    const comments = node.comments || [];
+    const list = comments.length
+      ? comments.map(c => `
+          <div class="comment-bubble ${c.author === "user" ? "user" : "routine"}">
+            <div class="c-meta">${c.author === "user" ? "あなた" : "Routine"} ・ ${c.at || ""}</div>
+            <div class="c-text">${escapeHtml(c.text)}</div>
+          </div>`).join("")
+      : `<div class="comment-empty">まだコメントはありません。エラー報告や追加指示、完了報告などを書き込むと、次回のRoutine実行時に読み取られます。</div>`;
+
+    return `
+      <div class="comment-thread">
+        <div class="c-label">コメント</div>
+        <div class="comment-list">${list}</div>
+        <div class="comment-form">
+          <textarea data-comment-input="${path}" placeholder="例: GASのデプロイ完了しました / この部分は〇〇に変更して"></textarea>
+          <button class="comment-send-btn" data-comment-send="${path}" data-comment-repo="${repo}">送信</button>
+        </div>
+      </div>`;
+  }
+
   function renderRow(node, path, { child, repo } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
     const hasKnowledge = !!(node.note || node.detail || node.output);
+    const isPlaceholder = node.task.startsWith("(");
+    const hasDetailSection = hasKnowledge || !isPlaceholder;
     const status = aggregateStatus(node);
     const groupOpen = openGroups.has(path);
     const detailOpen = openDetails.has(path);
-    const isPlaceholder = node.task.startsWith("(");
 
-    let html = `<div class="feed-row${hasKnowledge ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasKnowledge ? path : ""}">`;
+    let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}">`;
     if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
     } else {
@@ -473,7 +524,11 @@
     if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
     if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated !== "-") html += `<span>${node.updated}</span>`;
-    if (hasKnowledge) html += `<span class="has-knowledge">${detailOpen ? "ナレッジを閉じる ▲" : "ナレッジを見る ▼"}</span>`;
+    if (hasDetailSection) {
+      const commentCount = (node.comments || []).length;
+      const label = detailOpen ? "閉じる ▲" : `コメント${commentCount ? `(${commentCount})` : ""}・ナレッジ ▼`;
+      html += `<span class="has-knowledge has-comments">${label}</span>`;
+    }
     if (!isPlaceholder && status !== "完了") html += `<button class="urgent-btn" data-urgent="${path}" data-urgent-repo="${effectiveRepo}">⚡ 即実行</button>`;
     if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
     html += `</div></div></div>`;
@@ -481,7 +536,10 @@
     if (node.manualSetup) {
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
     }
-    if (detailOpen) html += knowledgePanel(node);
+    if (detailOpen) {
+      html += knowledgePanel(node);
+      if (!isPlaceholder) html += commentThread(node, path, effectiveRepo);
+    }
 
     if (hasChildren && groupOpen) {
       const pendingSubs = node.subtasks.filter(s => s.status !== "完了");
@@ -559,6 +617,19 @@
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         markTaskUrgent(btn.dataset.urgent, btn.dataset.urgentRepo);
+      });
+    });
+    feed.querySelectorAll("[data-comment-input]").forEach(el => {
+      el.addEventListener("click", (e) => e.stopPropagation());
+    });
+    feed.querySelectorAll("[data-comment-send]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const path = btn.dataset.commentSend;
+        const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
+        const text = textarea.value.trim();
+        if (!text) return;
+        sendComment(path, btn.dataset.commentRepo, text);
       });
     });
   }
@@ -737,6 +808,24 @@
       "このタスクを次回の定期実行を待たず、今すぐ実行してください。",
     ].join("\n");
     showHandoffModal(text, "即実行 依頼文");
+  }
+
+  function sendComment(path, repo, text) {
+    const node = findNodeByPath(path);
+    if (!node.comments) node.comments = [];
+    const at = new Date().toISOString().slice(0, 16).replace("T", " ");
+    node.comments.push({ author: "user", text, at });
+    openDetails.add(path);
+    renderFeed();
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        addComment: [{ repo, task: node.task, text, author: "user", at }],
+      }),
+    }).catch(() => { /* 同期に失敗しても、次回Routine実行時にこのダッシュボードのdata/tasks.json経由で拾われる */ });
   }
 
   function mergeSheetTasksIntoView(pendingRows) {

@@ -18,8 +18,11 @@
 
 ## ルームマッピング(ルーム設定タブと同じ内容をここにも記録)
 
-自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01JC7QYoVtYZinJov5Eqw8jQ、平日9時JST)。
+自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(平日9時JST)。
 このセッション(session_01XXySCiFKeZdazYy97NxMim)は設計・手動作業用の会話で、自動実行のRoutineはもう持たない。
+※ 旧Routine(trig_01JC7QYoVtYZinJov5Eqw8jQ)は2026-07-30に誤って削除されてしまい、他セッションからは
+作り直せない(自己バインドしたセッションでしか再作成できないプラットフォーム制約のため)。
+session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineを作り直す必要がある(下記「引き継ぎ事項」参照)。
 
 | Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
 |---|---|---|
@@ -65,6 +68,15 @@
    別途必要な場合は、`data/tasks.json`の該当タスクに`manualSetup`フィールドで具体的に何をすべきか明記する。
    `detail`(実装ナレッジ)に書くだけでは埋もれてしまうため、`manualSetup`があるタスクはダッシュボード上で
    ⚠バッジ付きで常に(detailを開かなくても)表示される。手動設定が不要なら`manualSetup`は付けない
+8. 各タスクにはダッシュボード上で簡易チャットスレッド(`comments`フィールド)が付けられる。人がエラー報告・
+   追加指示・完了報告などをタスク単位で書き込める。Routineは実行のたびに、前回処理より後に追加された
+   `author: "user"`のコメントがないか全タスク(完了済みタスクも含む)を確認し、あれば次のように対応する。
+   - 「デプロイ完了」「対応しました」等、`manualSetup`で依頼した作業の完了報告であれば、`manualSetup`を
+     削除し、必要ならタスク(またはサブタスク)の`status`を`完了`に更新する
+   - それ以外(追加の指示・修正依頼・エラー報告など)であれば、その内容を汲んで作業し直す。対象タスクの
+     `status`を`未着手`または`進行中`に戻し、対応が必要であることを`note`に記録する
+   - どちらの場合も、対応した内容を`author: "routine"`のコメントとして同じ`comments`配列に追記し、
+     人に何をしたか分かるようにする(「完了しました」の一言で済ませず、具体的に)
 
 ## 管理対象リポジトリ
 
@@ -81,10 +93,17 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項**: 自動実行Routine(`trig_01JC7QYoVtYZinJov5Eqw8jQ`, session_01DDATKE77mbQxkj4HUZ91Gt)の
-プロンプトに、以下2点を追加する必要があるが、このセッションはそのRoutineの所有セッションではないため
-`update_trigger`で直接編集できなかった。該当セッション側で本READMEの内容に合わせてプロンプトを更新すること。
+**引き継ぎ事項**: session_01DDATKE77mbQxkj4HUZ91Gtで、自動実行Routineを自己バインドで作り直す必要がある
+(旧trig_01JC7QYoVtYZinJov5Eqw8jQは削除済みで、他セッションからは同じ形で再作成できないため)。
+新しいRoutineのプロンプトには、以前の内容に加えて以下を反映すること(上記「運用ルール」参照)。
 1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加する
    (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持し、触らないこと)
-2. タスク完了時に人の手動設定が別途必要な場合、`data/tasks.json`の該当タスクに`manualSetup`
-   フィールドで具体的に何をすべきか明記するルールを追加する(上記「運用ルール」7を参照)
+2. タスク完了時に人の手動設定が別途必要な場合、`manualSetup`フィールドで具体的に何をすべきか明記する
+   ルールを追加する(運用ルール7)
+3. 各実行のたびに、全タスクの`comments`配列に新しい`author: "user"`コメントが無いか確認し、
+   あれば内容に応じて対応(manualSetup解消 or タスク再オープン)した上で`author: "routine"`の
+   返信コメントを追記するルールを追加する(運用ルール8)。ただしこのコメント機能自体、ダッシュボードの
+   GAS_URLエンドポイントに`addComment`アクションを追加する対応がまだ済んでいない
+   (`{ token, addComment: [{ repo, task, text, author, at }] }`を受けて「コメント」タブに追記する想定。
+   タブ列: `Repo, Task, 発言者, 本文, 日時`)。session_01DDATKE77mbQxkj4HUZ91Gt側でGAS本体も
+   合わせて更新すること。
