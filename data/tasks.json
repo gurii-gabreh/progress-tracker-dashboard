@@ -38,6 +38,16 @@
           "note": "",
           "detail": "平日9/12/15/18時(JST)に自動実行するRoutineを作成。新規セッションを都度立ち上げる方式だとこの組織ではconnectors(Google Drive等)の権限委譲ができなかったため、このセッション自体を定期的に再開する自己バインド方式(persist_session)に変更して解決。Routineは(1)スプレッドシートの新規タスクをtasks.jsonへ取り込み、(2)Repo欄が既知のリポジトリ名ならコード実装(ブランチ+PR)、それ以外なら調査・資料作成タスクとして処理、(3)問題が起きたタスクはスキップして次へ進む、という設計。",
           "output": ""
+        },
+        {
+          "task": "タスクごとの簡易チャットスレッド機能(コメント)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-07-30",
+          "note": "",
+          "manualSetup": "「実装進捗管理シート」に紐付いたApps Scriptプロジェクトのエディタを開き、リポジトリ内の`gas/Code.gs`最新内容(addCommentアクション・listTasksのcomments配列追加版)を貼り付けて保存し、デプロイ→デプロイを管理→既存のウェブアプリデプロイを「新しいバージョン」で更新してください。デプロイ後、ダッシュボードの「更新」ボタンやコメント送信が新しいGASコードに反映されます。",
+          "detail": "ダッシュボード側(dashboard.html)は既に、各タスクに`comments`([{author:\"user\"|\"routine\", text, at}])フィールドを持たせ、クリックで開くナレッジパネル内にチャット風のスレッドUIとテキスト入力欄を表示する形で実装済みだった(他セッションによる作業)。残っていたのはGAS本体側の対応で、以下2点を追加した。(1) doPost内に`addComment`アクションを追加。リクエスト形式は`{ token, addComment: [{ repo, task, text, author, at }] }`(author: \"user\"|\"routine\"、at: \"YYYY-MM-DD HH:mm\")で、スプレッドシートに「コメント」タブ(列: Repo, Task, 発言者, 本文, 日時)が無ければ作成し、受け取った内容を1行ずつ追記する。既存のnewTasks/markUrgentと同じdoPost関数内に追加し、トークン認証もそのまま流用した。(2) listTasks()の戻り値に`comments`配列(`{repo, task, author, text, at}`の平坦な配列)を追加。これはdashboard.html側の`?action=list`取得時に`mergeCommentsIntoView`が`data.comments`を読んでrepo+taskで該当タスクを突き合わせ、各ノードの`comments`配列にマージする実装に対応するため。GAS側のソースはGitHubとは自動連携していない(Apps Script APIやclaspへのアクセス手段が無いため)ことがgemini-monitorのケースで判明済みだったので、今回は最初から`gas/Code.gs`としてリポジトリにソースを保存し、手動デプロイが必要な旨をmanualSetupに明記する形を取った。あわせてRoutineプロンプトに、実行のたびに「コメント」タブの新規`author:\"user\"`コメントを確認し、manualSetup解消や再オープン、`author:\"routine\"`での返信を行うロジックを追加した。処理済みコメントの二重処理を避けるため、Routine側では対応した`author:\"routine\"`の返信コメントのat(日時)がユーザーコメントより後になっていることをもって「対応済み」とみなす設計とした(専用の既読管理列は追加していない)。",
+          "output": "gas/Code.gs"
         }
       ]
     },
