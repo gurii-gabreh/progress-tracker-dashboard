@@ -18,7 +18,8 @@
 
 ## ルームマッピング(ルーム設定タブと同じ内容をここにも記録)
 
-自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01JC7QYoVtYZinJov5Eqw8jQ、平日9時JST)。
+自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01CxLtgC8JCMSCgbpeHq9TjA、平日9時JST)。
+旧trig_01JC7QYoVtYZinJov5Eqw8jQは何らかの理由で削除されていたため、2026-07-30に本セッション宛てで再作成した。
 このセッション(session_01XXySCiFKeZdazYy97NxMim)は設計・手動作業用の会話で、自動実行のRoutineはもう持たない。
 
 | Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
@@ -81,10 +82,9 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項**: 自動実行Routine(`trig_01JC7QYoVtYZinJov5Eqw8jQ`, session_01DDATKE77mbQxkj4HUZ91Gt)の
-プロンプトに、以下2点を追加する必要があるが、このセッションはそのRoutineの所有セッションではないため
-`update_trigger`で直接編集できなかった。該当セッション側で本READMEの内容に合わせてプロンプトを更新すること。
-1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加する
-   (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持し、触らないこと)
+**引き継ぎ事項(対応済み)**: 旧Routineが削除されていたため2026-07-30に本セッション宛てで
+`trig_01CxLtgC8JCMSCgbpeHq9TjA`として再作成した。その際、以下2点を新しいプロンプトに反映済み。
+1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加
+   (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持)
 2. タスク完了時に人の手動設定が別途必要な場合、`data/tasks.json`の該当タスクに`manualSetup`
-   フィールドで具体的に何をすべきか明記するルールを追加する(上記「運用ルール」7を参照)
+   フィールドで具体的に何をすべきか明記するルールを追加(上記「運用ルール」7を参照)
