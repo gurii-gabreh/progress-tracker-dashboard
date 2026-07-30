@@ -18,11 +18,11 @@
 
 ## ルームマッピング(ルーム設定タブと同じ内容をここにも記録)
 
-自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(平日9時JST)。
+自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01CxLtgC8JCMSCgbpeHq9TjA、平日9時JST)。
+旧trig_01JC7QYoVtYZinJov5Eqw8jQは2026-07-30に誤って削除されてしまい、他セッションからは同じ形で
+再作成できなかった(自己バインドしたセッションでしか再作成できないプラットフォーム制約のため)ため、
+session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作り直した。
 このセッション(session_01XXySCiFKeZdazYy97NxMim)は設計・手動作業用の会話で、自動実行のRoutineはもう持たない。
-※ 旧Routine(trig_01JC7QYoVtYZinJov5Eqw8jQ)は2026-07-30に誤って削除されてしまい、他セッションからは
-作り直せない(自己バインドしたセッションでしか再作成できないプラットフォーム制約のため)。
-session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineを作り直す必要がある(下記「引き継ぎ事項」参照)。
 
 | Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
 |---|---|---|
@@ -93,17 +93,16 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項**: session_01DDATKE77mbQxkj4HUZ91Gtで、自動実行Routineを自己バインドで作り直す必要がある
-(旧trig_01JC7QYoVtYZinJov5Eqw8jQは削除済みで、他セッションからは同じ形で再作成できないため)。
-新しいRoutineのプロンプトには、以前の内容に加えて以下を反映すること(上記「運用ルール」参照)。
-1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加する
-   (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持し、触らないこと)
-2. タスク完了時に人の手動設定が別途必要な場合、`manualSetup`フィールドで具体的に何をすべきか明記する
-   ルールを追加する(運用ルール7)
+**引き継ぎ事項(1・2は対応済み、3は未対応)**: 旧Routineが削除されていたため2026-07-30に
+session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`として再作成した。
+1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加 → **反映済み**
+   (`gemini-monitor`は既存の別プロジェクト(測定系)なのでそのまま維持)
+2. タスク完了時に人の手動設定が別途必要な場合、`data/tasks.json`の該当タスクに`manualSetup`
+   フィールドで具体的に何をすべきか明記するルールを追加 → **反映済み**(上記「運用ルール」7を参照)
 3. 各実行のたびに、全タスクの`comments`配列に新しい`author: "user"`コメントが無いか確認し、
    あれば内容に応じて対応(manualSetup解消 or タスク再オープン)した上で`author: "routine"`の
-   返信コメントを追記するルールを追加する(運用ルール8)。ただしこのコメント機能自体、ダッシュボードの
-   GAS_URLエンドポイントに`addComment`アクションを追加する対応がまだ済んでいない
+   返信コメントを追記するルールを追加する(運用ルール8) → **未対応**。このコメント機能自体、
+   ダッシュボードのGAS_URLエンドポイントに`addComment`アクションを追加する対応もまだ済んでいない
    (`{ token, addComment: [{ repo, task, text, author, at }] }`を受けて「コメント」タブに追記する想定。
-   タブ列: `Repo, Task, 発言者, 本文, 日時`)。session_01DDATKE77mbQxkj4HUZ91Gt側でGAS本体も
-   合わせて更新すること。
+   タブ列: `Repo, Task, 発言者, 本文, 日時`)。session_01DDATKE77mbQxkj4HUZ91Gt側でGAS本体・
+   Routineプロンプトの両方を合わせて更新する必要がある。
