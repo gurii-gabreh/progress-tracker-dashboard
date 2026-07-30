@@ -65,11 +65,31 @@
       "repo": "gemini-monitor",
       "task": "現状、午前0〜1時までしか測定していないが、それを1日目午前0〜11、次の日は午後12〜23時のように修正して",
       "priority": "高",
-      "status": "完了",
-      "updated": "2026-07-29",
-      "note": "PR: https://github.com/gurii-gabreh/gemini-monitor/pull/1",
-      "detail": "調査したところ、フロント(index.html)には「測定時間帯」の手動トグル(0〜12時/12〜24時)がありsaveSettingsでtime_slotパラメータを送っていたが、GAS側(gas/Code.gs)のgetSettings/saveSettings/runMeasurementのどれもtime_slotを一切参照しておらず、実際の測定は常に24時間フルで行われていた(=無料枠節約を謳ったUIが実際には機能していなかった)。依頼は「1日目は午前0〜11時、次の日は午後12〜23時」という日替わり交互パターンだったため、静的な手動切り替えではなく自動切り替えとして実装することにした。gas/Code.gsにgetMeasurementWindow(date)を追加し、JST基準の通し日数(エポックからの経過日数)の偶奇で「午前(0〜11時)」「午後(12〜23時)」を判定、runMeasurement()の先頭でisWithinMeasurementWindow()により時間帯外なら即returnしてAPI呼び出し自体をスキップするようにした。時間トリガー(everyHours)自体は引き続き毎時発火する設計のままとし(トリガー削除・再作成のコストを避けるため)、実行のたびに時間帯判定でフィルタする方式にした。フロント側は実挙動と乖離していた手動トグルUIを撤去し、同じ日替わりロジックをJSでも計算して「本日の測定時間帯」を表示するだけの読み取り専用表示に変更、saveSettingsからtime_slotパラメータの送信も削除した。GAS環境固有API(SpreadsheetApp等)に依存するため実機での動作確認はできておらず、node --checkによる構文チェックのみ実施済み。GASへのデプロイ後、初回のトリガー実行で意図通りスキップ/実行が切り替わるか確認が必要。",
-      "output": ""
+      "status": "進行中",
+      "updated": "2026-07-30",
+      "note": "⚠️ コードはPRマージ済みだが、GAS側の手動デプロイが未実施のため本番では未反映(下記子タスク参照)",
+      "detail": "",
+      "output": "",
+      "subtasks": [
+        {
+          "task": "コード実装(GitHub側)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-07-29",
+          "note": "PR: https://github.com/gurii-gabreh/gemini-monitor/pull/1(2026-07-30にmain へマージ済み)",
+          "detail": "調査したところ、フロント(index.html)には「測定時間帯」の手動トグル(0〜12時/12〜24時)がありsaveSettingsでtime_slotパラメータを送っていたが、GAS側(gas/Code.gs)のgetSettings/saveSettings/runMeasurementのどれもtime_slotを一切参照しておらず、実際の測定は常に24時間フルで行われていた(=無料枠節約を謳ったUIが実際には機能していなかった)。依頼は「1日目は午前0〜11時、次の日は午後12〜23時」という日替わり交互パターンだったため、静的な手動切り替えではなく自動切り替えとして実装することにした。gas/Code.gsにgetMeasurementWindow(date)を追加し、JST基準の通し日数(エポックからの経過日数)の偶奇で「午前(0〜11時)」「午後(12〜23時)」を判定、runMeasurement()の先頭でisWithinMeasurementWindow()により時間帯外なら即returnしてAPI呼び出し自体をスキップするようにした。時間トリガー(everyHours)自体は引き続き毎時発火する設計のままとし(トリガー削除・再作成のコストを避けるため)、実行のたびに時間帯判定でフィルタする方式にした。フロント側は実挙動と乖離していた手動トグルUIを撤去し、同じ日替わりロジックをJSでも計算して「本日の測定時間帯」を表示するだけの読み取り専用表示に変更、saveSettingsからtime_slotパラメータの送信も削除した。GAS環境固有API(SpreadsheetApp等)に依存するため実機での動作確認はできておらず、node --checkによる構文チェックのみ実施済み。",
+          "output": "https://github.com/gurii-gabreh/gemini-monitor/pull/1"
+        },
+        {
+          "task": "GAS(スプレッドシート紐付き)への手動デプロイ",
+          "priority": "高",
+          "status": "未着手",
+          "updated": "2026-07-30",
+          "note": "GitHubとGoogle Apps Scriptの間に自動連携が無く、Routine/私からはデプロイできない。人の手動作業が必要。",
+          "detail": "計測用スプレッドシート「Gemini API通信可能時間調査アプリ」の生ログを確認したところ、2026-06-17の稼働開始から2026-07-30時点まで、jst_hourが0〜23の全時間帯で記録が存在しており、時間帯フィルタが一度も有効になっていないことを確認した(=約6週間、無料枠節約の意図に反して24時間フル稼働し続けている)。原因はGitHub Pagesが配信するindex.html(フロント)とは異なり、実際の測定判定を行うgas/Code.gsはスプレッドシートに紐付いたGoogle Apps Scriptプロジェクト側にあり、GitHubへのpush/マージとは一切自動連携していないため。手順: (1) 対象スプレッドシートを開く→拡張機能→Apps Script、(2) gas/Code.gs のmain最新内容(getMeasurementWindow/isWithinMeasurementWindow追加版)をエディタに貼り付けて保存、(3) デプロイ→デプロイを管理→既存のウェブアプリデプロイを「新しいバージョン」で更新。デプロイ後、次回以降のトリガー実行で日替わりの時間帯外はスキップされるようになるはず(未検証)。",
+          "output": ""
+        }
+      ]
     }
   ]
 }
