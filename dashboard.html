@@ -80,14 +80,21 @@
   header .meta a:hover { text-decoration: underline; }
   .settings-caption { font-size: 11px; color: var(--text-muted); }
 
-  .stat-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-  .stat-pill {
-    flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
-    padding: 6px 12px 6px 6px; box-shadow: var(--shadow); white-space: nowrap;
+  .stat-strip {
+    display: flex; flex-direction: column; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 8px 12px; box-shadow: var(--shadow);
   }
-  .stat-pill .name { font-size: 12px; font-weight: 700; }
-  .stat-pill .pct { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; }
+  .stat-row { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
+  .stat-row .name { flex: 0 0 auto; font-size: 12px; font-weight: 700; min-width: 150px; }
+  .stat-row .bar-track {
+    flex: 1; height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden;
+  }
+  .stat-row .bar-fill { height: 100%; border-radius: 999px; }
+  .stat-row .pct {
+    flex: 0 0 auto; width: 38px; text-align: right;
+    font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700;
+  }
 
   .avatar {
     width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
@@ -190,6 +197,7 @@
     border: none; background: var(--accent); color: #fff; cursor: pointer; flex: 0 0 auto;
   }
   .comment-send-btn:disabled { opacity: 0.5; cursor: default; }
+  .comment-hint { font-size: 10.5px; color: var(--text-muted); }
   .meta-line .has-comments { color: var(--accent); }
 
   .knowledge-panel {
@@ -453,7 +461,7 @@
   function renderStats() {
     const strip = document.getElementById("stat-strip");
     const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
-    const pills = repos.map(repo => {
+    const rows = repos.map(repo => {
       const t = TASKS.find(t => t.repo === repo);
       const units = t.subtasks && t.subtasks.length ? t.subtasks : [t];
       const total = units.length;
@@ -461,13 +469,14 @@
       const pct = total ? Math.round((done / total) * 100) : 0;
       const color = REPO_COLORS[repo] || "#5b6172";
       return `
-        <div class="stat-pill">
+        <div class="stat-row">
           <div class="avatar" style="background:${color}">${repo.slice(0, 2).toUpperCase()}</div>
           <span class="name">${repo}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
           <span class="pct">${pct}%</span>
         </div>`;
     });
-    strip.innerHTML = pills.join("");
+    strip.innerHTML = rows.join("");
   }
 
   function knowledgePanel(node) {
@@ -498,9 +507,10 @@
         <div class="comment-list">${list}</div>
         <div class="comment-form">
           <textarea data-comment-input="${path}" placeholder="例: GASのデプロイ完了しました / この部分は〇〇に変更して"></textarea>
-          ${status !== "完了" ? `<button class="urgent-btn" data-urgent="${path}" data-urgent-repo="${repo}" title="次回の定期実行を待たず今すぐ実行してほしい場合">⚡ 即実行</button>` : ""}
+          ${status !== "完了" ? `<button class="urgent-btn" data-comment-urgent="${path}" data-comment-urgent-repo="${repo}" title="入力中のコメントも送信した上で、次回の定期実行を待たず今すぐ実行してほしい旨の依頼文を作成します">⚡ 即実行</button>` : ""}
           <button class="comment-send-btn" data-comment-send="${path}" data-comment-repo="${repo}">送信</button>
         </div>
+        <div class="comment-hint">送信 = コメントを記録するだけ ／ 即実行 = 記録した上でRoutineに今すぐの実行を依頼</div>
       </div>`;
   }
 
@@ -511,11 +521,16 @@
     const isPlaceholder = node.task.startsWith("(");
     const hasDetailSection = hasKnowledge || !isPlaceholder;
     const status = aggregateStatus(node);
-    const groupOpen = openGroups.has(path);
+    // 未完了(未着手/進行中/スキップ等)のグループは常に展開表示にする(折りたたませない)。
+    // 完了済みのグループだけ、手動でシェブロンをトグルして開閉できる。
+    const forceOpen = status !== "完了";
+    const groupOpen = forceOpen || openGroups.has(path);
     const detailOpen = openDetails.has(path);
 
     let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}">`;
-    if (hasChildren) {
+    if (hasChildren && forceOpen) {
+      html += `<div class="chevron-spacer" title="未完了のタスクがあるため常に展開表示">▾</div>`;
+    } else if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
     } else {
       html += `<div class="chevron-spacer"></div>`;
@@ -637,6 +652,15 @@
         const text = textarea.value.trim();
         if (!text) return;
         sendComment(path, btn.dataset.commentRepo, text);
+      });
+    });
+    feed.querySelectorAll("[data-comment-urgent]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const path = btn.dataset.commentUrgent;
+        const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
+        const text = textarea.value.trim();
+        sendCommentAndMarkUrgent(path, btn.dataset.commentUrgentRepo, text);
       });
     });
   }
@@ -794,7 +818,7 @@
       });
   }
 
-  function markTaskUrgent(path, repo) {
+  function markTaskUrgent(path, repo, extraText) {
     const node = findNodeByPath(path);
     node.urgent = true;
     renderFeed();
@@ -810,11 +834,18 @@
       `リポジトリ: ${repo}`,
       `タスク: ${node.task}`,
       `優先度: ${node.priority}`,
-      `備考: ${node.note || "(なし)"}`,
+      `備考: ${extraText || node.note || "(なし)"}`,
       "",
       "このタスクを次回の定期実行を待たず、今すぐ実行してください。",
     ].join("\n");
     showHandoffModal(text, "即実行 依頼文");
+  }
+
+  // コメント欄からの「即実行」: 入力中のテキストをまずコメントとして記録し、
+  // それを備考に含めた即実行の依頼文を作成する(送信ボタンとの違いを明確にするため)。
+  function sendCommentAndMarkUrgent(path, repo, text) {
+    if (text) sendComment(path, repo, text);
+    markTaskUrgent(path, repo, text);
   }
 
   function sendComment(path, repo, text) {
