@@ -27,7 +27,7 @@ function doPost(e) {
   var addedCount = 0;
   (body.newTasks || []).forEach(function (r) {
     if (findRow(pendingSheet, r.repo, r.task) === -1) {
-      pendingSheet.appendRow([r.repo, r.task, r.priority || "-", r.status || "対応中", r.requestedAt || "", r.note || "", r.urgent ? "TRUE" : "FALSE"]);
+      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", r.status || "対応中", r.requestedAt || "", r.note || "", r.urgent ? "TRUE" : "FALSE"]);
       addedCount++;
     }
   });
@@ -61,7 +61,7 @@ function doPost(e) {
     if (doneRow > 0) {
       doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
     } else {
-      doneSheet.appendRow(rowValues);
+      appendTaskRow(doneSheet, rowValues);
     }
     completedCount++;
   });
@@ -125,7 +125,7 @@ function syncFromGithub() {
       if (doneRow > 0) {
         doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
       } else {
-        doneSheet.appendRow(rowValues);
+        appendTaskRow(doneSheet, rowValues);
       }
     }
   });
@@ -149,11 +149,41 @@ function setupValidation() {
   sheet.getRange("G2:G1000").insertCheckboxes(); // 即実行列を本物のチェックボックスにする
 }
 
+// 修復用: appendTaskRow導入前に1000行目以降へ紛れ込んでしまった実データを、
+// 空白行を詰めてヘッダーの直下に戻す。Apps Scriptエディタからこの関数を選んで
+// 一度だけ手動実行してください(自動では呼ばれません)。
+function compactPendingSheet() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+  var data = sheet.getRange(2, 1, lastRow - 1, 7).getValues();
+  var realRows = data.filter(function (row) { return row[0] !== ""; });
+  sheet.getRange(2, 1, lastRow - 1, 7).clearContent();
+  if (realRows.length > 0) {
+    sheet.getRange(2, 1, realRows.length, 7).setValues(realRows);
+  }
+}
+
 function getOrCreateSheet(ss, name, headers) {
   var sheet = ss.getSheetByName(name);
   if (!sheet) sheet = ss.insertSheet(name);
   if (sheet.getLastRow() === 0) sheet.appendRow(headers);
   return sheet;
+}
+
+// setupValidation()がG2:G1000にチェックボックス(既定値FALSE)を敷いているため、
+// 素朴なappendRow()はgetLastRow()がその1000行分を「データあり」とみなしてしまい、
+// 新規タスクが実際のデータの直下ではなく1000行以降に追記されてしまう(=シート上では
+// 見えているのに、下までスクロールしないと気づけない/読み取りツールでも拾えない原因になっていた)。
+// この関数はA列(Repo)に実際に値が入っている最後の行だけを見て、その直下に書き込む。
+function appendTaskRow(sheet, values) {
+  var colA = sheet.getRange(1, 1, sheet.getMaxRows(), 1).getValues();
+  var lastDataRow = 1;
+  for (var i = 0; i < colA.length; i++) {
+    if (colA[i][0] !== "") lastDataRow = i + 1;
+  }
+  sheet.getRange(lastDataRow + 1, 1, 1, values.length).setValues([values]);
 }
 
 function findRow(sheet, repo, task) {
