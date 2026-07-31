@@ -207,6 +207,11 @@
   }
   .knowledge-panel .k-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
   .knowledge-panel .k-detail { white-space: pre-wrap; }
+  .knowledge-panel .k-issues {
+    white-space: pre-wrap; padding: 6px 8px; border-radius: 6px;
+    background: var(--status-skip-bg); color: var(--status-skip-fg);
+  }
+  .knowledge-panel .k-issues-label { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
   .knowledge-panel .k-note { color: var(--text-muted); }
   .knowledge-panel .k-output a { color: var(--accent); text-decoration: none; font-weight: 600; }
   .knowledge-panel .k-output a:hover { text-decoration: underline; }
@@ -324,6 +329,7 @@
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
+  // issues: 実装中に発生した問題点・制約・未解決事項(detailの本文に埋め込まず、ここに分けて書く)。
   // manualSetup: タスク完了後に人が手動で行う必要がある設定・作業がある場合、その内容を書く(例:
   // 「APIキーをスクリプトプロパティに設定」「GitHub PagesのSourceをGitHub Actionsに設定」等)。
   // 設定されていると、detailを開かなくても一覧上で⚠バッジと内容がそのまま見える。
@@ -486,11 +492,12 @@
   }
 
   function knowledgePanel(node) {
-    if (!node.note && !node.detail && !node.output) return "";
+    if (!node.note && !node.detail && !node.issues && !node.output) return "";
     return `
       <div class="knowledge-panel">
         <div class="k-label">実装ナレッジ</div>
         ${node.detail ? `<div class="k-detail">${node.detail}</div>` : ""}
+        ${node.issues ? `<div class="k-issues"><div class="k-issues-label">⚠ 問題点</div>${node.issues}</div>` : ""}
         ${node.note ? `<div class="k-note">${node.note}</div>` : ""}
         ${node.output ? `<div class="k-output"><a href="${node.output}" target="_blank" rel="noopener">成果物を見る →</a></div>` : ""}
       </div>`;

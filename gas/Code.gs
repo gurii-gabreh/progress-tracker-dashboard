@@ -22,7 +22,7 @@ function doPost(e) {
 
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "成果物"]);
+  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
 
   var addedCount = 0;
   (body.newTasks || []).forEach(function (r) {
@@ -56,7 +56,7 @@ function doPost(e) {
       priority = pendingSheet.getRange(pendingRow, 3).getValue() || "-";
       pendingSheet.deleteRow(pendingRow);
     }
-    var rowValues = [r.repo, r.task, priority, r.completedDate || "", r.note || "", r.detail || "", r.output || ""];
+    var rowValues = [r.repo, r.task, priority, r.completedDate || "", r.note || "", r.detail || "", r.issues || "", r.output || ""];
     var doneRow = findRow(doneSheet, r.repo, r.task);
     if (doneRow > 0) {
       doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
@@ -73,7 +73,7 @@ function doPost(e) {
 function listTasks() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "成果物"]);
+  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
   var commentSheet = getOrCreateSheet(ss, "コメント", ["Repo", "Task", "発言者", "本文", "日時"]);
 
   function rowsOf(sheet, keys) {
@@ -90,7 +90,7 @@ function listTasks() {
   return {
     ok: true,
     pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent"]),
-    done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "output"]),
+    done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "issues", "output"]),
     comments: rowsOf(commentSheet, ["repo", "task", "author", "text", "at"]),
   };
 }
@@ -103,13 +103,13 @@ function syncFromGithub() {
 
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "成果物"]);
+  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
 
   function flatten(tasks, repo) {
     var out = [];
     tasks.forEach(function (t) {
       var r = repo || t.repo;
-      out.push({ repo: r, task: t.task, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, output: t.output });
+      out.push({ repo: r, task: t.task, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, issues: t.issues, output: t.output });
       if (t.subtasks) out = out.concat(flatten(t.subtasks, r));
     });
     return out;
@@ -121,7 +121,7 @@ function syncFromGithub() {
     if (t.status === "完了") {
       removeRow(pendingSheet, t.repo, t.task);
       var doneRow = findRow(doneSheet, t.repo, t.task);
-      var rowValues = [t.repo, t.task, t.priority || "-", t.updated || "", t.note || "", t.detail || "", t.output || ""];
+      var rowValues = [t.repo, t.task, t.priority || "-", t.updated || "", t.note || "", t.detail || "", t.issues || "", t.output || ""];
       if (doneRow > 0) {
         doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
       } else {
@@ -168,7 +168,15 @@ function compactPendingSheet() {
 function getOrCreateSheet(ss, name, headers) {
   var sheet = ss.getSheetByName(name);
   if (!sheet) sheet = ss.insertSheet(name);
-  if (sheet.getLastRow() === 0) sheet.appendRow(headers);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+  } else if (sheet.getLastRow() === 1) {
+    // ヘッダー行しかまだ無い(=実データが1件も無い)場合に限り、列構成が古ければ安全に上書きする。
+    // 実データがある場合は列がズレる恐れがあるため、ここでは一切触らない。
+    var currentHeader = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+    var matches = headers.every(function (h, i) { return currentHeader[i] === h; });
+    if (!matches) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  }
   return sheet;
 }
 
