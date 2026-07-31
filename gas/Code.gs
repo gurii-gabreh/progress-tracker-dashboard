@@ -22,6 +22,7 @@ function doPost(e) {
 
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
+  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "成果物"]);
 
   var addedCount = 0;
   (body.newTasks || []).forEach(function (r) {
@@ -47,7 +48,25 @@ function doPost(e) {
     commentCount++;
   });
 
-  return ContentService.createTextOutput(JSON.stringify({ ok: true, added: addedCount, markedUrgent: urgentCount, commented: commentCount }))
+  var completedCount = 0;
+  (body.completeTasks || []).forEach(function (r) {
+    var priority = "-";
+    var pendingRow = findRow(pendingSheet, r.repo, r.task);
+    if (pendingRow > 0) {
+      priority = pendingSheet.getRange(pendingRow, 3).getValue() || "-";
+      pendingSheet.deleteRow(pendingRow);
+    }
+    var rowValues = [r.repo, r.task, priority, r.completedDate || "", r.note || "", r.detail || "", r.output || ""];
+    var doneRow = findRow(doneSheet, r.repo, r.task);
+    if (doneRow > 0) {
+      doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
+    } else {
+      doneSheet.appendRow(rowValues);
+    }
+    completedCount++;
+  });
+
+  return ContentService.createTextOutput(JSON.stringify({ ok: true, added: addedCount, markedUrgent: urgentCount, commented: commentCount, completed: completedCount }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
