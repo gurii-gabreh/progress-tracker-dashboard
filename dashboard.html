@@ -198,6 +198,11 @@
   }
   .comment-send-btn:disabled { opacity: 0.5; cursor: default; }
   .comment-hint { font-size: 10.5px; color: var(--text-muted); }
+  .knowledge-update-btn {
+    align-self: flex-start; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+    border: 1px dashed var(--accent); background: transparent; color: var(--accent); cursor: pointer;
+  }
+  .knowledge-update-btn:hover { background: var(--accent-soft); }
   .meta-line .has-comments { color: var(--accent); }
 
   .knowledge-panel {
@@ -524,6 +529,7 @@
           <button class="comment-send-btn" data-comment-send="${path}" data-comment-repo="${repo}">送信</button>
         </div>
         <div class="comment-hint">送信 = コメントを記録するだけ ／ 即実行 = 記録した上でRoutineに今すぐの実行を依頼</div>
+        <button class="knowledge-update-btn" data-knowledge-update="${path}" data-knowledge-update-repo="${repo}" title="実装ナレッジ・問題点・成果物に書き漏れがないか確認し、あれば補足してもらうよう依頼します">📝 記録を補足依頼</button>
       </div>`;
   }
 
@@ -674,6 +680,12 @@
         const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
         const text = textarea.value.trim();
         sendCommentAndMarkUrgent(path, btn.dataset.commentUrgentRepo, text);
+      });
+    });
+    feed.querySelectorAll("[data-knowledge-update]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        requestKnowledgeUpdate(btn.dataset.knowledgeUpdate, btn.dataset.knowledgeUpdateRepo);
       });
     });
   }
@@ -859,6 +871,16 @@
   function sendCommentAndMarkUrgent(path, repo, text) {
     if (text) sendComment(path, repo, text);
     markTaskUrgent(path, repo, text);
+  }
+
+  // 「記録を補足依頼」: 定型のコメントを送信するだけ。新しいGASアクションは不要で、
+  // 既存のコメント反応ルール(README運用ルール8: 追加指示があれば汲んで作業し直す)に
+  // そのまま乗る。Routineは次回実行時にこれを追加指示として読み、実装ナレッジ・問題点・
+  // 成果物に書き漏れがあれば補って再度comments/data/tasks.jsonを更新する想定。
+  function requestKnowledgeUpdate(path, repo) {
+    const text = "この記録(実装ナレッジ・問題点・成果物)に、実際に対応した内容と比べて書き漏れが" +
+      "あれば、確認の上で追記してください。";
+    sendComment(path, repo, text);
   }
 
   function sendComment(path, repo, text) {
