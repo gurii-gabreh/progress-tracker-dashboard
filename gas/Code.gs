@@ -144,6 +144,7 @@ function syncFromGithub() {
   var allTasks = flatten(data.tasks, null);
 
   var movedToDone = 0;
+  var updatedPending = 0;
   allTasks.forEach(function (t) {
     if (t.status === "完了") {
       removeRow(pendingSheet, t.repo, t.task);
@@ -155,6 +156,23 @@ function syncFromGithub() {
         appendTaskRow(doneSheet, rowValues);
       }
       movedToDone++;
+    } else {
+      // まだ完了していないタスクについても、依頼タスクタブに既に行があれば
+      // 最新のステータスを反映し、備考欄には「いつ・何が起きたか」を履歴として
+      // 追記していく(上書きせず改行で積み増す)。これによりRoutineが実際にいつ
+      // 処理を行ったかが依頼タスクタブ単体を見るだけで分かるようにする。
+      var pendingRow = findRow(pendingSheet, t.repo, t.task);
+      if (pendingRow > 0) {
+        var statusCell = pendingSheet.getRange(pendingRow, 4);
+        if (t.status && statusCell.getValue() !== t.status) statusCell.setValue(t.status);
+        var historyLine = "[" + (t.updated || "?") + "] " + (t.note || "(備考なし)");
+        var noteCell = pendingSheet.getRange(pendingRow, 6);
+        var existingNote = String(noteCell.getValue() || "");
+        if (existingNote.indexOf(historyLine) === -1) {
+          noteCell.setValue(existingNote ? existingNote + "\n" + historyLine : historyLine);
+          updatedPending++;
+        }
+      }
     }
   });
 
@@ -178,7 +196,7 @@ function syncFromGithub() {
     });
   });
 
-  return { ok: true, movedToDone: movedToDone, addedComments: addedComments };
+  return { ok: true, movedToDone: movedToDone, updatedPending: updatedPending, addedComments: addedComments };
 }
 
 function setupValidation() {
@@ -244,10 +262,20 @@ function appendTaskRow(sheet, values) {
   sheet.getRange(lastDataRow + 1, 1, 1, values.length).setValues([values]);
 }
 
+// 依頼タスクタブに人が直接入力したタスク名と、tasks.json側でRoutine(LLM)が
+// 書き起こしたタスク名とで、全角/半角の数字や「〜」(波ダッシュ)と「~」(半角チルダ)などの
+// 表記ゆれが生じることがある。これをrepo+task完全一致で突き合わせると照合に失敗し、
+// 完了後も依頼タスクタブの行が消えずに残る不具合になるため、比較前に正規化する。
+function normalizeKey(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).normalize("NFKC").replace(/[〜～]/g, "~").trim();
+}
+
 function findRow(sheet, repo, task) {
   var data = sheet.getDataRange().getValues();
+  var nRepo = normalizeKey(repo), nTask = normalizeKey(task);
   for (var i = 1; i < data.length; i++) {
-    if (data[i][0] === repo && data[i][1] === task) return i + 1;
+    if (normalizeKey(data[i][0]) === nRepo && normalizeKey(data[i][1]) === nTask) return i + 1;
   }
   return -1;
 }
