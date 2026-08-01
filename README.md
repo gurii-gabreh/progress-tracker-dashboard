@@ -30,12 +30,14 @@ session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作�
 | Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
 |---|---|---|
 | progress-tracker-dashboard | このセッション | session_01DDATKE77mbQxkj4HUZ91Gt |
-| kizashi(結/ゆい) | session_01EttsGp4ZSP11U5i8kkKPwA | session_01DDATKE77mbQxkj4HUZ91Gt |
+| kizashi(表示名: 結(ゆい)土砂災害アプリ) | session_01EttsGp4ZSP11U5i8kkKPwA | session_01DDATKE77mbQxkj4HUZ91Gt |
 | supermarket-price-tracker | session_01LeHQUz9gH8bU9uVNdJBBF5 | session_01DDATKE77mbQxkj4HUZ91Gt |
 | gemini-monitor | (未作成) | session_01DDATKE77mbQxkj4HUZ91Gt |
 | ai-research-radar | (専用ルームなし) | Routineでは処理しない(下記参照) |
 
 ※ Routineを別セッションに紐付けること自体はプラットフォーム制約で不可のため、「アプリごとに専用の自動実行ルーム」は実現していない。上記の手動作業用ルームは、問題が起きたタスクを人が直接引き継いで作業する時に使う。
+
+※ `kizashi`はスプレッドシートのRepo列・dashboard.htmlのKNOWN_REPOSでは技術的な識別子としてそのまま使う(照合ロジックが壊れるため変更しない)。人向けの表示名だけを「結(ゆい)土砂災害アプリ」としてdashboard.html側(REPO_DISPLAY_NAMES)で差し替えている。都知事杯オープンデータ・ハッカソン2026向けの土砂災害現場支援アプリで、実体はgurii-gabreh/Kizashiリポジトリ。2026-08-01時点、企画・要件整理フェーズは完了、技術検証フェーズ(実データでの動作確認)は未着手のまま作業タスクとして登録している(詳細は下記「作業タスク」参照)。
 
 ## 現在の状態
 
@@ -53,6 +55,7 @@ session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作�
 - **既知のリポジトリ名**（`kizashi` / `supermarket-price-tracker` / `gemini-monitor` / `progress-tracker-dashboard`）→ **コード実装タスク**。ブランチを切って実装し、PRを作成する
 - **`ai-research-radar`** → **このRoutineでは処理しない**。`gurii-gabreh/ai-research-radar`リポジトリの`gas/Code.gs`(スプレッドシートにバインドしたGoogle Apps Script)がGemini APIで1日1回自動調査し、依頼タスクタブのステータスも直接更新する専用の仕組みがあるため、`data/tasks.json`にも取り込まず完全に無視する(重複処理を避けるため)
 - **それ以外の文言**（例: `調査`, `資料作成`）→ **調査・資料作成タスク**。コードは書かず、調査結果や資料（pptx/pdf/docx等）を作成し、Googleドライブ等に保存してリンクを`成果物`に記録する。リポジトリへのPRは作らない
+- **備考が`【作業タスク】`で始まる行** → **作業タスク**。Repo欄の値に関わらず(既知のリポジトリ名でも)最優先でこの分類が適用される。ユーザー自身が別の場所(別リポジトリ・別ルーム等)で手動対応する作業で、Routineは実装・ブランチ作成・PRを一切行わない。運用ルール9を参照
 
 ## 運用ルール
 
@@ -89,6 +92,13 @@ session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作�
    - いずれの場合も、対応した内容を`author: "routine"`のコメントとして同じ`comments`配列に追記し、
      人に何をしたか分かるようにする(「完了しました」の一言で済ませず、具体的に。記録補足依頼で
      埋める項目が無かった場合も「確認しましたが不足はありませんでした」のように結果を返す)
+9. 依頼タスクタブの行のうち、**備考が`【作業タスク】`で始まるもの**は、優先度順のタスク選定・実装対象から
+   **除外する**(実装・ブランチ作成・PR作成をしない。ステータスも勝手に変更しない)。これはユーザー自身が
+   手動で対応する作業であり、Routineが処理を代行しないことを明示する印。`data/tasks.json`側では同じ意味で
+   `category: "manual"`をタスクに付けている(ダッシュボード上に🧑バッジで表示され、⚡即実行・引継ぎボタンも
+   出ない)。ただし運用ルール8のコメント確認は通常どおり行い、ユーザーから該当タスクへの完了報告コメントが
+   あれば(実装したわけではなく)`status`を`完了`に更新して`completeTasks`を呼び、完了タブへ移動してよい。
+   新しく「ユーザーがやるべき未完了の作業」を発行する場合も、備考に`【作業タスク】`を付けて登録する
 
 ## 管理対象リポジトリ
 

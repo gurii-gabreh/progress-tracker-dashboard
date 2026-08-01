@@ -79,13 +79,60 @@
     },
     {
       "repo": "kizashi",
-      "task": "(タスク未登録)",
+      "task": "都知事杯ハッカソン2026 企画・要件整理",
       "priority": "-",
+      "status": "完了",
+      "updated": "2026-07-18",
+      "category": "manual",
+      "note": "【作業タスク】ユーザー自身が別のClaude Codeルームで進めていた作業。都知事杯オープンデータ・ハッカソン2026(東京都主催、エントリー締切2026-07-27)への提出を目指す「結(ゆい)土砂災害アプリ」(旧称: きざし)の企画フェーズ。",
+      "detail": "・開発動機: 開発者の親戚が土砂災害に遭い消息不明になった実体験に基づき、「土砂災害現場で待機する家族・関係者」向けの現場情報共有アプリとして企画\n・アプリコンセプト: 危険エリア可視化、二次災害アラート、事前問診フォーム(重複聞き取り解消)、報告・記録のデジタル共有、前兆現象共有モードの5つを核心機能として設計\n・絶対にやらないこと(人命に関わるため明確に除外): 生存確率・救助優先順位の提示、重機の自動手配、指揮官不要の意思決定代替、独自の線状降水帯予測アルゴリズム開発\n・使用予定オープンデータを選定し一部は実データで検証済み: 国土数値情報「土砂災害警戒区域データ」東京都版(GeoJSON形式提供を確認)、気象庁防災情報XML(無料・登録不要を確認)、気象庁「線状降水帯予測マップ」、国交省・首相官邸の前兆現象チェックリスト\n・企画書(都知事杯ハッカソン_企画整理.md)・Claude Code起動プロンプト(claude-code-起動プロンプト.md)を作成したが、その後gurii-gabreh/Kizashiリポジトリからは削除されている(内容はgit履歴のコミットb4ffa9eに残存)",
+      "issues": "気象庁「土砂キキクル」の5段階詳細危険度データを無料で取得できる個人向けAPIが本当に存在しないか、東京都建設局サイト(d-keikai.metro.tokyo.lg.jp)がiframe埋め込み可能か(X-Frame-Options制限の有無)は、企画整理の時点では確認できておらず、技術検証フェーズへ持ち越しとなった。",
+      "output": "企画書・起動プロンプトはgurii-gabreh/Kizashiリポジトリのgit履歴(コミットb4ffa9e)にのみ残存(現在は削除済み)"
+    },
+    {
+      "repo": "kizashi",
+      "task": "技術検証フェーズ(実データでの動作確認)",
+      "priority": "高",
       "status": "未着手",
-      "updated": "-",
-      "note": "スプレッドシートにタスクを追加してください",
+      "updated": "2026-08-01",
+      "category": "manual",
+      "note": "【作業タスク】ユーザー自身が対応する技術検証タスク群。企画整理時点(2026-07-18)で「未検証・要確認事項」として洗い出されたもの。",
       "detail": "",
-      "output": ""
+      "output": "",
+      "subtasks": [
+        {
+          "task": "国土数値情報の東京都「土砂災害警戒区域データ」(A33-20_13_GML.zip, 20.9MB)を実際にダウンロードしGeoJSON化、UIプロトタイプのサンプルデータと差し替えて表示検証(座標系JGD2011→WGS84変換要否、ファイルサイズによる表示速度への影響、区部絞り込みの要否を含む)",
+          "priority": "高", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "気象庁防災情報XMLの実地取得テスト(Cloudflare Workersから定期取得できるか、都・区市町村単位の警報有無を抽出できるか)",
+          "priority": "高", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "東京都建設局サイト(d-keikai.metro.tokyo.lg.jp)のiframe埋め込み表示可否確認(X-Frame-Options等の制限有無)。できない場合はリンク提示に切り替え",
+          "priority": "高", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "気象庁「土砂キキクル」5段階詳細危険度の生データを無料取得する手段の有無確認(無ければ公式ページ埋め込みで代替)",
+          "priority": "中", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "Cloudflare D1のセットアップ確認(ハッカソン特典での利用可否、無料枠の読み書き回数・容量上限)",
+          "priority": "中", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "LINE Messaging APIの無料枠確認(現場ルームからの通知配信数が無料枠内に収まるか)",
+          "priority": "中", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "国土地理院タイルの利用規約確認(商用・イベント利用時の出典表示義務等)",
+          "priority": "低", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        },
+        {
+          "task": "前兆現象チェックリストの正式引用元確定(首相官邸・国交省砂防部のどちらを一次情報として引用するか)",
+          "priority": "低", "status": "未着手", "updated": "-", "category": "manual", "note": "【作業タスク】", "detail": "", "output": ""
+        }
+      ]
     },
     {
       "repo": "supermarket-price-tracker",

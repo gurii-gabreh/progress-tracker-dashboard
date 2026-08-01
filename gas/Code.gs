@@ -145,7 +145,9 @@ function syncFromGithub() {
 
   var movedToDone = 0;
   var updatedPending = 0;
+  var createdPending = 0;
   allTasks.forEach(function (t) {
+    if (!t.repo || !t.task || t.task.indexOf("(") === 0) return; // repo未設定・プレースホルダー行は同期対象外
     if (t.status === "完了") {
       removeRow(pendingSheet, t.repo, t.task);
       var doneRow = findRow(doneSheet, t.repo, t.task);
@@ -157,12 +159,11 @@ function syncFromGithub() {
       }
       movedToDone++;
     } else {
-      // まだ完了していないタスクについても、依頼タスクタブに既に行があれば
-      // 最新のステータスを反映し、備考欄には「いつ・何が起きたか」を履歴として
-      // 追記していく(上書きせず改行で積み増す)。これによりRoutineが実際にいつ
-      // 処理を行ったかが依頼タスクタブ単体を見るだけで分かるようにする。
       var pendingRow = findRow(pendingSheet, t.repo, t.task);
       if (pendingRow > 0) {
+        // 既に依頼タスクタブに行がある場合、最新のステータスを反映し、備考欄には
+        // 「いつ・何が起きたか」を履歴として追記していく(上書きせず改行で積み増す)。
+        // これによりRoutineが実際にいつ処理を行ったかが依頼タスクタブ単体を見るだけで分かる。
         var statusCell = pendingSheet.getRange(pendingRow, 4);
         if (t.status && statusCell.getValue() !== t.status) statusCell.setValue(t.status);
         var historyLine = "[" + (t.updated || "?") + "] " + (t.note || "(備考なし)");
@@ -172,6 +173,12 @@ function syncFromGithub() {
           noteCell.setValue(existingNote ? existingNote + "\n" + historyLine : historyLine);
           updatedPending++;
         }
+      } else {
+        // data/tasks.json側で新規に(Webやこのファイルへの直接編集で)追加され、まだ
+        // 依頼タスクタブに存在しないタスクを新しい行として追記する。備考が「【作業タスク】」で
+        // 始まる行はRoutineの実装対象から除外される(運用ルール9参照)。
+        appendTaskRow(pendingSheet, [t.repo, t.task, t.priority || "-", t.status || "未着手", t.updated || "", t.note || "", "FALSE"]);
+        createdPending++;
       }
     }
   });
@@ -196,7 +203,7 @@ function syncFromGithub() {
     });
   });
 
-  return { ok: true, movedToDone: movedToDone, updatedPending: updatedPending, addedComments: addedComments };
+  return { ok: true, movedToDone: movedToDone, updatedPending: updatedPending, createdPending: createdPending, addedComments: addedComments };
 }
 
 function setupValidation() {
