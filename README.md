@@ -34,8 +34,10 @@ session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作�
 2026-08-01、`supermarket-price-tracker`のみ例外として切り出した。手動作業用ルームでもある
 session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk、
 平日9時JST)を作成し、依頼タスクタブのRepo列が`supermarket-price-tracker`の行だけを専用に処理する。
-共有Routine(session_01DDATKE77mbQxkj4HUZ91Gt)側のプロンプトには、`supermarket-price-tracker`を
-処理対象から除外するよう別途依頼が必要(本README更新時点ではまだ未対応)。なお、このtriggerを作成した
+共有Routine(session_01DDATKE77mbQxkj4HUZ91Gt)側のプロンプトにも、`supermarket-price-tracker`を
+処理対象から除外するルールを追加済み(2026-08-01、update_triggerで反映。管理対象リポジトリ一覧・
+タスクの種別判定・新規タスク取り込み・完了タブ同期バックフィルの各所から`repo: "supermarket-price-tracker"`
+を明示的に除外し、`data/tasks.json`内の既存の同ノードも更新・削除しないよう明記した)。なお、このtriggerを作成した
 組織設定ではRoutineにGoogle Driveコネクタを明示的に持たせるオプションが使えなかった
 (`create_trigger`が"the connectors parameter is not available for this organization"を返した)ため、
 自動実行時にGoogle Driveツールが使えない可能性がある。そのRoutineのプロンプト内に、その場合の
@@ -66,8 +68,9 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
   セッションから他セッション宛てにRoutineを新規作成できないプラットフォーム制約により、この構成
   (共有Routineが処理)を当面の運用として採用している
 - `supermarket-price-tracker`は2026-08-01、手動作業用ルーム(session_01LeHQUz9gH8bU9uVNdJBBF5)自身が
-  自己バインドで専用Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk)を作成し切り出した。共有Routine側を
-  supermarket-price-tracker除外に更新する作業はまだ残っている(上記「ルームマッピング」参照)
+  自己バインドで専用Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk)を作成し切り出した。共有Routine側
+  (trig_01CxLtgC8JCMSCgbpeHq9TjA)のプロンプトもsupermarket-price-tracker除外に更新済み(上記
+  「ルームマッピング」参照)
 
 ## タスクの種別
 
@@ -120,6 +123,12 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
    出ない)。ただし運用ルール8のコメント確認は通常どおり行い、ユーザーから該当タスクへの完了報告コメントが
    あれば(実装したわけではなく)`status`を`完了`に更新して`completeTasks`を呼び、完了タブへ移動してよい。
    新しく「ユーザーがやるべき未完了の作業」を発行する場合も、備考に`【作業タスク】`を付けて登録する
+10. 共有Routine(session_01DDATKE77mbQxkj4HUZ91Gt、trig_01CxLtgC8JCMSCgbpeHq9TjA)は、依頼タスクタブの
+    Repo列が`supermarket-price-tracker`の行を処理対象から**除外する**(2026-08-01より)。このリポジトリは
+    専用の自己バインドRoutine(session_01LeHQUz9gH8bU9uVNdJBBF5、trig_01CokZ2wpUHJjvdaRnWzpuvk)が
+    単独で処理するため、新規タスクの取り込み・実装・完了タブへの反映のいずれも共有Routine側では行わない。
+    `data/tasks.json`内に既存の`repo: "supermarket-price-tracker"`ノードが残っていても、共有Routine側
+    からは更新・削除しない(専用Routine側が管理する)
 
 ## 管理対象リポジトリ
 
@@ -136,7 +145,7 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項(1〜4・6・8・9・10は対応済み、5・9・10はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
+**引き継ぎ事項(1〜4・6・8・9・10・11は対応済み、5・9・10はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
 7は根本原因は未解決だが8の対応で実害は解消)**:
 旧Routineが削除されていたため2026-07-30に
 session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`として再作成した。
@@ -293,3 +302,15 @@ session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`とし�
 
     `findRow`/`removeRow`はdoPostの`newTasks`/`markUrgent`/`completeTasks`/`syncNow`からも呼ばれる
     共通関数のため、この変更を反映するには保存だけでなく**ウェブアプリの再デプロイが必要**。
+
+11. **supermarket-price-trackerを共有Routineの処理対象から除外** → **反映済み**(2026-08-01)。
+    別セッション(session_01LeHQUz9gH8bU9uVNdJBBF5)が`supermarket-price-tracker`専用の自己バインド
+    Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk)を切り出したことに伴い、共有Routine
+    (session_01DDATKE77mbQxkj4HUZ91Gt、trig_01CxLtgC8JCMSCgbpeHq9TjA)側のプロンプトを
+    `update_trigger`で更新し、`supermarket-price-tracker`を`ai-research-radar`と同様に完全無視する
+    扱いに変更した。具体的には「管理対象リポジトリ」一覧から除外、「タスクの種別判定」に専用の除外
+    ルールを追加、依頼タスクタブからの新規タスク取り込み(手順3)・タスク選定(手順4)・コメント確認や
+    完了タブ同期のバックフィル(手順2b/2e)のいずれからも`repo: "supermarket-price-tracker"`を対象外に
+    し、`data/tasks.json`内に既存の同ノードが残っていても共有Routine側からは更新・削除しないよう明記
+    した。他リポジトリ(kizashi・gemini-monitor・progress-tracker-dashboard)の処理内容は変更していない。
+    あわせてREADMEの「ルームマッピング」「現在の状態」「運用ルール」10にも反映した。
