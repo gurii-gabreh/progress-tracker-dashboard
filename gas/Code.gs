@@ -1,5 +1,14 @@
 // このファイルはGitHubとは自動連携していない。「実装進捗管理シート」に紐付いたApps Scriptプロジェクトの
-// エディタへ手動で貼り付け、既存のウェブアプリデプロイを「新しいバージョン」で更新する必要がある。
+// エディタへ手動で貼り付け、保存する必要がある。
+// - doGet/doPost(ウェブアプリ本体。ダッシュボードやRoutineがHTTPで呼ぶ)を変更した場合は、
+//   デプロイ→デプロイを管理→既存のウェブアプリデプロイを「新しいバージョン」で更新すること。
+// - syncFromGithub()のようなトリガー実行専用の関数は、保存するだけで(=デプロイ不要で)
+//   次回のトリガー実行から最新の内容が使われる。ただし、時間主導トリガー自体がまだ未設定の場合は
+//   Apps Scriptエディタ左側の「トリガー」アイコン→「トリガーを追加」から、実行する関数に
+//   syncFromGithub、イベントのソースを「時間主導」、時間の間隔を選んで(例: 1時間おき)保存すること。
+//   これによりRoutineの実行環境からこのウェブアプリへ直接アクセスできない場合でも、
+//   このトリガーがGoogle側からGitHubのdata/tasks.jsonを定期的に取りに行くことで、
+//   依頼タスク→完了タブの移動・コメント返信がいずれ追いつく。
 var SHEET_ID = "1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw";
 
 function doGet(e) {
@@ -95,6 +104,13 @@ function listTasks() {
   };
 }
 
+// Routineが動くRoutine実行環境からscript.google.comへの直接アクセスがネットワークポリシーで
+// ブロックされる場合があり、その場合doPost(completeTasks/addComment)を直接呼べない。
+// この関数はその代替経路: GAS側(Googleのインフラ上で動くため上記の制約を受けない)が
+// data/tasks.json をGitHubから定期的に取得しに行く「プル型」の同期を行う。
+// Apps Scriptエディタの「トリガー」メニューで、この関数を時間主導トリガー(例: 1時間おき)に
+// 登録しておけば、Routineがdoポスト経由の書き込みに失敗しても、次回のトリガー実行時に
+// 依頼タスク→完了タブの移動・コメント返信の反映が自動的に追いつく。
 function syncFromGithub() {
   var url = "https://raw.githubusercontent.com/gurii-gabreh/progress-tracker-dashboard/main/data/tasks.json";
   var res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
@@ -104,12 +120,13 @@ function syncFromGithub() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
   var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
+  var commentSheet = getOrCreateSheet(ss, "コメント", ["Repo", "Task", "発言者", "本文", "日時"]);
 
   function flatten(tasks, repo) {
     var out = [];
     tasks.forEach(function (t) {
       var r = repo || t.repo;
-      out.push({ repo: r, task: t.task, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, issues: t.issues, output: t.output });
+      out.push({ repo: r, task: t.task, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, issues: t.issues, output: t.output, comments: t.comments });
       if (t.subtasks) out = out.concat(flatten(t.subtasks, r));
     });
     return out;
@@ -128,6 +145,24 @@ function syncFromGithub() {
         appendTaskRow(doneSheet, rowValues);
       }
     }
+  });
+
+  // data/tasks.json側にRoutineが書き込んだ author:"routine" のコメントのうち、
+  // まだコメントタブに反映されていないものだけを追記する(重複追記を避けるため既存行と突き合わせる)。
+  var existingComments = commentSheet.getDataRange().getValues();
+  function commentAlreadyOnSheet(repo, task, author, text, at) {
+    for (var i = 1; i < existingComments.length; i++) {
+      var row = existingComments[i];
+      if (row[0] === repo && row[1] === task && row[2] === author && row[3] === text && row[4] === at) return true;
+    }
+    return false;
+  }
+  allTasks.forEach(function (t) {
+    (t.comments || []).forEach(function (c) {
+      if (c.author === "routine" && !commentAlreadyOnSheet(t.repo, t.task, c.author, c.text, c.at)) {
+        commentSheet.appendRow([t.repo, t.task, c.author, c.text || "", c.at || ""]);
+      }
+    });
   });
 }
 

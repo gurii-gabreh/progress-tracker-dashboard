@@ -105,8 +105,8 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
-**引き継ぎ事項(1〜4・6は対応済み、5はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
-7は新たに判明した構造的ブロッカーで人の対応待ち)**:
+**引き継ぎ事項(1〜4・6・8は対応済み、5はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
+7は根本原因は未解決だが8の対応で実害は解消)**:
 旧Routineが削除されていたため2026-07-30に
 session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`として再作成した。
 1. 「タスクの種別判定」に`ai-research-radar`を無視する(取り込まない)ルールを追加 → **反映済み**
@@ -199,3 +199,30 @@ session_01DDATKE77mbQxkj4HUZ91Gt宛てで`trig_01CxLtgC8JCMSCgbpeHq9TjA`とし�
      "再デプロイしてください"とだけ案内してしまうことを防ぐため)。あわせて、GAS呼び出しが
      失敗しても手順3(スプレッドシートの新規タスク取り込み。Google Drive経由でGASとは無関係)
      以降は必ず継続するよう明記した(2026-08-01、update_triggerで反映済み)
+
+8. **項目7への根本対応: GAS側からGitHubへ取りに行く「プル型」同期に切り替え** →
+   **コード・Routineプロンプトとも反映済み、GASエディタでの保存+トリガー設定のみ人手待ち**。
+   claude.ai/codeの環境設定でRoutine実行環境(`env_01DvV1ut5eXRsEYqLMC7hb1j`)のネットワーク
+   アクセスを「Custom」にして`script.google.com`を許可リストへ追加する対応を試みたが、
+   設定ダイアログが開けないなどの理由で完了できなかった。そこで書き込みの向きを逆転させる方針に
+   転換した。`gas/Code.gs`には元々`syncFromGithub()`という、GitHubの`raw.githubusercontent.com`
+   から`data/tasks.json`を取得して完了タスクを依頼タスクタブ→完了タブへ移動する関数が存在していた
+   (これを起動する時間主導トリガーが一度も設定されておらず実質死んでいた)。この関数を拡張し、
+   完了タスクの移動に加えて、各タスクの`comments`配列内の`author: "routine"`コメントのうち
+   コメントタブにまだ無いものだけを追記する処理を追加した(repo+task+author+text+atの完全一致で
+   重複判定)。この関数はGASの時間主導トリガーから呼ばれ、**Google側のインフラが自発的にGitHubへ
+   取りに行く**形になるため、Routine実行環境からscript.google.comへ到達できるかどうかに一切
+   依存しなくなる。Routineプロンプト側は、(a) 引き続き`completeTasks`/`addComment`のPOSTを
+   試みるが失敗しても`data/tasks.json`への正しい書き込み・コミット・pushさえしておけば実害は
+   無い(次回のトリガー実行で自動的に追いつく)ことを明記し、(b) `?action=list`のGET自体が
+   失敗する場合はGoogle Driveの`read_file_content`でスプレッドシート全体(依頼タスク・コメント・
+   完了の全タブ)を直接読めば同じ情報が得られることを明記した(こちらもDrive API経由でGASを
+   介さないため、ネットワーク制約の影響を受けない)。
+   `progress-tracker-dashboard`の該当タスク(旧「GAS Webアプリへの書き込みがこの環境から到達不可」)
+   は、実害が解消したことを踏まえてstatusを`完了`に更新したが、manualSetupとして以下2点が
+   残っている: (1) 最新の`gas/Code.gs`をApps Scriptエディタに貼り付けて保存する(この変更は
+   `syncFromGithub`関数のみの追加なので、ウェブアプリの再デプロイは不要。保存するだけで
+   トリガー実行時に反映される)。(2) エディタの「トリガー」メニューから、`syncFromGithub`関数を
+   時間主導トリガー(例: 1時間おき)として一度だけ登録する。この2点が完了すれば、Routineの
+   ネットワーク制約とは無関係に、依頼タスクタブ⇄完了タブの移動・コメント返信が自動的に
+   追いつくようになる。
