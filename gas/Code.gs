@@ -2,6 +2,7 @@
 // エディタへ手動で貼り付け、保存する必要がある。
 // - doGet/doPost(ウェブアプリ本体。ダッシュボードやRoutineがHTTPで呼ぶ)を変更した場合は、
 //   デプロイ→デプロイを管理→既存のウェブアプリデプロイを「新しいバージョン」で更新すること。
+//   (今回追加したdoPostのsyncNowアクションもこれに該当するため、貼り付け後は必ず再デプロイが必要)
 // - syncFromGithub()のようなトリガー実行専用の関数は、保存するだけで(=デプロイ不要で)
 //   次回のトリガー実行から最新の内容が使われる。ただし、時間主導トリガー自体がまだ未設定の場合は
 //   Apps Scriptエディタ左側の「トリガー」アイコン→「トリガーを追加」から、実行する関数に
@@ -9,6 +10,8 @@
 //   これによりRoutineの実行環境からこのウェブアプリへ直接アクセスできない場合でも、
 //   このトリガーがGoogle側からGitHubのdata/tasks.jsonを定期的に取りに行くことで、
 //   依頼タスク→完了タブの移動・コメント返信がいずれ追いつく。
+// - ダッシュボードの「⏩ 今すぐ同期」ボタンはdoPostに{token, syncNow:true}をPOSTし、
+//   syncFromGithub()を即座に1回だけ手動実行する(上記の時間主導トリガーを待たずに済む)。
 var SHEET_ID = "1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw";
 
 function doGet(e) {
@@ -26,6 +29,12 @@ function doPost(e) {
   var body = JSON.parse(e.postData.contents);
   if (body.token !== SECRET) {
     return ContentService.createTextOutput(JSON.stringify({ error: "unauthorized" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (body.syncNow) {
+    var syncResult = syncFromGithub();
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, synced: true, result: syncResult }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -114,7 +123,7 @@ function listTasks() {
 function syncFromGithub() {
   var url = "https://raw.githubusercontent.com/gurii-gabreh/progress-tracker-dashboard/main/data/tasks.json";
   var res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
-  if (res.getResponseCode() !== 200) return;
+  if (res.getResponseCode() !== 200) return { ok: false, error: "fetch failed: " + res.getResponseCode() };
   var data = JSON.parse(res.getContentText());
 
   var ss = SpreadsheetApp.openById(SHEET_ID);
@@ -134,6 +143,7 @@ function syncFromGithub() {
 
   var allTasks = flatten(data.tasks, null);
 
+  var movedToDone = 0;
   allTasks.forEach(function (t) {
     if (t.status === "完了") {
       removeRow(pendingSheet, t.repo, t.task);
@@ -144,6 +154,7 @@ function syncFromGithub() {
       } else {
         appendTaskRow(doneSheet, rowValues);
       }
+      movedToDone++;
     }
   });
 
@@ -157,13 +168,17 @@ function syncFromGithub() {
     }
     return false;
   }
+  var addedComments = 0;
   allTasks.forEach(function (t) {
     (t.comments || []).forEach(function (c) {
       if (c.author === "routine" && !commentAlreadyOnSheet(t.repo, t.task, c.author, c.text, c.at)) {
         commentSheet.appendRow([t.repo, t.task, c.author, c.text || "", c.at || ""]);
+        addedComments++;
       }
     });
   });
+
+  return { ok: true, movedToDone: movedToDone, addedComments: addedComments };
 }
 
 function setupValidation() {

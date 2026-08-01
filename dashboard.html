@@ -310,6 +310,7 @@
       <div class="eyebrow">Progress Tracker</div>
       <div class="header-actions">
         <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
+        <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・コメントを、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
         <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
       </div>
     </div>
@@ -997,6 +998,28 @@
       });
   }
 
+  function syncNow() {
+    const btn = document.getElementById("sync-now-btn");
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "同期中...";
+
+    fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({ token: GAS_TOKEN, syncNow: true }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then(() => refreshFromSheet(true))
+      .then(() => { btn.textContent = "✓ 同期完了"; })
+      .catch(() => { btn.textContent = "同期失敗"; })
+      .finally(() => {
+        setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 2500);
+      });
+  }
+
   function showRoutineSettingsModal() {
     const root = document.getElementById("modal-root");
     root.innerHTML = `
@@ -1072,6 +1095,7 @@
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
+  document.getElementById("sync-now-btn").addEventListener("click", syncNow);
 
   renderStats();
   renderFilters();
