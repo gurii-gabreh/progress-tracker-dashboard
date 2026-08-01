@@ -375,6 +375,12 @@
           manualSetup: "上の「タスクごとの簡易チャットスレッド機能(コメント)」タスクと同じ`gas/Code.gs`の手動デプロイ(1回)で有効になります。追加のデプロイ作業は不要です。",
           detail: "README「引き継ぎ事項」の4番目('依頼タスクタブ⇄完了タブ間の移動が実際には行われていない')に対応。従来はGAS側にsyncFromGithub()という、data/tasks.jsonをGitHubから取得して完了タブへ反映する関数はあったものの、これを起動するGAS側の時間主導トリガーが設定されておらず、実際には一度も自動実行されていなかった(2026-07-30時点でスプレッドシートの完了タブが列見出しのみで空だったことから判明)。この方式だとGAS側に独自のトリガー設定が必要になり運用が複雑になるため、既存のnewTasks/markUrgent/addCommentと同じHTTP POSTチャネルに`completeTasks`アクションを追加する方式に変更した。リクエスト形式は`{ token, completeTasks: [{ repo, task, completedDate, note, detail, output }] }`。doPost内でpendingSheet(依頼タスクタブ)からrepo+task一致の行を検索し、優先度の値を引き継いでから該当行を削除、doneSheet(完了タブ)へRepo・Task・優先度・完了日・備考・実装ナレッジ・成果物の7列で追記する(既に同じrepo+taskの行があれば上書き)。Routineプロンプト側にも、(a) タスクをstatus:完了にする際は必ずcompleteTasksを呼ぶルールと、(b) 毎回の実行でdata/tasks.json上status:完了だが完了タブに未反映のタスクが無いか`?action=list`のdone配列と突き合わせて確認し、あれば埋め合わせで呼ぶルール(この仕組みが無かった時期に完了したgemini-monitor行などのバックフィルを兼ねる)を追加した(2026-07-30、update_triggerで反映済み)。旧来のsyncFromGithub()関数はgas/Code.gsに残したまま(害はなく、将来何かの用途で手動実行する可能性もゼロではないため削除しなかった)。",
           output: "gas/Code.gs"
+        },
+        {
+          task: "GAS Webアプリへの書き込みがこの環境から到達不可(script.google.comへの通信がブロックされている)", priority: "高", status: "スキップ", updated: "2026-08-01",
+          note: "人の判断・対応が必要なため保留。詳細はdetail参照。",
+          issues: "このRoutineが動作している環境のアウトバウンド通信は、ポリシーで許可されたホストしか通れないプロキシ経由になっている。script.google.com(GAS Webアプリの実体)がこの許可リストに入っておらず、curl・WebFetchとも `403`(プロキシのCONNECTトンネル拒否、\"policy denial\")で即座に失敗することを確認した。プロキシの案内文には「拒否されたホストへの再試行や回避はせず、報告すること」と明記されており、こちら側で回避策を試みることはできない。この結果、GAS側が最新版(addComment/completeTasks/issues対応)へ再デプロイされたとしても、Routineからの書き込み(コメント返信・完了タブへの移動)は現状この環境では成功しない。一方、ダッシュボード(dashboard.html)からのGAS呼び出しはユーザーのブラウザから直接行われるため、この制約の影響を受けず正常に動作する(実際、supermarket-price-trackerの新規タスク行はダッシュボード経由のnewTasksで正しく追加されていた)。対応が必要なのはRoutine実行環境側のネットワークポリシーで、script.google.comへのアウトバウンド許可を追加してもらう必要がある(環境設定はこのRoutineの操作範囲外)。それまでの間、Routineが完了させたタスクの依頼タスクタブ→完了タブへの移動、およびコメント返信は、人が直接スプレッドシートを編集するか、他の(この制約が無い)セッション経由で行う必要がある。",
+          detail: "", output: ""
         }
       ]
     },
@@ -383,12 +389,12 @@
       updated: "-", note: "スプレッドシートにタスクを追加してください", detail: "", output: ""
     },
     {
-      repo: "supermarket-price-tracker", task: "(タスク未登録)", priority: "-", status: "未着手",
-      updated: "-", note: "スプレッドシートにタスクを追加してください", detail: "", output: ""
+      repo: "supermarket-price-tracker", task: "きちんと処理が動いているか、スプレッドシート内容と履歴を確認して", priority: "高", status: "未着手",
+      updated: "2026-08-01", note: "依頼タスクタブに2026/07/30付で追加されていたが、直前のRoutine実行がコメント確認・完了タブ同期の調査に時間を使い切りタスク選定まで到達しなかったため取り込みが2026-08-01まで遅れた。次回実行で優先度「高」として選定対象に入る。", detail: "", issues: "", output: ""
     },
     {
       repo: "gemini-monitor", task: "現状、午前0〜1時までしか測定していないが、それを1日目午前0〜11、次の日は午後12〜23時のように修正して", priority: "高", status: "完了",
-      updated: "2026-07-30", note: "コード実装・GAS手動デプロイともに完了。次回以降のトリガー実行から日替わりの時間帯外はスキップされる想定(実測はまだ未確認)", detail: "", output: "",
+      updated: "2026-07-30", note: "コード実装・GAS手動デプロイともに完了。次回以降のトリガー実行から日替わりの時間帯外はスキップされる想定(実測はまだ未確認)。なお2026-08-01時点でスプレッドシートの依頼タスクタブを確認したところ、この行はまだ「未着手」のまま残っており完了タブにも移動していない。原因はcompleteTasksが呼べていないため(下記progress-tracker-dashboardの「GAS Webアプリへの書き込みがこの環境から到達不可」を参照)。人が直接スプレッドシートの該当行を編集・削除しても支障はない。", detail: "", output: "",
       subtasks: [
         {
           task: "コード実装(GitHub側)", priority: "高", status: "完了", updated: "2026-07-29",
