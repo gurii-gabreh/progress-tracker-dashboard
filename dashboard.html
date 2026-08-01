@@ -1,4 +1,4 @@
-<title>実装進捗ダッシュボード</title>
+<title>アプリ制作進捗管理</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
@@ -57,17 +57,27 @@
   }
 
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-    line-height: 1.5; padding: 24px 0 64px;
+    line-height: 1.5; overflow: hidden;
   }
 
-  .wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; padding: 0 16px; }
+  .wrap { max-width: 720px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; padding: 0 16px; }
+
+  .sticky-top {
+    flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
+    padding-top: 20px; padding-bottom: 12px; background: var(--bg);
+  }
+  .scroll-area {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px; padding-bottom: 48px;
+  }
 
   header { display: flex; flex-direction: column; gap: 4px; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .header-actions { display: flex; gap: 6px; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   header .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
   .settings-btn {
     font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px;
@@ -79,6 +89,16 @@
   header .meta a { color: var(--accent); text-decoration: none; }
   header .meta a:hover { text-decoration: underline; }
   .settings-caption { font-size: 11px; color: var(--text-muted); }
+
+  .help-panel {
+    display: none; flex-direction: column; gap: 7px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 12px;
+  }
+  .help-panel.open { display: flex; }
+  .help-item { display: flex; gap: 8px; flex-wrap: wrap; }
+  .help-term { font-weight: 700; color: var(--accent); flex: 0 0 auto; min-width: 108px; }
+  .help-desc { color: var(--text-muted); flex: 1 1 200px; }
 
   .stat-strip {
     display: flex; flex-direction: column; gap: 6px;
@@ -120,22 +140,35 @@
     box-shadow: var(--shadow); overflow: hidden;
   }
 
-  .empty.small { padding: 10px 16px 14px 44px; font-size: 12px; text-align: left; }
+  .repo-header {
+    display: flex; align-items: center; gap: 10px; padding: 12px 16px 8px;
+  }
+  .repo-header .repo-name { font-weight: 700; font-size: 14.5px; }
+  .repo-header .type-tag { font-size: 11px; color: var(--text-muted); }
+  .repo-header .add-task-btn { margin-left: auto; }
+  .tree-stem {
+    padding: 0 0 2px 32px; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; line-height: 1; color: var(--border);
+  }
 
-  .done-summary { padding: 4px 16px 12px 44px; }
+  .empty.small { padding: 10px 16px 14px 16px; font-size: 12px; text-align: left; }
+
+  .done-summary { padding: 4px 16px 12px 16px; }
   .done-summary-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
   .done-summary-list { margin: 0; padding-left: 18px; font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 3px; }
   .done-summary-list li { line-height: 1.4; }
   .done-summary .done-date { font-size: 11px; opacity: .75; }
 
   .feed-row {
-    display: flex; gap: 10px; padding: 12px 16px; cursor: default;
+    display: flex; align-items: flex-start; gap: 8px; padding: 10px 16px; cursor: default;
   }
   .feed-row.clickable { cursor: pointer; }
   .feed-row.clickable:hover { background: var(--surface-2); }
-  .feed-row.child { padding-left: 12px; position: relative; }
-  .feed-row.child::before {
-    content: ""; position: absolute; left: 33px; top: 0; bottom: 0; width: 1px; background: var(--border);
+  .feed-row.dragging { opacity: 0.4; }
+  .feed-row.drag-over { background: var(--accent-soft); outline: 1px dashed var(--accent); outline-offset: -2px; }
+  .tree-connector {
+    flex: 0 0 auto; padding-top: 6px; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; line-height: 1; color: var(--text-muted); white-space: pre; cursor: grab;
   }
 
   .chevron-btn {
@@ -148,12 +181,16 @@
 
   .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .top-line { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
-  .repo-tag { font-weight: 700; font-size: 13px; }
   .type-tag { font-size: 11px; color: var(--text-muted); }
   .subtask-count { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
   .task-text { font-size: 13.5px; color: var(--text); }
   .task-text.muted { color: var(--text-muted); font-style: italic; }
-  .meta-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .meta-line {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap;
+    font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;
+  }
+  .meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
   .meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
 
   .chip {
@@ -167,7 +204,7 @@
   .chip.manual-setup { background: var(--status-skip-bg); color: var(--status-skip-fg); }
 
   .manual-setup-panel {
-    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
     background: var(--status-skip-bg); border: 1px solid var(--status-skip-fg);
     font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 4px;
   }
@@ -175,7 +212,7 @@
   .manual-setup-panel .m-body { white-space: pre-wrap; }
 
   .comment-thread {
-    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
     background: var(--surface-2); border: 1px solid var(--border);
     font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 8px;
   }
@@ -207,7 +244,7 @@
   .meta-line .has-comments { color: var(--accent); }
 
   .knowledge-panel {
-    margin: 0 16px 12px 44px; padding: 10px 12px; border-radius: 8px;
+    margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
     background: var(--knowledge-bg); border: 1px solid var(--knowledge-border);
     font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 6px;
   }
@@ -306,28 +343,45 @@
 </style>
 
 <div class="wrap">
-  <header>
-    <div class="header-top">
-      <div class="eyebrow">Progress Tracker</div>
-      <div class="header-actions">
-        <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
-        <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・コメントを、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
-        <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
+  <div class="sticky-top">
+    <header>
+      <div class="header-top">
+        <div class="eyebrow">Progress Tracker</div>
+        <div class="header-actions">
+          <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
+          <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・コメントを、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
+          <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
+          <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
+        </div>
       </div>
-    </div>
-    <h1>実装進捗ダッシュボード</h1>
-    <div class="meta">
-      最終更新: <span id="updated-at">2026-07-30</span> ・
-      データ元: <a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>
-    </div>
-    <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
-  </header>
+      <h1>アプリ制作進捗管理</h1>
+      <div class="meta">
+        最終更新: <span id="updated-at">2026-07-30</span> ・
+        データ元: <a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>
+      </div>
+      <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
+      <div class="help-panel" id="help-panel">
+        <div class="help-item"><span class="help-term">🔄 更新</span><span class="help-desc">スプレッドシートの依頼タスクタブを確認し、まだ一覧に無い新規タスクを取り込みます。</span></div>
+        <div class="help-item"><span class="help-term">⏩ 今すぐ同期</span><span class="help-desc">完了・コメントの最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
+        <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
+        <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
+        <div class="help-item"><span class="help-term">⚡ 即実行</span><span class="help-desc">次回の定期実行を待たず、今すぐこのタスクを実行してほしいときの依頼文を作成します。</span></div>
+        <div class="help-item"><span class="help-term">引継ぎ</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
+        <div class="help-item"><span class="help-term">📝 記録を補足依頼</span><span class="help-desc">備考・実装ナレッジ・問題点・成果物に書き漏れがないか確認し、空欄があれば埋めるよう依頼するコメントを送信します(既存の記載は上書きしません)。</span></div>
+        <div class="help-item"><span class="help-term">送信</span><span class="help-desc">コメント欄の内容を記録するだけです。実行タイミングは次回の定期実行のままです(即実行とはここが違います)。</span></div>
+        <div class="help-item"><span class="help-term">タスクの並び替え</span><span class="help-desc">行をドラッグ&ドロップすると、同じリポジトリ内・同じ親タスク内で順番を入れ替えられます。この並び順はブラウザ内だけの表示用で、スプレッドシート側には反映されません。</span></div>
+      </div>
+    </header>
 
-  <div id="stat-strip" class="stat-strip"></div>
-  <div id="filter-row" class="filter-row"></div>
-  <div id="feed" class="feed"></div>
+    <div id="stat-strip" class="stat-strip"></div>
+  </div>
 
-  <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
+  <div class="scroll-area">
+    <div id="filter-row" class="filter-row"></div>
+    <div id="feed" class="feed"></div>
+
+    <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
+  </div>
 </div>
 
 <div id="modal-root"></div>
@@ -528,6 +582,7 @@
   let activeFilter = "all";
   const openGroups = new Set();     // key: group toggle path -> subtasks visible
   const openDetails = new Set();    // key: node path -> knowledge panel visible
+  let dragSourcePath = null;        // ドラッグ中のタスクのpath(ブラウザ内の並び替え専用。スプレッドシートには反映されない)
 
   function renderFilters() {
     const row = document.getElementById("filter-row");
@@ -608,7 +663,9 @@
       </div>`;
   }
 
-  function renderRow(node, path, { child, repo } = {}) {
+  // trail: 自分より上の各階層で「まだ後に兄弟がいるか(true=縦線を継ぐ)」を並べた配列。
+  // isLast: 自分が兄弟の中で最後かどうか(枝の形が├─か└─かを決める)。
+  function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
     const hasKnowledge = !!(node.note || node.detail || node.output);
@@ -620,8 +677,10 @@
     const forceOpen = status !== "完了";
     const groupOpen = forceOpen || openGroups.has(path);
     const detailOpen = openDetails.has(path);
+    const connector = trail.map(cont => cont ? "│  " : "   ").join("") + (isLast ? "└─ " : "├─ ");
 
-    let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}">`;
+    let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}" draggable="true" data-drag-path="${path}">`;
+    html += `<span class="tree-connector" title="ドラッグで並び替え">${connector}</span>`;
     if (hasChildren && forceOpen) {
       html += `<div class="chevron-spacer" title="未完了のタスクがあるため常に展開表示">▾</div>`;
     } else if (hasChildren) {
@@ -632,14 +691,17 @@
     html += `<div class="avatar ${child ? "sm" : "lg"}" style="background:${avatarColor(node)}">${avatarLabel(node)}</div>`;
     html += `<div class="content">`;
     html += `<div class="top-line">`;
-    if (!child) html += `<span class="repo-tag">${node.repo}</span><span class="type-tag">${isCode(node) ? "コード実装" : "調査・資料作成"}</span><button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}">＋ 新規タスク</button>`;
+    if (!child) html += `<button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}" title="このタスクの下に子タスクを追加します">＋ 子タスク</button>`;
     if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
     html += `</div>`;
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.task}</div>`;
-    html += `<div class="meta-line">${chip(status)}`;
+    html += `<div class="meta-line">`;
+    html += `<div class="meta-info">${chip(status)}`;
     if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
     if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated !== "-") html += `<span>${node.updated}</span>`;
+    html += `</div>`;
+    html += `<div class="meta-actions">`;
     if (hasDetailSection) {
       const commentCount = (node.comments || []).length;
       const label = detailOpen ? "閉じる ▲" : `コメント${commentCount ? `(${commentCount})` : ""}・ナレッジ ▼`;
@@ -647,7 +709,7 @@
     }
     if (!isPlaceholder && status !== "完了") html += `<button class="urgent-btn" data-urgent="${path}" data-urgent-repo="${effectiveRepo}">⚡ 即実行</button>`;
     if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
-    html += `</div></div></div>`;
+    html += `</div></div></div></div>`;
 
     if (node.manualSetup) {
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
@@ -660,9 +722,12 @@
     if (hasChildren && groupOpen) {
       const pendingSubs = node.subtasks.filter(s => s.status !== "完了");
       const doneSubs = node.subtasks.filter(s => s.status === "完了");
+      const childTrail = [...trail, !isLast];
 
       if (pendingSubs.length) {
-        html += pendingSubs.map(sub => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, { child: true, repo: effectiveRepo })).join("");
+        html += pendingSubs.map((sub, i) => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, {
+          child: true, repo: effectiveRepo, isLast: i === pendingSubs.length - 1, trail: childTrail,
+        })).join("");
       }
       if (doneSubs.length) {
         html += `<div class="done-summary">`;
@@ -690,9 +755,60 @@
       return;
     }
 
-    // パスのルートは常に元のTASKS配列でのindexを使う(フィルタ/並び替えでlistの順序がTASKSとズレるため)
-    feed.innerHTML = list.map((t) => `<div class="task-group" data-repo-group="${t.repo}">${renderRow(t, `${TASKS.indexOf(t)}`)}</div>`).join("");
+    // 同じrepoのトップレベルタスクを1つのグループ(1つの木)にまとめる。
+    // 出現順は既にソート済みのlistに従う(初出のrepoの順にグループを並べる)。
+    const repoOrder = [];
+    const byRepo = new Map();
+    list.forEach((t) => {
+      if (!byRepo.has(t.repo)) { byRepo.set(t.repo, []); repoOrder.push(t.repo); }
+      byRepo.get(t.repo).push(t);
+    });
 
+    // パスのルートは常に元のTASKS配列でのindexを使う(フィルタ/並び替えでlistの順序がTASKSとズレるため)
+    feed.innerHTML = repoOrder.map((repo) => {
+      const nodes = byRepo.get(repo);
+      const first = nodes[0];
+      const tree = nodes.map((t, i) => renderRow(t, `${TASKS.indexOf(t)}`, { isLast: i === nodes.length - 1 })).join("");
+      return `
+        <div class="task-group" data-repo-group="${repo}">
+          <div class="repo-header">
+            <div class="avatar lg" style="background:${avatarColor(first)}">${avatarLabel(first)}</div>
+            <span class="repo-name">${repo}</span>
+            <span class="type-tag">${isCode(first) ? "コード実装" : "調査・資料作成"}</span>
+            <button class="add-task-btn" data-add-parent="repo:${repo}" data-add-repo="${repo}" title="このリポジトリに新しいタスクを追加します">＋ 新規タスク</button>
+          </div>
+          <div class="tree-stem">│</div>
+          ${tree}
+        </div>`;
+    }).join("");
+
+    feed.querySelectorAll("[data-drag-path]").forEach(row => {
+      row.addEventListener("dragstart", (e) => {
+        e.stopPropagation();
+        dragSourcePath = row.dataset.dragPath;
+        row.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", dragSourcePath);
+      });
+      row.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        dragSourcePath = null;
+      });
+      row.addEventListener("dragover", (e) => {
+        if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        row.classList.add("drag-over");
+      });
+      row.addEventListener("dragleave", () => row.classList.remove("drag-over"));
+      row.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        row.classList.remove("drag-over");
+        if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
+        reorderTask(dragSourcePath, row.dataset.dragPath);
+      });
+    });
     feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -763,6 +879,40 @@
     let node = TASKS[parts[0]];
     for (let i = 1; i < parts.length; i++) node = node.subtasks[parts[i]];
     return node;
+  }
+
+  // ドラッグ&ドロップによる並び替え。同じrepo内のトップレベルタスク同士、または
+  // 同じ親タスクを持つ子タスク同士でのみ入れ替えを許可する(それ以外は何もしない)。
+  // この並び順はTASKS配列(メモリ上)だけの変更で、スプレッドシート側には反映されない。
+  function reorderTask(fromPath, toPath) {
+    const fromIsChild = fromPath.includes(".");
+    const toIsChild = toPath.includes(".");
+    if (fromIsChild !== toIsChild) return;
+
+    let arr;
+    let fromNode, toNode;
+    if (!fromIsChild) {
+      fromNode = findNodeByPath(fromPath);
+      toNode = findNodeByPath(toPath);
+      if (!fromNode || !toNode || fromNode.repo !== toNode.repo) return;
+      arr = TASKS;
+    } else {
+      const fromParentPath = fromPath.slice(0, fromPath.lastIndexOf("."));
+      const toParentPath = toPath.slice(0, toPath.lastIndexOf("."));
+      if (fromParentPath !== toParentPath) return;
+      const parent = findNodeByPath(fromParentPath);
+      fromNode = findNodeByPath(fromPath);
+      toNode = findNodeByPath(toPath);
+      if (!parent || !fromNode || !toNode) return;
+      arr = parent.subtasks;
+    }
+    // ドロップ先と位置を入れ替える(隣接要素同士でも見た目上ちゃんと順番が変わるよう、
+    // insert方式ではなくswap方式にしている)。
+    const fromIdx = arr.indexOf(fromNode);
+    const toIdx = arr.indexOf(toNode);
+    arr[fromIdx] = toNode;
+    arr[toIdx] = fromNode;
+    renderFeed();
   }
 
   function escapeHtml(str) {
@@ -884,12 +1034,20 @@
   }
 
   function addNewTask(parentPath, repo, task, priority) {
-    const parent = findNodeByPath(parentPath);
-    if (!parent.subtasks) parent.subtasks = [];
     const today = new Date().toISOString().slice(0, 10);
-    const newTask = { task, priority, status: "新規", updated: today, note: "", detail: "", output: "" };
-    parent.subtasks.push(newTask);
-    openGroups.add(parentPath);
+    const isRepoLevel = parentPath.startsWith("repo:");
+    const newTask = isRepoLevel
+      ? { repo, task, priority, status: "新規", updated: today, note: "", detail: "", output: "" }
+      : { task, priority, status: "新規", updated: today, note: "", detail: "", output: "" };
+
+    if (isRepoLevel) {
+      TASKS.push(newTask);
+    } else {
+      const parent = findNodeByPath(parentPath);
+      if (!parent.subtasks) parent.subtasks = [];
+      parent.subtasks.push(newTask);
+      openGroups.add(parentPath);
+    }
     renderFeed();
 
     fetch(GAS_URL, {
@@ -1153,6 +1311,11 @@
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
+  document.getElementById("help-toggle-btn").addEventListener("click", (e) => {
+    const panel = document.getElementById("help-panel");
+    const open = panel.classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", String(open));
+  });
 
   renderStats();
   renderFilters();
