@@ -14,28 +14,46 @@
 - **ダッシュボード**: `dashboard.html`。スプレッドシートの内容を都度取り込んで生成する「見やすい表示用のビュー」(二重管理にしない)
   - Claude Artifact: https://claude.ai/code/artifact/b395634a-ff68-44cb-a667-92c53448c992
   - GitHub Pages: https://gurii-gabreh.github.io/progress-tracker-dashboard/（mainにpushするたびGitHub Actionsで自動デプロイ）
-- **ルームは1つに集約**: プラットフォーム制約上Routineを他セッションに紐付けて新規作成できないため、
-  「リポジトリごとに専用の自動実行ルーム」は実現できず、全リポジトリの処理を単一のRoutine
-  (session_01DDATKE77mbQxkj4HUZ91Gt)がまとめて行う。これは暫定措置ではなく、この制約が続く限りの
-  恒久的な構成(下記「ルームマッピング」参照)
+- **ルームは原則1つに集約、ただし例外あり**: プラットフォーム制約上、コーディネート役のセッションから
+  「他セッションに紐付けて」Routineを新規作成することはできない。そのため大半のリポジトリ
+  (kizashi・gemini-monitor・progress-tracker-dashboard)は、単一のRoutine
+  (session_01DDATKE77mbQxkj4HUZ91Gt)がまとめて処理する構成を継続する。ただし対象セッション自身が
+  「自己バインド」でRoutineを作ることはこの制約の対象外のため、2026-08-01に`supermarket-price-tracker`
+  のみ例外として専用会話(session_01LeHQUz9gH8bU9uVNdJBBF5)自身が自己バインドの専用Routineを
+  作成し切り出した(下記「ルームマッピング」参照)
 
 ## ルームマッピング
 
-自動実行(Routine)は `session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01CxLtgC8JCMSCgbpeHq9TjA、平日9時JST)。
+kizashi・gemini-monitor・progress-tracker-dashboardの自動実行(Routine)は
+`session_01DDATKE77mbQxkj4HUZ91Gt` に一本化(trig_01CxLtgC8JCMSCgbpeHq9TjA、平日9時JST)。
 旧trig_01JC7QYoVtYZinJov5Eqw8jQは2026-07-30に誤って削除されてしまい、他セッションからは同じ形で
 再作成できなかった(自己バインドしたセッションでしか再作成できないプラットフォーム制約のため)ため、
 session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作り直した。
 このセッション(session_01XXySCiFKeZdazYy97NxMim)は設計・手動作業用の会話で、自動実行のRoutineはもう持たない。
 
+2026-08-01、`supermarket-price-tracker`のみ例外として切り出した。手動作業用ルームでもある
+session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk、
+平日9時JST)を作成し、依頼タスクタブのRepo列が`supermarket-price-tracker`の行だけを専用に処理する。
+共有Routine(session_01DDATKE77mbQxkj4HUZ91Gt)側のプロンプトには、`supermarket-price-tracker`を
+処理対象から除外するよう別途依頼が必要(本README更新時点ではまだ未対応)。なお、このtriggerを作成した
+組織設定ではRoutineにGoogle Driveコネクタを明示的に持たせるオプションが使えなかった
+(`create_trigger`が"the connectors parameter is not available for this organization"を返した)ため、
+自動実行時にGoogle Driveツールが使えない可能性がある。そのRoutineのプロンプト内に、その場合の
+代替手順(CSVエクスポート経由での取得を試す→それも無理なら読めなかった旨を報告して終了する)を
+明記している。
+
 | Repo | 手動作業用ルーム | 自動実行(Routine)ルーム |
 |---|---|---|
 | progress-tracker-dashboard | このセッション | session_01DDATKE77mbQxkj4HUZ91Gt |
 | kizashi(表示名: 結(ゆい)土砂災害アプリ) | session_01EttsGp4ZSP11U5i8kkKPwA | session_01DDATKE77mbQxkj4HUZ91Gt |
-| supermarket-price-tracker | session_01LeHQUz9gH8bU9uVNdJBBF5 | session_01DDATKE77mbQxkj4HUZ91Gt |
+| supermarket-price-tracker | session_01LeHQUz9gH8bU9uVNdJBBF5 | session_01LeHQUz9gH8bU9uVNdJBBF5(専用、trig_01CokZ2wpUHJjvdaRnWzpuvk) |
 | gemini-monitor | (未作成) | session_01DDATKE77mbQxkj4HUZ91Gt |
 | ai-research-radar | (専用ルームなし) | Routineでは処理しない(下記参照) |
 
-※ Routineを別セッションに紐付けること自体はプラットフォーム制約で不可のため、「アプリごとに専用の自動実行ルーム」は実現していない。上記の手動作業用ルームは、問題が起きたタスクを人が直接引き継いで作業する時に使う。
+※ 「他セッションに紐付けて」Routineを新規作成することはプラットフォーム制約で不可なため、コーディネート
+役のセッションが代わりに各アプリ専用のRoutineを一括で作ることはできない。ただし対象セッション自身が
+自己バインドで作ることは制約の対象外で、supermarket-price-trackerはこの方法で専用化した(上記参照)。
+残りのアプリについても、各手動作業用ルームのセッション自身に依頼すれば同様に専用Routine化できる。
 
 ※ `kizashi`はスプレッドシートのRepo列・dashboard.htmlのKNOWN_REPOSでは技術的な識別子としてそのまま使う(照合ロジックが壊れるため変更しない)。人向けの表示名だけを「結(ゆい)土砂災害アプリ」としてdashboard.html側(REPO_DISPLAY_NAMES)で差し替えている。都知事杯オープンデータ・ハッカソン2026向けの土砂災害現場支援アプリで、実体はgurii-gabreh/Kizashiリポジトリ。2026-08-01時点、企画・要件整理フェーズは完了、技術検証フェーズ(実データでの動作確認)は未着手のまま作業タスクとして登録している(詳細は下記「作業タスク」参照)。
 
@@ -44,9 +62,12 @@ session_01DDATKE77mbQxkj4HUZ91Gt側で自己バインドのRoutineとして作�
 - GASウェブアプリ: デプロイ済み(`gas/Code.gs`。GitHubとは自動連携していないため、コード変更時は
   都度手動での再デプロイが必要。詳細は本README末尾の「引き継ぎ事項」参照)
 - スプレッドシートの「依頼タスク」「完了」「コメント」タブ: GAS初回実行で自動作成済み
-- `kizashi`・`supermarket-price-tracker`専用の自動実行ルームは作成していない。上記「ルームマッピング」
-  に書いた通り、プラットフォーム制約によりRoutineを他セッションに紐付けて新規作成できないため、
-  この構成(単一Routineが全リポジトリを処理)を恒久的な運用として採用している(移行予定はない)
+- `kizashi`専用の自動実行ルームは作成していない。上記「ルームマッピング」に書いた通り、コーディネート役の
+  セッションから他セッション宛てにRoutineを新規作成できないプラットフォーム制約により、この構成
+  (共有Routineが処理)を当面の運用として採用している
+- `supermarket-price-tracker`は2026-08-01、手動作業用ルーム(session_01LeHQUz9gH8bU9uVNdJBBF5)自身が
+  自己バインドで専用Routine(trig_01CokZ2wpUHJjvdaRnWzpuvk)を作成し切り出した。共有Routine側を
+  supermarket-price-tracker除外に更新する作業はまだ残っている(上記「ルームマッピング」参照)
 
 ## タスクの種別
 
