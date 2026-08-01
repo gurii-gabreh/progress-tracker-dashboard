@@ -85,16 +85,16 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     padding: 8px 12px; box-shadow: var(--shadow);
   }
-  .stat-row { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
-  .stat-row .name { flex: 0 0 auto; font-size: 12px; font-weight: 700; min-width: 150px; }
-  .stat-row .bar-track {
-    flex: 1; height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden;
+  .stat-row {
+    display: flex; align-items: center; gap: 10px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
   }
-  .stat-row .bar-fill { height: 100%; border-radius: 999px; }
-  .stat-row .pct {
-    flex: 0 0 auto; width: 38px; text-align: right;
-    font-size: 12px; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700;
+  .stat-row:hover { background: var(--surface-2); }
+  .stat-row .name { flex: 1; font-size: 12px; font-weight: 700; }
+  .stat-indicator {
+    flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
   }
+  .stat-indicator.done { background: var(--status-done-bg); color: var(--status-done-fg); }
+  .stat-indicator.pending { background: var(--status-doing-bg); color: var(--status-doing-fg); }
 
   .avatar {
     width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
@@ -113,19 +113,20 @@
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
   .feed {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .task-group {
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     box-shadow: var(--shadow); overflow: hidden;
   }
-  .task-group { border-bottom: 1px solid var(--border); }
-  .task-group:last-child { border-bottom: none; }
 
-  .subtask-tabs { display: flex; gap: 6px; padding: 2px 16px 8px 44px; }
-  .subtask-tab-btn {
-    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer;
-  }
-  .subtask-tab-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
   .empty.small { padding: 10px 16px 14px 44px; font-size: 12px; text-align: left; }
+
+  .done-summary { padding: 4px 16px 12px 44px; }
+  .done-summary-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+  .done-summary-list { margin: 0; padding-left: 18px; font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 3px; }
+  .done-summary-list li { line-height: 1.4; }
+  .done-summary .done-date { font-size: 11px; opacity: .75; }
 
   .feed-row {
     display: flex; gap: 10px; padding: 12px 16px; cursor: default;
@@ -527,7 +528,6 @@
   let activeFilter = "all";
   const openGroups = new Set();     // key: group toggle path -> subtasks visible
   const openDetails = new Set();    // key: node path -> knowledge panel visible
-  const subtaskTabs = new Map();    // key: parent path -> "pending" | "done" (which subtasks are shown)
 
   function renderFilters() {
     const row = document.getElementById("filter-row");
@@ -552,21 +552,23 @@
     const strip = document.getElementById("stat-strip");
     const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
     const rows = repos.map(repo => {
-      const t = TASKS.find(t => t.repo === repo);
-      const units = t.subtasks && t.subtasks.length ? t.subtasks : [t];
-      const total = units.length;
-      const done = units.filter(u => u.status === "完了").length;
-      const pct = total ? Math.round((done / total) * 100) : 0;
+      const nodes = TASKS.filter(t => t.repo === repo);
+      const allDone = nodes.every(t => aggregateStatus(t) === "完了");
       const color = REPO_COLORS[repo] || "#5b6172";
       return `
-        <div class="stat-row">
+        <div class="stat-row" data-stat-repo="${repo}">
           <div class="avatar" style="background:${color}">${repo.slice(0, 2).toUpperCase()}</div>
           <span class="name">${repo}</span>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-          <span class="pct">${pct}%</span>
+          <span class="stat-indicator ${allDone ? "done" : "pending"}">${allDone ? "✓ すべて完了" : "● 未完了あり"}</span>
         </div>`;
     });
     strip.innerHTML = rows.join("");
+    strip.querySelectorAll("[data-stat-repo]").forEach(row => {
+      row.addEventListener("click", () => {
+        const target = document.querySelector(`[data-repo-group="${row.dataset.statRepo}"]`);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
   }
 
   function knowledgePanel(node) {
@@ -658,18 +660,19 @@
     if (hasChildren && groupOpen) {
       const pendingSubs = node.subtasks.filter(s => s.status !== "完了");
       const doneSubs = node.subtasks.filter(s => s.status === "完了");
-      const activeTab = subtaskTabs.get(path) || "pending";
-      const shown = activeTab === "done" ? doneSubs : pendingSubs;
 
-      html += `<div class="subtask-tabs">`;
-      html += `<button class="subtask-tab-btn${activeTab === "pending" ? " active" : ""}" data-subtask-tab="${path}:pending">未完了 (${pendingSubs.length})</button>`;
-      html += `<button class="subtask-tab-btn${activeTab === "done" ? " active" : ""}" data-subtask-tab="${path}:done">完了 (${doneSubs.length})</button>`;
-      html += `</div>`;
-
-      if (!shown.length) {
-        html += `<div class="empty small">${activeTab === "done" ? "完了した子タスクはありません" : "未完了の子タスクはありません"}</div>`;
-      } else {
-        html += shown.map(sub => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, { child: true, repo: effectiveRepo })).join("");
+      if (pendingSubs.length) {
+        html += pendingSubs.map(sub => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, { child: true, repo: effectiveRepo })).join("");
+      }
+      if (doneSubs.length) {
+        html += `<div class="done-summary">`;
+        html += `<div class="done-summary-label">✓ 完了 (${doneSubs.length})</div>`;
+        html += `<ul class="done-summary-list">`;
+        html += doneSubs.map(sub => `<li>${sub.task}${sub.updated && sub.updated !== "-" ? ` <span class="done-date">(${sub.updated})</span>` : ""}</li>`).join("");
+        html += `</ul></div>`;
+      }
+      if (!pendingSubs.length && !doneSubs.length) {
+        html += `<div class="empty small">子タスクはありません</div>`;
       }
     }
     return html;
@@ -688,21 +691,13 @@
     }
 
     // パスのルートは常に元のTASKS配列でのindexを使う(フィルタ/並び替えでlistの順序がTASKSとズレるため)
-    feed.innerHTML = list.map((t) => `<div class="task-group">${renderRow(t, `${TASKS.indexOf(t)}`)}</div>`).join("");
+    feed.innerHTML = list.map((t) => `<div class="task-group" data-repo-group="${t.repo}">${renderRow(t, `${TASKS.indexOf(t)}`)}</div>`).join("");
 
     feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const key = btn.dataset.groupToggle;
         if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-subtask-tab]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const [path, tab] = btn.dataset.subtaskTab.split(":");
-        subtaskTabs.set(path, tab);
         renderFeed();
       });
     });
