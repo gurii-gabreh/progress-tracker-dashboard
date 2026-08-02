@@ -143,24 +143,41 @@ function syncFromGithub() {
 
   var allTasks = flatten(data.tasks, null);
 
+  // 依頼タスク・完了タブは、タスク数分ループしながら毎回findRow(=シート全体を再読み込み)を
+  // 呼んでいると、タスク数が増えるほど実行時間が線形以上に伸びる。特にdoPost経由({syncNow:true})の
+  // 呼び出しは、実行に時間がかかりすぎるとGAS側は最後まで処理を終えて実際にはシートへの反映に
+  // 成功しているのに、呼び出し元(ダッシュボードのfetch)がレスポンスを待ちきれずタイムアウトし、
+  // 「同期失敗」と表示されてしまう不具合の原因になっていた。各シートを最初に1回だけ読み込んで
+  // repo+task→行番号のインデックスを作り、それをループ内で使い回すことで読み込み回数を減らす。
+  var pendingIdx = buildSheetIndex(pendingSheet);
+  var doneIdx = buildSheetIndex(doneSheet);
+  var rowsToDelete = [];
+
   var movedToDone = 0;
   var updatedPending = 0;
   var createdPending = 0;
   allTasks.forEach(function (t) {
     if (!t.repo || !t.task || t.task.indexOf("(") === 0) return; // repo未設定・プレースホルダー行は同期対象外
+    var key = indexKey(t.repo, t.task);
     if (t.status === "完了") {
-      removeRow(pendingSheet, t.repo, t.task);
-      var doneRow = findRow(doneSheet, t.repo, t.task);
+      var pendingRowForDelete = pendingIdx.index[key];
+      if (pendingRowForDelete) {
+        rowsToDelete.push(pendingRowForDelete);
+        delete pendingIdx.index[key];
+      }
       var rowValues = [t.repo, t.task, t.priority || "-", t.updated || "", t.note || "", t.detail || "", t.issues || "", t.output || ""];
-      if (doneRow > 0) {
+      var doneRow = doneIdx.index[key];
+      if (doneRow) {
         doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
       } else {
-        appendTaskRow(doneSheet, rowValues);
+        doneSheet.getRange(doneIdx.nextRow, 1, 1, rowValues.length).setValues([rowValues]);
+        doneIdx.index[key] = doneIdx.nextRow;
+        doneIdx.nextRow++;
       }
       movedToDone++;
     } else {
-      var pendingRow = findRow(pendingSheet, t.repo, t.task);
-      if (pendingRow > 0) {
+      var pendingRow = pendingIdx.index[key];
+      if (pendingRow) {
         // 既に依頼タスクタブに行がある場合、最新のステータスを反映し、備考欄には
         // 「いつ・何が起きたか」を履歴として追記していく(上書きせず改行で積み増す)。
         // これによりRoutineが実際にいつ処理を行ったかが依頼タスクタブ単体を見るだけで分かる。
@@ -177,11 +194,19 @@ function syncFromGithub() {
         // data/tasks.json側で新規に(Webやこのファイルへの直接編集で)追加され、まだ
         // 依頼タスクタブに存在しないタスクを新しい行として追記する。備考が「【作業タスク】」で
         // 始まる行はRoutineの実装対象から除外される(運用ルール9参照)。
-        appendTaskRow(pendingSheet, [t.repo, t.task, t.priority || "-", t.status || "未着手", t.updated || "", t.note || "", "FALSE"]);
+        pendingSheet.getRange(pendingIdx.nextRow, 1, 1, 7)
+          .setValues([[t.repo, t.task, t.priority || "-", t.status || "未着手", t.updated || "", t.note || "", "FALSE"]]);
+        pendingIdx.index[key] = pendingIdx.nextRow;
+        pendingIdx.nextRow++;
         createdPending++;
       }
     }
   });
+
+  // 完了へ移動した分の依頼タスク行をまとめて削除する(削除すると以降の行番号が詰まってずれるため、
+  // 行番号が大きいものから順に削除する)
+  rowsToDelete.sort(function (a, b) { return b - a; });
+  rowsToDelete.forEach(function (row) { pendingSheet.deleteRow(row); });
 
   // data/tasks.json側にRoutineが書き込んだ author:"routine" のコメントのうち、
   // まだコメントタブに反映されていないものだけを追記する(重複追記を避けるため既存行と突き合わせる)。
@@ -290,4 +315,23 @@ function findRow(sheet, repo, task) {
 function removeRow(sheet, repo, task) {
   var rowIndex = findRow(sheet, repo, task);
   if (rowIndex > 0) sheet.deleteRow(rowIndex);
+}
+
+function indexKey(repo, task) {
+  return normalizeKey(repo) + "::" + normalizeKey(task);
+}
+
+// シートを1回だけ読み込み、repo+task(正規化キー)→行番号のインデックスと、
+// 新規行を追記すべき次の行番号を返す。findRow/appendTaskRowをタスク数分ループの中で
+// 繰り返し呼ぶと都度シート全体を読み直すことになり遅いため、syncFromGithubではこちらを使う。
+function buildSheetIndex(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var index = {};
+  var lastDataRow = 1; // ヘッダー行
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === "") continue;
+    lastDataRow = i + 1;
+    index[indexKey(data[i][0], data[i][1])] = i + 1;
+  }
+  return { index: index, nextRow: lastDataRow + 1 };
 }
