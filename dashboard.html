@@ -418,7 +418,12 @@
   // 人がエラー報告・追加指示・完了報告などをタスク単位で書き込め、Routineは次回実行時にこれを読んで
   // 反映し、対応内容を routine側の発言として追記する想定。
   // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
-  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor"];
+  // 注: KNOWN_REPOSはこのダッシュボードの表示分類(💻/📝バッジ)専用の一覧で、共有Routineが
+  // 実際にどのリポジトリを処理するかとは無関係。ai-research-radarは個別の調査キーワードタスク
+  // (依頼タスクタブのRepo=ai-research-radar行)自体は共有Routineの処理対象外のまま(README参照、
+  // ai-research-radar自身のGASが処理する)。ここでの追加は、プロジェクト自体の実装進捗(下記の
+  // 「Gemini調査実行」タスク等、こちらで手動で書き起こしたもの)を表示するためだけのもの。
+  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor", "ai-research-radar", "usage-tracker"];
 
   const TASKS = [
     {
@@ -611,6 +616,74 @@
         }
       ],
       issues: "日替わりの時間帯フィルタ(午前0〜11時/午後12〜23時)が実測ログ上でも正しく機能しているか、まだ検証が済んでいない。"
+    },
+    {
+      repo: "ai-research-radar",
+      task: "Gemini調査実行",
+      priority: "高",
+      status: "対応中",
+      updated: "2026-08-05",
+      note: "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)の作成・依頼文の貼り付けはユーザー側の対応待ち。",
+      detail: "",
+      output: "",
+      subtasks: [
+        {
+          task: "GitHub Pagesデプロイの修正",
+          priority: "高", status: "完了", updated: "2026-08-02",
+          note: "",
+          detail: "・過去2回のPagesデプロイworkflowがいずれも失敗していたことをGitHub Actionsのログから発見(\"Get Pages site failed... Not Found\")\n・原因はリポジトリ側でGitHub Pages自体が一度も有効化されていなかったこと\n・deploy-pages.ymlのactions/configure-pages@v5にenablement: trueを追加し、既存のpages: write権限を使ってリポジトリ設定を手動で触らずに自動有効化できるようにした\n・修正後のpushでデプロイが成功することを確認済み",
+          output: "https://gurii-gabreh.github.io/ai-research-radar/"
+        },
+        {
+          task: "GEMINI_MODELの更新(gemini-2.5-flash→gemini-3.5-flash)",
+          priority: "高", status: "完了", updated: "2026-08-02",
+          note: "",
+          detail: "・依頼タスク実行時にGemini APIから404(models/gemini-2.5-flashは新規ユーザー向けに提供終了)が返るようになったため、gemini-3.5-flashへ切り替えた\n・doGet/doPostは変更していないため、Apps Scriptエディタでの保存のみで反映され再デプロイは不要",
+          output: "gas/Code.gs",
+          issues: "モデルの正式なリクエスト数上限(RPM/RPD)がgemini-2.5-flashと比べてどうかは、公式ドキュメントで確認できておらず未検証。"
+        },
+        {
+          task: "レート制限(429)の検知・可視化・自動リトライ",
+          priority: "高", status: "完了", updated: "2026-08-02",
+          note: "",
+          detail: "・従来は429も他のエラーと同じ扱いで「スキップ」になり、備考も生のJSONエラーが入るだけだった\n・researchWithGemini_で429を専用に検知しisRateLimitフラグを付与、collectAIResearch側ではステータスを変更せず(未着手のまま)備考に「⚠ レート制限/利用上限に達したため今回は見送り、次回の自動実行時に再試行します」と明記するようにした\n・ステータスを維持することで翌日の日次トリガーで自動的に再試行される\n・同一実行内で他のキーワードを続けて試しても同じ結果になる可能性が高いため、レート制限を検知した時点でその回の処理を打ち切る(break)",
+          output: "gas/Code.gs"
+        },
+        {
+          task: "繰り返し調査マーカー(【毎日】【N回】)の実装",
+          priority: "中", status: "完了", updated: "2026-08-02",
+          note: "",
+          detail: "・依頼タスクの備考欄先頭に【毎日】または【N回】(例: 【3回】)と書くと、1回で完了にせず繰り返し調査できるようにした\n・parseRepeatConfig_で備考から設定と現在の進捗(N/N回実施)を解釈し、repeatMarkerText_で書き戻し時のマーカー文字列を再構成する\n・レート制限やエラーで処理が中断した場合もマーカー・進捗を保持し、単発扱いに戻ってしまわないようにしている\n・READMEに書き方と記入例を追記した",
+          output: "gas/Code.gs"
+        },
+        {
+          task: "Gemini混雑時間帯の自動最適化(gemini-monitor連携)",
+          priority: "中", status: "完了", updated: "2026-08-01",
+          note: "",
+          detail: "・gemini-monitor(Gemini API通信可能時間調査アプリ)が別スプレッドシートで計測している時間帯別成功率ログを、SpreadsheetApp.openByIdで直接読みに行くcomputeBestHour_を追加\n・GEMINI_MODELの成功率が最も高い時間帯(サンプル数5件未満は除外)を集計し、日次トリガーの実行時刻を自動で付け替えるrescheduleToLeastCongestedHourを実装\n・createWeeklyRescheduleTriggerで毎週日曜3時に自動見直しが走るようにできる。混雑データが読めない場合は現在のトリガー時刻を維持する安全側の設計",
+          output: "gas/Code.gs"
+        },
+        {
+          task: "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
+          priority: "高", status: "対応中", updated: "2026-08-05",
+          note: "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
+          detail: "・専用のClaude調査ルームが、依頼タスクタブで備考に「レート制限」の印が付いた行を見つけて代わりにWeb検索調査し、結果をdata/claude-fallback-results.jsonへcommit・pushする設計\n・GAS側にsyncClaudeResearchFromGithub_を追加し、collectAIResearch実行時に毎回このファイルを取りに行って収集ログへ反映する(progress-tracker-dashboardのsyncFromGithubと同じプル型構成。Claudeセッションからscript.google.com経由でGASへ直接書き込めない制約を回避)\n・ソースURLで重複排除し、【毎日】【N回】の繰り返し設定も引き継ぐ\n・日次トリガーを待たずに手動で反映確認できるsyncClaudeResearchOnly()も追加\n・data/claude-fallback-results.jsonのスキーマと手順をREADMEに記載し、Claude調査ルーム向けの依頼文を作成しユーザーへ渡した",
+          output: "gas/Code.gs, data/claude-fallback-results.json",
+          manualSetup: "1) Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存(doGet/doPostは変更していないため再デプロイ不要)。2) 新しいClaude Codeセッション(調査ルーム)を作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する。"
+        }
+      ]
+    },
+    {
+      repo: "usage-tracker",
+      task: "使用量分析ダッシュボード",
+      priority: "中",
+      status: "未着手",
+      updated: "2026-08-05",
+      category: "manual",
+      note: "【作業タスク】新しいリポジトリ・専用ルームを作ってユーザー(または専用ルーム)が構築する想定。共有Routineの実装対象ではない。",
+      detail: "・目的: Claude Codeでの作業について、1日にどれくらいのタスクをこなせるか、どのくらいの作業量で利用上限に達するかを実測データから把握したい(公式の換算指標は無いため、自前でデータを積み上げて相関を見る方針)\n・実装進捗管理シートに新しいタブを2つ追加する予定: 「使用量ログ」(Repo, Task, 着手日時, 完了日時, 所要時間, 規模感, PR差分行数)と「利用上限ログ」(日時, 直前のタスク, メモ。ユーザーが手動記録)\n・新しいGitHubリポジトリ・専用のApps Script・GitHub Pagesを新規に用意し、日別のタスク完了件数/所要時間の推移と、利用上限ログを並べて見られる表示を作る想定\n・リポジトリ名・専用ルームでの構築を依頼する依頼文は作成済み(ユーザーへ渡し済み)。実際のリポジトリ作成・ルーム開始はまだ行われていない",
+      output: "",
+      issues: "使用量ログへの自動記録(各Routine側がタスク着手・完了のたびに書き込む部分)は、新ダッシュボードのタブ構成が固まってから別途各Routineへ依頼する必要があり、まだ着手していない。"
     }
   ];
 
@@ -629,6 +702,8 @@
     "kizashi": "#c2410c",
     "supermarket-price-tracker": "#0f766e",
     "gemini-monitor": "#a21caf",
+    "ai-research-radar": "#b91c1c",
+    "usage-tracker": "#4d7c0f",
   };
   const RESEARCH_COLOR = "#7c3aed";
   // 技術的な識別子(Repo列・KNOWN_REPOS)は変えず、画面上の表示名だけをここで差し替える。
