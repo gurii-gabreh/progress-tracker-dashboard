@@ -192,6 +192,8 @@
   .meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
   .meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
+  .check-history-toggle { color: var(--text-muted); font-weight: 600; cursor: pointer; }
+  .check-history-toggle:hover { color: var(--accent); }
 
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -218,6 +220,16 @@
   }
   .manual-setup-panel .m-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--status-skip-fg); }
   .manual-setup-panel .m-body { white-space: pre-wrap; }
+
+  .check-history-panel {
+    margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border); font-size: 12.5px;
+  }
+  .check-history-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .check-history-list li { padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .check-history-list li:last-child { padding-bottom: 0; border-bottom: none; }
+  .check-history-list .ch-date { display: block; font-size: 10.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+  .check-history-list .ch-empty { color: var(--text-muted); border-bottom: none; }
 
   .comment-thread {
     margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
@@ -480,6 +492,18 @@
       ]
     },
     {
+      repo: "progress-tracker-dashboard",
+      task: "週次残タスクチェック",
+      priority: "中",
+      status: "対応中",
+      updated: "2026-08-02",
+      category: "manual",
+      note: "【作業タスク】毎週月曜、専用のRoutine(週次残タスクチェックトリガー)が実装進捗管理シートの依頼タスクタブ全体(全リポジトリ)を棚卸しし、滞留タスクが無いか確認する。共有Routineの実装対象ではない。",
+      detail: "",
+      output: "",
+      checkHistory: []
+    },
+    {
       repo: "kizashi",
       task: "都知事杯ハッカソン2026 企画・要件整理",
       priority: "-",
@@ -658,6 +682,7 @@
   let activeFilter = "all";
   const openGroups = new Set();     // key: group toggle path -> subtasks visible
   const openDetails = new Set();    // key: node path -> knowledge panel visible
+  const openCheckHistory = new Set(); // key: node path -> チェック履歴パネル(コメントとは別枠)の開閉
   let dragSourcePath = null;        // ドラッグ中のタスクのpath(ブラウザ内の並び替え専用。スプレッドシートには反映されない)
 
   function renderFilters() {
@@ -740,6 +765,19 @@
       </div>`;
   }
 
+  // コメントスレッドとは別の、日付+要約だけを並べる定期チェック履歴用の枠。
+  // チャット形式ではなく一覧性を優先し、新しい順に並べる。
+  function checkHistoryPanel(node) {
+    const entries = node.checkHistory || [];
+    const list = entries.length
+      ? [...entries].reverse().map(e => `<li><span class="ch-date">${e.date || ""}</span>${e.summary || ""}</li>`).join("")
+      : `<li class="ch-empty">まだ記録がありません</li>`;
+    return `
+      <div class="check-history-panel">
+        <ul class="check-history-list">${list}</ul>
+      </div>`;
+  }
+
   // trail: 自分より上の各階層で「まだ後に兄弟がいるか(true=縦線を継ぐ)」を並べた配列。
   // isLast: 自分が兄弟の中で最後かどうか(枝の形が├─か└─かを決める)。
   function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
@@ -786,6 +824,11 @@
       const label = detailOpen ? "閉じる ▲" : `コメント${commentCount ? `(${commentCount})` : ""}・ナレッジ ▼`;
       html += `<span class="has-knowledge has-comments">${label}</span>`;
     }
+    if (node.checkHistory) {
+      const chOpen = openCheckHistory.has(path);
+      const chLabel = chOpen ? "履歴を閉じる ▲" : `📋 チェック履歴(${node.checkHistory.length}) ▼`;
+      html += `<span class="check-history-toggle" data-check-history-toggle="${path}">${chLabel}</span>`;
+    }
     // 作業タスク(ユーザー自身が対応)は、Routineに「早く実装して」と依頼する意味がないため
     // 即実行・引継ぎ(=実装の続きをClaudeに依頼するボタン)は出さない。
     if (category !== "manual") {
@@ -800,6 +843,9 @@
     if (detailOpen) {
       html += knowledgePanel(node);
       if (!isPlaceholder) html += commentThread(node, path, effectiveRepo);
+    }
+    if (node.checkHistory && openCheckHistory.has(path)) {
+      html += checkHistoryPanel(node);
     }
 
     if (hasChildren && groupOpen) {
@@ -911,6 +957,14 @@
       if (!key) return;
       row.addEventListener("click", () => {
         if (openDetails.has(key)) openDetails.delete(key); else openDetails.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-check-history-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.checkHistoryToggle;
+        if (openCheckHistory.has(key)) openCheckHistory.delete(key); else openCheckHistory.add(key);
         renderFeed();
       });
     });

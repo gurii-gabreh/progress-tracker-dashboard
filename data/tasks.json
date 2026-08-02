@@ -78,6 +78,18 @@
       ]
     },
     {
+      "repo": "progress-tracker-dashboard",
+      "task": "週次残タスクチェック",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-08-02",
+      "category": "manual",
+      "note": "【作業タスク】毎週月曜、専用のRoutine(週次残タスクチェックトリガー)が実装進捗管理シートの依頼タスクタブ全体(全リポジトリ)を棚卸しし、滞留タスクが無いか確認する。共有Routineの実装対象ではない。",
+      "detail": "",
+      "output": "",
+      "checkHistory": []
+    },
+    {
       "repo": "kizashi",
       "task": "都知事杯ハッカソン2026 企画・要件整理",
       "priority": "-",
