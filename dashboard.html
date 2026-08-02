@@ -388,6 +388,7 @@
         <div class="header-actions">
           <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
           <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
+          <button class="settings-btn" id="github-diff-btn" title="各リポジトリの最新コミット日時とこのダッシュボードの記録日を比較し、記録されていない可能性がある活動を依頼タスクタブへ自動で追加します">📥 GitHub差分を取り込み</button>
           <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -401,6 +402,7 @@
       <div class="help-panel" id="help-panel">
         <div class="help-item"><span class="help-term">🔄 更新</span><span class="help-desc">スプレッドシートの依頼タスクタブを確認し、まだ一覧に無い新規タスクを取り込みます。</span></div>
         <div class="help-item"><span class="help-term">⏩ 今すぐ同期</span><span class="help-desc">完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
+        <div class="help-item"><span class="help-term">📥 GitHub差分を取り込み</span><span class="help-desc">各リポジトリの最新コミット日時が、このダッシュボードに記録された最終更新日より新しい場合、「反映確認」タスクを依頼タスクタブへ自動追加します。実際の内容をtasks.jsonへ書き込むのは次回のRoutine実行時です(このボタン単体でtasks.jsonが更新されるわけではありません)。</span></div>
         <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
@@ -727,6 +729,8 @@
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyBq4sD_LZBbgRhGpYYcDzve3jLOJ0_lrxlT89bFHjFlUWhgO975uArRicaveEJMKP9/exec";
   const GAS_TOKEN = "8a2fad1907b8d935f758ede8f66d05d7";
   const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
+  // GitHub上の実際のリポジトリ名の大文字/小文字が、内部識別子(Repo列)と異なるものだけここに書く。
+  const GITHUB_REPO_NAME = { kizashi: "Kizashi" };
 
   const REPO_COLORS = {
     "progress-tracker-dashboard": "#33449c",
@@ -1485,6 +1489,101 @@
       });
   }
 
+  // 指定リポジトリについて、TASKS内(トップレベル+子タスク再帰)で記録されている最新のupdated日付を返す。
+  // 記録が無ければ空文字("-"だけの場合含む)。
+  function maxUpdatedForRepo(repo) {
+    let max = "";
+    const scan = (nodes) => {
+      nodes.forEach((n) => {
+        if (n.updated && n.updated !== "-" && n.updated > max) max = n.updated;
+        if (n.subtasks) scan(n.subtasks);
+      });
+    };
+    scan(TASKS.filter((t) => t.repo === repo));
+    return max;
+  }
+
+  // 各リポジトリの最新コミット日時(GitHub公開API、認証不要の読み取り専用)と、
+  // このダッシュボードに記録済みの最終更新日を比較する。コミットの方が新しいリポジトリは、
+  // 「直接Claude Codeとやり取りして進めた分」等、Routineの自動処理を経由せずtasks.jsonに
+  // 未反映のまま進んだ可能性がある。ブラウザ側からGitHubへ書き込む手段は安全に用意できないため、
+  // (公開ページに書き込みトークンを埋め込むことになってしまう)実際の反映はRoutine(Claude Code
+  // セッション)に任せる。ここでは「＋新規タスク」と同じ追記専用のGASエンドポイントを使い、
+  // 依頼タスクタブへ「反映確認」タスクを自動追加するところまでを行う。
+  async function checkGithubActivity() {
+    const btn = document.getElementById("github-diff-btn");
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "確認中...";
+
+    const repos = [...new Set(TASKS.map((t) => t.repo))];
+    const flagged = [];
+    let hadError = false;
+
+    for (const repo of repos) {
+      const ghName = GITHUB_REPO_NAME[repo] || repo;
+      try {
+        const res = await fetch(`https://api.github.com/repos/gurii-gabreh/${ghName}/commits?per_page=1`);
+        if (!res.ok) { if (res.status !== 404) hadError = true; continue; }
+        const commits = await res.json();
+        if (!commits.length) continue;
+        const commitDate = (commits[0].commit?.committer?.date || commits[0].commit?.author?.date || "").slice(0, 10);
+        if (!commitDate) continue;
+        const recorded = maxUpdatedForRepo(repo);
+        if (!recorded || commitDate > recorded) {
+          flagged.push({
+            repo, commitDate, recorded: recorded || "(記録なし)",
+            sha: (commits[0].sha || "").slice(0, 7),
+            message: (commits[0].commit?.message || "").split("\n")[0],
+          });
+        }
+      } catch (e) {
+        hadError = true;
+      }
+    }
+
+    if (!flagged.length) {
+      btn.textContent = hadError ? "確認完了(一部失敗)" : "✓ 差分なし";
+      setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 2500);
+      return;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const results = await Promise.allSettled(flagged.map((f) =>
+      fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          token: GAS_TOKEN,
+          newTasks: [{
+            repo: f.repo,
+            task: `GitHub活動の反映確認(最新コミット ${f.commitDate} ${f.sha}: ${f.message})`,
+            priority: "中",
+            status: "対応中",
+            requestedAt: today,
+            note: `ダッシュボードの「GitHub差分を取り込み」ボタンが自動追加。tasks.json側の記録(${f.recorded})より新しいコミットをGitHub上で検知したため、実際の変更内容を確認しtasks.jsonへ反映してください。`,
+          }],
+        }),
+      })
+    ));
+    const queuedCount = results.filter((r) => r.status === "fulfilled" && r.value.ok).length;
+    btn.textContent = queuedCount > 0 ? `✓ ${queuedCount}件を依頼に追加` : "追加失敗";
+
+    const summary = [
+      "【GitHub差分チェック結果】",
+      "",
+      ...flagged.map((f) => `・${f.repo}: 最新コミット ${f.commitDate} (${f.sha} ${f.message}) / ダッシュボード記録 ${f.recorded}`),
+      "",
+      queuedCount > 0
+        ? `上記${queuedCount}件を、依頼タスクタブへ「反映確認」タスクとして追加しました。次回のRoutine実行時(または該当タスクの⚡即実行)で、実際の変更内容がtasks.jsonへ反映されます。`
+        : "依頼タスクタブへの追加に失敗しました。ネットワーク状況を確認し、もう一度お試しください。",
+    ].join("\n");
+    showHandoffModal(summary, "GitHub差分チェック結果");
+    refreshFromSheet(true);
+
+    setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 3000);
+  }
+
   function showRoutineSettingsModal() {
     const root = document.getElementById("modal-root");
     root.innerHTML = `
@@ -1561,6 +1660,7 @@
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
+  document.getElementById("github-diff-btn").addEventListener("click", checkGithubActivity);
   document.getElementById("help-toggle-btn").addEventListener("click", (e) => {
     const panel = document.getElementById("help-panel");
     const open = panel.classList.toggle("open");
