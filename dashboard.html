@@ -122,7 +122,6 @@
     font-size: 11px; font-weight: 700; color: #fff;
   }
   .avatar.lg { width: 34px; height: 34px; border-radius: 8px; font-size: 15px; }
-  .avatar.sm { width: 24px; height: 24px; border-radius: 6px; font-size: 11px; }
 
   .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
   .filter-btn {
@@ -141,15 +140,26 @@
   }
 
   .repo-header {
-    display: flex; align-items: center; gap: 10px; padding: 12px 16px 8px;
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--group-color, var(--accent)); color: #fff;
   }
-  .repo-header .repo-name { font-weight: 700; font-size: 14.5px; }
-  .repo-header .type-tag { font-size: 11px; color: var(--text-muted); }
-  .repo-header .add-task-btn { margin-left: auto; }
-  .tree-stem {
-    padding: 0 0 2px 32px; font-family: ui-monospace, "SF Mono", Consolas, monospace;
-    font-size: 12px; line-height: 1; color: var(--border);
+  .repo-header .avatar { background: rgba(255, 255, 255, 0.28) !important; color: #fff; }
+  .repo-header .repo-name { font-weight: 700; font-size: 14.5px; color: #fff; }
+  .repo-header .type-tag { font-size: 11px; color: rgba(255, 255, 255, 0.85); }
+  .repo-header .add-task-btn {
+    margin-left: auto; border-color: rgba(255, 255, 255, 0.55); color: #fff;
   }
+  .repo-header .add-task-btn:hover { border-color: #fff; background: rgba(255, 255, 255, 0.15); }
+
+  .table-head {
+    display: grid; grid-template-columns: 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
+    align-items: center; column-gap: 8px; padding: 6px 14px;
+    background: color-mix(in srgb, var(--group-color, var(--accent)) 16%, var(--surface));
+    border-bottom: 1px solid var(--border);
+    font-size: 10.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em;
+  }
+  .table-head span:nth-child(4) { text-align: left; }
+  .table-head span:not(:nth-child(4)) { text-align: center; }
 
   .empty.small { padding: 10px 16px 14px 16px; font-size: 12px; text-align: left; }
 
@@ -160,38 +170,46 @@
   .done-summary .done-date { font-size: 11px; opacity: .75; }
 
   .feed-row {
-    display: flex; align-items: flex-start; gap: 8px; padding: 10px 16px; cursor: default;
+    display: grid; grid-template-columns: 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
+    align-items: center; column-gap: 8px; padding: 7px 14px; cursor: default;
+    background: color-mix(in srgb, var(--group-color, var(--accent)) 5%, var(--surface));
+    border-bottom: 1px solid var(--border);
   }
+  .feed-row.child { background: color-mix(in srgb, var(--group-color, var(--accent)) 9%, var(--surface)); }
   .feed-row.clickable { cursor: pointer; }
   .feed-row.clickable:hover { background: var(--surface-2); }
   .feed-row.dragging { opacity: 0.4; }
   .feed-row.drag-over { background: var(--accent-soft); outline: 1px dashed var(--accent); outline-offset: -2px; }
-  .tree-connector {
-    flex: 0 0 auto; padding-top: 6px; font-family: ui-monospace, "SF Mono", Consolas, monospace;
-    font-size: 12px; line-height: 1; color: var(--text-muted); white-space: pre; cursor: grab;
+  .drag-handle {
+    font-size: 11px; line-height: 1; color: var(--text-muted); cursor: grab; text-align: center;
   }
 
   .chevron-btn {
-    flex: 0 0 auto; width: 22px; height: 22px; border: none; background: none; cursor: pointer;
+    width: 20px; height: 20px; border: none; background: none; cursor: pointer;
     color: var(--text-muted); display: flex; align-items: center; justify-content: center;
     font-size: 11px; transition: transform 0.15s ease;
   }
   .chevron-btn.open { transform: rotate(90deg); }
-  .chevron-spacer { flex: 0 0 auto; width: 22px; }
+  .chevron-spacer { width: 20px; }
 
-  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .top-line { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+  .row-icon { font-size: 13px; text-align: center; }
   .type-tag { font-size: 11px; color: var(--text-muted); }
   .subtask-count { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .cell-task { min-width: 0; }
   .task-text { font-size: 13.5px; color: var(--text); }
   .task-text.muted { color: var(--text-muted); font-style: italic; }
-  .meta-line {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap;
+  .cell-priority, .cell-updated {
+    font-size: 11.5px; color: var(--text-muted); text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .cell-status { text-align: center; }
+  .row-meta-line {
+    grid-column: 1 / -1; display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap;
     font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;
+    padding: 4px 0 0 56px;
   }
   .meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
-  .meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
+  .row-meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
   .check-history-toggle { color: var(--text-muted); font-weight: 600; cursor: pointer; }
   .check-history-toggle:hover { color: var(--accent); }
 
@@ -261,7 +279,7 @@
     border: 1px dashed var(--accent); background: transparent; color: var(--accent); cursor: pointer;
   }
   .knowledge-update-btn:hover { background: var(--accent-soft); }
-  .meta-line .has-comments { color: var(--accent); }
+  .row-meta-line .has-comments { color: var(--accent); }
 
   .knowledge-panel {
     margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
@@ -369,7 +387,7 @@
         <div class="eyebrow">Progress Tracker</div>
         <div class="header-actions">
           <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
-          <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・コメントを、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
+          <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
           <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -382,13 +400,14 @@
       <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
       <div class="help-panel" id="help-panel">
         <div class="help-item"><span class="help-term">🔄 更新</span><span class="help-desc">スプレッドシートの依頼タスクタブを確認し、まだ一覧に無い新規タスクを取り込みます。</span></div>
-        <div class="help-item"><span class="help-term">⏩ 今すぐ同期</span><span class="help-desc">完了・コメントの最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
+        <div class="help-item"><span class="help-term">⏩ 今すぐ同期</span><span class="help-desc">完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
+        <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
         <div class="help-item"><span class="help-term">⚡ 即実行</span><span class="help-desc">次回の定期実行を待たず、今すぐこのタスクを実行してほしいときの依頼文を作成します。</span></div>
         <div class="help-item"><span class="help-term">引継ぎ</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
-        <div class="help-item"><span class="help-term">📝 記録を補足依頼</span><span class="help-desc">備考・実装ナレッジ・問題点・成果物に書き漏れがないか確認し、空欄があれば埋めるよう依頼するコメントを送信します(既存の記載は上書きしません)。</span></div>
-        <div class="help-item"><span class="help-term">送信</span><span class="help-desc">コメント欄の内容を記録するだけです。実行タイミングは次回の定期実行のままです(即実行とはここが違います)。</span></div>
+        <div class="help-item"><span class="help-term">📝 記録を補足依頼</span><span class="help-desc">備考・実装ナレッジ・問題点・成果物に書き漏れがないか確認し、空欄があれば埋めるよう依頼する追加指示を送信します(既存の記載は上書きしません)。</span></div>
+        <div class="help-item"><span class="help-term">送信</span><span class="help-desc">追加指示欄の内容を記録するだけです。実行タイミングは次回の定期実行のままです(即実行とはここが違います)。</span></div>
         <div class="help-item"><span class="help-term">タスクの並び替え</span><span class="help-desc">行をドラッグ&ドロップすると、同じリポジトリ内・同じ親タスク内で順番を入れ替えられます。この並び順はブラウザ内だけの表示用で、スプレッドシート側には反映されません。</span></div>
       </div>
     </header>
@@ -753,7 +772,7 @@
     if (!t.subtasks || !t.subtasks.length) return t.status;
     const statuses = t.subtasks.map(s => s.status);
     if (statuses.every(s => s === "完了")) return "完了";
-    if (statuses.some(s => s === "進行中")) return "進行中";
+    if (statuses.some(s => s === "進行中" || s === "対応中")) return "進行中";
     if (statuses.some(s => s === "未着手")) return statuses.some(s => s === "完了") ? "進行中" : "未着手";
     return "スキップ";
   }
@@ -836,19 +855,19 @@
             <div class="c-meta">${c.author === "user" ? "あなた" : "Routine"} ・ ${c.at || ""}</div>
             <div class="c-text">${escapeHtml(c.text)}</div>
           </div>`).join("")
-      : `<div class="comment-empty">まだコメントはありません。エラー報告や追加指示、完了報告などを書き込むと、次回のRoutine実行時に読み取られます。</div>`;
+      : `<div class="comment-empty">まだ追加指示はありません。エラー報告や追加指示、完了報告などを書き込むと、次回のRoutine実行時に読み取られます。</div>`;
 
     const status = aggregateStatus(node);
     return `
       <div class="comment-thread">
-        <div class="c-label">コメント</div>
+        <div class="c-label">追加指示</div>
         <div class="comment-list">${list}</div>
         <div class="comment-form">
           <textarea data-comment-input="${path}" placeholder="例: GASのデプロイ完了しました / この部分は〇〇に変更して"></textarea>
-          ${status !== "完了" ? `<button class="urgent-btn" data-comment-urgent="${path}" data-comment-urgent-repo="${repo}" title="入力中のコメントも送信した上で、次回の定期実行を待たず今すぐ実行してほしい旨の依頼文を作成します">⚡ 即実行</button>` : ""}
+          ${status !== "完了" ? `<button class="urgent-btn" data-comment-urgent="${path}" data-comment-urgent-repo="${repo}" title="入力中の追加指示も送信した上で、次回の定期実行を待たず今すぐ実行してほしい旨の依頼文を作成します">⚡ 即実行</button>` : ""}
           <button class="comment-send-btn" data-comment-send="${path}" data-comment-repo="${repo}">送信</button>
         </div>
-        <div class="comment-hint">送信 = コメントを記録するだけ ／ 即実行 = 記録した上でRoutineに今すぐの実行を依頼</div>
+        <div class="comment-hint">送信 = 追加指示を記録するだけ ／ 即実行 = 記録した上でRoutineに今すぐの実行を依頼</div>
         <button class="knowledge-update-btn" data-knowledge-update="${path}" data-knowledge-update-repo="${repo}" title="実装ナレッジ・問題点・成果物に書き漏れがないか確認し、あれば補足してもらうよう依頼します">📝 記録を補足依頼</button>
       </div>`;
   }
@@ -866,8 +885,7 @@
       </div>`;
   }
 
-  // trail: 自分より上の各階層で「まだ後に兄弟がいるか(true=縦線を継ぐ)」を並べた配列。
-  // isLast: 自分が兄弟の中で最後かどうか(枝の形が├─か└─かを決める)。
+  // trail: 自分より上の各階層の配列(深さ=インデント幅の計算にのみ使う)。
   function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
@@ -875,41 +893,38 @@
     const isPlaceholder = node.task.startsWith("(");
     const hasDetailSection = hasKnowledge || !isPlaceholder;
     const status = aggregateStatus(node);
-    // 未完了(未着手/進行中/スキップ等)のグループは常に展開表示にする(折りたたませない)。
-    // 完了済みのグループだけ、手動でシェブロンをトグルして開閉できる。
-    const forceOpen = status !== "完了";
-    const groupOpen = forceOpen || openGroups.has(path);
+    // 子タスクは既定では折りたたみ、シェブロンをクリックした時だけ展開する。
+    const groupOpen = openGroups.has(path);
     const detailOpen = openDetails.has(path);
-    const connector = trail.map(cont => cont ? "│  " : "   ").join("") + (isLast ? "└─ " : "├─ ");
+    const depth = trail.length;
+    const category = taskCategory(node);
 
     let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}" draggable="true" data-drag-path="${path}">`;
-    html += `<span class="tree-connector" title="ドラッグで並び替え">${connector}</span>`;
-    if (hasChildren && forceOpen) {
-      html += `<div class="chevron-spacer" title="未完了のタスクがあるため常に展開表示">▾</div>`;
-    } else if (hasChildren) {
+    html += `<span class="drag-handle" title="ドラッグで並び替え">⋮⋮</span>`;
+    if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
     } else {
       html += `<div class="chevron-spacer"></div>`;
     }
-    html += `<div class="avatar ${child ? "sm" : "lg"}" style="background:${avatarColor(node)}">${avatarLabel(node)}</div>`;
-    html += `<div class="content">`;
-    html += `<div class="top-line">`;
-    if (!child) html += `<button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}" title="このタスクの下に子タスクを追加します">＋ 子タスク</button>`;
-    if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
-    html += `</div>`;
-    const category = taskCategory(node);
+    html += `<span class="row-icon">${avatarLabel(node)}</span>`;
+    html += `<div class="cell-task" style="padding-left:${depth * 16}px">`;
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.task}</div>`;
-    html += `<div class="meta-line">`;
-    html += `<div class="meta-info">${chip(status)}`;
+    html += `</div>`;
+    html += `<div class="cell-priority">${node.priority !== "-" ? node.priority : "―"}</div>`;
+    html += `<div class="cell-status">${chip(status)}</div>`;
+    html += `<div class="cell-updated">${node.updated !== "-" ? node.updated : "―"}</div>`;
+
+    html += `<div class="row-meta-line">`;
+    html += `<div class="meta-info">`;
     if (!child) html += `<span class="category-tag ${category}">${CATEGORY_LABELS[category]}</span>`;
+    if (hasChildren) html += `<span class="subtask-count">${node.subtasks.filter(s => s.status === "完了").length}/${node.subtasks.length} 完了</span>`;
     if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
-    if (node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
-    if (node.updated !== "-") html += `<span>${node.updated}</span>`;
     html += `</div>`;
     html += `<div class="meta-actions">`;
+    if (!child) html += `<button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}" title="このタスクの下に子タスクを追加します">＋ 子タスク</button>`;
     if (hasDetailSection) {
-      const commentCount = (node.comments || []).length;
-      const label = detailOpen ? "閉じる ▲" : `コメント${commentCount ? `(${commentCount})` : ""}・ナレッジ ▼`;
+      const instructionCount = (node.comments || []).length;
+      const label = detailOpen ? "閉じる ▲" : `追加指示${instructionCount ? `(${instructionCount})` : ""}・ナレッジ ▼`;
       html += `<span class="has-knowledge has-comments">${label}</span>`;
     }
     if (node.checkHistory) {
@@ -923,7 +938,7 @@
       if (!isPlaceholder && status !== "完了") html += `<button class="urgent-btn" data-urgent="${path}" data-urgent-repo="${effectiveRepo}">⚡ 即実行</button>`;
       if (!isPlaceholder) html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ</button>`;
     }
-    html += `</div></div></div></div>`;
+    html += `</div></div></div>`;
 
     if (node.manualSetup) {
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
@@ -993,14 +1008,17 @@
       const typeTagHtml = cats.size === 1 ? `<span class="type-tag">${CATEGORY_LABELS[[...cats][0]]}</span>` : "";
       const tree = nodes.map((t, i) => renderRow(t, `${TASKS.indexOf(t)}`, { isLast: i === nodes.length - 1 })).join("");
       return `
-        <div class="task-group" data-repo-group="${repo}">
+        <div class="task-group" data-repo-group="${repo}" style="--group-color:${avatarColor(first)}">
           <div class="repo-header">
             <div class="avatar lg" style="background:${avatarColor(first)}">${avatarText}</div>
             <span class="repo-name">${repoDisplayName(repo)}</span>
             ${typeTagHtml}
             <button class="add-task-btn" data-add-parent="repo:${repo}" data-add-repo="${repo}" title="このリポジトリに新しいタスクを追加します">＋ 新規タスク</button>
           </div>
-          <div class="tree-stem">│</div>
+          <div class="table-head">
+            <span></span><span></span><span></span>
+            <span>タスク</span><span>優先度</span><span>ステータス</span><span>更新日</span>
+          </div>
           ${tree}
         </div>`;
     }).join("");
