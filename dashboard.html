@@ -388,7 +388,7 @@
         <div class="header-actions">
           <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
           <button class="settings-btn" id="sync-now-btn" title="GitHub側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ 今すぐ同期</button>
-          <button class="settings-btn" id="github-diff-btn" title="各リポジトリの最新コミット日時とこのダッシュボードの記録日を比較し、記録されていない可能性がある活動を依頼タスクタブへ自動で追加します">📥 GitHub差分を取り込み</button>
+          <button class="settings-btn" id="github-diff-btn" title="GitHubの最新コミットがダッシュボードの記録より新しいリポジトリを探し、「確認して」という依頼タスクを置きます(この場でtasks.jsonが更新されるわけではありません。実際の反映は次回のRoutine実行時です)">📥 GitHub差分を取り込み</button>
           <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -402,7 +402,7 @@
       <div class="help-panel" id="help-panel">
         <div class="help-item"><span class="help-term">🔄 更新</span><span class="help-desc">スプレッドシートの依頼タスクタブを確認し、まだ一覧に無い新規タスクを取り込みます。</span></div>
         <div class="help-item"><span class="help-term">⏩ 今すぐ同期</span><span class="help-desc">完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
-        <div class="help-item"><span class="help-term">📥 GitHub差分を取り込み</span><span class="help-desc">各リポジトリの最新コミット日時が、このダッシュボードに記録された最終更新日より新しい場合、「反映確認」タスクを依頼タスクタブへ自動追加します。実際の内容をtasks.jsonへ書き込むのは次回のRoutine実行時です(このボタン単体でtasks.jsonが更新されるわけではありません)。</span></div>
+        <div class="help-item"><span class="help-term">📥 GitHub差分を取り込み</span><span class="help-desc">2段階の仕組みです。①ボタンを押すと、記録より新しいコミットがあるリポジトリを探し「確認して」という依頼タスクを置きます。②その依頼を、この部屋(Routine)が次回の定期実行時(または⚡即実行)に読んで、実際にtasks.jsonへ書き込みます。ボタンを押した瞬間には反映されません。</span></div>
         <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
