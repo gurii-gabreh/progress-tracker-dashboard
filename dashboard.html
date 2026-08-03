@@ -256,7 +256,8 @@
   .comment-bubble { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 8px; max-width: 90%; }
   .comment-bubble.user { align-self: flex-end; background: var(--accent-soft); }
   .comment-bubble.routine { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
-  .comment-bubble .c-meta { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+  .comment-bubble .c-meta { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-muted); font-weight: 600; }
+  .comment-bubble .c-meta .chip { font-size: 9.5px; padding: 1px 6px; }
   .comment-bubble .c-text { white-space: pre-wrap; }
   .comment-empty { font-size: 11.5px; color: var(--text-muted); }
   .comment-form { display: flex; gap: 6px; }
@@ -1058,10 +1059,16 @@
   // 追加指示(comments)。既定は折りたたみ。説明文もこのパネルの中にあるため、開くまでは隠れる。
   function commentThread(node, path, repo) {
     const comments = node.comments || [];
+    // ユーザーの追加指示より後にRoutineからの返信コメントがあれば「対応済み」とみなす
+    // (README・共有Routineのプロンプトに書かれている既読判定ロジックと同じ基準)。
+    const isAddressed = (c) => comments.some(r => r.author === "routine" && r.at && c.at && r.at > c.at);
     const list = comments.length
       ? comments.map(c => `
           <div class="comment-bubble ${c.author === "user" ? "user" : "routine"}">
-            <div class="c-meta">${c.author === "user" ? "あなた" : "Routine"} ・ ${c.at || ""}</div>
+            <div class="c-meta">
+              ${c.author === "user" ? "あなた" : "Routine"} ・ ${c.at || ""}
+              ${c.author === "user" ? `<span class="chip ${isAddressed(c) ? "done" : "todo"}">${isAddressed(c) ? "✓ 対応済み" : "○ 未対応"}</span>` : ""}
+            </div>
             <div class="c-text">${escapeHtml(c.text)}</div>
           </div>`).join("")
       : `<div class="comment-empty">まだ追加指示はありません。エラー報告や追加指示、完了報告などを書き込むと、次回のRoutine実行時に読み取られます。</div>`;
@@ -1137,9 +1144,10 @@
     if (hasCompletedItems) {
       html += `<span class="check-history-toggle" data-completed-toggle="${path}">${completedOpen ? "完了したタスクを閉じる ▲" : `✓ 完了したタスク(${node.completedItems.length}) ▼`}</span>`;
     }
-    if (node.checkHistory) {
+    if (!isPlaceholder) {
       const chOpen = openCheckHistory.has(path);
-      const chLabel = chOpen ? "履歴を閉じる ▲" : `📋 履歴(${node.checkHistory.length}) ▼`;
+      const historyCount = (node.checkHistory || []).length;
+      const chLabel = chOpen ? "履歴を閉じる ▲" : `📋 履歴${historyCount ? `(${historyCount})` : ""} ▼`;
       html += `<span class="check-history-toggle" data-check-history-toggle="${path}">${chLabel}</span>`;
     }
     if (!isPlaceholder) {
@@ -1161,7 +1169,7 @@
     }
     if (knowledgeOpen) html += knowledgePanel(node);
     if (completedOpen) html += completedPanel(node);
-    if (node.checkHistory && openCheckHistory.has(path)) {
+    if (openCheckHistory.has(path) && !isPlaceholder) {
       html += checkHistoryPanel(node);
     }
     if (commentsOpen && !isPlaceholder) {
