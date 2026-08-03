@@ -176,8 +176,6 @@
     border-bottom: 1px solid var(--border);
   }
   .feed-row.child { background: color-mix(in srgb, var(--group-color, var(--accent)) 9%, var(--surface)); }
-  .feed-row.clickable { cursor: pointer; }
-  .feed-row.clickable:hover { background: var(--surface-2); }
   .feed-row.dragging { opacity: 0.4; }
   .feed-row.drag-over { background: var(--accent-soft); outline: 1px dashed var(--accent); outline-offset: -2px; }
   .drag-handle {
@@ -209,7 +207,6 @@
   }
   .meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
-  .row-meta-line .has-knowledge { color: var(--accent); font-weight: 600; }
   .check-history-toggle { color: var(--text-muted); font-weight: 600; cursor: pointer; }
   .check-history-toggle:hover { color: var(--accent); }
 
@@ -279,7 +276,6 @@
     border: 1px dashed var(--accent); background: transparent; color: var(--accent); cursor: pointer;
   }
   .knowledge-update-btn:hover { background: var(--accent-soft); }
-  .row-meta-line .has-comments { color: var(--accent); }
 
   .knowledge-panel {
     margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
@@ -287,12 +283,32 @@
     font-size: 12.5px; color: var(--text); display: flex; flex-direction: column; gap: 6px;
   }
   .knowledge-panel .k-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
-  .knowledge-panel .k-content { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
-  .knowledge-panel .k-content li { line-height: 1.4; }
-  .knowledge-panel .k-completed { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; color: var(--status-done-fg); }
-  .knowledge-panel .k-completed li { line-height: 1.4; }
-  .knowledge-panel .k-completed .ci-date { color: var(--text-muted); font-size: 11px; }
   .knowledge-panel .k-detail { white-space: pre-wrap; }
+
+  .task-content-panel {
+    margin: 0 16px 10px 16px; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border); font-size: 12.5px;
+  }
+  .task-content-panel.manual { background: var(--status-skip-bg); border-color: var(--status-skip-fg); }
+  .task-content-panel .tc-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+  .task-content-panel.manual .tc-label { color: var(--status-skip-fg); }
+  .task-content-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+  .task-content-list li { line-height: 1.4; }
+
+  .completed-panel {
+    margin: 0 16px 12px 16px; padding: 10px 12px; border-radius: 8px;
+    background: var(--status-done-bg); border: 1px solid var(--status-done-fg); font-size: 12.5px;
+  }
+  .completed-panel .cp-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--status-done-fg); margin-bottom: 4px;
+  }
+  .completed-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; color: var(--status-done-fg); }
+  .completed-list li { line-height: 1.4; }
+  .completed-list .ci-date { color: var(--text-muted); font-size: 11px; }
   .knowledge-panel .k-issues {
     white-space: pre-wrap; padding: 6px 8px; border-radius: 6px;
     background: var(--status-skip-bg); color: var(--status-skip-fg);
@@ -407,9 +423,11 @@
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
         <div class="help-item"><span class="help-term">引継ぎ</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
-        <div class="help-item"><span class="help-term">📌 タスク内容</span><span class="help-desc">このタスクが具体的に何を求めているかの箇条書き。ナレッジパネルの一番上に表示されます。</span></div>
-        <div class="help-item"><span class="help-term">✓ 完了項目</span><span class="help-desc">タスク内容のうち既に完了した項目を、完了日付きでまとめたものです。</span></div>
-        <div class="help-item"><span class="help-term">📋 履歴</span><span class="help-desc">このタスクに対応した日ごとの記録一覧です(新しい対応のたびに追記されます)。</span></div>
+        <div class="help-item"><span class="help-term">📌 タスク内容</span><span class="help-desc">このタスクが具体的に何を求めているかの箇条書きで、上から順に対応していきます。初期状態から常に表示され、残課題や新たに分かった問題もここに追記されます(ユーザー作業タスクは背景色が変わります)。</span></div>
+        <div class="help-item"><span class="help-term">📖 実装ナレッジ</span><span class="help-desc">実装・調査の詳細、問題点、備考、成果物リンクです。初期状態は折りたたまれています。</span></div>
+        <div class="help-item"><span class="help-term">✓ 完了したタスク</span><span class="help-desc">タスク内容のうち既に完了した項目を、完了日付きでまとめたものです。初期状態は折りたたまれています。</span></div>
+        <div class="help-item"><span class="help-term">📋 履歴</span><span class="help-desc">このタスクに対応した日ごとの記録一覧です(新しい対応のたびに追記されます)。初期状態は折りたたまれています。</span></div>
+        <div class="help-item"><span class="help-term">💬 追加指示</span><span class="help-desc">タスクごとのやり取りです。エラー報告・追加指示・完了報告などを書き込むと次回のRoutine実行時に読み取られます。初期状態は折りたたまれています。</span></div>
         <div class="help-item"><span class="help-term">📝 記録を補足依頼</span><span class="help-desc">備考・実装ナレッジ・問題点・成果物に書き漏れがないか確認し、空欄があれば埋めるよう依頼する追加指示を送信します(既存の記載は上書きしません)。</span></div>
         <div class="help-item"><span class="help-term">送信</span><span class="help-desc">追加指示欄の内容を記録します。実行タイミングは次回の定期実行時です。</span></div>
         <div class="help-item"><span class="help-term">タスクの並び替え</span><span class="help-desc">行をドラッグ&ドロップすると、同じリポジトリ内・同じ親タスク内で順番を入れ替えられます。この並び順はブラウザ内だけの表示用で、スプレッドシート側には反映されません。</span></div>
@@ -434,12 +452,12 @@
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
   // content: このタスクが具体的に何を求めているか・何をする必要があるかを箇条書き(文字列配列)で書く。
-  // 「実装ナレッジ」パネルの一番上に表示され、note/detailの長い文章に埋もれず一目で分かるようにするためのもの。
-  // 対応中に新しく分かった要件・追加でやるべきことがあれば、ここに箇条書きを追記する(既存の項目は消さない)。
+  // 「実装ナレッジ」等とは別の、常に表示される専用パネル(タスク内容)に上から順に並ぶ。
+  // 対応中に新しく分かった残課題・要件はここに箇条書きで追記する(既存の項目は消さない)。
   // 完全に新しい別の課題が見つかった場合はcontentに足すのではなく、依頼タスクタブに1課題=1行として
   // 新規タスクを追加すること(このタスクのcontentに混ぜない)。
   // completedItems: contentの各項目のうち既に完了したものを{item, date}の配列でここへ移す(完了日を必ず入れる)。
-  // 全項目が完了したらタスク自体もstatus:完了にする。
+  // 「完了したタスク」という別の折りたたみパネルに表示される。全項目が完了したらタスク自体もstatus:完了にする。
   // checkHistory: そのタスクに対して実際に対応した日ごとの記録を{date, summary}の配列で追記する(新しい対応の
   // たびに末尾へ追加、既存分は消さない)。「実施した日付+その日に何をしたか」を一覧できるようにするための欄で、
   // 週次残タスクチェックのような定期チェック専用ではなく、進捗のあった全タスクで使ってよい。
@@ -912,7 +930,7 @@
   const CATEGORY_LABELS = {
     code: "💻 コード実装",
     research: "📝 調査・資料作成",
-    manual: "🧑 作業タスク(ユーザー対応)",
+    manual: "🧑 ユーザー作業タスク",
   };
 
   function repoDisplayName(repo) { return REPO_DISPLAY_NAMES[repo] || repo; }
@@ -952,8 +970,10 @@
 
   let activeFilter = "all";
   const openGroups = new Set();     // key: group toggle path -> subtasks visible
-  const openDetails = new Set();    // key: node path -> knowledge panel visible
-  const openCheckHistory = new Set(); // key: node path -> チェック履歴パネル(コメントとは別枠)の開閉
+  const openKnowledge = new Set();  // key: node path -> 実装ナレッジパネル(detail/issues/note/output)の開閉
+  const openCompleted = new Set();  // key: node path -> 完了したタスク(completedItems)パネルの開閉
+  const openComments = new Set();   // key: node path -> 追加指示(コメント)パネルの開閉
+  const openCheckHistory = new Set(); // key: node path -> 履歴(checkHistory)パネルの開閉
   let dragSourcePath = null;        // ドラッグ中のタスクのpath(ブラウザ内の並び替え専用。スプレッドシートには反映されない)
 
   function renderFilters() {
@@ -999,15 +1019,35 @@
     });
   }
 
+  // タスク内容(content)。既定で常に表示する欄で、上から順に対応していく箇条書き。
+  // 残課題・新たに分かった問題もここへ追記していく想定(別の新しい課題は別タスクとして追加する)。
+  function taskContentPanel(node, category) {
+    if (!node.content || !node.content.length) return "";
+    const isManual = category === "manual";
+    return `
+      <div class="task-content-panel${isManual ? " manual" : ""}">
+        <div class="tc-label">${isManual ? "🧑 ユーザー作業タスク" : "📌 タスク内容"}</div>
+        <ol class="task-content-list">${node.content.map(c => `<li>${c}</li>`).join("")}</ol>
+      </div>`;
+  }
+
+  // 完了したタスク(completedItems)。既定は折りたたみ。
+  function completedPanel(node) {
+    const items = node.completedItems || [];
+    if (!items.length) return "";
+    return `
+      <div class="completed-panel">
+        <div class="cp-label">✓ 完了したタスク</div>
+        <ul class="completed-list">${items.map(c => `<li>${c.item}${c.date ? ` <span class="ci-date">(${c.date})</span>` : ""}</li>`).join("")}</ul>
+      </div>`;
+  }
+
+  // 実装ナレッジ(detail/issues/note/output)。既定は折りたたみ。
   function knowledgePanel(node) {
-    const hasContent = node.content && node.content.length;
-    const hasCompleted = node.completedItems && node.completedItems.length;
-    if (!hasContent && !hasCompleted && !node.note && !node.detail && !node.issues && !node.output) return "";
+    if (!node.note && !node.detail && !node.issues && !node.output) return "";
     return `
       <div class="knowledge-panel">
         <div class="k-label">実装ナレッジ</div>
-        ${hasContent ? `<div><div class="k-issues-label">📌 タスク内容</div><ul class="k-content">${node.content.map(c => `<li>${c}</li>`).join("")}</ul></div>` : ""}
-        ${hasCompleted ? `<div><div class="k-issues-label">✓ 完了項目</div><ul class="k-completed">${node.completedItems.map(c => `<li>${c.item}${c.date ? ` <span class="ci-date">(${c.date})</span>` : ""}</li>`).join("")}</ul></div>` : ""}
         ${node.detail ? `<div class="k-detail">${node.detail}</div>` : ""}
         ${node.issues ? `<div class="k-issues"><div class="k-issues-label">⚠ 問題点</div>${node.issues}</div>` : ""}
         ${node.note ? `<div class="k-note">${node.note}</div>` : ""}
@@ -1015,6 +1055,7 @@
       </div>`;
   }
 
+  // 追加指示(comments)。既定は折りたたみ。説明文もこのパネルの中にあるため、開くまでは隠れる。
   function commentThread(node, path, repo) {
     const comments = node.comments || [];
     const list = comments.length
@@ -1055,17 +1096,19 @@
   function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
-    const hasKnowledge = !!(node.note || node.detail || node.output || (node.content && node.content.length) || (node.completedItems && node.completedItems.length));
+    const hasKnowledgeInfo = !!(node.note || node.detail || node.issues || node.output);
+    const hasCompletedItems = !!(node.completedItems && node.completedItems.length);
     const isPlaceholder = node.task.startsWith("(");
-    const hasDetailSection = hasKnowledge || !isPlaceholder;
     const status = aggregateStatus(node);
     // 子タスクは既定では折りたたみ、シェブロンをクリックした時だけ展開する。
     const groupOpen = openGroups.has(path);
-    const detailOpen = openDetails.has(path);
+    const knowledgeOpen = openKnowledge.has(path);
+    const completedOpen = openCompleted.has(path);
+    const commentsOpen = openComments.has(path);
     const depth = trail.length;
     const category = taskCategory(node);
 
-    let html = `<div class="feed-row${hasDetailSection ? " clickable" : ""}${child ? " child" : ""}" data-detail-toggle="${hasDetailSection ? path : ""}" draggable="true" data-drag-path="${path}">`;
+    let html = `<div class="feed-row${child ? " child" : ""}" draggable="true" data-drag-path="${path}">`;
     html += `<span class="drag-handle" title="ドラッグで並び替え">⋮⋮</span>`;
     if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
@@ -1088,15 +1131,21 @@
     html += `</div>`;
     html += `<div class="meta-actions">`;
     if (!child) html += `<button class="add-task-btn" data-add-parent="${path}" data-add-repo="${node.repo}" title="このタスクの下に子タスクを追加します">＋ 子タスク</button>`;
-    if (hasDetailSection) {
-      const instructionCount = (node.comments || []).length;
-      const label = detailOpen ? "閉じる ▲" : `追加指示${instructionCount ? `(${instructionCount})` : ""}・ナレッジ ▼`;
-      html += `<span class="has-knowledge has-comments">${label}</span>`;
+    if (hasKnowledgeInfo) {
+      html += `<span class="check-history-toggle" data-knowledge-toggle="${path}">${knowledgeOpen ? "実装ナレッジを閉じる ▲" : "📖 実装ナレッジ ▼"}</span>`;
+    }
+    if (hasCompletedItems) {
+      html += `<span class="check-history-toggle" data-completed-toggle="${path}">${completedOpen ? "完了したタスクを閉じる ▲" : `✓ 完了したタスク(${node.completedItems.length}) ▼`}</span>`;
     }
     if (node.checkHistory) {
       const chOpen = openCheckHistory.has(path);
       const chLabel = chOpen ? "履歴を閉じる ▲" : `📋 履歴(${node.checkHistory.length}) ▼`;
       html += `<span class="check-history-toggle" data-check-history-toggle="${path}">${chLabel}</span>`;
+    }
+    if (!isPlaceholder) {
+      const instructionCount = (node.comments || []).length;
+      const label = commentsOpen ? "追加指示を閉じる ▲" : `💬 追加指示${instructionCount ? `(${instructionCount})` : ""} ▼`;
+      html += `<span class="check-history-toggle" data-comments-toggle="${path}">${label}</span>`;
     }
     // 作業タスク(ユーザー自身が対応)は、Routineに実装の続きを依頼する意味がないため
     // 引継ぎ(=実装の続きをClaudeに依頼するボタン)は出さない。
@@ -1105,15 +1154,18 @@
     }
     html += `</div></div></div>`;
 
+    // タスク内容(content)は既定で常に表示。残課題・新たに分かった問題もここに箇条書きで反映していく。
+    html += taskContentPanel(node, category);
     if (node.manualSetup) {
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
     }
-    if (detailOpen) {
-      html += knowledgePanel(node);
-      if (!isPlaceholder) html += commentThread(node, path, effectiveRepo);
-    }
+    if (knowledgeOpen) html += knowledgePanel(node);
+    if (completedOpen) html += completedPanel(node);
     if (node.checkHistory && openCheckHistory.has(path)) {
       html += checkHistoryPanel(node);
+    }
+    if (commentsOpen && !isPlaceholder) {
+      html += commentThread(node, path, effectiveRepo);
     }
 
     if (hasChildren && groupOpen) {
@@ -1223,11 +1275,27 @@
         renderFeed();
       });
     });
-    feed.querySelectorAll("[data-detail-toggle]").forEach(row => {
-      const key = row.dataset.detailToggle;
-      if (!key) return;
-      row.addEventListener("click", () => {
-        if (openDetails.has(key)) openDetails.delete(key); else openDetails.add(key);
+    feed.querySelectorAll("[data-knowledge-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.knowledgeToggle;
+        if (openKnowledge.has(key)) openKnowledge.delete(key); else openKnowledge.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-completed-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.completedToggle;
+        if (openCompleted.has(key)) openCompleted.delete(key); else openCompleted.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-comments-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.commentsToggle;
+        if (openComments.has(key)) openComments.delete(key); else openComments.add(key);
         renderFeed();
       });
     });
