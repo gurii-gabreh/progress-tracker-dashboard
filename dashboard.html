@@ -521,7 +521,12 @@
       note: "【作業タスク】毎週月曜、専用のRoutine(週次残タスクチェックトリガー)が実装進捗管理シートの依頼タスクタブ全体(全リポジトリ)を棚卸しし、滞留タスクが無いか確認する。共有Routineの実装対象ではない。",
       detail: "",
       output: "",
-      checkHistory: []
+      checkHistory: [
+        {
+          date: "2026-08-03",
+          summary: "依頼タスクタブの残件は計11件(通常2件: gemini-monitor 1件・ai-research-radar 1件、作業タスク9件: kizashiの技術検証フェーズ関連)。長期滞留(スキップ放置・依頼日超過の未着手)は無し。gemini-monitorの新規タスク「問題点が問題ないかを調べて」(対応中、2026-08-01依頼)がdata/tasks.json未反映のズレを検知、ai-research-radarは「生成AIエージェント最新動向」がレート制限で未処理のまま自動リトライ中。",
+        },
+      ],
     },
     {
       repo: "kizashi",
