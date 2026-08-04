@@ -402,6 +402,15 @@
     border: none; background: var(--accent); color: #fff; cursor: pointer;
   }
   .modal-copy-btn.copied { background: var(--status-done-fg); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 12px);
+    max-width: min(90vw, 420px); padding: 10px 16px; border-radius: 999px;
+    background: var(--text); color: var(--bg); font-size: 12.5px; font-weight: 600;
+    text-align: center; box-shadow: var(--shadow); opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200;
+  }
+  .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 </style>
 
 <div class="wrap">
@@ -453,6 +462,7 @@
 </div>
 
 <div id="modal-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
@@ -1533,6 +1543,7 @@
         const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
         const text = textarea.value.trim();
         if (!text) return;
+        textarea.value = "";
         sendComment(path, btn.dataset.commentRepo, text);
       });
     });
@@ -1587,6 +1598,17 @@
 
   function escapeHtml(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // 画面下部に一時的なメッセージを表示する(送信結果など、renderFeedで再描画されても消えない通知用)。
+  let toastTimer = null;
+  function showToast(message, durationMs = 3000) {
+    const el = document.getElementById("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("visible"), durationMs);
   }
 
   function buildHandoffText(node, repo) {
@@ -1751,13 +1773,18 @@
     sendComment(path, repo, text);
   }
 
+  // 追加指示(コメント)の送信。ここでの「送信」はスプレッドシートの依頼タスクタブへ新しい行を
+  // 追加するのではなく、GAS側の「コメント」タブへこのタスク(repo+task)に紐づくコメントとして
+  // 1行追記する。次回のRoutine実行時にこのコメントが読み取られ、内容に応じて既存タスクの再オープン・
+  // manualSetup解消などが行われる想定(新規タスクの作成はしない)。
   function sendComment(path, repo, text) {
     const node = findNodeByPath(path);
     if (!node.comments) node.comments = [];
     const at = new Date().toISOString().slice(0, 16).replace("T", " ");
     node.comments.push({ author: "user", text, at });
-    openDetails.add(path);
+    openComments.add(path);
     renderFeed();
+    showToast("送信中…");
 
     fetch(GAS_URL, {
       method: "POST",
@@ -1766,7 +1793,19 @@
         token: GAS_TOKEN,
         addComment: [{ repo, task: node.task, text, author: "user", at }],
       }),
-    }).catch(() => { /* 同期に失敗しても、次回Routine実行時にこのダッシュボードのdata/tasks.json経由で拾われる */ });
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 送信しました(スプレッドシートのコメントタブに追記されました)");
+      })
+      .catch(() => {
+        // 同期に失敗しても、次回Routine実行時にこのダッシュボードのdata/tasks.json経由で拾われる想定。
+        showToast("⚠ スプレッドシートへの送信に失敗しました(内容はここには残っています。次回のRoutine実行時に反映される見込みです)");
+      });
   }
 
   function mergeSheetTasksIntoView(pendingRows) {
