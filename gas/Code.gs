@@ -2,17 +2,29 @@
 // エディタへ手動で貼り付け、保存する必要がある。
 // - doGet/doPost(ウェブアプリ本体。ダッシュボードやRoutineがHTTPで呼ぶ)を変更した場合は、
 //   デプロイ→デプロイを管理→既存のウェブアプリデプロイを「新しいバージョン」で更新すること。
-//   (今回追加したdoPostのsyncNowアクションもこれに該当するため、貼り付け後は必ず再デプロイが必要)
 // - syncFromGithub()のようなトリガー実行専用の関数は、保存するだけで(=デプロイ不要で)
-//   次回のトリガー実行から最新の内容が使われる。ただし、時間主導トリガー自体がまだ未設定の場合は
-//   Apps Scriptエディタ左側の「トリガー」アイコン→「トリガーを追加」から、実行する関数に
-//   syncFromGithub、イベントのソースを「時間主導」、時間の間隔を選んで(例: 1時間おき)保存すること。
+//   次回のトリガー実行から最新の内容が使われる。時間主導トリガー(例: 1時間おき)が未設定の場合は
+//   Apps Scriptエディタ左側の「トリガー」アイコン→「トリガーを追加」から設定すること。
 //   これによりRoutineの実行環境からこのウェブアプリへ直接アクセスできない場合でも、
 //   このトリガーがGoogle側からGitHubのdata/tasks.jsonを定期的に取りに行くことで、
-//   依頼タスク→完了タブの移動・コメント返信がいずれ追いつく。
+//   依頼タスク→完了タブの移動・コメント返信・完了予定タスクの確定がいずれ追いつく。
 // - ダッシュボードの「⏩ 今すぐ同期」ボタンはdoPostに{token, syncNow:true}をPOSTし、
 //   syncFromGithub()を即座に1回だけ手動実行する(上記の時間主導トリガーを待たずに済む)。
 var SHEET_ID = "1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw";
+
+// 依頼タスクタブの列構成。8〜11列目は「✓ 完了にする」ボタン(ダッシュボード)による
+// 取消可能な完了予約(スケジュール完了)のための列。
+//   完了予定: TRUE = 完了予約中(取消期限までは取り消せる)
+//   取消期限: "yyyy-MM-dd HH:mm"(JST)。この時刻を過ぎるとsyncFromGithub実行時に自動確定する
+//   元ステータス: 完了予約前のステータス(取り消し時にここへ戻す)
+//   完了データ: {note, detail, issues, output}のJSON文字列(確定時に完了タブへ書き込む内容)
+var PENDING_HEADERS = ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行", "完了予定", "取消期限", "元ステータス", "完了データ"];
+var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"];
+// コメントタブの6〜7列目は、ユーザーの投稿(追加指示)に対してRoutineが後から返信したかどうかを
+// シート単体からも判別できるようにするための列。
+//   ステータス: author=userの行のみ使用。"未対応" → "対応済み"(Routineの返信を検知して自動更新)
+//   対応内容: 対応済みになった際の、Routine側の返信本文をそのまま転記(問題点があればここに残る)
+var COMMENT_HEADERS = ["Repo", "Task", "発言者", "本文", "日時", "ステータス", "対応内容"];
 
 function doGet(e) {
   var action = e.parameter && e.parameter.action;
@@ -39,8 +51,9 @@ function doPost(e) {
   }
 
   var ss = SpreadsheetApp.openById(SHEET_ID);
-  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
+  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
+  var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
+  ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
 
   var addedCount = 0;
   (body.newTasks || []).forEach(function (r) {
@@ -59,10 +72,12 @@ function doPost(e) {
     }
   });
 
-  var commentSheet = getOrCreateSheet(ss, "コメント", ["Repo", "Task", "発言者", "本文", "日時"]);
+  var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
+  ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
   var commentCount = 0;
   (body.addComment || []).forEach(function (c) {
-    commentSheet.appendRow([c.repo, c.task, c.author || "user", c.text || "", c.at || ""]);
+    var status = (c.author || "user") === "user" ? "未対応" : "";
+    commentSheet.appendRow([c.repo, c.task, c.author || "user", c.text || "", c.at || "", status, ""]);
     commentCount++;
   });
 
@@ -84,15 +99,51 @@ function doPost(e) {
     completedCount++;
   });
 
-  return ContentService.createTextOutput(JSON.stringify({ ok: true, added: addedCount, markedUrgent: urgentCount, commented: commentCount, completed: completedCount }))
-    .setMimeType(ContentService.MimeType.JSON);
+  // 「✓ 完了にする」ボタン(ダッシュボード)からの完了予約。即座には完了タブへ移動せず、
+  // 依頼タスクタブ上で「完了予定」ステータス+取消期限を記録するだけにとどめ、期限
+  // (翌日9:00 JST)を過ぎたらsyncFromGithub実行時に自動確定する(誤操作の取り消し猶予のため)。
+  var scheduledCount = 0;
+  (body.scheduleComplete || []).forEach(function (r) {
+    var deadline = jstDeadlineNextDay9am_();
+    var payload = JSON.stringify({ note: r.note || "", detail: r.detail || "", issues: r.issues || "", output: r.output || "" });
+    var rowIndex = findRow(pendingSheet, r.repo, r.task);
+    if (rowIndex > 0) {
+      var priorStatus = pendingSheet.getRange(rowIndex, 4).getValue() || "未着手";
+      pendingSheet.getRange(rowIndex, 4, 1, 1).setValue("完了予定");
+      pendingSheet.getRange(rowIndex, 8, 1, 4).setValues([[true, deadline, priorStatus, payload]]);
+    } else {
+      // 依頼タスクタブに元々行が無かった(Web側でのみ管理していた)タスクの場合は、
+      // 完了予定行として新規に追加した上で、同じ確定フローに乗せる。
+      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", "完了予定", r.requestedAt || "", "", "FALSE", true, deadline, "未着手", payload]);
+    }
+    scheduledCount++;
+  });
+
+  // 完了予約の取り消し。取消期限内であれば、元のステータスへ戻し予約列をクリアする。
+  var canceledCount = 0;
+  (body.cancelComplete || []).forEach(function (r) {
+    var rowIndex = findRow(pendingSheet, r.repo, r.task);
+    if (rowIndex > 0) {
+      var priorStatus = pendingSheet.getRange(rowIndex, 10).getValue() || "未着手";
+      pendingSheet.getRange(rowIndex, 4, 1, 1).setValue(priorStatus);
+      pendingSheet.getRange(rowIndex, 8, 1, 4).setValues([[false, "", "", ""]]);
+      canceledCount++;
+    }
+  });
+
+  return ContentService.createTextOutput(JSON.stringify({
+    ok: true, added: addedCount, markedUrgent: urgentCount, commented: commentCount,
+    completed: completedCount, scheduled: scheduledCount, canceled: canceledCount,
+  })).setMimeType(ContentService.MimeType.JSON);
 }
 
 function listTasks() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
-  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
-  var commentSheet = getOrCreateSheet(ss, "コメント", ["Repo", "Task", "発言者", "本文", "日時"]);
+  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
+  var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
+  var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
+  ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
+  ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
 
   function rowsOf(sheet, keys) {
     var data = sheet.getDataRange().getValues();
@@ -107,9 +158,9 @@ function listTasks() {
 
   return {
     ok: true,
-    pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent"]),
+    pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent", "scheduledComplete", "cancelDeadline"]),
     done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "issues", "output"]),
-    comments: rowsOf(commentSheet, ["repo", "task", "author", "text", "at"]),
+    comments: rowsOf(commentSheet, ["repo", "task", "author", "text", "at", "status", "resolution"]),
   };
 }
 
@@ -117,19 +168,23 @@ function listTasks() {
 // ブロックされる場合があり、その場合doPost(completeTasks/addComment)を直接呼べない。
 // この関数はその代替経路: GAS側(Googleのインフラ上で動くため上記の制約を受けない)が
 // data/tasks.json をGitHubから定期的に取得しに行く「プル型」の同期を行う。
-// Apps Scriptエディタの「トリガー」メニューで、この関数を時間主導トリガー(例: 1時間おき)に
-// 登録しておけば、Routineがdoポスト経由の書き込みに失敗しても、次回のトリガー実行時に
-// 依頼タスク→完了タブの移動・コメント返信の反映が自動的に追いつく。
+// あわせて、完了予約(scheduleComplete)のうち取消期限を過ぎたものの自動確定と、
+// コメントタブの対応状況(ステータス/対応内容)の更新もこの関数内で行う。
 function syncFromGithub() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
+  var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
+  var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
+  ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
+  ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
+
+  // 1) 取消期限を過ぎた完了予約を確定する(依頼タスクタブ→完了タブへ実際に移動)。
+  var finalizedCount = finalizeScheduledCompletions_(pendingSheet, doneSheet);
+
   var url = "https://raw.githubusercontent.com/gurii-gabreh/progress-tracker-dashboard/main/data/tasks.json";
   var res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
-  if (res.getResponseCode() !== 200) return { ok: false, error: "fetch failed: " + res.getResponseCode() };
+  if (res.getResponseCode() !== 200) return { ok: false, error: "fetch failed: " + res.getResponseCode(), finalized: finalizedCount };
   var data = JSON.parse(res.getContentText());
-
-  var ss = SpreadsheetApp.openById(SHEET_ID);
-  var pendingSheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
-  var doneSheet = getOrCreateSheet(ss, "完了", ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"]);
-  var commentSheet = getOrCreateSheet(ss, "コメント", ["Repo", "Task", "発言者", "本文", "日時"]);
 
   function flatten(tasks, repo) {
     var out = [];
@@ -178,6 +233,10 @@ function syncFromGithub() {
     } else {
       var pendingRow = pendingIdx.index[key];
       if (pendingRow) {
+        // 完了予約中(完了予定)の行は、tasks.json側のステータスで上書きしない
+        // (取消期限まではユーザーの完了予約を優先し、Routine側の通常同期では触らない)。
+        var currentStatus = pendingSheet.getRange(pendingRow, 4).getValue();
+        if (currentStatus === "完了予定") return;
         // 既に依頼タスクタブに行がある場合、最新のステータスを反映し、備考欄には
         // 「いつ・何が起きたか」を履歴として追記していく(上書きせず改行で積み増す)。
         // これによりRoutineが実際にいつ処理を行ったかが依頼タスクタブ単体を見るだけで分かる。
@@ -222,31 +281,113 @@ function syncFromGithub() {
   allTasks.forEach(function (t) {
     (t.comments || []).forEach(function (c) {
       if (c.author === "routine" && !commentAlreadyOnSheet(t.repo, t.task, c.author, c.text, c.at)) {
-        commentSheet.appendRow([t.repo, t.task, c.author, c.text || "", c.at || ""]);
+        commentSheet.appendRow([t.repo, t.task, c.author, c.text || "", c.at || "", "", ""]);
         addedComments++;
       }
     });
   });
 
-  return { ok: true, movedToDone: movedToDone, updatedPending: updatedPending, createdPending: createdPending, addedComments: addedComments };
+  // 2) コメントタブの「ステータス」「対応内容」列を更新する: ユーザーの投稿より後にRoutineからの
+  //    返信があれば「対応済み」とし、その返信内容(問題点があればここに含まれる)を転記する。
+  var updatedCommentStatuses = updateCommentStatuses_(commentSheet, allTasks);
+
+  return {
+    ok: true, movedToDone: movedToDone, updatedPending: updatedPending, createdPending: createdPending,
+    addedComments: addedComments, finalizedScheduled: finalizedCount, updatedCommentStatuses: updatedCommentStatuses,
+  };
+}
+
+// 取消期限(JST)を過ぎた完了予約(依頼タスクタブの「完了予定」行)を、完了タブへ実際に移動する。
+function finalizeScheduledCompletions_(pendingSheet, doneSheet) {
+  var data = pendingSheet.getDataRange().getValues();
+  var now = jstNow_();
+  var rowsToDelete = [];
+  var finalizedCount = 0;
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (row[0] === "") continue;
+    var isScheduled = row[7] === true || row[7] === "TRUE";
+    if (!isScheduled) continue;
+    var deadline = String(row[8] || "");
+    if (!deadline || now < deadline) continue; // まだ取消期限前
+    var repo = row[0], task = row[1], priority = row[2] || "-";
+    var payload = {};
+    try { payload = JSON.parse(row[10] || "{}"); } catch (err) { payload = {}; }
+    var rowValues = [repo, task, priority, now.slice(0, 10), payload.note || "", payload.detail || "", payload.issues || "", payload.output || ""];
+    var doneRow = findRow(doneSheet, repo, task);
+    if (doneRow > 0) {
+      doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
+    } else {
+      appendTaskRow(doneSheet, rowValues);
+    }
+    rowsToDelete.push(i + 1);
+    finalizedCount++;
+  }
+  rowsToDelete.sort(function (a, b) { return b - a; });
+  rowsToDelete.forEach(function (r) { pendingSheet.deleteRow(r); });
+  return finalizedCount;
+}
+
+// コメントタブの「ステータス」「対応内容」列を更新する。data/tasks.json側の各タスクのcomments
+// 配列を見て、ユーザー投稿(author:"user")より後にRoutineからの返信(author:"routine")があれば
+// そのユーザー投稿の行を「対応済み」にし、返信本文を「対応内容」列へ転記する(問題点が見つかって
+// いればその内容もここに含まれる想定。Routine側は返信文に具体的な結果を書くこと)。
+function updateCommentStatuses_(commentSheet, allTasks) {
+  var data = commentSheet.getDataRange().getValues();
+  var updated = 0;
+  allTasks.forEach(function (t) {
+    var comments = t.comments || [];
+    comments.forEach(function (c) {
+      if (c.author !== "user") return;
+      var reply = null;
+      for (var j = 0; j < comments.length; j++) {
+        if (comments[j].author === "routine" && comments[j].at > c.at) { reply = comments[j]; break; }
+      }
+      if (!reply) return;
+      for (var i = 1; i < data.length; i++) {
+        var row = data[i];
+        if (row[0] === t.repo && row[1] === t.task && row[2] === "user" && row[3] === c.text && row[4] === c.at) {
+          if (row[5] !== "対応済み" || row[6] !== reply.text) {
+            commentSheet.getRange(i + 1, 6, 1, 2).setValues([["対応済み", reply.text || ""]]);
+            updated++;
+          }
+          break;
+        }
+      }
+    });
+  });
+  return updated;
+}
+
+function jstNow_() {
+  return Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm");
+}
+
+// 現在時刻(JST)を基準に「翌日9:00」の文字列("yyyy-MM-dd HH:mm")を返す。
+function jstDeadlineNextDay9am_() {
+  var todayStr = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd");
+  var d = new Date(todayStr + "T09:00:00+09:00");
+  d.setDate(d.getDate() + 1);
+  return Utilities.formatDate(d, "Asia/Tokyo", "yyyy-MM-dd HH:mm");
 }
 
 function setupValidation() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
-  var sheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
+  var sheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
 
   var priorityRule = SpreadsheetApp.newDataValidation()
     .requireValueInList(["高", "中", "低"], true)
     .setAllowInvalid(false)
     .build();
   var statusRule = SpreadsheetApp.newDataValidation()
-    .requireValueInList(["未着手", "対応中", "新規", "進行中", "スキップ"], true)
+    .requireValueInList(["未着手", "対応中", "新規", "進行中", "スキップ", "完了予定"], true)
     .setAllowInvalid(false)
     .build();
 
   sheet.getRange("C2:C1000").setDataValidation(priorityRule);
   sheet.getRange("D2:D1000").setDataValidation(statusRule);
   sheet.getRange("G2:G1000").insertCheckboxes(); // 即実行列を本物のチェックボックスにする
+  sheet.getRange("H2:H1000").insertCheckboxes(); // 完了予定列も同様にチェックボックスにする
 }
 
 // 修復用: appendTaskRow導入前に1000行目以降へ紛れ込んでしまった実データを、
@@ -254,14 +395,15 @@ function setupValidation() {
 // 一度だけ手動実行してください(自動では呼ばれません)。
 function compactPendingSheet() {
   var ss = SpreadsheetApp.openById(SHEET_ID);
-  var sheet = getOrCreateSheet(ss, "依頼タスク", ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行"]);
+  var sheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return;
-  var data = sheet.getRange(2, 1, lastRow - 1, 7).getValues();
+  var width = Math.max(sheet.getLastColumn(), PENDING_HEADERS.length);
+  var data = sheet.getRange(2, 1, lastRow - 1, width).getValues();
   var realRows = data.filter(function (row) { return row[0] !== ""; });
-  sheet.getRange(2, 1, lastRow - 1, 7).clearContent();
+  sheet.getRange(2, 1, lastRow - 1, width).clearContent();
   if (realRows.length > 0) {
-    sheet.getRange(2, 1, realRows.length, 7).setValues(realRows);
+    sheet.getRange(2, 1, realRows.length, width).setValues(realRows);
   }
 }
 
@@ -272,12 +414,24 @@ function getOrCreateSheet(ss, name, headers) {
     sheet.appendRow(headers);
   } else if (sheet.getLastRow() === 1) {
     // ヘッダー行しかまだ無い(=実データが1件も無い)場合に限り、列構成が古ければ安全に上書きする。
-    // 実データがある場合は列がズレる恐れがあるため、ここでは一切触らない。
+    // 実データがある場合は列がズレる恐れがあるため、ここでは一切触らない
+    // (既存データがある場合の列追加はensureHeaderColumns_で末尾に追記する形で行う)。
     var currentHeader = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
     var matches = headers.every(function (h, i) { return currentHeader[i] === h; });
     if (!matches) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   }
   return sheet;
+}
+
+// 既にデータが入っているシートへ、後から追加した列を安全に補う(既存列・既存データは一切変更せず、
+// ヘッダー行の不足分だけを末尾に追記する)。完了予定・コメントステータス機能を追加した際のように、
+// 運用中のシートへ後から列を増やす場合に使う。
+function ensureHeaderColumns_(sheet, fullHeaders) {
+  var lastCol = sheet.getLastColumn();
+  var currentHeader = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  for (var i = currentHeader.length; i < fullHeaders.length; i++) {
+    sheet.getRange(1, i + 1).setValue(fullHeaders[i]);
+  }
 }
 
 // setupValidation()がG2:G1000にチェックボックス(既定値FALSE)を敷いているため、

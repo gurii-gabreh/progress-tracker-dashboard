@@ -220,6 +220,7 @@
   .chip.doing { background: var(--status-doing-bg); color: var(--status-doing-fg); }
   .chip.todo { background: var(--status-todo-bg); color: var(--status-todo-fg); }
   .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+  .chip.scheduled { background: var(--status-skip-bg); color: var(--status-skip-fg); }
   .chip.manual-setup { background: var(--status-skip-bg); color: var(--status-skip-fg); }
 
   .category-tag {
@@ -345,6 +346,13 @@
   }
   .complete-btn:hover { background: var(--status-done-bg); }
   .complete-btn:disabled { opacity: 0.6; cursor: default; }
+
+  .cancel-btn {
+    font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+    border: 1px solid var(--status-skip-fg); background: transparent; color: var(--status-skip-fg); cursor: pointer;
+  }
+  .cancel-btn:hover { background: var(--status-skip-bg); }
+  .cancel-deadline-note { font-size: 11px; color: var(--status-skip-fg); }
 
   .urgent-flag { color: var(--status-skip-fg); font-weight: 700; }
 
@@ -634,7 +642,7 @@
               task: "「実装進捗管理シート」のApps Scriptエディタで最新のgas/Code.gsを貼り付けて保存し、ウェブアプリとして再デプロイする",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "",
-              detail: "findRow/removeRowの照合ロジック(タスク名の表記ゆれ正規化)とsyncFromGithubの未完了タスク向け同期を含む最新版。",
+              detail: "findRow/removeRowの照合ロジック(タスク名の表記ゆれ正規化)とsyncFromGithubの未完了タスク向け同期に加えて、2026-08-04追加分(✓完了にするボタンの取消可能な完了予約 scheduleComplete/cancelComplete、コメントタブの対応状況ステータス列)も含む最新版。doPostのアクションが増えているため、このデプロイをしないと「✓ 完了にする」ボタンを押しても反応しない。",
               steps: [
                 "「実装進捗管理シート」を開く → 拡張機能 → Apps Script",
                 "gas/Code.gsの最新内容をエディタに貼り付けて保存",
@@ -750,38 +758,88 @@
         {
           task: "国土数値情報の東京都「土砂災害警戒区域データ」(A33-20_13_GML.zip, 20.9MB)を実際にダウンロードしGeoJSON化、UIプロトタイプのサンプルデータと差し替えて表示検証(座標系JGD2011→WGS84変換要否、ファイルサイズによる表示速度への影響、区部絞り込みの要否を含む)",
           title: "土砂災害警戒区域データの実データ検証",
-          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "国土数値情報ダウンロードサイト(https://nlftp.mlit.go.jp/ksj/)で「土砂災害警戒区域」→東京都(A33-20_13)を選び、A33-20_13_GML.zipをダウンロードする",
+            "zipを展開し、GISソフト(QGIS等)またはmapshaper.orgなどのオンライン変換ツールでGeoJSONに変換する",
+            "座標系がJGD2011のままか確認し、必要ならWGS84(EPSG:4326)へ変換する",
+            "変換後のGeoJSONファイルサイズを確認し、そのままブラウザで表示すると重すぎないか(表示が固まらないか)を確認する。重い場合は区部だけに絞り込んだ縮小版も作る",
+            "UIプロトタイプのサンプルデータ(ダミーの警戒区域データ)をこのGeoJSONに差し替えて、実際に地図上に表示されるか確認する",
+            "確認できた結果(変換要否・表示速度・区部絞り込みが必要か)をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "気象庁防災情報XMLの実地取得テスト(Cloudflare Workersから定期取得できるか、都・区市町村単位の警報有無を抽出できるか)",
           title: "気象庁防災情報XMLの取得テスト",
-          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "気象庁防災情報XMLフォーマット(https://xml.kishou.go.jp/xmlpull.html)のフィード一覧ページを確認し、東京都・警報注意報に該当するフィードURLを特定する",
+            "ブラウザまたはcurlでそのフィードURLに実際にアクセスし、XMLが取得できるか(認証不要か、レート制限があるか)を確認する",
+            "取得したXMLの中身を確認し、都・区市町村単位で警報の有無を判定できる項目があるかを確認する",
+            "簡単なCloudflare Workersのスクリプトを書いて、そのURLに定期リクエストできるか(CORSやアクセス制限に引っかからないか)を実地でテストする",
+            "取得可否・抽出可否の結果をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "東京都建設局サイト(d-keikai.metro.tokyo.lg.jp)のiframe埋め込み表示可否確認(X-Frame-Options等の制限有無)。できない場合はリンク提示に切り替え",
           title: "建設局サイトのiframe埋め込み可否確認",
-          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "ブラウザの開発者ツール(ネットワークタブ)でhttps://d-keikai.metro.tokyo.lg.jp/ にアクセスし、レスポンスヘッダーにX-Frame-OptionsまたはContent-Security-Policy(frame-ancestors)が含まれていないか確認する",
+            "簡単なテスト用HTMLを作り、<iframe src=\"https://d-keikai.metro.tokyo.lg.jp/\">で実際に埋め込んでみて、ブラウザ上に表示されるか確認する",
+            "埋め込みができた場合は「埋め込み可」、ブロックされた場合は「埋め込み不可、リンク提示に切り替え」として結果をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "気象庁「土砂キキクル」5段階詳細危険度の生データを無料取得する手段の有無確認(無ければ公式ページ埋め込みで代替)",
           title: "土砂キキクル詳細データの取得手段確認",
-          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "気象庁「土砂キキクル(大雨警報級)」のページ(https://www.jma.go.jp/bosai/risk/)を確認し、5段階の危険度データをAPIやXML/CSV等の生データ形式で取得できる手段が公開されているか調べる",
+            "気象庁防災情報XMLフォーマットの一覧にも該当データが含まれていないか併せて確認する",
+            "無料で取得できる手段が見つかった場合は、そのURL・形式・更新頻度をコメント欄に記録する",
+            "取得できる手段が見つからなかった場合は「取得手段なし、公式ページの埋め込み/リンクで代替」と結論づけ、コメント欄に記録する",
+          ]
         },
         {
           task: "Cloudflare D1のセットアップ確認(ハッカソン特典での利用可否、無料枠の読み書き回数・容量上限)",
-          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "Cloudflareダッシュボードにログインし、ハッカソン特典クレジットがD1(Cloudflareのデータベース製品)に適用されるか、特典ページまたはサポートで確認する",
+            "Cloudflare D1の公式料金ページ(https://developers.cloudflare.com/d1/platform/pricing/)で無料枠の読み書き回数・ストレージ容量の上限を確認する",
+            "実際にテスト用のD1データベースを1つ作成してみて、作成・簡単なクエリ実行ができるか確認する",
+            "確認した内容(特典適用の可否、無料枠の上限値)をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "LINE Messaging APIの無料枠確認(現場ルームからの通知配信数が無料枠内に収まるか)",
-          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "LINE Developersコンソール(https://developers.line.biz/)でMessaging APIの料金プランページを確認し、無料枠のメッセージ配信通数上限(月間)を確認する",
+            "想定される現場ルームの数・1ルームあたりの想定利用者数・想定通知頻度から、月間の配信通数を概算する",
+            "概算した通数が無料枠に収まるかどうかを判定する",
+            "収まらない場合、有料プランへの切り替え時期や代替の通知手段(Webプッシュ通知等)の検討が必要になる旨をコメント欄に記録する",
+            "確認結果をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "国土地理院タイルの利用規約確認(商用・イベント利用時の出典表示義務等)",
-          priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "国土地理院タイルの利用規約ページ(https://maps.gsi.go.jp/development/ichiran.html)を確認する",
+            "ハッカソン(イベント)での利用が「商用利用」に該当するかどうかを規約の記述から判断する",
+            "出典表示(「地理院タイル」等のクレジット表記)が必須かどうか、必須の場合はどこにどう表示すればよいかを確認する",
+            "確認した内容(利用可否・出典表示の要否と表示方法)をこのタスクのコメント欄に追記して報告する",
+          ]
         },
         {
           task: "前兆現象チェックリストの正式引用元確定(首相官邸・国交省砂防部のどちらを一次情報として引用するか)",
-          priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: ""
+          priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
+          steps: [
+            "首相官邸サイトの土砂災害前兆現象に関するページと、国土交通省砂防部のページの両方を確認し、内容・更新日・情報の詳しさを比較する",
+            "どちらを一次情報として引用するかを決める(内容が同じであれば所管官庁である国交省砂防部を優先するのが基本方針)",
+            "決定した引用元のURLと該当箇所をこのタスクのコメント欄に記録する",
+          ]
         }
       ]
     },
@@ -808,12 +866,24 @@
             {
               task: "「収集待ちリスト」を消費して実際にトクバイのチラシを収集するはずの外部処理(Pythonスクリプト)が今も存在し、稼働しているか確認する",
               priority: "高", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "心当たりが無い場合、この仕組み自体が未完成か失われている可能性がある。", output: ""
+              note: "", detail: "心当たりが無い場合、この仕組み自体が未完成か失われている可能性がある。", output: "",
+              steps: [
+                "この収集処理を担当しているはずのPCまたはサーバー(定期実行しているマシン)に心当たりがあるか思い出す",
+                "心当たりがある場合は、そのマシン上でPythonスクリプトが今も定期実行(cron/タスクスケジューラ等)されているか確認する",
+                "心当たりが無い場合は、この外部処理自体が未完成・作成されていない、または過去に動いていたが失われた可能性が高いと判断する",
+                "確認した結果(稼働している/していない/そもそも存在しない)をこのタスクのコメント欄に追記して報告する。存在しない場合は、この処理自体を新しく作る必要があるかどうかも併せて記載する",
+              ]
             },
             {
               task: "本番の「価格履歴」タブを直接開き、2026-07-27以降のデータが実際に増えているかどうかを確認する",
               priority: "中", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "このセッションからは容量が大きく全件確認できなかった。", output: ""
+              note: "", detail: "このセッションからは容量が大きく全件確認できなかった。", output: "",
+              steps: [
+                "本番のGoogleスプレッドシート(「実装進捗管理シート」ではなく、supermarket-price-tracker用のスプレッドシート)を開く",
+                "「価格履歴」タブを開き、一番下(最新行)までスクロールする",
+                "日付列を確認し、2026-07-27以降の日付の行が存在するかどうかを確認する",
+                "存在する場合は「収集は再開している」、存在しない場合は「まだ止まったまま」として、確認結果をこのタスクのコメント欄に追記して報告する",
+              ]
             }
           ]
         },
@@ -827,7 +897,17 @@
             {
               task: "PR #1をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイする(GEMINI_API_KEYが未設定ならScript Propertiesにも設定する)",
               priority: "高", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "", output: "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1"
+              note: "", detail: "", output: "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
+              steps: [
+                "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1 を開き、差分の内容(重複レコード防止・チラシ誤検知修正・APIキーのScript Properties化)を確認する",
+                "問題なければ「Merge pull request」でmainブランチへマージする",
+                "マージ後のmainブランチのCode.gsの中身をコピーする",
+                "対象のGoogleスプレッドシートを開き、拡張機能 → Apps Script でエディタを開く",
+                "既存のコードを全て削除し、コピーしたCode.gsの内容を貼り付けて保存する(Ctrl+S)",
+                "エディタ右上の「デプロイ」→「デプロイを管理」→ 既存のウェブアプリの横の鉛筆アイコン → バージョンを「新バージョン」にして「デプロイ」を押す",
+                "Apps Scriptエディタの左メニューから「プロジェクトの設定」→「スクリプト プロパティ」を開き、GEMINI_API_KEYが設定済みか確認する。未設定ならAPIキーの値を追加して保存する",
+                "デプロイ完了後、ダッシュボードから同期(🔄同期)を実行するか、少し待って本番シートに正しく反映されているか確認する",
+              ]
             }
           ]
         }
@@ -980,12 +1060,24 @@
             {
               task: "Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存する(doGet/doPostは変更していないため再デプロイ不要)",
               priority: "高", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "", output: ""
+              note: "", detail: "", output: "",
+              steps: [
+                "GitHub上のai-research-radarリポジトリのgas/Code.gsを開き、内容を全てコピーする",
+                "対象のGoogleスプレッドシートを開き、拡張機能 → Apps Script でエディタを開く",
+                "既存のコードを全て削除し、コピーしたCode.gsの内容を貼り付けて保存する(Ctrl+S)",
+                "doGet/doPostは変更されていないため、ウェブアプリの再デプロイ(新バージョン発行)は不要。保存だけで反映される",
+              ]
             },
             {
               task: "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
               priority: "高", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "", output: ""
+              note: "", detail: "", output: "",
+              steps: [
+                "Claude Codeで新しいセッション(ルーム)を作成する",
+                "このタスクの実装時にユーザーへ渡した依頼文(専用Claude調査ルーム向けの指示文)を、その新しいセッションの最初のメッセージとして貼り付ける",
+                "新しいセッションでcreate_triggerを使い、自己バインド(persistent_session_idを指定せず、このセッション自身宛て)のRoutineとして定期実行を設定してもらう(頻度はレート制限の発生頻度に応じて調整)",
+                "設定後、そのルームが実際にdata/claude-fallback-results.jsonへcommit・pushできているか、初回実行を待って確認する",
+              ]
             }
           ]
         }
@@ -1017,11 +1109,22 @@
           note: "",
           detail: "「使用量ログ」(Repo, Task, 着手日時, 完了日時, 所要時間, 規模感, PR差分行数)と「利用上限ログ」(日時, 直前のタスク, メモ。ユーザーが手動記録)の2タブを追加する予定。",
           output: "",
+          steps: [
+            "「実装進捗管理シート」を開き、新しいシート(タブ)を2つ追加する",
+            "1つ目のタブ名を「使用量ログ」とし、1行目に見出し(Repo, Task, 着手日時, 完了日時, 所要時間, 規模感, PR差分行数)を入力する",
+            "2つ目のタブ名を「利用上限ログ」とし、1行目に見出し(日時, 直前のタスク, メモ)を入力する。このタブはユーザーが利用上限に達したタイミングで手動記録する想定",
+            "両タブの追加が完了したら、下の子タスク(各Routineへの自動記録の依頼)に進む",
+          ],
           subtasks: [
             {
               task: "タブ構成が固まったら、各Routineへ使用量ログへの自動記録(タスク着手・完了のたびに書き込む部分)を依頼する",
               priority: "中", status: "未着手", updated: "-", category: "manual",
-              note: "", detail: "このタブ追加が終わってから着手する後続タスク。", output: ""
+              note: "", detail: "このタブ追加が終わってから着手する後続タスク。", output: "",
+              steps: [
+                "上のタブ追加が完了していることを確認する",
+                "各リポジトリで動いているRoutine(自動実装セッション)に対して、「タスク着手時に使用量ログタブへ開始行を追加し、完了時に完了日時・所要時間等を書き込むようにしてほしい」という追加指示を、それぞれのダッシュボードの💬追加指示欄から送る",
+                "各Routineが次回実行時にこの指示を読み取り、実装に反映したことを確認する(該当リポジトリのgas/Code.gs等に使用量ログ書き込み処理が追加されているか確認する)",
+              ]
             }
           ]
         },
@@ -1030,7 +1133,13 @@
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
           detail: "・日別のタスク完了件数/所要時間の推移と、利用上限ログを並べて見られる表示を作る想定\n・リポジトリ名・専用ルームでの構築を依頼する依頼文は作成済み(ユーザーへ渡し済み)。実際のリポジトリ作成・ルーム開始はまだ行われていない",
-          output: ""
+          output: "",
+          steps: [
+            "GitHub上に新しいリポジトリを1つ作成する(可視化専用)",
+            "Claude Codeで新しいセッション(専用ルーム)を作成し、作成済みの依頼文(このタスクの実装時にユーザーへ渡したもの)を最初のメッセージとして貼り付ける",
+            "その専用ルームに、上記リポジトリ名とスプレッドシートの使用量ログ・利用上限ログタブへのアクセス方法を伝え、Apps Script + GitHub Pagesでの可視化ダッシュボード構築を依頼する",
+            "構築が完了したら、GitHub PagesのURLを実際に開いて、日別のタスク完了件数・所要時間の推移と利用上限ログが並べて表示されているか確認する",
+          ]
         }
       ],
     },
@@ -1052,28 +1161,44 @@
           priority: "中", status: "対応中", updated: "2026-08-02", category: "manual",
           note: "",
           detail: "アーキテクチャ案: progress-tracker-dashboardのdata/tasks.jsonを正本としプル型で取得(書き込み不要のためGAS新設は不要)。GitHub Actionsで定期的に取得・再帰的に平坦化してdata/knowledge-index.jsonを生成・コミットする。専用ルームでの実際の構築(GitHub Actionsワークフロー)はまだ行われていない(依頼文の受け渡しのみ完了)。",
-          output: ""
+          output: "",
+          steps: [
+            "この作業は専用のClaude調査ルーム(別セッション)に依頼済みで、実際の構築(GitHub Actionsワークフローの作成)はそちらが進める",
+            "gurii-gabreh/Knowledge-Dashboardリポジトリを開き、data/knowledge-index.jsonが生成されているか、GitHub Actionsのワークフローが実行された形跡があるかを確認する",
+            "まだ進んでいない場合は、その専用ルームのセッションを開いて進捗を確認するか、追加の指示を送る",
+          ]
         },
         {
           task: "人が検索・閲覧できるダッシュボードと、他のClaude Codeセッションが参照できるJSONの両方を提供する",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
           detail: "・index.html(GitHub Pages)で検索・閲覧できるようにする\n・他のClaude Codeセッションからは https://raw.githubusercontent.com/gurii-gabreh/Knowledge-Dashboard/main/data/knowledge-index.json を直接取得して過去の実装知見を参照できる設計",
-          output: ""
+          output: "",
+          steps: [
+            "上のタスク(knowledge-index.jsonの集約)が完了してから着手する",
+            "専用のClaude調査ルームでindex.html(GitHub Pages用)の構築が進んでいるか確認する",
+            "構築後、GitHub PagesのURLを開いて検索・閲覧ができるか確認する",
+            "https://raw.githubusercontent.com/gurii-gabreh/Knowledge-Dashboard/main/data/knowledge-index.json に実際にアクセスし、JSONが取得できるか確認する",
+          ]
         },
         {
           task: "各知見から関連するGoogleスプレッドシートへ直接アクセスできるようにする",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
           detail: "・スプレッドシートリンクの抽出ルール(完全URL採用/「SPREADSHEET_ID: <ID>」記載からのURL再構成)を依頼文に含めて渡した",
-          output: ""
+          output: "",
+          steps: [
+            "上の2つのタスクが完了してから着手する",
+            "専用のClaude調査ルームに渡した依頼文(スプレッドシートリンクの抽出ルールを含む)の対応状況を確認する",
+            "完成したダッシュボード上で、各知見の項目から実際にスプレッドシートへのリンクをクリックし、正しいシートに遷移するか確認する",
+          ]
         }
       ],
     }
   ];
 
-  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing" };
-  const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了"];
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled" };
+  const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
 
   // ダッシュボードから追加した新規タスクをスプレッドシートの依頼タスクタブへ反映するためのGASエンドポイント。
   // このファイルは公開リポジトリにあるため、このトークンは「追記のみ」の最小権限として運用すること
@@ -1132,6 +1257,7 @@
     const statuses = t.subtasks.map(s => s.status);
     if (statuses.every(s => s === "完了")) return "完了";
     if (statuses.some(s => s === "進行中" || s === "対応中")) return "進行中";
+    if (statuses.some(s => s === "完了予定")) return "完了予定";
     if (statuses.some(s => s === "未着手")) return statuses.some(s => s === "完了") ? "進行中" : "未着手";
     return "スキップ";
   }
@@ -1371,8 +1497,12 @@
     if (category !== "manual" && !isPlaceholder) {
       html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ用プロンプト作成</button>`;
     }
-    if (category === "manual" && !isPlaceholder && !hasChildren && node.status !== "完了") {
+    if (category === "manual" && !isPlaceholder && !hasChildren && node.status !== "完了" && node.status !== "完了予定") {
       html += `<button class="complete-btn" data-complete="${path}" data-complete-repo="${effectiveRepo}">✓ 完了にする</button>`;
+    }
+    if (category === "manual" && !isPlaceholder && node.status === "完了予定") {
+      html += `<span class="cancel-deadline-note">${node.cancelDeadline ? `${node.cancelDeadline}まで取消可` : "取消期限内"}</span>`;
+      html += `<button class="cancel-btn" data-cancel="${path}" data-cancel-repo="${effectiveRepo}">↩ 元に戻す</button>`;
     }
     html += `</div></div></div>`;
 
@@ -1548,6 +1678,12 @@
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         completeTaskManually(btn.dataset.complete, btn.dataset.completeRepo);
+      });
+    });
+    feed.querySelectorAll("[data-cancel]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cancelCompleteManually(btn.dataset.cancel, btn.dataset.cancelRepo);
       });
     });
     feed.querySelectorAll("[data-add-parent]").forEach(btn => {
@@ -1831,15 +1967,30 @@
       });
   }
 
-  // ユーザー作業タスク(category:"manual")をダッシュボード上で直接完了にする。
-  // ローカル表示を即時更新した上で、GAS側のcompleteTasksアクションを呼び、依頼タスクタブから
-  // 該当行を削除して完了タブへ移動する(スプレッドシート側の正本もここで揃える)。
+  // 翌日9:00(JST)の取消期限を、表示用にこちら側でも見積もる(実際の正本はGAS側で計算・保存される値)。
+  // 押した時刻が9:00より前ならその日の9:00、9:00以降なら翌日の9:00とする。
+  function estimateCancelDeadline() {
+    const now = new Date();
+    const jstNowMs = now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000;
+    const jstNow = new Date(jstNowMs);
+    const deadline = new Date(jstNow);
+    if (jstNow.getHours() >= 9) deadline.setDate(deadline.getDate() + 1);
+    deadline.setHours(9, 0, 0, 0);
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${deadline.getFullYear()}-${pad(deadline.getMonth() + 1)}-${pad(deadline.getDate())} 09:00`;
+  }
+
+  // ユーザー作業タスク(category:"manual")をダッシュボード上で「完了予定」にする。
+  // ここではまだ本当の完了タブへは移動しない。GAS側のscheduleCompleteアクションを呼び、
+  // 依頼タスクタブ上のステータスを「完了予定」に変更した上で取消期限(翌日9:00 JST)を保存する。
+  // その期限を過ぎてから初めて、既存の1時間おきのsyncFromGithubトリガーが完了タブへ実際に移動させる。
+  // 誤って押した場合は期限内なら「↩ 元に戻す」で取り消せる(cancelCompleteManually)。
   function completeTaskManually(path, repo) {
     const node = findNodeByPath(path);
     if (!node) return;
-    const today = new Date().toISOString().slice(0, 10);
-    node.status = "完了";
-    node.updated = today;
+    node._priorStatus = node.status;
+    node.status = "完了予定";
+    node.cancelDeadline = estimateCancelDeadline();
     renderFeed();
     showToast("送信中…");
 
@@ -1848,8 +1999,8 @@
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
         token: GAS_TOKEN,
-        completeTasks: [{
-          repo, task: node.task, completedDate: today,
+        scheduleComplete: [{
+          repo, task: node.task,
           note: node.note || "", detail: node.detail || "", issues: node.issues || "", output: node.output || "",
         }],
       }),
@@ -1860,10 +2011,41 @@
       })
       .then((data) => {
         if (data && data.error) throw new Error(data.error);
-        showToast("✓ 完了にしました(スプレッドシートの依頼タスクタブから削除され、完了タブへ移動しました)");
+        showToast(`✓ 完了予定にしました(${node.cancelDeadline}までは「↩ 元に戻す」で取り消せます。それ以降に完了タブへ移動し、Web側にも反映されます)`);
       })
       .catch(() => {
-        showToast("⚠ スプレッドシートへの反映に失敗しました(このダッシュボード上は完了になっています。次回のRoutine実行時に反映される見込みです)");
+        showToast("⚠ スプレッドシートへの反映に失敗しました(このダッシュボード上は完了予定になっています。次回のRoutine実行時に反映される見込みです)");
+      });
+  }
+
+  // 「✓ 完了にする」の誤操作を取り消す。取消期限(翌日9:00 JST)を過ぎるとGAS側で既に完了タブへ
+  // 移動済みの可能性があり、その場合はcancelComplete側で何も起きない(該当行が見つからないため)。
+  function cancelCompleteManually(path, repo) {
+    const node = findNodeByPath(path);
+    if (!node) return;
+    node.status = node._priorStatus || "未着手";
+    delete node.cancelDeadline;
+    renderFeed();
+    showToast("送信中…");
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        cancelComplete: [{ repo, task: node.task }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 完了予定を取り消しました(元のステータスに戻りました)");
+      })
+      .catch(() => {
+        showToast("⚠ スプレッドシートへの反映に失敗しました(取消期限を過ぎている場合、既に完了タブへ移動済みの可能性があります)");
       });
   }
 
