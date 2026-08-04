@@ -507,7 +507,7 @@
           status: "完了",
           updated: "2026-07-26",
           note: "",
-          content: ["Google Driveに「実装進捗管理シート」を作成し、タスク入力用の列構成を決める"],
+          completedItems: [{ item: "Google Driveに「実装進捗管理シート」を作成し、タスク入力用の列構成を決めた", date: "2026-07-26" }],
           detail: "・Google Driveに「実装進捗管理シート」を作成(CSVアップロードでGoogle Sheetsに変換)\n・列構成: Repo, Task, 優先度, ステータス, 最終更新日時, 備考\n・Google DriveコネクタにはファイルのUPDATE手段が無いため、既存シートへの書き込みはできない前提で設計\n・シートは人がタスクを追加する「入力専用」とし、ステータスの正本はリポジトリ内のdata/tasks.jsonに置くことにした",
           output: "https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit",
           checkHistory: [{ date: "2026-07-26", summary: "実装進捗管理シートを新規作成し、列構成・運用方針(入力専用/正本はtasks.json)を決定。" }]
@@ -518,7 +518,7 @@
           status: "完了",
           updated: "2026-07-26",
           note: "",
-          content: ["進捗を一覧できるダッシュボードを作り、Claude Artifactとして公開する"],
+          completedItems: [{ item: "進捗を一覧できるダッシュボードを作り、Claude Artifactとして公開した", date: "2026-07-26" }],
           detail: "・dashboard.htmlをリポジトリ内に作成し、Claude Artifactとして公開\n・当初はリポジトリ別テーブル表示だったが、Slackのフィードのように「一行1タスク」で読める形が良いとのフィードバックを受け、フラットなフィード表示(アイコン+リポジトリ名+タスク文+ステータスチップ)に変更\n・親タスク/子タスクの階層表示と、タスクごとの実装詳細(ナレッジ)をクリックで展開できる形に発展させた",
           output: "https://claude.ai/code/artifact/b395634a-ff68-44cb-a667-92c53448c992",
           checkHistory: [{ date: "2026-07-26", summary: "dashboard.htmlを新規作成しArtifactとして公開。フィードバックを受けフラットなフィード表示に変更、親子階層・ナレッジ展開に対応。" }]
@@ -529,7 +529,7 @@
           status: "完了",
           updated: "2026-07-26",
           note: "",
-          content: ["スプレッドシートを定期的に読み、タスクを自動でtasks.jsonへ取り込み・実装まで進めるRoutineを設定する"],
+          completedItems: [{ item: "スプレッドシートを定期的に読み、タスクを自動でtasks.jsonへ取り込み・実装まで進めるRoutineを設定した", date: "2026-07-26" }],
           detail: "・平日9/12/15/18時(JST)に自動実行するRoutineを作成\n・新規セッションを都度立ち上げる方式だとconnectors(Google Drive等)の権限委譲ができなかったため、このセッション自体を定期的に再開する自己バインド方式(persist_session)に変更して解決\n・Routineの設計: (1)スプレッドシートの新規タスクをtasks.jsonへ取り込み (2)Repo欄が既知のリポジトリ名ならコード実装(ブランチ+PR)、それ以外なら調査・資料作成タスクとして処理 (3)問題が起きたタスクはスキップして次へ進む",
           output: "",
           checkHistory: [{ date: "2026-07-26", summary: "平日9/12/15/18時JSTの自己バインド型Routineを作成し、取り込み→実装→スキップ判断の基本設計を確定。" }]
@@ -539,10 +539,10 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
-          content: [
-            "各タスクにコメント(追加指示・エラー報告・完了報告)をやり取りできるスレッドを持たせる",
-            "GAS側にaddCommentアクションを追加し、「コメント」タブへ書き込めるようにする",
-            "?action=list取得時にコメントをtasks.json側の各タスクへマージする",
+          completedItems: [
+            { item: "各タスクにコメント(追加指示・エラー報告・完了報告)をやり取りできるスレッドを持たせた", date: "2026-08-01" },
+            { item: "GAS側にaddCommentアクションを追加し、「コメント」タブへ書き込めるようにした", date: "2026-08-01" },
+            { item: "?action=list取得時にコメントをtasks.json側の各タスクへマージする処理を実装した", date: "2026-08-01" },
           ],
           note: "2026-08-01、本人よりgas/Code.gsの再デプロイ完了の報告あり。ただしこのRoutine実行環境はscript.google.comへの通信が引き続きネットワークポリシーでブロックされているため(progress-tracker-dashboardの「GAS Webアプリへの書き込みがこの環境から到達不可」タスク参照)、Routine側からaddComment/completeTasksの実際の動作確認はまだできていない。ダッシュボード(ユーザーのブラウザ)からのコメント送信・?action=listでの動作確認をお願いしたい。また、manualSetupにあった`compactPendingSheet`の手動実行(依頼タスクタブでappendRowが1000行以降に飛んでいた不具合の修復)を実施済みかも未確認のため、あわせて確認をお願いしたい。",
           detail: "・ダッシュボード側(dashboard.html)は既に、各タスクにcomments([{author:\"user\"|\"routine\", text, at}])フィールドを持たせ、クリックで開くナレッジパネル内にチャット風のスレッドUIとテキスト入力欄を表示する形で実装済みだった(他セッションによる作業)\n・GAS本体側の対応(1): doPost内にaddCommentアクションを追加。リクエスト形式は{ token, addComment: [{ repo, task, text, author, at }] }(author: \"user\"|\"routine\"、at: \"YYYY-MM-DD HH:mm\")\n・スプレッドシートに「コメント」タブ(列: Repo, Task, 発言者, 本文, 日時)が無ければ作成し、受け取った内容を1行ずつ追記。既存のnewTasks/markUrgentと同じdoPost関数内に追加し、トークン認証もそのまま流用\n・GAS本体側の対応(2): listTasks()の戻り値にcomments配列({repo, task, author, text, at}の平坦な配列)を追加。dashboard.html側の?action=list取得時にmergeCommentsIntoViewがdata.commentsを読んでrepo+taskで該当タスクを突き合わせ、各ノードのcomments配列にマージする実装に対応するため\n・GAS側のソースはGitHubとは自動連携していない(Apps Script APIやclaspへのアクセス手段が無いため)ことがgemini-monitorのケースで判明済みだったので、今回は最初からgas/Code.gsとしてリポジトリにソースを保存し、手動デプロイが必要な旨をmanualSetupに明記する形を取った\n・Routineプロンプトにも、実行のたびに「コメント」タブの新規author:\"user\"コメントを確認し、manualSetup解消や再オープン、author:\"routine\"での返信を行うロジックを追加(2026-07-30、update_triggerで反映済み)\n・処理済みコメントの二重処理を避けるため、対応したauthor:\"routine\"の返信コメントのat(日時)がユーザーコメントより後になっていることをもって「対応済み」とみなす設計とした(専用の既読管理列は追加していない)",
@@ -558,9 +558,9 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
-          content: [
-            "タスク完了時に依頼タスクタブから完了タブへ自動で行を移動する",
-            "GAS側にcompleteTasksアクションを追加する",
+          completedItems: [
+            { item: "タスク完了時に依頼タスクタブから完了タブへ自動で行を移動するようにした", date: "2026-08-01" },
+            { item: "GAS側にcompleteTasksアクションを追加した", date: "2026-08-01" },
           ],
           note: "上の「タスクごとの簡易チャットスレッド機能(コメント)」タスクと同じgas/Code.gsの再デプロイで2026-08-01に有効化された(本人報告ベース)。ただし、このRoutine実行環境からscript.google.comへの書き込みが別問題(ネットワークポリシーによる遮断)でブロックされたままのため、RoutineからcompleteTasksを呼んでの動作確認はまだできていない。gemini-monitorの行が依頼タスクタブに残ったままなのはこれが理由。",
           detail: "・README「引き継ぎ事項」の4番目('依頼タスクタブ⇄完了タブ間の移動が実際には行われていない')に対応\n・従来はGAS側にsyncFromGithub()という、data/tasks.jsonをGitHubから取得して完了タブへ反映する関数はあったが、これを起動する時間主導トリガーが未設定で実質死んでいた(2026-07-30時点で完了タブが列見出しのみで空だったことから判明)\n・GAS側に独自トリガーを追加する方式は運用が複雑になるため、既存のnewTasks/markUrgent/addCommentと同じHTTP POSTチャネルにcompleteTasksアクションを追加する方式に変更\n・リクエスト形式: { token, completeTasks: [{ repo, task, completedDate, note, detail, output }] }\n・doPost内でpendingSheet(依頼タスクタブ)からrepo+task一致の行を検索し、優先度の値を引き継いでから該当行を削除、doneSheet(完了タブ)へRepo・Task・優先度・完了日・備考・実装ナレッジ・成果物の7列で追記(既に同じrepo+taskの行があれば上書き)\n・Routineプロンプトにも、(a) タスクをstatus:完了にする際は必ずcompleteTasksを呼ぶルールと、(b) 毎回の実行でdata/tasks.json上status:完了だが完了タブに未反映のタスクが無いか?action=listのdone配列と突き合わせて確認し、あれば埋め合わせで呼ぶルールを追加(2026-07-30、update_triggerで反映済み)\n・旧来のsyncFromGithub()関数はgas/Code.gsに残したまま(将来的な手動実行の可能性を考慮し削除しなかった。後にこの関数自体がプル型同期の中核として復活することになる)",
@@ -576,9 +576,9 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
-          content: [
-            "Routine実行環境からscript.google.comへ直接書き込めない問題に対応する",
-            "書き込みの向きを逆転させ、GAS側からGitHubを定期的に取りに行くプル型の同期に切り替える",
+          completedItems: [
+            { item: "Routine実行環境からscript.google.comへ直接書き込めない問題への回避策を実装した(根本原因は未解決、issues参照)", date: "2026-08-01" },
+            { item: "書き込みの向きを逆転させ、GAS側からGitHubを定期的に取りに行くプル型の同期に切り替えた", date: "2026-08-01" },
           ],
           note: "根本原因(Routine実行環境のネットワークポリシー)自体は未解決で、環境設定の変更を試みたが完了できなかった(設定ダイアログが開かない、等)。そこで方針転換し、GAS側からGitHubへ「取りに行く」プル型の同期に切り替えることで、Routine側からscript.google.comへ到達できなくても実害が出ないようにした。",
           issues: "根本原因(Routine実行環境のネットワークポリシーによるscript.google.comの遮断)自体は未解決のまま。環境設定でCustomネットワークアクセスへの変更を試みたが、設定ダイアログが開けず完了できなかった。実害はGAS側からのプル型同期で解消したが、Routineが直接POSTできない制約自体は残っている。",
@@ -677,8 +677,7 @@
       updated: "2026-08-01",
       category: "manual",
       content: [
-        "企画整理時点(2026-07-18)で洗い出した「未検証・要確認事項」8件を、実データ・実環境で一つずつ検証する",
-        "各項目は下の子タスクとして個別に管理する(1項目=1子タスク)",
+        "企画整理時点(2026-07-18)で洗い出した「未検証・要確認事項」8件を、実データ・実環境で一つずつ検証する(下の子タスクを1件ずつ対応する)",
       ],
       note: "【作業タスク】ユーザー自身が対応する技術検証タスク群。企画整理時点(2026-07-18)で「未検証・要確認事項」として洗い出されたもの。",
       detail: "",
@@ -818,11 +817,8 @@
       priority: "高",
       status: "完了",
       updated: "2026-08-03",
-      content: [
-        "上の「測定時間帯の日替わり自動切り替え」タスクで未検証のまま残っていた問題点(日替わり時間帯フィルタが実測ログ上でも正しく機能しているか)を調べる",
-      ],
       completedItems: [
-        { item: "計測スプレッドシートの生ログ(measurementsタブ、6877行)を全件取得し、07/31〜08/03のjst_hour分布を確認。問題なし(正しく機能している)と判明", date: "2026-08-03" },
+        { item: "上の「測定時間帯の日替わり自動切り替え」タスクで未検証のまま残っていた問題点(日替わり時間帯フィルタが実測ログ上でも正しく機能しているか)を調べた → 計測スプレッドシートの生ログ(measurementsタブ、6877行)を全件取得し、07/31〜08/03のjst_hour分布を確認。問題なし(正しく機能している)と判明", date: "2026-08-03" },
       ],
       note: "調査の結果、問題は見つからなかった。日替わりの時間帯フィルタは実測ログ上でも正しく機能していることを確認した(詳細は上の「現状、午前0〜1時までしか測定していないが...」タスクのcompletedItems/checkHistory参照)。このタスクは2026-08-01依頼から2026-08-03(今日)まで、依頼タスクタブに「対応中」のまま放置されていた。原因は担当のRoutine(実装進捗トラッカー自動実装Routine、平日9時JST)の自動実行時にGoogle Drive連携が使えず新規タスクの取り込み自体に失敗していたためと見られる(tasks.jsonにノードが存在せず、2026-08-03朝の実行でもコミットが1件も無かったことから判断)。「対応中」という表示自体もRoutineが自動で付けるものではなく、手動入力によるものだった。",
       issues: "",
@@ -844,7 +840,7 @@
           task: "GitHub Pagesデプロイの修正",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
-          content: ["GitHub Pagesのデプロイが失敗し続けている原因を調べ、公開できるようにする"],
+          completedItems: [{ item: "GitHub Pagesのデプロイが失敗し続けている原因を調べ、公開できるようにした", date: "2026-08-02" }],
           detail: "・過去2回のPagesデプロイworkflowがいずれも失敗していたことをGitHub Actionsのログから発見(\"Get Pages site failed... Not Found\")\n・原因はリポジトリ側でGitHub Pages自体が一度も有効化されていなかったこと\n・deploy-pages.ymlのactions/configure-pages@v5にenablement: trueを追加し、既存のpages: write権限を使ってリポジトリ設定を手動で触らずに自動有効化できるようにした\n・修正後のpushでデプロイが成功することを確認済み",
           output: "https://gurii-gabreh.github.io/ai-research-radar/",
           checkHistory: [{ date: "2026-08-02", summary: "Pages未有効化が原因と特定、configure-pages@v5にenablement:trueを追加してデプロイ成功を確認。" }]
@@ -853,7 +849,7 @@
           task: "GEMINI_MODELの更新(gemini-2.5-flash→gemini-3.5-flash)",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
-          content: ["Gemini APIの404エラーに対応し、提供終了したモデルから新しいモデルへ切り替える"],
+          completedItems: [{ item: "Gemini APIの404エラーに対応し、提供終了したモデルから新しいモデルへ切り替えた", date: "2026-08-02" }],
           detail: "・依頼タスク実行時にGemini APIから404(models/gemini-2.5-flashは新規ユーザー向けに提供終了)が返るようになったため、gemini-3.5-flashへ切り替えた\n・doGet/doPostは変更していないため、Apps Scriptエディタでの保存のみで反映され再デプロイは不要",
           output: "gas/Code.gs",
           issues: "モデルの正式なリクエスト数上限(RPM/RPD)がgemini-2.5-flashと比べてどうかは、公式ドキュメントで確認できておらず未検証。",
@@ -863,7 +859,7 @@
           task: "レート制限(429)の検知・可視化・自動リトライ",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
-          content: ["429エラーを他のエラーと区別して検知し、翌日自動的に再試行されるようにする"],
+          completedItems: [{ item: "429エラーを他のエラーと区別して検知し、翌日自動的に再試行されるようにした", date: "2026-08-02" }],
           detail: "・従来は429も他のエラーと同じ扱いで「スキップ」になり、備考も生のJSONエラーが入るだけだった\n・researchWithGemini_で429を専用に検知しisRateLimitフラグを付与、collectAIResearch側ではステータスを変更せず(未着手のまま)備考に「⚠ レート制限/利用上限に達したため今回は見送り、次回の自動実行時に再試行します」と明記するようにした\n・ステータスを維持することで翌日の日次トリガーで自動的に再試行される\n・同一実行内で他のキーワードを続けて試しても同じ結果になる可能性が高いため、レート制限を検知した時点でその回の処理を打ち切る(break)",
           output: "gas/Code.gs",
           checkHistory: [{ date: "2026-08-02", summary: "429専用検知(isRateLimitフラグ)を実装し、ステータス維持+備考明記で翌日自動リトライされるようにした。" }]
@@ -872,7 +868,7 @@
           task: "繰り返し調査マーカー(【毎日】【N回】)の実装",
           priority: "中", status: "完了", updated: "2026-08-02",
           note: "",
-          content: ["備考欄に【毎日】【N回】と書くと1回で完了にせず繰り返し調査できるようにする"],
+          completedItems: [{ item: "備考欄に【毎日】【N回】と書くと1回で完了にせず繰り返し調査できるようにした", date: "2026-08-02" }],
           detail: "・依頼タスクの備考欄先頭に【毎日】または【N回】(例: 【3回】)と書くと、1回で完了にせず繰り返し調査できるようにした\n・parseRepeatConfig_で備考から設定と現在の進捗(N/N回実施)を解釈し、repeatMarkerText_で書き戻し時のマーカー文字列を再構成する\n・レート制限やエラーで処理が中断した場合もマーカー・進捗を保持し、単発扱いに戻ってしまわないようにしている\n・READMEに書き方と記入例を追記した",
           output: "gas/Code.gs",
           checkHistory: [{ date: "2026-08-02", summary: "parseRepeatConfig_/repeatMarkerText_を実装し、【毎日】【N回】マーカーによる繰り返し調査に対応。" }]
@@ -881,7 +877,7 @@
           task: "Gemini混雑時間帯の自動最適化(gemini-monitor連携)",
           priority: "中", status: "完了", updated: "2026-08-01",
           note: "",
-          content: ["gemini-monitorの計測ログを参照し、最も成功率の高い時間帯へ日次トリガーを自動で付け替える"],
+          completedItems: [{ item: "gemini-monitorの計測ログを参照し、最も成功率の高い時間帯へ日次トリガーを自動で付け替えるようにした", date: "2026-08-01" }],
           detail: "・gemini-monitor(Gemini API通信可能時間調査アプリ)が別スプレッドシートで計測している時間帯別成功率ログを、SpreadsheetApp.openByIdで直接読みに行くcomputeBestHour_を追加\n・GEMINI_MODELの成功率が最も高い時間帯(サンプル数5件未満は除外)を集計し、日次トリガーの実行時刻を自動で付け替えるrescheduleToLeastCongestedHourを実装\n・createWeeklyRescheduleTriggerで毎週日曜3時に自動見直しが走るようにできる。混雑データが読めない場合は現在のトリガー時刻を維持する安全側の設計",
           output: "gas/Code.gs",
           checkHistory: [{ date: "2026-08-01", summary: "computeBestHour_/rescheduleToLeastCongestedHourを実装し、gemini-monitorの計測ログを参照して混雑時間帯を自動回避するようにした。" }]
@@ -891,11 +887,10 @@
           priority: "高", status: "対応中", updated: "2026-08-05",
           note: "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
           content: [
-            "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにする",
             "専用のClaude調査ルーム(別セッション)を実際に作成し、運用を開始する",
           ],
           completedItems: [
-            { item: "syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備", date: "2026-08-01" },
+            { item: "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにするGAS側の仕組み(syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備)", date: "2026-08-01" },
           ],
           detail: "・専用のClaude調査ルームが、依頼タスクタブで備考に「レート制限」の印が付いた行を見つけて代わりにWeb検索調査し、結果をdata/claude-fallback-results.jsonへcommit・pushする設計\n・GAS側にsyncClaudeResearchFromGithub_を追加し、collectAIResearch実行時に毎回このファイルを取りに行って収集ログへ反映する(progress-tracker-dashboardのsyncFromGithubと同じプル型構成。Claudeセッションからscript.google.com経由でGASへ直接書き込めない制約を回避)\n・ソースURLで重複排除し、【毎日】【N回】の繰り返し設定も引き継ぐ\n・日次トリガーを待たずに手動で反映確認できるsyncClaudeResearchOnly()も追加\n・data/claude-fallback-results.jsonのスキーマと手順をREADMEに記載し、Claude調査ルーム向けの依頼文を作成しユーザーへ渡した",
           output: "gas/Code.gs, data/claude-fallback-results.json",
