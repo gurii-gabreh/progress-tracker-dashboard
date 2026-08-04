@@ -176,6 +176,8 @@
     border-bottom: 1px solid var(--border);
   }
   .feed-row.child { background: color-mix(in srgb, var(--group-color, var(--accent)) 9%, var(--surface)); }
+  .feed-row.child.depth-2 { background: color-mix(in srgb, var(--group-color, var(--accent)) 13%, var(--surface)); }
+  .feed-row.child.depth-3, .feed-row.child.depth-4 { background: color-mix(in srgb, var(--group-color, var(--accent)) 17%, var(--surface)); }
   .feed-row.dragging { opacity: 0.4; }
   .feed-row.drag-over { background: var(--accent-soft); outline: 1px dashed var(--accent); outline-offset: -2px; }
   .drag-handle {
@@ -193,6 +195,7 @@
   .row-icon { font-size: 13px; text-align: center; }
   .type-tag { font-size: 11px; color: var(--text-muted); }
   .cell-task { min-width: 0; }
+  .cell-task .tree-guide { display: inline-block; color: var(--text-muted); opacity: 0.55; margin-right: 2px; }
   .task-text { font-size: 13.5px; color: var(--text); }
   .task-text.muted { color: var(--text-muted); font-style: italic; }
   .cell-priority, .cell-updated {
@@ -335,6 +338,13 @@
     border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer;
   }
   .handoff-btn:hover { background: var(--accent-soft); }
+
+  .complete-btn {
+    font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+    border: 1px solid var(--status-done-fg); background: transparent; color: var(--status-done-fg); cursor: pointer;
+  }
+  .complete-btn:hover { background: var(--status-done-bg); }
+  .complete-btn:disabled { opacity: 0.6; cursor: default; }
 
   .urgent-flag { color: var(--status-skip-fg); font-weight: 700; }
 
@@ -1313,7 +1323,8 @@
     const depth = trail.length;
     const category = taskCategory(node);
 
-    let html = `<div class="feed-row${child ? " child" : ""}" draggable="true" data-drag-path="${path}">`;
+    const depthClass = depth > 0 ? ` depth-${Math.min(depth + 1, 4)}` : "";
+    let html = `<div class="feed-row${child ? " child" + depthClass : ""}" draggable="true" data-drag-path="${path}">`;
     html += `<span class="drag-handle" title="ドラッグで並び替え">⋮⋮</span>`;
     if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
@@ -1321,8 +1332,10 @@
       html += `<div class="chevron-spacer"></div>`;
     }
     html += `<span class="row-icon">${avatarLabel(node)}</span>`;
-    html += `<div class="cell-task" style="padding-left:${depth * 16}px">`;
-    html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.title || node.task}</div>`;
+    // depth 1階層につき28pxずつ右へずらし、木構造の枝(└)を先頭に付けて親子関係を分かりやすくする。
+    html += `<div class="cell-task" style="padding-left:${depth * 28}px">`;
+    const treeGuide = depth > 0 ? `<span class="tree-guide">${"　".repeat(depth - 1)}└ </span>` : "";
+    html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${treeGuide}${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.title || node.task}</div>`;
     html += `</div>`;
     html += `<div class="cell-priority">${node.priority !== "-" ? node.priority : "―"}</div>`;
     html += `<div class="cell-status">${chip(status)}</div>`;
@@ -1330,7 +1343,7 @@
 
     html += `<div class="row-meta-line">`;
     html += `<div class="meta-info">`;
-    if (!child) html += `<span class="category-tag ${category}">${CATEGORY_LABELS[category]}</span>`;
+    html += `<span class="category-tag ${category}">${CATEGORY_LABELS[category]}</span>`;
     if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
     html += `</div>`;
     html += `<div class="meta-actions">`;
@@ -1353,9 +1366,13 @@
       html += `<span class="check-history-toggle" data-comments-toggle="${path}">${label}</span>`;
     }
     // 作業タスク(ユーザー自身が対応)は、Routineに実装の続きを依頼する意味がないため
-    // 引継ぎ(=実装の続きをClaudeに依頼するボタン)は出さない。
+    // 引継ぎ(=実装の続きをClaudeに依頼するボタン)は出さない。代わりに、自分で完了操作ができるよう
+    // 「✓ 完了にする」ボタンを出す(子タスクを持つ親は、子の状態から自動集計されるため対象外)。
     if (category !== "manual" && !isPlaceholder) {
       html += `<button class="handoff-btn" data-handoff="${path}" data-handoff-repo="${effectiveRepo}">引継ぎ用プロンプト作成</button>`;
+    }
+    if (category === "manual" && !isPlaceholder && !hasChildren && node.status !== "完了") {
+      html += `<button class="complete-btn" data-complete="${path}" data-complete-repo="${effectiveRepo}">✓ 完了にする</button>`;
     }
     html += `</div></div></div>`;
 
@@ -1525,6 +1542,12 @@
         e.stopPropagation();
         const node = findNodeByPath(btn.dataset.handoff);
         showHandoffModal(buildHandoffText(node, btn.dataset.handoffRepo));
+      });
+    });
+    feed.querySelectorAll("[data-complete]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        completeTaskManually(btn.dataset.complete, btn.dataset.completeRepo);
       });
     });
     feed.querySelectorAll("[data-add-parent]").forEach(btn => {
@@ -1805,6 +1828,42 @@
       .catch(() => {
         // 同期に失敗しても、次回Routine実行時にこのダッシュボードのdata/tasks.json経由で拾われる想定。
         showToast("⚠ スプレッドシートへの送信に失敗しました(内容はここには残っています。次回のRoutine実行時に反映される見込みです)");
+      });
+  }
+
+  // ユーザー作業タスク(category:"manual")をダッシュボード上で直接完了にする。
+  // ローカル表示を即時更新した上で、GAS側のcompleteTasksアクションを呼び、依頼タスクタブから
+  // 該当行を削除して完了タブへ移動する(スプレッドシート側の正本もここで揃える)。
+  function completeTaskManually(path, repo) {
+    const node = findNodeByPath(path);
+    if (!node) return;
+    const today = new Date().toISOString().slice(0, 10);
+    node.status = "完了";
+    node.updated = today;
+    renderFeed();
+    showToast("送信中…");
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        completeTasks: [{
+          repo, task: node.task, completedDate: today,
+          note: node.note || "", detail: node.detail || "", issues: node.issues || "", output: node.output || "",
+        }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 完了にしました(スプレッドシートの依頼タスクタブから削除され、完了タブへ移動しました)");
+      })
+      .catch(() => {
+        showToast("⚠ スプレッドシートへの反映に失敗しました(このダッシュボード上は完了になっています。次回のRoutine実行時に反映される見込みです)");
       });
   }
 
