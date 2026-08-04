@@ -178,9 +178,30 @@
               "summary": "repo+task照合が表記ゆれ(全角/半角・波ダッシュ)で失敗する不具合を修正(NFKC正規化+チルダ統一)。未完了タスクのステータス・備考も依頼タスクタブへ反映するようsyncFromGithubを拡張。"
             }
           ],
-          "manualSetup": "「実装進捗管理シート」に紐付いたApps Scriptプロジェクトのエディタで、最新の`gas/Code.gs`を貼り付けて保存してください。今回の版はfindRow/removeRowの照合ロジック(タスク名の全角/半角・波ダッシュ表記ゆれの正規化)と、syncFromGithubの未完了タスク向け同期(ステータス・備考欄の履歴追記)を追加しており、これらはdoPost(newTasks/markUrgent/completeTasks/syncNowアクション)からも呼ばれる共通関数のため、保存だけでなく デプロイ→デプロイを管理→既存のウェブアプリデプロイの鉛筆アイコン→バージョンを「新しいバージョン」にして「デプロイ」を押す、という再デプロイが必要です(保存だけではWebアプリ経由の呼び出し(ダッシュボードの各ボタン)には反映されません)。再デプロイ後、まだの場合はエディタ左側の「トリガー」アイコン(時計マーク)→右下の「トリガーを追加」から、実行する関数に`syncFromGithub`、イベントのソースを「時間主導型」、時間の間隔の種類を「時間ベースのタイマー」、間隔を例えば「1時間おき」に設定して保存してください。",
           "detail": "・従来、Routineがタスクを完了させても、依頼タスクタブ→完了タブの移動(completeTasksアクション)やコメント返信(addCommentアクション)はRoutine実行環境からscript.google.comへHTTPでPOSTすることで行っていた\n・このRoutine実行環境(env_01DvV1ut5eXRsEYqLMC7hb1j)のアウトバウンド通信はプロキシのネットワークポリシーでscript.google.comへのアクセスが403で拒否されており(curl・WebFetch双方で確認)、これらのPOSTは常に失敗していた\n・claude.ai/codeの環境設定でネットワークアクセスを「Custom」にしてscript.google.comを許可リストへ追加する対応を試みたが、設定ダイアログが開けないなどの理由で完了できなかった\n・そこで書き込みの向きを逆転させる方針に転換: gas/Code.gsに既にあったsyncFromGithub()関数(data/tasks.jsonをGitHubのraw.githubusercontent.com経由で取得し、完了タスクを依頼タスクタブから完了タブへ移動する関数。これを起動する時間主導トリガーが一度も設定されておらず実質死んでいた)を拡張\n・拡張内容: 完了タスクの移動に加えて、各タスクのcomments配列に含まれるauthor:\"routine\"のコメントのうちコメントタブにまだ無いものだけを追記(repo+task+author+text+atの完全一致で重複判定)\n・この関数はGASの時間主導トリガーから呼ばれ、Google側のインフラが自発的にGitHubへ取りに行く形になるため、Routine実行環境のネットワーク制約を完全に迂回できる\n・Routine側は引き続きcompleteTasks/addCommentのPOSTを試みるが、失敗してもdata/tasks.jsonへの正しい書き込み・コミット・pushさえしておけば、次回のトリガー実行で自動的に追いつく設計にした\n・追加(2026-08-01): ユーザー要望を受け、syncFromGithubをトリガー任せにせず即時実行できるようdoPostに{token, syncNow:true}アクションを追加。呼ばれるとsyncFromGithub()を同期実行し、結果件数をJSONで返す。dashboard.htmlに「⏩ 今すぐ同期」ボタンを追加\n・追加(2026-08-01 続報): repo+taskの完全一致判定が、全角/半角や波ダッシュ(〜)と半角チルダ(~)などの表記ゆれで失敗し、依頼タスクタブの行が完了後も削除されずに残る不具合が発覚。findRow/removeRowの比較にNFKC正規化+チルダ表記統一を追加して解消。あわせてsyncFromGithubに、完了していないタスクについても最新のステータス・備考(いつ処理したかの履歴)を依頼タスクタブへ反映する処理を追加した\n・追加(2026-08-01 3回目): 依頼タスクタブの行が完了後も削除されない不具合(タスク名の表記ゆれによる照合失敗)と、未完了タスクの備考欄がいつまでも空欄で処理履歴が分からない問題を修正。findRow/removeRowにNFKC正規化+チルダ表記統一を追加し、syncFromGithubに「まだ完了していないタスクはステータスと備考(履歴として改行追記)を依頼タスクタブへ反映する」処理を追加した。",
-          "output": "gas/Code.gs"
+          "output": "gas/Code.gs",
+          "subtasks": [
+            {
+              "task": "「実装進捗管理シート」のApps Scriptエディタで最新のgas/Code.gsを貼り付けて保存し、ウェブアプリとして再デプロイする",
+              "priority": "高",
+              "status": "未着手",
+              "updated": "-",
+              "category": "manual",
+              "note": "",
+              "detail": "findRow/removeRowの照合ロジック(タスク名の表記ゆれ正規化)とsyncFromGithubの未完了タスク向け同期を含む最新版。保存だけでなく デプロイ→デプロイを管理→既存のウェブアプリデプロイ→新しいバージョンでデプロイ、まで必要。",
+              "output": ""
+            },
+            {
+              "task": "syncFromGithubの時間主導トリガー(例: 1時間おき)が未設定ならApps Scriptエディタの「トリガー」から設定する",
+              "priority": "高",
+              "status": "未着手",
+              "updated": "-",
+              "category": "manual",
+              "note": "",
+              "detail": "",
+              "output": ""
+            }
+          ]
         }
       ]
     },
@@ -432,6 +453,36 @@
           "detail": "・gitログを確認し、直前の会話で実装済みだった修正3件(重複レコード防止・チラシ誤検知修正・APIキーのScript Properties化)がブランチにコミットされたままPRが1件も作成されていなかったことを発見し、PR #1として作成",
           "output": "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
           "issues": "PR化しただけで、mainへのマージ・GASへの再デプロイはまだ行われていない。"
+        },
+        {
+          "task": "PR #1をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイする(GEMINI_API_KEYが未設定ならScript Propertiesにも設定する)",
+          "priority": "高",
+          "status": "未着手",
+          "updated": "-",
+          "category": "manual",
+          "note": "",
+          "detail": "",
+          "output": "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1"
+        },
+        {
+          "task": "「収集待ちリスト」を消費して実際にトクバイのチラシを収集するはずの外部処理(Pythonスクリプト)が今も存在し、稼働しているか確認する",
+          "priority": "高",
+          "status": "未着手",
+          "updated": "-",
+          "category": "manual",
+          "note": "",
+          "detail": "心当たりが無い場合、この仕組み自体が未完成か失われている可能性がある。",
+          "output": ""
+        },
+        {
+          "task": "本番の「価格履歴」タブを直接開き、2026-07-27以降のデータが実際に増えているかどうかを確認する",
+          "priority": "中",
+          "status": "未着手",
+          "updated": "-",
+          "category": "manual",
+          "note": "",
+          "detail": "このセッションからは容量が大きく全件確認できなかった。",
+          "output": ""
         }
       ],
       "checkHistory": [
@@ -442,7 +493,6 @@
       ],
       "detail": "・まずgitログを確認したところ、直前の会話で実装した3件の修正(重複レコード防止/savePricesToSheetの日付単位dedup、チラシ更新の誤検知修正/leafletID集合比較への変更、GEMINI_API_KEYのScript Properties化)がブランチ`claude/duplicate-records-price-retrieval-e2waki`にコミットされたまま、PRが1件も作成されていなかった(GitHub上のPR一覧が空)。PR #1として作成した\n・あわせて判明: このリポジトリでCode.gs(GASソース)がバージョン管理されたのは今回の3コミットが初めてで、それ以前は本番のApps Scriptエディタ上でのみ管理されていた(mainブランチにはCode.gs自体が存在しない)\n・本番スプレッドシート(SPREADSHEET_ID: 1VThcmRG6N-Ui-VmSzKdvLI8vOhfovWUqQsZb2rFJ3TY)をGoogle Driveで直接読み、実データを確認した:\n  - 詳細ログ付きの収集実行記録(収集日時/スーパー名/結果/取得品目数/備考/詳細ログの列を持つタブ)の最終行は2026-07-26 10:00:11で、以降(7/27〜8/1)の記録が1件も無い\n  - 一方「収集待ちリスト」タブ(現行のautoCollect()が書き込む先)には2026-08-01 10:36:51の新しいエントリがあり、日次トリガー自体(平日10時JST)は動作している\n  - 現行のautoCollect()を読むと、チラシ更新チェックと「収集待ちリスト」への登録のみを行い、実際のスクレイピング・Gemini解析は「Pythonスクリプトが担当」で「GASからPythonを直接起動できない」とコメントされている。このPythonスクリプトの実体・稼働状況はこのセッションからは確認できなかった\n  - 「平均価格」タブの「集計日」列はcalcAveragePrices()実行時点の当日日付をその都度書き込むだけで、実際に新しい価格データが収集された日付ではない。そのため一見「8/1時点で集計されている」ように見えても、元の価格データ自体が更新されているとは限らない\n  - 「サマリー」タブに現行コードが書き込むはずの「重複除外数」列が無く、収集日時・対象スーパー数・収集商品数の3列のみだった。これは重複防止の修正がまだ本番にデプロイされていないことと整合する\n・以上を総合すると、「一見動いているように見えるが、実際には新しい価格データが直近1週間ほど収集できていない可能性が高い」というのが現状の結論",
       "issues": "・収集実行ログ・詳細な価格収集記録が2026-07-26を最後に止まっている(直近1週間、実際の新規価格データが収集できていない可能性がある)\n・現行のautoCollect()は「収集待ちリスト」を作るところまでで、それを消費して実際に価格を収集するはずの外部処理(コード内コメントで言及されている「Pythonスクリプト」)の所在・稼働有無をこのセッションからは確認できなかった。これが存在しない/停止している場合、現在の設計では収集フローが完結しない\n・重複防止・チラシ誤検知修正・APIキー移動の3件はPR化しただけで、mainへのマージ・GASへの再デプロイはまだ行われていない\n・本番スプレッドシートの「価格履歴」タブは非常に大きく(10万文字超)、このセッションでは全件を読み切れていないため、直近1週間のデータが本当に0件なのか(それとも一部だけ収集できているのか)は未確定",
-      "manualSetup": "1) PR #1 (https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1) をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイしてください。Script PropertiesにGEMINI_API_KEYが未設定の場合はあわせて設定してください。\n2) 「収集待ちリスト」を消費して実際にトクバイのチラシを収集するはずの外部処理(Code.gs内コメントに『Pythonスクリプトが担当』とある)が今も存在し、稼働しているか確認してください。心当たりが無い場合、この仕組み自体が未完成か失われている可能性があります。\n3) 本番の「価格履歴」タブを直接開き、2026-07-27以降のデータが実際に増えているかどうかを確認してください(このセッションからは容量が大きく全件確認できませんでした)。",
       "output": "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1"
     },
     {
@@ -658,9 +708,6 @@
           "status": "対応中",
           "updated": "2026-08-05",
           "note": "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
-          "content": [
-            "専用のClaude調査ルーム(別セッション)を実際に作成し、運用を開始する"
-          ],
           "completedItems": [
             {
               "item": "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにするGAS側の仕組み(syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備)",
@@ -669,11 +716,32 @@
           ],
           "detail": "・専用のClaude調査ルームが、依頼タスクタブで備考に「レート制限」の印が付いた行を見つけて代わりにWeb検索調査し、結果をdata/claude-fallback-results.jsonへcommit・pushする設計\n・GAS側にsyncClaudeResearchFromGithub_を追加し、collectAIResearch実行時に毎回このファイルを取りに行って収集ログへ反映する(progress-tracker-dashboardのsyncFromGithubと同じプル型構成。Claudeセッションからscript.google.com経由でGASへ直接書き込めない制約を回避)\n・ソースURLで重複排除し、【毎日】【N回】の繰り返し設定も引き継ぐ\n・日次トリガーを待たずに手動で反映確認できるsyncClaudeResearchOnly()も追加\n・data/claude-fallback-results.jsonのスキーマと手順をREADMEに記載し、Claude調査ルーム向けの依頼文を作成しユーザーへ渡した",
           "output": "gas/Code.gs, data/claude-fallback-results.json",
-          "manualSetup": "1) Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存(doGet/doPostは変更していないため再デプロイ不要)。2) 新しいClaude Codeセッション(調査ルーム)を作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する。",
           "checkHistory": [
             {
               "date": "2026-08-01",
               "summary": "GAS側のプル型同期・data/claude-fallback-results.jsonの仕様・README・依頼文を整備。実際の調査ルーム作成は人の対応待ちのまま。"
+            }
+          ],
+          "subtasks": [
+            {
+              "task": "Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存する(doGet/doPostは変更していないため再デプロイ不要)",
+              "priority": "高",
+              "status": "未着手",
+              "updated": "-",
+              "category": "manual",
+              "note": "",
+              "detail": "",
+              "output": ""
+            },
+            {
+              "task": "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
+              "priority": "高",
+              "status": "未着手",
+              "updated": "-",
+              "category": "manual",
+              "note": "",
+              "detail": "",
+              "output": ""
             }
           ]
         }
