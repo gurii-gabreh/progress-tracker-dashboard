@@ -755,6 +755,20 @@
                 "反映を待たずに確認したい場合は、ダッシュボードの「⏩ Web→スプレッドシート反映」ボタンを押して即時同期する(既存の依頼タスク・完了タブの全行にタスクIDがバックフィルされる)",
               ],
               output: ""
+            },
+            {
+              id: "PTD-018",
+              task: "mergeSheetTasksIntoViewが同一repo内の最初のトップレベルタスクとしか重複照合していない不具合を修正する",
+              priority: "高", status: "完了", updated: "2026-08-05", category: "code",
+              note: "スプレッドシート側のgemini-monitor完了タスクの備考欄に「PTD-017として起票」と記載されていたが、実際にはこのタスクとしてPTD-018で対応した(PTD-017は既に別件=GAS再デプロイタスクで使用済みのため番号がずれている)。",
+              completedItems: [
+                { item: "TASKS.find()が同じrepoの最初の1件しか見ておらず、2件目以降のトップレベルタスク配下との重複を見逃していた箇所を、同じrepoの全トップレベルタスク(と各々の子タスク)を対象にした重複チェックへ修正", date: "2026-08-05" },
+              ],
+              detail: "gemini-monitorのように同じrepoに複数のトップレベルタスクがある場合、「🔄 更新」ボタンでスプレッドシートから新規タスクを取り込む際、既存の2件目以降のトップレベルタスク配下に同名タスクがあっても検知できず、幽霊タスクとして重複追加されてしまう不具合があった。同じrepoの全トップレベルタスクを対象に重複チェックするよう修正。",
+              output: "",
+              checkHistory: [
+                { date: "2026-08-05", summary: "gemini-monitorの依頼タスクタブに残留していた行が「GEM-005」として重複表示された事象の原因調査で発覚。mergeSheetTasksIntoViewの重複判定ロジックを修正し解消。" },
+              ],
             }
           ]
         }
@@ -2323,27 +2337,35 @@
       if ((row.note || "").startsWith(HIDDEN_TASK_NOTE_PREFIX)) return;
       const repo = row.repo;
       const isTrue = (v) => v === true || v === "TRUE" || v === "true";
-      let parent = TASKS.find((t) => t.repo === repo);
+      // 同じrepoのトップレベルタスクは複数存在しうる(例: gemini-monitorには「測定時間帯の
+      // 日替わり自動切り替え」「問題点が問題ないかを調べて」の2つがある)。以前はTASKS.find()で
+      // 最初に見つかった1件としか重複照合しておらず、2件目以降のトップレベルタスクの配下に
+      // 同名タスクが既にあっても検知できず、幽霊タスクとして再インポートされる不具合があった
+      // (2026-08-05発見・修正)。同じrepoの全トップレベルタスク(とその子タスク)を対象に
+      // 重複チェックするよう修正した。
+      const sameRepoParents = TASKS.filter((t) => t.repo === repo);
+      const alreadyExists = sameRepoParents.some((p) =>
+        p.task === row.task || (p.subtasks && p.subtasks.some((s) => s.task === row.task))
+      );
+      if (alreadyExists || !row.task) return;
+      let parent = sameRepoParents[0];
       if (!parent) {
         parent = { id: nextTaskId(repo), repo, task: `(${repo}向けタスク)`, priority: "-", status: "未着手", updated: "-", note: "", detail: "", output: "", subtasks: [] };
         TASKS.push(parent);
       }
       if (!parent.subtasks) parent.subtasks = [];
-      const exists = parent.subtasks.some((s) => s.task === row.task) || parent.task === row.task;
-      if (!exists && row.task) {
-        parent.subtasks.push({
-          id: nextTaskId(repo),
-          task: row.task,
-          priority: row.priority || "-",
-          status: row.status || "未着手",
-          updated: row.requestedAt || "-",
-          note: row.note || "",
-          detail: "",
-          output: "",
-          urgent: isTrue(row.urgent),
-        });
-        addedCount++;
-      }
+      parent.subtasks.push({
+        id: nextTaskId(repo),
+        task: row.task,
+        priority: row.priority || "-",
+        status: row.status || "未着手",
+        updated: row.requestedAt || "-",
+        note: row.note || "",
+        detail: "",
+        output: "",
+        urgent: isTrue(row.urgent),
+      });
+      addedCount++;
     });
     return addedCount;
   }
