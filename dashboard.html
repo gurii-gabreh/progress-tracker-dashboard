@@ -639,12 +639,16 @@
             {
               id: "PTD-006",
               task: "Routine側からのaddComment呼び出しが実際にコメントタブへ反映されるか検証する",
-              priority: "中", status: "未着手", updated: "-", category: "research",
-              note: "", detail: "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため未検証(ユーザーのブラウザからの送信・反映は確認済み)。プル型同期(syncFromGithub)経由での反映有無を確認する。", output: "",
+              priority: "中", status: "未着手", updated: "2026-08-05", category: "research",
+              note: "依頼タスクタブへの反映は、data/tasks.jsonにこのタスクがある状態でsyncFromGithubが走れば自動的に行われる(createdPendingロジック)想定だが、PTD-010(gas/Code.gs再デプロイ)が完了するまでは未反映。PTD-010はタスクごとの別ルームで対応予定のため、この検証はPTD-010完了後に実施する。",
+              detail: "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため未検証(ユーザーのブラウザからの送信・反映は確認済み)。プル型同期(syncFromGithub)経由での反映有無を確認する。このタスク専用ルーム(PTD-005相談ルーム)からも同じホストへ直接POSTを試したが同様に403で遮断され、Routine実行環境と同じネットワークポリシーが適用されることを確認した。", output: "",
               content: [
                 "適当なタスクに対し、doPostのaddCommentアクション({token, addComment:[{repo, task, text, author:\"routine\", at}]})を直接POSTで呼び出してみる(Routine実行環境からscript.google.comへ届くかどうかも合わせて確認する)",
                 "直接POSTが失敗する(ネットワークポリシーで遮断される)場合は、data/tasks.jsonの該当タスクのcomments配列にauthor:\"routine\"のコメントを追記してコミット・pushし、次回のsyncFromGithubトリガー実行後にスプレッドシートの「コメント」タブへ反映されるか確認する",
                 "確認できた結果(直接POST可否・プル型同期経由での反映可否)をcheckHistoryに追記する",
+              ],
+              checkHistory: [
+                { date: "2026-08-05", summary: "PTD-005相談ルームで検討。このルームからGASへ直接POSTを試したところ同じくCONNECT tunnel 403で遮断され、Routine実行環境と同一のネットワーク制約であることを確認。依頼タスクタブへの反映はdata/tasks.json→syncFromGithub(createdPending)の仕組みで自動化されているが、PTD-010(gas/Code.gs再デプロイ)が未完了のため現状は反映されない。PTD-010は別のタスク専用ルームで対応することになったため、PTD-006の検証(依頼タスクタブへの反映確認)はPTD-010完了後に持ち越し。" },
               ]
             }
           ]
