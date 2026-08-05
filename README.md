@@ -242,16 +242,27 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       親タスクは`nextAction`(手書きの要約、例:「下の8件の技術検証タスクを1件ずつ実施する」)を
       必ず書く。子タスクを持たない末端タスクは省略可(`content[0]`または`steps[0]`が自動で
       代わりに表示される)。全タスクへ遡って適用済み(運用ルールのコメントブロックにも追記)
-24. **全タスクに一意な`id`(`{repo略号}-{連番}`、例: `KIZ-003`)を付与した**(2026-08-05追加)。
+24. **全タスクに一意な`id`(`{repo略号}-{連番}`、例: `KIZ-003`)を付与した。以後追加する
+    タスク・子タスクにも`id`は必須項目とする**(2026-08-05追加、2026-08-05に必須化を明記)。
     Artifactにはリアルタイムのチャット機能を組み込めない技術的制約があるため、代わりに**タスクの
     詳細についてのやり取りはこのRoutineのチャット(Claude Codeのセッション)上で行う**運用にする。
     ダッシュボードの各行には🆔タグでidが表示され、クリックでクリップボードへコピーできる。ユーザーが
     「タスクID KIZ-003の詳細を教えて」のように伝えてきたら、`data/tasks.json`をidで検索して該当
-    タスクの詳細(content/detail/issues/checkHistory等)をチャット上で直接回答すること。新規タスク
-    追加時は既存の連番の続きから採番し、一度割り振ったidは(並び替え・pathの変化に関わらず)変更しない。
-    リポジトリ略号: `progress-tracker-dashboard`→`PTD`、`kizashi`→`KIZ`、
-    `supermarket-price-tracker`→`SPT`、`gemini-monitor`→`GEM`、`ai-research-radar`→`AIR`、
-    `usage-tracker`→`UST`、`Knowledge-Dashboard`→`KND`
+    タスクの詳細(content/detail/issues/checkHistory等)をチャット上で直接回答すること。
+    - **新規タスクを追加する際は、必ず`id`を割り振ること(省略不可)**。採番方法:
+      そのタスクのrepoに対応する略号(下記)を調べ、`data/tasks.json`内で既にその略号を持つ
+      idのうち最大の連番を探し、+1した値を3桁ゼロ埋めして使う(例: 既存最大が`KIZ-013`なら
+      次は`KIZ-014`)。一度割り振ったidは、並び替え・pathの変化・タスク内容の編集に関わらず
+      変更しない
+    - リポジトリ略号: `progress-tracker-dashboard`→`PTD`、`kizashi`→`KIZ`、
+      `supermarket-price-tracker`→`SPT`、`gemini-monitor`→`GEM`、`ai-research-radar`→`AIR`、
+      `usage-tracker`→`UST`、`Knowledge-Dashboard`→`KND`(将来リポジトリが増えた場合は、
+      repo名の先頭3文字を大文字にしたものをデフォルトの略号とする)
+    - `dashboard.html`側では`nextTaskId(repo)`という採番用のヘルパー関数を用意しており、
+      ダッシュボード上の「＋新規タスク」ボタンや「🔄 更新」によるスプレッドシートからの
+      取り込み(`mergeSheetTasksIntoView`)では自動的にこの関数でidが付与される。**Routineが
+      直接`data/tasks.json`/`dashboard.html`へ新しいタスクノードを追加する場合は、この関数と
+      同じロジック(該当repo略号の最大連番+1)を手動で計算してidを付与すること**
 25. **`chrome-extension/`に、ダッシュボードの表示専用ビューアーをChromeサイドパネル化する拡張機能を
     追加した**(2026-08-05追加)。タスクごとに別々のClaude Codeルーム(タブ)を並行して開く運用に
     伴い、どのタブを見ていても進捗が常に横に見えるようにする目的。`sidepanel.html`は`data/tasks.json`
@@ -263,6 +274,23 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
     「パッケージ化されていない拡張機能を読み込む」を前提にしている(詳細は`chrome-extension/README.md`)。
     本体のダッシュボード(Artifact/`dashboard.html`)と処理ロジックは独立しているため、本体側の機能
     (renderRow等)を変更した場合はサイドパネル側にも同様の変更が必要かどうか都度判断すること。
+26. **タスク1件につき1つのClaude Codeルーム(セッション)を作り、詳細確認・タスク内容の相談に
+    使う運用を導入する**(2026-08-05追加、ユーザー提案)。既存の自動実装Routine
+    (`session_01DDATKE77mbQxkj4HUZ91Gt`、平日定期実行)・週次残タスクチェックRoutine
+    (`session_01XXySCiFKeZdazYy97NxMim`、本セッション)は**従来通り1つのルームのまま変更しない**。
+    タスクごとのルームは**トリガーの無い、ユーザーが必要なときに手動で開く相談専用ルーム**という
+    位置づけで、自動実行の対象ではない。
+    - 運用イメージ: タスクごとのルームを開いたら、最初のメッセージで**タスクID(例:
+      「タスクID KIZ-003について相談したい」)を必ず伝える**。そのIDでこのリポジトリの
+      `data/tasks.json`を検索すれば該当タスクの全情報(content/detail/issues/checkHistory/
+      comments等)にすぐアクセスできるため、ルームを開くたびに文脈共有し直す手間が要らない
+    - そのルーム自身の会話履歴が、そのタスクの「相談履歴」を兼ねる(後から同じルームを開けば
+      経緯を追える)。ダッシュボード側の`comments`/`checkHistory`とは別の、人と人(実質的には
+      人とAI)の検討過程を残すためのもの
+    - 相談の結果、実装が必要な内容が固まった場合は、そのルームから直接`dashboard.html`/
+      `data/tasks.json`を編集してcommit・push するか(即座に反映したい場合)、または対象タスクの
+      `comments`に追加指示として記録し次回の自動実装Routine実行時に処理させるか(実装作業自体は
+      共有Routineに任せたい場合)を、内容に応じて使い分けること
 
 ## 管理対象リポジトリ
 

@@ -513,12 +513,14 @@
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
-  // id: 全タスク・全子タスクで一意な識別子({repo略号}-{連番}、例: "KIZ-003")。一覧の各行に🆔タグとして
-  // 表示され、クリックでクリップボードにコピーできる。ユーザーがClaude Codeのチャット上で
+  // id: 【必須】全タスク・全子タスクで一意な識別子({repo略号}-{連番}、例: "KIZ-003")。省略不可、
+  // 新規追加するタスクにも必ず付与すること(採番方法・略号一覧はREADME運用ルール24参照。
+  // nextTaskId(repo)関数と同じロジックで、該当repo略号の既存最大連番+1を使う)。一覧の各行に
+  // 🆔タグとして表示され、クリックでクリップボードにコピーできる。ユーザーがClaude Codeのチャット上で
   // 「タスクID KIZ-003の詳細を教えて」のように伝えれば、そのIDでdata/tasks.jsonを検索して該当タスクの
   // 詳細を直接チャットで回答できる(=タスクの中身についてのやり取りは、ダッシュボード内ではなく
-  // このチャット上で行う運用)。新規タスク追加時は既存の連番の続きから採番し、既存タスクのidは
-  // 一度割り振ったら変更しない(pathや並び順が変わってもidだけは不変にするため)。
+  // このチャット上で行う運用)。既存タスクのidは一度割り振ったら変更しない(pathや並び順が
+  // 変わってもidだけは不変にするため)。
   // title: taskが長い依頼文そのものになっている場合の短い要約タイトル。あれば一覧の表示名として
   // taskの代わりに使われる(taskは依頼タスクタブとの照合キーなので変更せずそのまま残す)。
   // content: このタスクが具体的に何を求めているか・何をする必要があるかを箇条書き(文字列配列)で書く。
@@ -2069,12 +2071,34 @@
     });
   }
 
+  // 全タスク・全子タスクで一意なidを{repo略号}-{連番}形式で発行する(運用ルール24)。
+  // 既存の最大連番+1を採番するため、ダッシュボード上で新規追加したタスクにも欠番なく付与される。
+  const REPO_ID_PREFIX = {
+    "progress-tracker-dashboard": "PTD", "kizashi": "KIZ", "supermarket-price-tracker": "SPT",
+    "gemini-monitor": "GEM", "ai-research-radar": "AIR", "usage-tracker": "UST", "Knowledge-Dashboard": "KND",
+  };
+  function nextTaskId(repo) {
+    const prefix = REPO_ID_PREFIX[repo] || repo.slice(0, 3).toUpperCase();
+    let max = 0;
+    (function walk(nodes) {
+      nodes.forEach((n) => {
+        if (n.id && n.id.startsWith(prefix + "-")) {
+          const num = parseInt(n.id.slice(prefix.length + 1), 10);
+          if (!isNaN(num) && num > max) max = num;
+        }
+        if (n.subtasks) walk(n.subtasks);
+      });
+    })(TASKS);
+    return `${prefix}-${String(max + 1).padStart(3, "0")}`;
+  }
+
   function addNewTask(parentPath, repo, task, priority) {
     const today = new Date().toISOString().slice(0, 10);
     const isRepoLevel = parentPath.startsWith("repo:");
+    const id = nextTaskId(repo);
     const newTask = isRepoLevel
-      ? { repo, task, priority, status: "新規", updated: today, note: "", detail: "", output: "" }
-      : { task, priority, status: "新規", updated: today, note: "", detail: "", output: "" };
+      ? { id, repo, task, priority, status: "新規", updated: today, note: "", detail: "", output: "" }
+      : { id, task, priority, status: "新規", updated: today, note: "", detail: "", output: "" };
 
     if (isRepoLevel) {
       TASKS.push(newTask);
@@ -2242,13 +2266,14 @@
       const isTrue = (v) => v === true || v === "TRUE" || v === "true";
       let parent = TASKS.find((t) => t.repo === repo);
       if (!parent) {
-        parent = { repo, task: `(${repo}向けタスク)`, priority: "-", status: "未着手", updated: "-", note: "", detail: "", output: "", subtasks: [] };
+        parent = { id: nextTaskId(repo), repo, task: `(${repo}向けタスク)`, priority: "-", status: "未着手", updated: "-", note: "", detail: "", output: "", subtasks: [] };
         TASKS.push(parent);
       }
       if (!parent.subtasks) parent.subtasks = [];
       const exists = parent.subtasks.some((s) => s.task === row.task) || parent.task === row.task;
       if (!exists && row.task) {
         parent.subtasks.push({
+          id: nextTaskId(repo),
           task: row.task,
           priority: row.priority || "-",
           status: row.status || "未着手",
