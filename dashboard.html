@@ -468,6 +468,7 @@
           <button class="settings-btn" id="sync-now-btn" title="Web(tasks.json)側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ Web→スプレッドシート反映</button>
           <button class="settings-btn" id="github-diff-btn" title="GitHubの最新コミットがダッシュボードの記録より新しいリポジトリ(=直接Claude Codeとやり取りして進めた分)を探し、「確認して」という依頼タスクを置きます(この場でtasks.jsonが更新されるわけではありません。実際の反映は次回のRoutine実行時です)">📥 Claude→Web反映</button>
           <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
+          <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
       </div>
@@ -482,6 +483,7 @@
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">📥 Claude→Web反映</span><span class="help-desc">直接Claude Codeとやり取りして進めた分など、Web(tasks.json)にまだ反映されていないGitHub上の活動を探すボタンです。2段階の仕組みで、①ボタンを押すと、記録より新しいコミットがあるリポジトリを探し「確認して」という依頼タスクを置きます。②その依頼を、この部屋(Routine)が次回の定期実行時に読んで、実際にtasks.jsonへ書き込みます。ボタンを押した瞬間には反映されません。</span></div>
         <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
+        <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
         <div class="help-item"><span class="help-term">引継ぎ用プロンプト作成</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
@@ -1978,7 +1980,7 @@
     ].join("\n");
   }
 
-  function showHandoffModal(text, title) {
+  function showHandoffModal(text, title, editable) {
     const root = document.getElementById("modal-root");
     root.innerHTML = `
       <div class="modal-overlay" id="modal-overlay">
@@ -1988,7 +1990,7 @@
             <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
           </div>
           <div class="modal-body">
-            <textarea id="handoff-textarea" readonly>${escapeHtml(text)}</textarea>
+            <textarea id="handoff-textarea"${editable ? "" : " readonly"}>${escapeHtml(text)}</textarea>
           </div>
           <div class="modal-footer">
             <button class="modal-copy-btn" id="modal-copy-btn">コピー</button>
@@ -2003,6 +2005,10 @@
     document.getElementById("modal-close").addEventListener("click", closeModal);
 
     document.getElementById("modal-copy-btn").addEventListener("click", async (e) => {
+      // e.currentTargetはawaitを挟むとブラウザにより null へリセットされるため、
+      // awaitの前に同期的に取得しておく(以前はawait後に参照していて、コピー完了後に
+      // ボタンのラベルを更新できない不具合があった)。
+      const btn = e.currentTarget;
       const textarea = document.getElementById("handoff-textarea");
       textarea.select();
       let copied = false;
@@ -2012,7 +2018,6 @@
       } catch (err) {
         try { copied = document.execCommand("copy"); } catch (err2) { copied = false; }
       }
-      const btn = e.currentTarget;
       btn.textContent = copied ? "コピーしました ✓" : "コピー不可(手動で選択してください)";
       btn.classList.toggle("copied", copied);
       setTimeout(() => { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
@@ -2534,6 +2539,31 @@
       showHandoffModal(text, "設定変更 依頼文");
     });
   }
+
+  // タスクごとの相談ルーム(運用ルール26)を開くときに最初に貼る依頼文のテンプレート。
+  // {タスクID}の部分だけ、対象タスクの🆔タグをコピーして書き換えれば使い回せる。
+  // テキストエリアを編集可能にしているのはこのため(showHandoffModalの第3引数)。
+  function buildTaskRoomPromptText() {
+    return [
+      "タスクID {タスクID} について相談したい。",
+      "",
+      "【運用ルール】",
+      "このルームで方針や内容が決まったら、都度以下を実行してください:",
+      "1. gurii-gabreh/progress-tracker-dashboard の dashboard.html / data/tasks.json の",
+      "   該当タスク({タスクID})を更新する(content・steps・note・detailなど、決まった内容に応じて)",
+      "2. そのタスクのcheckHistoryに「日付+何が決まったか」を追記する",
+      "3. git commit・pushする",
+      "4. 新規タスクとして依頼タスクタブへの追加が必要な内容なら、GAS経由でも追加する",
+      "5. コード実装が必要な内容は、自動実装Routine(平日9/12/15/18時実行)に任せるため",
+      "   commentsに追加指示として残す(このルーム自身では実装しない)",
+      "",
+      "このルームでのやり取り自体が、このタスクの相談履歴になります。",
+    ].join("\n");
+  }
+  function showTaskRoomPromptModal() {
+    showHandoffModal(buildTaskRoomPromptText(), "タスクごとの相談ルーム 依頼文テンプレート", true);
+  }
+  document.getElementById("task-room-prompt-btn").addEventListener("click", showTaskRoomPromptModal);
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
