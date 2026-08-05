@@ -180,6 +180,10 @@
   .feed-row.child.depth-3, .feed-row.child.depth-4 { background: color-mix(in srgb, var(--group-color, var(--accent)) 17%, var(--surface)); }
   .feed-row.dragging { opacity: 0.4; }
   .feed-row.drag-over { background: var(--accent-soft); outline: 1px dashed var(--accent); outline-offset: -2px; }
+  /* 子タスクを持つ行はレコード全体のクリックで展開・折りたたみできる(三角ボタン以外の空いている
+     部分をクリックしても反応するようにするため、行全体にポインタカーソル+ホバー表示を出す)。 */
+  .feed-row.toggleable { cursor: pointer; }
+  .feed-row.toggleable:hover { background: color-mix(in srgb, var(--group-color, var(--accent)) 12%, var(--surface)); }
   .drag-handle {
     font-size: 11px; line-height: 1; color: var(--text-muted); cursor: grab; text-align: center;
   }
@@ -1485,7 +1489,11 @@
 
     const depthClass = depth > 0 ? ` depth-${Math.min(depth + 1, 4)}` : "";
     const level = depth + 1; // 1=親タスク、2=子タスク、3=孫タスク
-    let html = `<div class="feed-row${child ? " child" + depthClass : ""}" draggable="true" data-drag-path="${path}">`;
+    // 三角ボタンだけでなく、レコード(行)自体のクリックでも展開・折りたたみできるようにする
+    // (子タスクを持つ行のみ。ボタン・リンク等の個別操作はそれぞれのクリックハンドラでstopPropagation
+    // 済みなので、ここに伝播してくるのは「行の空いている部分」をクリックした場合だけになる)。
+    const rowToggleAttr = hasChildren ? ` data-row-toggle="${path}"` : "";
+    let html = `<div class="feed-row${child ? " child" + depthClass : ""}${hasChildren ? " toggleable" : ""}" draggable="true" data-drag-path="${path}"${rowToggleAttr}>`;
     html += `<span class="level-badge lv-${Math.min(level, 4)}" title="レベル${level}(${level === 1 ? "親タスク" : level === 2 ? "子タスク" : level === 3 ? "孫タスク" : "ひ孫タスク"})">${level}</span>`;
     html += `<span class="drag-handle" title="ドラッグで並び替え">⋮⋮</span>`;
     if (hasChildren) {
@@ -1660,6 +1668,16 @@
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const key = btn.dataset.groupToggle;
+        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+        renderFeed();
+      });
+    });
+    // レコード(行)自体のクリックでも展開・折りたたみできるようにする。行内の各ボタン・リンク・
+    // 入力欄のクリックハンドラは全てe.stopPropagation()しているため、ここまで伝播してくるのは
+    // 行の「空いている部分」をクリックした場合のみ(三角ボタンの二重発火は起きない)。
+    feed.querySelectorAll("[data-row-toggle]").forEach(row => {
+      row.addEventListener("click", () => {
+        const key = row.dataset.rowToggle;
         if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
         renderFeed();
       });
