@@ -213,6 +213,9 @@
   .cell-task .tree-guide { display: inline-block; color: var(--text-muted); opacity: 0.55; margin-right: 2px; }
   .task-text { font-size: 13.5px; color: var(--text); }
   .task-text.muted { color: var(--text-muted); font-style: italic; }
+  .next-action {
+    font-size: 11.5px; color: var(--accent); margin-top: 2px; line-height: 1.35;
+  }
   .cell-priority, .cell-updated {
     font-size: 11.5px; color: var(--text-muted); text-align: center; font-variant-numeric: tabular-nums;
   }
@@ -533,6 +536,10 @@
   // comments: タスクごとの簡易チャットスレッド。[{author: "user"|"routine", text, at}]の配列。
   // 人がエラー報告・追加指示・完了報告などをタスク単位で書き込め、Routineは次回実行時にこれを読んで
   // 反映し、対応内容を routine側の発言として追記する想定。
+  // nextAction: 「詳細」タブを開かなくても一覧上ですぐ分かるよう、次にすることを1行で書く(短い文字列)。
+  // 集計ステータス(aggregateStatus)が完了以外の行にだけ表示される。子タスクを持つ親タスクは、
+  // 個々の子タスクの内容を要約した1行を必ず書くこと(例: 「下の8件の技術検証タスクを1件ずつ実施する」)。
+  // 子タスクを持たない末端タスクは省略可(省略時はcontent[0]またはsteps[0]が自動的に代わりに表示される)。
   // 親タスクは subtasks配列を持つことで、その下に子タスクをぶら下げられる。
   // 注: KNOWN_REPOSはこのダッシュボードの表示分類(💻/📝バッジ)専用の一覧で、共有Routineが
   // 実際にどのリポジトリを処理するかとは無関係。ai-research-radarは個別の調査キーワードタスク
@@ -548,6 +555,7 @@
       priority: "高",
       status: "完了",
       updated: "2026-07-26",
+      nextAction: "残っている3件の子タスク(GAS再デプロイ・トリガー設定・疎通検証)に対応する(下の子タスク参照)",
       note: "",
       detail: "",
       output: "",
@@ -590,6 +598,7 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
+          nextAction: "下の子タスクで、addCommentがコメントタブへ実際に反映されるか疎通検証する",
           completedItems: [
             { item: "各タスクにコメント(追加指示・エラー報告・完了報告)をやり取りできるスレッドを持たせた", date: "2026-08-01" },
             { item: "GAS側にaddCommentアクションを追加し、「コメント」タブへ書き込めるようにした", date: "2026-08-01" },
@@ -620,6 +629,7 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
+          nextAction: "下の子タスクで、completeTasksが完了タブへ実際に反映されるか疎通検証する",
           completedItems: [
             { item: "タスク完了時に依頼タスクタブから完了タブへ自動で行を移動するようにした", date: "2026-08-01" },
             { item: "GAS側にcompleteTasksアクションを追加した", date: "2026-08-01" },
@@ -649,6 +659,7 @@
           priority: "高",
           status: "完了",
           updated: "2026-08-01",
+          nextAction: "「実装進捗管理シート」でgas/Code.gsを再デプロイし、syncFromGithubの時間主導トリガーを設定する(下の子タスク参照)",
           completedItems: [
             { item: "Routine実行環境からscript.google.comへ直接書き込めない問題への回避策を実装した(根本原因は未解決、issues参照)", date: "2026-08-01" },
             { item: "書き込みの向きを逆転させ、GAS側からGitHubを定期的に取りに行くプル型の同期に切り替えた", date: "2026-08-01" },
@@ -773,6 +784,7 @@
       status: "未着手",
       updated: "2026-08-01",
       category: "manual",
+      nextAction: "下の8件の技術検証タスクを優先度(高→中→低)順に1件ずつ実施する",
       content: [
         "企画整理時点(2026-07-18)で洗い出した「未検証・要確認事項」8件を、実データ・実環境で一つずつ検証する(下の子タスクを1件ずつ対応する)",
       ],
@@ -880,11 +892,13 @@
         { item: "未PR化のまま放置されていた修正3件をPR #1として作成", date: "2026-08-02" },
       ],
       note: "調査の結果、直近の修正3件が未マージ・未デプロイのまま放置されていたことと、本番の自動収集が実質1週間止まっている可能性が高いことが判明した。PR #1を作成したが、マージ・GAS再デプロイ・外部処理の稼働確認は人の対応待ち。",
+      nextAction: "外部処理(Pythonスクリプト)の稼働確認と、PR #1のマージ・GAS再デプロイを行う(下の子タスク参照)",
       subtasks: [
         {
           task: "本番スプレッドシートの実データ・実行履歴を確認し、価格収集が実際に動いているか調べる",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
+          nextAction: "外部処理(Pythonスクリプト)の稼働確認と、価格履歴タブの実データ確認を行う(下の子タスク参照)",
           detail: "本番スプレッドシートを直接確認。収集実行記録は2026-07-26で止まっており、「収集待ちリスト」への登録(日次トリガー)は動いているが、そこから先の実際の価格収集(スクレイピング)を行う外部処理の稼働有無は確認できなかった。",
           output: "",
           subtasks: [
@@ -916,6 +930,7 @@
           task: "未マージ・未反映の修正が無いか、GitHub側のブランチ・PR状況も合わせて確認する",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
+          nextAction: "PR #1をマージしGASを再デプロイする(下の子タスク参照)",
           detail: "gitログを確認したところ、実装済みだった修正3件(重複レコード防止・チラシ誤検知修正・APIキーのScript Properties化)がブランチにコミットされたままPRが1件も作成されていなかったため、PR #1として作成した。",
           output: "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
           subtasks: [
@@ -1015,6 +1030,7 @@
       priority: "高",
       status: "対応中",
       updated: "2026-08-05",
+      nextAction: "専用のClaude調査ルームの作成とgas/Code.gs再デプロイを行う(下の子タスク参照)",
       note: "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)の作成・依頼文の貼り付けはユーザー側の対応待ち。",
       detail: "",
       output: "",
@@ -1032,6 +1048,7 @@
           task: "GEMINI_MODELの更新(gemini-2.5-flash→gemini-3.5-flash)",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
+          nextAction: "下の子タスクで、gemini-3.5-flashのRPM/RPD上限を確認する",
           completedItems: [{ item: "Gemini APIの404エラーに対応し、提供終了したモデルから新しいモデルへ切り替えた", date: "2026-08-02" }],
           detail: "依頼タスク実行時にGemini APIから404(models/gemini-2.5-flashは新規ユーザー向けに提供終了)が返るようになったため、gemini-3.5-flashへ切り替えた。doGet/doPostは変更していないため保存のみで反映され再デプロイは不要。",
           output: "gas/Code.gs",
@@ -1081,6 +1098,7 @@
         {
           task: "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
           priority: "高", status: "対応中", updated: "2026-08-05",
+          nextAction: "gas/Code.gsの再デプロイと、専用のClaude調査ルームの作成を行う(下の子タスク参照)",
           note: "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
           completedItems: [
             { item: "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにするGAS側の仕組み(syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備)", date: "2026-08-01" },
@@ -1122,6 +1140,7 @@
       status: "未着手",
       updated: "2026-08-05",
       category: "manual",
+      nextAction: "実装進捗管理シートへのタブ追加(使用量ログ・利用上限ログ)から着手する(下の子タスク参照)",
       note: "【作業タスク】新しいリポジトリ・専用ルームを作ってユーザー(または専用ルーム)が構築する想定。共有Routineの実装対象ではない。",
       output: "",
       checkHistory: [
@@ -1139,6 +1158,7 @@
           task: "実装進捗管理シートに使用量ログ・利用上限ログのタブを追加する",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
+          nextAction: "「実装進捗管理シート」を開き、下記手順の通り新しいタブを2つ追加する",
           detail: "「使用量ログ」(Repo, Task, 着手日時, 完了日時, 所要時間, 規模感, PR差分行数)と「利用上限ログ」(日時, 直前のタスク, メモ。ユーザーが手動記録)の2タブを追加する予定。",
           output: "",
           steps: [
@@ -1182,6 +1202,7 @@
       status: "対応中",
       updated: "2026-08-02",
       category: "manual",
+      nextAction: "専用ルームでの実装状況(GitHub Actionsワークフロー・knowledge-index.json生成)を確認し、進んでいなければ追加指示を送る(下の子タスク参照)",
       note: "【作業タスク】リポジトリ(gurii-gabreh/Knowledge-Dashboard)は作成済み。専用の別ルームで構築を開始中。共有Routineの実装対象ではない。",
       output: "",
       checkHistory: [
@@ -1290,9 +1311,14 @@
     return `<span class="chip ${cls}">${status}</span>`;
   }
 
+  // 子タスクの「見た目上のステータス」ではなく、再帰的に集計した実際のステータスを使って親の
+  // ステータスを決める。修正前は子の.status(リテラル値)をそのまま見ていたため、子タスク自身は
+  // 「完了」だがそのまた孫タスクが未着手、というケースで親が誤って「完了」と表示される不具合が
+  // あった(2026-08-05修正)。これにより「一番上は完了に見えるのに、開くと未完了が残っている」
+  // というわかりづらさの原因になっていた。
   function aggregateStatus(t) {
     if (!t.subtasks || !t.subtasks.length) return t.status;
-    const statuses = t.subtasks.map(s => s.status);
+    const statuses = t.subtasks.map(s => aggregateStatus(s));
     if (statuses.every(s => s === "完了")) return "完了";
     if (statuses.some(s => s === "進行中" || s === "対応中")) return "進行中";
     if (statuses.some(s => s === "完了予定")) return "完了予定";
@@ -1506,6 +1532,17 @@
     html += `<div class="cell-task" style="padding-left:${depth * 28}px">`;
     const treeGuide = depth > 0 ? `<span class="tree-guide">${"　".repeat(depth - 1)}└ </span>` : "";
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${treeGuide}${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.title || node.task}</div>`;
+    // 「次にすること」を、詳細タブを開かなくても一覧上ですぐ分かるように1行だけ表示する。
+    // 未完了(集計ステータスが完了以外)の行だけ対象。子タスクを持つ行はnextAction(手書きの要約)を
+    // 優先し、無ければ表示しない。子タスクを持たない行はnextActionが無ければcontent/stepsの
+    // 最初の項目をそのまま流用する(運用ルール23参照)。
+    if (status !== "完了" && !isPlaceholder) {
+      const fallbackNext = !hasChildren
+        ? ((node.content && node.content[0]) || (node.steps && node.steps[0]) || null)
+        : null;
+      const nextText = node.nextAction || fallbackNext;
+      if (nextText) html += `<div class="next-action">→ 次: ${nextText}</div>`;
+    }
     html += `</div>`;
     html += `<div class="cell-priority">${node.priority !== "-" ? node.priority : "―"}</div>`;
     html += `<div class="cell-status">${chip(status)}</div>`;
