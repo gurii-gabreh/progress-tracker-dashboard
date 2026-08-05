@@ -252,6 +252,17 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
     リポジトリ略号: `progress-tracker-dashboard`→`PTD`、`kizashi`→`KIZ`、
     `supermarket-price-tracker`→`SPT`、`gemini-monitor`→`GEM`、`ai-research-radar`→`AIR`、
     `usage-tracker`→`UST`、`Knowledge-Dashboard`→`KND`
+25. **`chrome-extension/`に、ダッシュボードの表示専用ビューアーをChromeサイドパネル化する拡張機能を
+    追加した**(2026-08-05追加)。タスクごとに別々のClaude Codeルーム(タブ)を並行して開く運用に
+    伴い、どのタブを見ていても進捗が常に横に見えるようにする目的。`sidepanel.html`は`data/tasks.json`
+    をGitHub raw経由で都度fetchして表示するだけの構造で、タスクデータを内部に持たない(=書き込み
+    操作は一切無く、表示専用)。そのため**タスクの中身(文言・ステータス等)を変更しても、この拡張機能
+    自体の再インストール・再読み込みは不要**で、サイドパネルを開き直すか「🔄 最新を取得」を押すだけで
+    反映される(拡張機能のコード自体=`sidepanel.html`のレイアウトやロジックを変えた場合のみ、
+    `chrome://extensions`での再読み込みが必要)。Chromeウェブストアには公開せず、デベロッパーモードでの
+    「パッケージ化されていない拡張機能を読み込む」を前提にしている(詳細は`chrome-extension/README.md`)。
+    本体のダッシュボード(Artifact/`dashboard.html`)と処理ロジックは独立しているため、本体側の機能
+    (renderRow等)を変更した場合はサイドパネル側にも同様の変更が必要かどうか都度判断すること。
 
 ## 管理対象リポジトリ
 

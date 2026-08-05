@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>アプリ制作進捗管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg: #f3f4f7;
+    --surface: #ffffff;
+    --surface-2: #eceef3;
+    --border: #dcdfe6;
+    --text: #1b1e27;
+    --text-muted: #5b6172;
+    --accent: #33449c;
+    --accent-soft: #e4e7fb;
+    --knowledge-bg: #fbf9f0;
+    --knowledge-border: #e6dfc2;
+    --status-done-bg: #e1f5ec;
+    --status-done-fg: #157a4a;
+    --status-doing-bg: #e4edfd;
+    --status-doing-fg: #2054c4;
+    --status-todo-bg: #eceef3;
+    --status-todo-fg: #5b6172;
+    --status-skip-bg: #fdf0e0;
+    --status-skip-fg: #a05a08;
+    --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161c; --surface: #1b1e27; --surface-2: #22252f; --border: #30333e;
+      --text: #e7e8ee; --text-muted: #969cab; --accent: #8fa1ff; --accent-soft: #262b45;
+      --knowledge-bg: #232016; --knowledge-border: #47401f;
+      --status-done-bg: #143528; --status-done-fg: #4fd399;
+      --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
+      --status-todo-bg: #22252f; --status-todo-fg: #969cab;
+      --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.5; overflow: hidden;
+  }
+
+  /* サイドパネルは横幅が狭い(だいたい320〜400px)ので、本体版のような720px制限は付けない。 */
+  .wrap { height: 100vh; display: flex; flex-direction: column; padding: 0 10px; }
+
+  .sticky-top {
+    flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px;
+    padding-top: 14px; padding-bottom: 10px; background: var(--bg);
+  }
+  .scroll-area {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden;
+    display: flex; flex-direction: column; gap: 12px; padding-bottom: 32px;
+  }
+
+  header { display: flex; flex-direction: column; gap: 4px; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  header .eyebrow { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .settings-btn {
+    font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer;
+  }
+  .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .settings-btn.loading { opacity: 0.6; cursor: default; }
+  header h1 { margin: 0; font-size: 17px; font-weight: 700; text-wrap: balance; }
+  header .meta { color: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  header .meta a { color: var(--accent); text-decoration: none; }
+  header .meta a:hover { text-decoration: underline; }
+  .viewer-note {
+    font-size: 10.5px; color: var(--text-muted); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
+  }
+
+  .stat-strip {
+    display: flex; flex-direction: column; gap: 5px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 7px 10px; box-shadow: var(--shadow);
+  }
+  .stat-row {
+    display: flex; align-items: center; gap: 8px; padding: 4px 5px; border-radius: 7px; cursor: pointer;
+  }
+  .stat-row:hover { background: var(--surface-2); }
+  .stat-row .name { flex: 1; font-size: 11.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stat-indicator {
+    flex: 0 0 auto; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  }
+  .stat-indicator.done { background: var(--status-done-bg); color: var(--status-done-fg); }
+  .stat-indicator.pending { background: var(--status-doing-bg); color: var(--status-doing-fg); }
+
+  .avatar {
+    width: 20px; height: 20px; border-radius: 6px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff;
+  }
+  .avatar.lg { width: 26px; height: 26px; border-radius: 7px; font-size: 12px; }
+
+  .filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .filter-btn {
+    font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted);
+    cursor: pointer;
+  }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .feed { display: flex; flex-direction: column; gap: 12px; }
+  .task-group {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+
+  .repo-header {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: var(--group-color, var(--accent)); color: #fff;
+  }
+  .repo-header .avatar { background: rgba(255, 255, 255, 0.28) !important; color: #fff; }
+  .repo-header .repo-name { font-weight: 700; font-size: 12.5px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .repo-header .type-tag { font-size: 10px; color: rgba(255, 255, 255, 0.85); }
+
+  /* 本体版は横並びグリッドだが、サイドパネルは幅が狭いので縦積みレイアウトに変える。 */
+  .feed-row {
+    display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; cursor: default;
+    background: color-mix(in srgb, var(--group-color, var(--accent)) 5%, var(--surface));
+    border-bottom: 1px solid var(--border);
+  }
+  .feed-row.child { background: color-mix(in srgb, var(--group-color, var(--accent)) 9%, var(--surface)); }
+  .feed-row.child.depth-2 { background: color-mix(in srgb, var(--group-color, var(--accent)) 13%, var(--surface)); }
+  .feed-row.child.depth-3, .feed-row.child.depth-4 { background: color-mix(in srgb, var(--group-color, var(--accent)) 17%, var(--surface)); }
+  .feed-row.toggleable { cursor: pointer; }
+  .feed-row.toggleable:hover { background: color-mix(in srgb, var(--group-color, var(--accent)) 12%, var(--surface)); }
+
+  .row-top-line { display: flex; align-items: center; gap: 6px; }
+  .level-badge {
+    display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+    width: 16px; height: 16px; border-radius: 5px;
+    font-size: 9.5px; font-weight: 700; font-variant-numeric: tabular-nums;
+    background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+  }
+  .level-badge.lv-1 { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .level-badge.lv-2 { background: var(--status-doing-bg); color: var(--status-doing-fg); border-color: var(--status-doing-fg); }
+  .level-badge.lv-3, .level-badge.lv-4 { background: var(--status-skip-bg); color: var(--status-skip-fg); border-color: var(--status-skip-fg); }
+
+  .chevron-btn {
+    width: 16px; height: 16px; border: none; background: none; cursor: pointer; flex: 0 0 auto;
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; transition: transform 0.15s ease;
+  }
+  .chevron-btn.open { transform: rotate(90deg); }
+  .chevron-spacer { width: 16px; flex: 0 0 auto; }
+
+  .row-icon { font-size: 12px; flex: 0 0 auto; }
+  .type-tag { font-size: 10px; color: var(--text-muted); }
+  .task-text { font-size: 12.5px; color: var(--text); flex: 1; min-width: 0; }
+  .task-text.muted { color: var(--text-muted); font-style: italic; }
+  .tree-guide { display: inline-block; color: var(--text-muted); opacity: 0.55; margin-right: 2px; }
+  .next-action { font-size: 11px; color: var(--accent); line-height: 1.35; padding-left: 22px; }
+  .row-sub-line { display: flex; align-items: center; gap: 6px 8px; padding-left: 22px; font-size: 10.5px; color: var(--text-muted); flex-wrap: wrap; }
+  .cell-status-wrap { display: flex; align-items: center; gap: 6px; }
+
+  .row-meta-line {
+    display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap;
+    font-size: 10.5px; color: var(--text-muted); padding-left: 22px;
+  }
+  .meta-info { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .meta-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .check-history-toggle { color: var(--text-muted); font-weight: 600; cursor: pointer; }
+  .check-history-toggle:hover { color: var(--accent); }
+
+  .task-id-tag {
+    font-size: 9.5px; font-weight: 700; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    padding: 1px 6px; border-radius: 999px; cursor: pointer;
+    background: var(--surface-2); color: var(--text-muted); border: 1px dashed var(--border);
+  }
+  .task-id-tag:hover { border-color: var(--accent); color: var(--accent); }
+  .task-id-tag.copied { background: var(--status-done-bg); color: var(--status-done-fg); border-style: solid; border-color: var(--status-done-fg); }
+
+  .chip {
+    font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .chip.done { background: var(--status-done-bg); color: var(--status-done-fg); }
+  .chip.doing { background: var(--status-doing-bg); color: var(--status-doing-fg); }
+  .chip.todo { background: var(--status-todo-bg); color: var(--status-todo-fg); }
+  .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+  .chip.scheduled { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+  .chip.manual-setup { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+
+  .category-tag {
+    font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .category-tag.code { background: var(--status-doing-bg); color: var(--status-doing-fg); }
+  .category-tag.research { background: var(--accent-soft); color: var(--accent); }
+  .category-tag.manual { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+
+  .manual-setup-panel {
+    margin: 2px 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--status-skip-bg); border: 1px solid var(--status-skip-fg);
+    font-size: 11.5px; color: var(--text); display: flex; flex-direction: column; gap: 4px;
+  }
+  .manual-setup-panel .m-label { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--status-skip-fg); }
+  .manual-setup-panel .m-body { white-space: pre-wrap; }
+
+  .check-history-panel {
+    margin: 2px 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border); font-size: 11.5px;
+  }
+  .check-history-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .check-history-list li { padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+  .check-history-list li:last-child { padding-bottom: 0; border-bottom: none; }
+  .check-history-list .ch-date { display: block; font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+  .check-history-list .ch-empty { color: var(--text-muted); border-bottom: none; }
+
+  .comment-thread {
+    margin: 2px 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text); display: flex; flex-direction: column; gap: 7px;
+  }
+  .comment-thread .c-label { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .comment-list { display: flex; flex-direction: column; gap: 6px; }
+  .comment-bubble { display: flex; flex-direction: column; gap: 2px; padding: 6px 9px; border-radius: 8px; max-width: 96%; }
+  .comment-bubble.user { align-self: flex-end; background: var(--accent-soft); }
+  .comment-bubble.routine { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
+  .comment-bubble .c-meta { display: flex; align-items: center; gap: 5px; font-size: 9.5px; color: var(--text-muted); font-weight: 600; flex-wrap: wrap; }
+  .comment-bubble .c-meta .chip { font-size: 9px; padding: 1px 5px; }
+  .comment-bubble .c-text { white-space: pre-wrap; }
+  .comment-empty { font-size: 11px; color: var(--text-muted); }
+  .viewer-note-inline {
+    font-size: 10px; color: var(--text-muted); font-style: italic;
+  }
+
+  .detail-tabs { display: flex; gap: 4px; margin: 2px 0 5px 22px; }
+  .detail-tab-btn {
+    font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 999px 999px 0 0;
+    border: 1px solid var(--border); border-bottom: none; background: var(--bg); color: var(--text-muted); cursor: pointer;
+  }
+  .detail-tab-btn.active { background: var(--surface-2); color: var(--accent); }
+  .detail-tab-btn:hover { color: var(--accent); }
+
+  .knowledge-panel {
+    margin: 0 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--knowledge-bg); border: 1px solid var(--knowledge-border);
+    font-size: 11.5px; color: var(--text); display: flex; flex-direction: column; gap: 6px;
+  }
+  .knowledge-panel .k-detail { white-space: pre-wrap; }
+  .knowledge-panel .k-issues {
+    white-space: pre-wrap; padding: 6px 8px; border-radius: 6px;
+    background: var(--status-skip-bg); color: var(--status-skip-fg);
+  }
+  .knowledge-panel .k-issues-label { font-size: 9.5px; font-weight: 700; margin-bottom: 2px; }
+  .knowledge-panel .k-note { color: var(--text-muted); }
+  .knowledge-panel .k-output a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .knowledge-panel .k-output a:hover { text-decoration: underline; }
+
+  .task-content-panel {
+    margin: 0 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border); font-size: 11.5px;
+  }
+  .task-content-panel.manual { background: var(--status-skip-bg); border-color: var(--status-skip-fg); }
+  .task-content-panel .tc-label {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+  .task-content-panel.manual .tc-label { color: var(--status-skip-fg); }
+  .task-content-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+  .task-content-list li { line-height: 1.4; }
+
+  .completed-panel {
+    margin: 0 0 4px 22px; padding: 8px 10px; border-radius: 8px;
+    background: var(--status-done-bg); border: 1px solid var(--status-done-fg); font-size: 11.5px;
+  }
+  .completed-panel .cp-label {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--status-done-fg); margin-bottom: 4px;
+  }
+  .completed-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; color: var(--status-done-fg); }
+  .completed-list li { line-height: 1.4; }
+  .completed-list .ci-date { color: var(--text-muted); font-size: 10px; }
+
+  .done-summary { padding: 3px 0 8px 22px; }
+  .done-summary-label { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; }
+  .done-summary-list { margin: 0; padding-left: 16px; font-size: 11px; color: var(--text-muted); display: flex; flex-direction: column; gap: 3px; }
+  .done-summary-list li { line-height: 1.4; }
+  .done-summary .done-date { font-size: 10px; opacity: .75; }
+
+  .empty { padding: 20px 12px; text-align: center; color: var(--text-muted); font-size: 12px; }
+  .empty.small { padding: 8px 0 10px 22px; font-size: 11px; text-align: left; }
+
+  footer { color: var(--text-muted); font-size: 10.5px; text-align: center; padding-top: 4px; }
+
+  .urgent-flag { color: var(--status-skip-fg); font-weight: 700; }
+  .cancel-deadline-note { font-size: 10px; color: var(--status-skip-fg); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 16px; transform: translate(-50%, 12px);
+    max-width: min(92vw, 340px); padding: 8px 14px; border-radius: 999px;
+    background: var(--text); color: var(--bg); font-size: 11.5px; font-weight: 600;
+    text-align: center; box-shadow: var(--shadow); opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200;
+  }
+  .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="sticky-top">
+    <header>
+      <div class="header-top">
+        <div class="eyebrow">Progress Tracker (Viewer)</div>
+        <button class="settings-btn" id="refresh-btn" title="GitHub上のdata/tasks.jsonを取得し直します">🔄 最新を取得</button>
+      </div>
+      <h1>アプリ制作進捗管理</h1>
+      <div class="meta">取得日時: <span id="updated-at">-</span></div>
+      <div class="viewer-note">
+        このサイドパネルは<b>表示専用</b>です。内容の変更(タスク完了・追加指示など)は、Claude Codeの
+        各ルームか、<a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>から行ってください。
+      </div>
+    </header>
+    <div id="stat-strip" class="stat-strip"></div>
+  </div>
+
+  <div class="scroll-area">
+    <div id="filter-row" class="filter-row"></div>
+    <div id="feed" class="feed"></div>
+    <footer>🆔タグをクリックしてIDをコピーし、Claude Codeのチャットに貼ると詳細を確認できます</footer>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // このサイドパネルは表示専用のビューアーです。タスクデータはGitHub上のdata/tasks.jsonを
+  // 都度fetchして表示するだけで、このファイル自体にはタスクデータを持ちません(=データの変更は
+  // すべてWeb側=GitHubリポジトリ側で行われ、このパネルは「🔄 最新を取得」を押すか開き直すだけで
+  // 反映されます。拡張機能自体の再インストール・再読み込みは不要)。
+  const TASKS_JSON_URL = "https://raw.githubusercontent.com/gurii-gabreh/progress-tracker-dashboard/main/data/tasks.json";
+
+  let TASKS = [];
+  const KNOWN_REPOS = ["progress-tracker-dashboard", "kizashi", "supermarket-price-tracker", "gemini-monitor", "ai-research-radar", "usage-tracker", "Knowledge-Dashboard"];
+  const REPO_COLORS = {
+    "progress-tracker-dashboard": "#33449c",
+    "kizashi": "#c2410c",
+    "supermarket-price-tracker": "#0f766e",
+    "gemini-monitor": "#a21caf",
+    "ai-research-radar": "#b91c1c",
+    "usage-tracker": "#4d7c0f",
+    "Knowledge-Dashboard": "#0e7490",
+  };
+  const RESEARCH_COLOR = "#7c3aed";
+  const REPO_DISPLAY_NAMES = { "kizashi": "結(ゆい)土砂災害アプリ" };
+  const REPO_AVATAR_TEXT = { "kizashi": "結" };
+  const CATEGORY_LABELS = {
+    code: "💻 コード実装",
+    research: "📝 調査・資料作成",
+    manual: "🧑 ユーザー作業タスク",
+  };
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled" };
+  const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
+  const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
+
+  function repoDisplayName(repo) { return REPO_DISPLAY_NAMES[repo] || repo; }
+  function isCode(t) { return KNOWN_REPOS.includes(t.repo); }
+  function taskCategory(node, repo) {
+    return node.category || (KNOWN_REPOS.includes(repo || node.repo) ? "code" : "research");
+  }
+  function avatarColor(t) { return isCode(t) ? (REPO_COLORS[t.repo] || "#5b6172") : RESEARCH_COLOR; }
+  function avatarLabel(t, repo) {
+    const cat = taskCategory(t, repo);
+    if (cat === "manual") return "🧑";
+    return cat === "code" ? "💻" : "📝";
+  }
+  function chip(status) {
+    const cls = STATUS_CLASS[status] || "todo";
+    return `<span class="chip ${cls}">${status}</span>`;
+  }
+  function aggregateStatus(t) {
+    if (!t.subtasks || !t.subtasks.length) return t.status;
+    const statuses = t.subtasks.map(s => aggregateStatus(s));
+    if (statuses.every(s => s === "完了")) return "完了";
+    if (statuses.some(s => s === "進行中" || s === "対応中")) return "進行中";
+    if (statuses.some(s => s === "完了予定")) return "完了予定";
+    if (statuses.some(s => s === "未着手")) return statuses.some(s => s === "完了") ? "進行中" : "未着手";
+    return "スキップ";
+  }
+  function isFullyDone(node) {
+    if (node.status !== "完了") return false;
+    if (node.issues && String(node.issues).trim()) return false;
+    if (node.subtasks && node.subtasks.length) return node.subtasks.every(isFullyDone);
+    return true;
+  }
+  function sortNodes(list) {
+    return [...list].sort((a, b) => {
+      const sa = aggregateStatus(a), sb = aggregateStatus(b);
+      const s = STATUS_ORDER.indexOf(sa) - STATUS_ORDER.indexOf(sb);
+      if (s !== 0) return s;
+      return (PRIORITY_ORDER[a.priority] ?? 9) - (PRIORITY_ORDER[b.priority] ?? 9);
+    });
+  }
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function findNodeByPath(path) {
+    const parts = path.split(".").map(Number);
+    let node = TASKS[parts[0]];
+    for (let i = 1; i < parts.length; i++) node = node.subtasks[parts[i]];
+    return node;
+  }
+
+  let toastTimer = null;
+  function showToast(message, durationMs = 2500) {
+    const el = document.getElementById("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("visible"), durationMs);
+  }
+
+  let activeFilter = "all";
+  const openGroups = new Set();
+  const openDetail = new Set();
+  const detailTab = new Map();
+  const openCompleted = new Set();
+  const openComments = new Set();
+  const openCheckHistory = new Set();
+
+  function renderFilters() {
+    const row = document.getElementById("filter-row");
+    const options = [["all", "すべて"], ["code", "💻 コード実装"], ["research", "📝 調査・資料作成"]];
+    row.innerHTML = options.map(([key, label]) =>
+      `<button class="filter-btn${activeFilter === key ? " active" : ""}" data-filter="${key}">${label}</button>`
+    ).join("");
+    row.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter;
+        renderFilters();
+        renderFeed();
+      });
+    });
+  }
+
+  function renderStats() {
+    const strip = document.getElementById("stat-strip");
+    const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
+    const rows = repos.map(repo => {
+      const nodes = TASKS.filter(t => t.repo === repo);
+      const allDone = nodes.every(t => aggregateStatus(t) === "完了");
+      const color = REPO_COLORS[repo] || "#5b6172";
+      const avatarText = REPO_AVATAR_TEXT[repo] || repo.slice(0, 2).toUpperCase();
+      return `
+        <div class="stat-row" data-stat-repo="${repo}">
+          <div class="avatar" style="background:${color}">${avatarText}</div>
+          <span class="name">${repoDisplayName(repo)}</span>
+          <span class="stat-indicator ${allDone ? "done" : "pending"}">${allDone ? "✓ 完了" : "● 未完了"}</span>
+        </div>`;
+    });
+    strip.innerHTML = rows.join("") || `<div class="empty small">タスクを読み込み中です…</div>`;
+    strip.querySelectorAll("[data-stat-repo]").forEach(row => {
+      row.addEventListener("click", () => {
+        const target = document.querySelector(`[data-repo-group="${row.dataset.statRepo}"]`);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }
+
+  function completedPanel(node) {
+    const items = node.completedItems || [];
+    if (!items.length) return "";
+    return `
+      <div class="completed-panel">
+        <div class="cp-label">✓ 完了したタスク</div>
+        <ul class="completed-list">${items.map(c => `<li>${c.item}${c.date ? ` <span class="ci-date">(${c.date})</span>` : ""}</li>`).join("")}</ul>
+      </div>`;
+  }
+
+  function detailPanel(node, path, category) {
+    const hasContent = !!(node.content && node.content.length);
+    const hasSteps = !!(node.steps && node.steps.length);
+    const hasKnowledge = !!(node.note || node.detail || node.issues || node.output);
+    if (!hasContent && !hasSteps && !hasKnowledge) return "";
+    const tabs = [];
+    if (hasContent) tabs.push(["content", "📌 タスク内容"]);
+    if (hasSteps) tabs.push(["steps", "📋 実施手順"]);
+    if (hasKnowledge) tabs.push(["knowledge", "📖 実装ナレッジ"]);
+    const saved = detailTab.get(path);
+    const activeTabKey = tabs.some(([k]) => k === saved) ? saved : tabs[0][0];
+    const tabHeader = tabs.length > 1
+      ? `<div class="detail-tabs">${tabs.map(([key, label]) =>
+          `<button class="detail-tab-btn${activeTabKey === key ? " active" : ""}" data-detail-tab="${path}" data-detail-tab-key="${key}">${label}</button>`
+        ).join("")}</div>`
+      : "";
+    let body = "";
+    if (activeTabKey === "content") {
+      const isManual = category === "manual";
+      body = `
+        <div class="task-content-panel${isManual ? " manual" : ""}">
+          ${tabs.length === 1 ? `<div class="tc-label">${isManual ? "🧑 ユーザー作業タスク" : "📌 タスク内容"}</div>` : ""}
+          <ol class="task-content-list">${node.content.map(c => `<li>${c}</li>`).join("")}</ol>
+        </div>`;
+    } else if (activeTabKey === "steps") {
+      body = `
+        <div class="task-content-panel">
+          ${tabs.length === 1 ? `<div class="tc-label">📋 実施手順</div>` : ""}
+          <ol class="task-content-list">${node.steps.map(c => `<li>${c}</li>`).join("")}</ol>
+        </div>`;
+    } else if (activeTabKey === "knowledge") {
+      body = `
+        <div class="knowledge-panel">
+          ${node.detail ? `<div class="k-detail">${node.detail}</div>` : ""}
+          ${node.issues ? `<div class="k-issues"><div class="k-issues-label">⚠ 問題点</div>${node.issues}</div>` : ""}
+          ${node.note ? `<div class="k-note">${node.note}</div>` : ""}
+          ${node.output ? `<div class="k-output"><a href="${node.output}" target="_blank" rel="noopener">成果物を見る →</a></div>` : ""}
+        </div>`;
+    }
+    return `${tabHeader}${body}`;
+  }
+
+  // 読み取り専用のコメント表示(送信フォームは無い。追加指示はClaude Codeのチャットか
+  // ダッシュボード本体・スプレッドシートから行う)。
+  function commentThread(node) {
+    const comments = node.comments || [];
+    const isAddressed = (c) => comments.some(r => r.author === "routine" && r.at && c.at && r.at > c.at);
+    const list = comments.length
+      ? comments.map(c => `
+          <div class="comment-bubble ${c.author === "user" ? "user" : "routine"}">
+            <div class="c-meta">
+              ${c.author === "user" ? "あなた" : "Routine"} ・ ${c.at || ""}
+              ${c.author === "user" ? `<span class="chip ${isAddressed(c) ? "done" : "todo"}">${isAddressed(c) ? "✓ 対応済み" : "○ 未対応"}</span>` : ""}
+            </div>
+            <div class="c-text">${escapeHtml(c.text)}</div>
+          </div>`).join("")
+      : `<div class="comment-empty">まだ追加指示はありません。</div>`;
+    return `
+      <div class="comment-thread">
+        <div class="c-label">追加指示(表示のみ)</div>
+        <div class="comment-list">${list}</div>
+        <div class="viewer-note-inline">送信はダッシュボード本体かClaude Codeのチャットから行ってください。</div>
+      </div>`;
+  }
+
+  function checkHistoryPanel(node) {
+    const entries = node.checkHistory || [];
+    const list = entries.length
+      ? [...entries].reverse().map(e => `<li><span class="ch-date">${e.date || ""}</span>${e.summary || ""}</li>`).join("")
+      : `<li class="ch-empty">まだ記録がありません</li>`;
+    return `<ul class="check-history-list">${list}</ul>`;
+  }
+
+  function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
+    const effectiveRepo = repo || node.repo;
+    const hasChildren = node.subtasks && node.subtasks.length > 0;
+    const hasDetailInfo = !!((node.content && node.content.length) || node.note || node.detail || node.issues || node.output);
+    const hasCompletedItems = !!(node.completedItems && node.completedItems.length);
+    const isPlaceholder = node.task.startsWith("(");
+    const status = aggregateStatus(node);
+    const groupOpen = openGroups.has(path);
+    const detailOpen = openDetail.has(path);
+    const completedOpen = openCompleted.has(path);
+    const commentsOpen = openComments.has(path);
+    const depth = trail.length;
+    const category = taskCategory(node, effectiveRepo);
+    const depthClass = depth > 0 ? ` depth-${Math.min(depth + 1, 4)}` : "";
+    const level = depth + 1;
+
+    const rowToggleAttr = hasChildren ? ` data-row-toggle="${path}"` : "";
+    let html = `<div class="feed-row${child ? " child" + depthClass : ""}${hasChildren ? " toggleable" : ""}"${rowToggleAttr}>`;
+
+    html += `<div class="row-top-line">`;
+    html += `<span class="level-badge lv-${Math.min(level, 4)}">${level}</span>`;
+    if (hasChildren) {
+      html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
+    } else {
+      html += `<div class="chevron-spacer"></div>`;
+    }
+    html += `<span class="row-icon">${avatarLabel(node, effectiveRepo)}</span>`;
+    const treeGuide = depth > 0 ? `<span class="tree-guide">${"　".repeat(depth - 1)}└</span>` : "";
+    html += `<span class="task-text${isPlaceholder ? " muted" : ""}">${treeGuide}${node.urgent ? '<span class="urgent-flag">⚡ </span>' : ""}${node.title || node.task}</span>`;
+    html += `</div>`; // .row-top-line
+
+    if (status !== "完了" && !isPlaceholder) {
+      const fallbackNext = !hasChildren ? ((node.content && node.content[0]) || (node.steps && node.steps[0]) || null) : null;
+      const nextText = node.nextAction || fallbackNext;
+      if (nextText) html += `<div class="next-action">→ 次: ${nextText}</div>`;
+    }
+
+    html += `<div class="row-sub-line">`;
+    html += chip(status);
+    if (node.priority && node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
+    if (node.updated && node.updated !== "-") html += `<span>更新: ${node.updated}</span>`;
+    html += `</div>`;
+
+    html += `<div class="row-meta-line">`;
+    html += `<div class="meta-info">`;
+    if (node.id) {
+      html += `<span class="task-id-tag" data-copy-id="${node.id}" title="クリックでコピー。Claude Codeのチャットで「タスクID ${node.id} の詳細を教えて」のように伝えると詳細を確認できます">🆔 ${node.id}</span>`;
+    }
+    html += `<span class="category-tag ${category}">${CATEGORY_LABELS[category]}</span>`;
+    if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定要</span>`;
+    html += `</div>`;
+    html += `<div class="meta-actions">`;
+    if (hasDetailInfo) {
+      html += `<span class="check-history-toggle" data-detail-panel-toggle="${path}">${detailOpen ? "詳細 ▲" : "📁 詳細 ▼"}</span>`;
+    }
+    if (hasCompletedItems) {
+      html += `<span class="check-history-toggle" data-completed-toggle="${path}">${completedOpen ? "完了済 ▲" : `✓完了(${node.completedItems.length}) ▼`}</span>`;
+    }
+    if (!isPlaceholder) {
+      const chOpen = openCheckHistory.has(path);
+      const historyCount = (node.checkHistory || []).length;
+      html += `<span class="check-history-toggle" data-check-history-toggle="${path}">${chOpen ? "履歴 ▲" : `📋 履歴${historyCount ? `(${historyCount})` : ""} ▼`}</span>`;
+    }
+    if (!isPlaceholder) {
+      const instructionCount = (node.comments || []).length;
+      html += `<span class="check-history-toggle" data-comments-toggle="${path}">${commentsOpen ? "指示 ▲" : `💬 指示${instructionCount ? `(${instructionCount})` : ""} ▼`}</span>`;
+    }
+    if (category === "manual" && !isPlaceholder && node.status === "完了予定") {
+      html += `<span class="cancel-deadline-note">${node.cancelDeadline ? `${node.cancelDeadline}まで取消可` : "取消期限内"}</span>`;
+    }
+    html += `</div></div>`; // .meta-actions, .row-meta-line
+
+    html += `</div>`; // .feed-row
+
+    if (node.manualSetup) {
+      html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
+    }
+    if (detailOpen) html += `<div class="detail-panel">${detailPanel(node, path, category)}</div>`;
+    if (completedOpen) html += completedPanel(node);
+    if (openCheckHistory.has(path) && !isPlaceholder) html += `<div class="check-history-panel">${checkHistoryPanel(node)}</div>`;
+    if (commentsOpen && !isPlaceholder) html += commentThread(node);
+
+    if (hasChildren && groupOpen) {
+      const pendingSubs = node.subtasks.filter(s => !isFullyDone(s));
+      const doneSubs = node.subtasks.filter(s => isFullyDone(s));
+      const childTrail = [...trail, !isLast];
+      if (pendingSubs.length) {
+        html += pendingSubs.map((sub, i) => renderRow(sub, `${path}.${node.subtasks.indexOf(sub)}`, {
+          child: true, repo: effectiveRepo, isLast: i === pendingSubs.length - 1, trail: childTrail,
+        })).join("");
+      }
+      if (doneSubs.length) {
+        html += `<div class="done-summary">`;
+        html += `<div class="done-summary-label">✓ 完了 (${doneSubs.length})</div>`;
+        html += `<ul class="done-summary-list">`;
+        html += doneSubs.map(sub => `<li>${sub.title || sub.task}${sub.updated && sub.updated !== "-" ? ` <span class="done-date">(${sub.updated})</span>` : ""}</li>`).join("");
+        html += `</ul></div>`;
+      }
+      if (!pendingSubs.length && !doneSubs.length) {
+        html += `<div class="empty small">子タスクはありません</div>`;
+      }
+    }
+    return html;
+  }
+
+  function renderFeed() {
+    const feed = document.getElementById("feed");
+    let list = TASKS;
+    if (activeFilter === "code") list = list.filter(isCode);
+    if (activeFilter === "research") list = list.filter(t => !isCode(t));
+    list = sortNodes(list);
+
+    if (!list.length) {
+      feed.innerHTML = `<div class="empty">タスクを読み込み中、または0件です</div>`;
+      return;
+    }
+
+    const repoOrder = [];
+    const byRepo = new Map();
+    list.forEach((t) => {
+      if (!byRepo.has(t.repo)) { byRepo.set(t.repo, []); repoOrder.push(t.repo); }
+      byRepo.get(t.repo).push(t);
+    });
+
+    feed.innerHTML = repoOrder.map((repo) => {
+      const nodes = byRepo.get(repo);
+      const first = nodes[0];
+      const avatarText = REPO_AVATAR_TEXT[repo] || avatarLabel(first);
+      const cats = new Set(nodes.map(t => taskCategory(t, t.repo)));
+      const typeTagHtml = cats.size === 1 ? `<span class="type-tag">${CATEGORY_LABELS[[...cats][0]]}</span>` : "";
+      const tree = nodes.map((t, i) => renderRow(t, `${TASKS.indexOf(t)}`, { isLast: i === nodes.length - 1 })).join("");
+      return `
+        <div class="task-group" data-repo-group="${repo}" style="--group-color:${avatarColor(first)}">
+          <div class="repo-header">
+            <div class="avatar lg" style="background:${avatarColor(first)}">${avatarText}</div>
+            <span class="repo-name">${repoDisplayName(repo)}</span>
+            ${typeTagHtml}
+          </div>
+          ${tree}
+        </div>`;
+    }).join("");
+
+    attachFeedListeners(feed);
+  }
+
+  function attachFeedListeners(feed) {
+    feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = btn.dataset.groupToggle;
+        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-row-toggle]").forEach(row => {
+      row.addEventListener("click", () => {
+        const key = row.dataset.rowToggle;
+        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-detail-panel-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.detailPanelToggle;
+        if (openDetail.has(key)) openDetail.delete(key); else openDetail.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-detail-tab]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        detailTab.set(btn.dataset.detailTab, btn.dataset.detailTabKey);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-completed-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.completedToggle;
+        if (openCompleted.has(key)) openCompleted.delete(key); else openCompleted.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-comments-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.commentsToggle;
+        if (openComments.has(key)) openComments.delete(key); else openComments.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-check-history-toggle]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = el.dataset.checkHistoryToggle;
+        if (openCheckHistory.has(key)) openCheckHistory.delete(key); else openCheckHistory.add(key);
+        renderFeed();
+      });
+    });
+    feed.querySelectorAll("[data-copy-id]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const id = el.dataset.copyId;
+        const showCopied = () => {
+          el.classList.add("copied");
+          el.textContent = "✓ コピー済";
+          setTimeout(() => { el.classList.remove("copied"); el.textContent = `🆔 ${id}`; }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(id).then(showCopied).catch(() => showToast(`タスクID: ${id}`));
+        } else {
+          showToast(`タスクID: ${id}`);
+        }
+      });
+    });
+  }
+
+  async function loadTasks(isManualRefresh) {
+    const btn = document.getElementById("refresh-btn");
+    if (btn) { btn.classList.add("loading"); btn.textContent = "取得中…"; }
+    try {
+      // raw.githubusercontent.comのCDNキャッシュを避けるため、都度タイムスタンプを付けてfetchする。
+      const res = await fetch(`${TASKS_JSON_URL}?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      TASKS = data.tasks || [];
+      const now = new Date();
+      document.getElementById("updated-at").textContent =
+        `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ` +
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+      renderStats();
+      renderFeed();
+      if (isManualRefresh) showToast("✓ 最新の状態を取得しました");
+    } catch (e) {
+      console.error(e);
+      showToast(`⚠ 取得に失敗しました(${e.message})`);
+    } finally {
+      if (btn) { btn.classList.remove("loading"); btn.textContent = "🔄 最新を取得"; }
+    }
+  }
+
+  document.getElementById("refresh-btn").addEventListener("click", () => loadTasks(true));
+
+  renderFilters();
+  renderStats();
+  renderFeed();
+  loadTasks(false);
+</script>
+</body>
+</html>

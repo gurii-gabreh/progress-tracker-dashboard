@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "アプリ制作進捗管理 (サイドパネル)",
+  "version": "1.0.0",
+  "description": "実装進捗管理シートの内容を、どのタブを開いていてもサイドパネルに常時表示するビューアーです。表示専用で、内容の変更はClaude Codeのルームから行います(GitHub上のdata/tasks.jsonを都度取得して表示するだけ)。",
+  "permissions": ["sidePanel"],
+  "host_permissions": ["https://raw.githubusercontent.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "アプリ制作進捗管理を開く"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}
