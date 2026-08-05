@@ -1327,7 +1327,10 @@
     }
   ];
 
-  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled" };
+  // 「子タスク対応待ち」は集計用ステータスではなく表示専用のラベル(下記renderRowのdisplayStatus参照)。
+  // 子タスクを持つ行が未完了の場合、そこに進行中/未着手などの推定ステータスを出すと「この行自体の
+  // 状態」と誤解されやすいため、「子タスクの状況待ちである」ことが一目で分かるラベルに差し替える。
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled", "子タスク対応待ち": "skip" };
   const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
 
   // ダッシュボードから追加した新規タスクをスプレッドシートの依頼タスクタブへ反映するためのGASエンドポイント。
@@ -1582,8 +1585,14 @@
     const hasCompletedItems = !!(node.completedItems && node.completedItems.length);
     const isPlaceholder = node.task.startsWith("(");
     const status = aggregateStatus(node);
-    // 子タスクは既定では折りたたみ、シェブロンをクリックした時だけ展開する。
-    const groupOpen = openGroups.has(path);
+    // 親タスク(トップレベル)は従来通り既定で折りたたみ、シェブロン/行クリックで開く。
+    // 子タスク以下(child===true)は、そもそも未完了のものしかここへ渡ってこない(完了済みは
+    // done-summaryへ回される)ため、既定で開いた状態にする。親を1回開けば、その下にぶら下がる
+    // 未完了の子タスク・孫タスクが芋づる式に全部見えるようにするため(2026-08-05変更、
+    // 「開いたのに孫タスクがまだ畳まれていて見づらい」というフィードバックへの対応)。
+    // openGroupsは「既定の開閉状態から手動で反転させた行のpath」を記録する(トグルの意味は
+    // 親タスクなら「開いた」、子タスク以下なら「(既定の開いた状態から)閉じた」)。
+    const groupOpen = child ? !openGroups.has(path) : openGroups.has(path);
     const detailOpen = openDetail.has(path);
     const completedOpen = openCompleted.has(path);
     const commentsOpen = openComments.has(path);
@@ -1622,7 +1631,11 @@
     }
     html += `</div>`;
     html += `<div class="cell-priority">${node.priority !== "-" ? node.priority : "―"}</div>`;
-    html += `<div class="cell-status">${chip(status)}</div>`;
+    // 子タスクを持つ行が未完了の場合、推定ステータス(進行中/未着手等)をそのまま出すと
+    // 「この行自体がその状態」に見えて紛らわしいため、「子タスク対応待ち」に表示だけ差し替える
+    // (並び替え・集計には引き続き実際のaggregateStatus結果を使うため、statusはそのまま)。
+    const displayStatus = (hasChildren && status !== "完了") ? "子タスク対応待ち" : status;
+    html += `<div class="cell-status">${chip(displayStatus)}</div>`;
     html += `<div class="cell-updated">${node.updated !== "-" ? node.updated : "―"}</div>`;
 
     html += `<div class="row-meta-line">`;

@@ -360,7 +360,7 @@
     research: "📝 調査・資料作成",
     manual: "🧑 ユーザー作業タスク",
   };
-  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled" };
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled", "子タスク対応待ち": "skip" };
   const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
   const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
 
@@ -559,7 +559,9 @@
     const hasCompletedItems = !!(node.completedItems && node.completedItems.length);
     const isPlaceholder = node.task.startsWith("(");
     const status = aggregateStatus(node);
-    const groupOpen = openGroups.has(path);
+    // 子タスク以下(child===true)は未完了のものしか渡ってこないため既定で開く。親を1回開けば
+    // 配下の未完了ノードが芋づる式に見える(本体版dashboard.htmlと同じ挙動)。
+    const groupOpen = child ? !openGroups.has(path) : openGroups.has(path);
     const detailOpen = openDetail.has(path);
     const completedOpen = openCompleted.has(path);
     const commentsOpen = openComments.has(path);
@@ -590,7 +592,8 @@
     }
 
     html += `<div class="row-sub-line">`;
-    html += chip(status);
+    const displayStatus = (hasChildren && status !== "完了") ? "子タスク対応待ち" : status;
+    html += chip(displayStatus);
     if (node.priority && node.priority !== "-") html += `<span>優先度: ${node.priority}</span>`;
     if (node.updated && node.updated !== "-") html += `<span>更新: ${node.updated}</span>`;
     html += `</div>`;
