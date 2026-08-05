@@ -196,7 +196,7 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-08-01",
-          "nextAction": "「実装進捗管理シート」でgas/Code.gsを再デプロイし、syncFromGithubの時間主導トリガーを設定する(下の子タスク参照)",
+          "nextAction": "残るPTD-011(syncFromGithubの時間主導トリガー設定)に対応する(下の子タスク参照)",
           "completedItems": [
             {
               "item": "Routine実行環境からscript.google.comへ直接書き込めない問題への回避策を実装した(根本原因は未解決、issues参照)",
@@ -230,16 +230,28 @@
               "id": "PTD-010",
               "task": "「実装進捗管理シート」のApps Scriptエディタで最新のgas/Code.gsを貼り付けて保存し、ウェブアプリとして再デプロイする",
               "priority": "高",
-              "status": "未着手",
-              "updated": "-",
+              "status": "完了",
+              "updated": "2026-08-05",
               "category": "manual",
-              "note": "",
+              "completedItems": [
+                {
+                  "item": "「実装進捗管理シート」のApps Scriptエディタでgas/Code.gsの最新版を貼り付けて保存し、ウェブアプリとして新しいバージョンで再デプロイした",
+                  "date": "2026-08-05"
+                }
+              ],
+              "note": "本人より2026-08-05にデプロイ完了の報告あり。Routine実行環境からscript.google.comへの直接疎通は引き続き403でブロックされておりRoutine側での技術的な検証はできないため、本人報告ベースで完了とした。この後、本人がスプレッドシート側の「⏩ 今すぐ同期」ボタンを押して反映確認を行う予定。",
               "detail": "findRow/removeRowの照合ロジック(タスク名の表記ゆれ正規化)とsyncFromGithubの未完了タスク向け同期に加えて、2026-08-04追加分(✓完了にするボタンの取消可能な完了予約 scheduleComplete/cancelComplete、コメントタブの対応状況ステータス列)も含む最新版。doPostのアクションが増えているため、このデプロイをしないと「✓ 完了にする」ボタンを押しても反応しない。",
               "steps": [
                 "「実装進捗管理シート」を開く → 拡張機能 → Apps Script",
                 "gas/Code.gsの最新内容をエディタに貼り付けて保存",
                 "デプロイ → デプロイを管理 → 既存のウェブアプリデプロイの鉛筆アイコン",
                 "バージョンを「新しいバージョン」にして「デプロイ」を押す(保存だけではWebアプリ経由の呼び出しには反映されない)"
+              ],
+              "checkHistory": [
+                {
+                  "date": "2026-08-05",
+                  "summary": "本人よりgas/Code.gsの再デプロイ完了の報告。Routine実行環境からscript.google.comへは今も403でブロックされ直接検証は不可のため、本人報告ベースでPTD-010を完了に変更。次はスプレッドシート側の「今すぐ同期」ボタンでの反映確認待ち。"
+                }
               ],
               "output": ""
             },
