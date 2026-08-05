@@ -229,6 +229,15 @@
   .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
   .check-history-toggle { color: var(--text-muted); font-weight: 600; cursor: pointer; }
   .check-history-toggle:hover { color: var(--accent); }
+  /* タスクID: Claude Codeのチャット側で「タスクID ○○の詳細を教えて」と伝える際に使う識別子。
+     クリックでコピーできるようにしている(コピー後はしばらく✓表示に変わる)。 */
+  .task-id-tag {
+    font-size: 10.5px; font-weight: 700; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    padding: 2px 7px; border-radius: 999px; cursor: pointer;
+    background: var(--surface-2); color: var(--text-muted); border: 1px dashed var(--border);
+  }
+  .task-id-tag:hover { border-color: var(--accent); color: var(--accent); }
+  .task-id-tag.copied { background: var(--status-done-bg); color: var(--status-done-fg); border-style: solid; border-color: var(--status-done-fg); }
 
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -504,6 +513,12 @@
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
   // Repo欄が既知のリポジトリ名ならコード実装タスク、それ以外(例: 調査, 資料作成)は調査・資料作成タスクとして扱う
   // 各タスクは note(短い備考/スキップ理由) と detail(ナレッジ用の実装詳細) を持てる。
+  // id: 全タスク・全子タスクで一意な識別子({repo略号}-{連番}、例: "KIZ-003")。一覧の各行に🆔タグとして
+  // 表示され、クリックでクリップボードにコピーできる。ユーザーがClaude Codeのチャット上で
+  // 「タスクID KIZ-003の詳細を教えて」のように伝えれば、そのIDでdata/tasks.jsonを検索して該当タスクの
+  // 詳細を直接チャットで回答できる(=タスクの中身についてのやり取りは、ダッシュボード内ではなく
+  // このチャット上で行う運用)。新規タスク追加時は既存の連番の続きから採番し、既存タスクのidは
+  // 一度割り振ったら変更しない(pathや並び順が変わってもidだけは不変にするため)。
   // title: taskが長い依頼文そのものになっている場合の短い要約タイトル。あれば一覧の表示名として
   // taskの代わりに使われる(taskは依頼タスクタブとの照合キーなので変更せずそのまま残す)。
   // content: このタスクが具体的に何を求めているか・何をする必要があるかを箇条書き(文字列配列)で書く。
@@ -551,6 +566,7 @@
   const TASKS = [
     {
       repo: "progress-tracker-dashboard",
+      id: "PTD-001",
       task: "初期セットアップ",
       priority: "高",
       status: "完了",
@@ -561,6 +577,7 @@
       output: "",
       subtasks: [
         {
+          id: "PTD-002",
           task: "スプレッドシート作成",
           priority: "高",
           status: "完了",
@@ -572,6 +589,7 @@
           checkHistory: [{ date: "2026-07-26", summary: "実装進捗管理シートを新規作成し、列構成・運用方針(入力専用/正本はtasks.json)を決定。" }]
         },
         {
+          id: "PTD-003",
           task: "ダッシュボード雛形作成",
           priority: "高",
           status: "完了",
@@ -583,6 +601,7 @@
           checkHistory: [{ date: "2026-07-26", summary: "dashboard.htmlを新規作成しArtifactとして公開。フィードバックを受けフラットなフィード表示に変更、親子階層・ナレッジ展開に対応。" }]
         },
         {
+          id: "PTD-004",
           task: "Routine設定",
           priority: "高",
           status: "完了",
@@ -594,6 +613,7 @@
           checkHistory: [{ date: "2026-07-26", summary: "平日9/12/15/18時JSTの自己バインド型Routineを作成し、取り込み→実装→スキップ判断の基本設計を確定。" }]
         },
         {
+          id: "PTD-005",
           task: "タスクごとの簡易チャットスレッド機能(コメント)",
           priority: "高",
           status: "完了",
@@ -613,6 +633,7 @@
           ],
           subtasks: [
             {
+              id: "PTD-006",
               task: "Routine側からのaddComment呼び出しが実際にコメントタブへ反映されるか検証する",
               priority: "中", status: "未着手", updated: "-", category: "research",
               note: "", detail: "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため未検証(ユーザーのブラウザからの送信・反映は確認済み)。プル型同期(syncFromGithub)経由での反映有無を確認する。", output: "",
@@ -625,6 +646,7 @@
           ]
         },
         {
+          id: "PTD-007",
           task: "依頼タスク⇄完了タブの自動移動(completeTasksアクション)",
           priority: "高",
           status: "完了",
@@ -643,6 +665,7 @@
           ],
           subtasks: [
             {
+              id: "PTD-008",
               task: "RoutineからのcompleteTasks呼び出しが実際に完了タブへ反映されるか検証する",
               priority: "中", status: "未着手", updated: "-", category: "research",
               note: "", detail: "ネットワークポリシーの制約のため未検証。実際の移動は現在プル型同期(syncFromGithub)経由で行われている。", output: "",
@@ -655,6 +678,7 @@
           ]
         },
         {
+          id: "PTD-009",
           task: "GAS Webアプリへの書き込みがこの環境から到達不可(script.google.comへの通信がブロックされている)への対応",
           priority: "高",
           status: "完了",
@@ -675,6 +699,7 @@
           output: "gas/Code.gs",
           subtasks: [
             {
+              id: "PTD-010",
               task: "「実装進捗管理シート」のApps Scriptエディタで最新のgas/Code.gsを貼り付けて保存し、ウェブアプリとして再デプロイする",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "",
@@ -688,6 +713,7 @@
               output: ""
             },
             {
+              id: "PTD-011",
               task: "syncFromGithubの時間主導トリガー(例: 1時間おき)が未設定ならApps Scriptエディタの「トリガー」から設定する",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "",
@@ -705,6 +731,7 @@
     },
     {
       repo: "progress-tracker-dashboard",
+      id: "PTD-012",
       task: "週次残タスクチェック",
       priority: "中",
       status: "対応中",
@@ -721,21 +748,25 @@
       ],
       subtasks: [
         {
+          id: "PTD-013",
           task: "毎週月曜、依頼タスクタブ全体(全リポジトリ)を棚卸しする",
           priority: "中", status: "完了", updated: "2026-08-02", category: "manual",
           note: "", detail: "", output: ""
         },
         {
+          id: "PTD-014",
           task: "スキップ放置・依頼日超過の未着手など、長期滞留タスクが無いか確認する",
           priority: "中", status: "完了", updated: "2026-08-02", category: "manual",
           note: "", detail: "", output: ""
         },
         {
+          id: "PTD-015",
           task: "シートとdata/tasks.json側で内容がずれているものを指摘する",
           priority: "中", status: "完了", updated: "2026-08-02", category: "manual",
           note: "", detail: "", output: ""
         },
         {
+          id: "PTD-016",
           task: "ai-research-radarの未処理キーワードが無いか確認する",
           priority: "中", status: "完了", updated: "2026-08-02", category: "manual",
           note: "", detail: "", output: ""
@@ -744,6 +775,7 @@
     },
     {
       repo: "kizashi",
+      id: "KIZ-001",
       task: "都知事杯ハッカソン2026 企画・要件整理",
       priority: "-",
       status: "完了",
@@ -757,11 +789,13 @@
       output: "企画書・起動プロンプトはgurii-gabreh/Kizashiリポジトリのgit履歴(コミットb4ffa9e)にのみ残存(現在は削除済み)",
       subtasks: [
         {
+          id: "KIZ-002",
           task: "都知事杯オープンデータ・ハッカソン2026への提出企画を固める",
           priority: "-", status: "完了", updated: "2026-07-18", category: "manual",
           note: "", detail: "", output: ""
         },
         {
+          id: "KIZ-003",
           task: "アプリのコンセプト・核心機能・「絶対にやらないこと」を整理する",
           priority: "-", status: "完了", updated: "2026-07-18", category: "manual",
           note: "",
@@ -769,6 +803,7 @@
           output: ""
         },
         {
+          id: "KIZ-004",
           task: "使用予定オープンデータを選定し、可能な範囲で実データを確認する",
           priority: "-", status: "完了", updated: "2026-07-18", category: "manual",
           note: "",
@@ -779,6 +814,7 @@
     },
     {
       repo: "kizashi",
+      id: "KIZ-005",
       task: "技術検証フェーズ(実データでの動作確認)",
       priority: "高",
       status: "未着手",
@@ -793,6 +829,7 @@
       output: "",
       subtasks: [
         {
+          id: "KIZ-006",
           task: "国土数値情報の東京都「土砂災害警戒区域データ」(A33-20_13_GML.zip, 20.9MB)を実際にダウンロードしGeoJSON化、UIプロトタイプのサンプルデータと差し替えて表示検証(座標系JGD2011→WGS84変換要否、ファイルサイズによる表示速度への影響、区部絞り込みの要否を含む)",
           title: "土砂災害警戒区域データの実データ検証",
           priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
@@ -806,6 +843,7 @@
           ]
         },
         {
+          id: "KIZ-007",
           task: "気象庁防災情報XMLの実地取得テスト(Cloudflare Workersから定期取得できるか、都・区市町村単位の警報有無を抽出できるか)",
           title: "気象庁防災情報XMLの取得テスト",
           priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
@@ -818,6 +856,7 @@
           ]
         },
         {
+          id: "KIZ-008",
           task: "東京都建設局サイト(d-keikai.metro.tokyo.lg.jp)のiframe埋め込み表示可否確認(X-Frame-Options等の制限有無)。できない場合はリンク提示に切り替え",
           title: "建設局サイトのiframe埋め込み可否確認",
           priority: "高", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
@@ -828,6 +867,7 @@
           ]
         },
         {
+          id: "KIZ-009",
           task: "気象庁「土砂キキクル」5段階詳細危険度の生データを無料取得する手段の有無確認(無ければ公式ページ埋め込みで代替)",
           title: "土砂キキクル詳細データの取得手段確認",
           priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
@@ -839,6 +879,7 @@
           ]
         },
         {
+          id: "KIZ-010",
           task: "Cloudflare D1のセットアップ確認(ハッカソン特典での利用可否、無料枠の読み書き回数・容量上限)",
           priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
           steps: [
@@ -849,6 +890,7 @@
           ]
         },
         {
+          id: "KIZ-011",
           task: "LINE Messaging APIの無料枠確認(現場ルームからの通知配信数が無料枠内に収まるか)",
           priority: "中", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
           steps: [
@@ -860,6 +902,7 @@
           ]
         },
         {
+          id: "KIZ-012",
           task: "国土地理院タイルの利用規約確認(商用・イベント利用時の出典表示義務等)",
           priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
           steps: [
@@ -870,6 +913,7 @@
           ]
         },
         {
+          id: "KIZ-013",
           task: "前兆現象チェックリストの正式引用元確定(首相官邸・国交省砂防部のどちらを一次情報として引用するか)",
           priority: "低", status: "未着手", updated: "-", category: "manual", note: "【作業タスク】", detail: "", output: "",
           steps: [
@@ -882,6 +926,7 @@
     },
     {
       repo: "supermarket-price-tracker",
+      id: "SPT-001",
       task: "きちんと処理が動いているか、スプレッドシート内容と履歴を確認して",
       title: "価格収集の動作状況確認",
       priority: "高",
@@ -895,6 +940,7 @@
       nextAction: "外部処理(Pythonスクリプト)の稼働確認と、PR #1のマージ・GAS再デプロイを行う(下の子タスク参照)",
       subtasks: [
         {
+          id: "SPT-002",
           task: "本番スプレッドシートの実データ・実行履歴を確認し、価格収集が実際に動いているか調べる",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
@@ -903,6 +949,7 @@
           output: "",
           subtasks: [
             {
+              id: "SPT-003",
               task: "「収集待ちリスト」を消費して実際にトクバイのチラシを収集するはずの外部処理(Pythonスクリプト)が今も存在し、稼働しているか確認する",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "心当たりが無い場合、この仕組み自体が未完成か失われている可能性がある。", output: "",
@@ -914,6 +961,7 @@
               ]
             },
             {
+              id: "SPT-004",
               task: "本番の「価格履歴」タブを直接開き、2026-07-27以降のデータが実際に増えているかどうかを確認する",
               priority: "中", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "このセッションからは容量が大きく全件確認できなかった。", output: "",
@@ -927,6 +975,7 @@
           ]
         },
         {
+          id: "SPT-005",
           task: "未マージ・未反映の修正が無いか、GitHub側のブランチ・PR状況も合わせて確認する",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
@@ -935,6 +984,7 @@
           output: "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
           subtasks: [
             {
+              id: "SPT-006",
               task: "PR #1をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイする(GEMINI_API_KEYが未設定ならScript Propertiesにも設定する)",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "", output: "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
@@ -960,6 +1010,7 @@
     },
     {
       repo: "gemini-monitor",
+      id: "GEM-001",
       task: "現状、午前0〜1時までしか測定していないが、それを1日目午前0〜11、次の日は午後12〜23時のように修正して",
       title: "測定時間帯の日替わり自動切り替え",
       priority: "高",
@@ -987,6 +1038,7 @@
       ],
       subtasks: [
         {
+          id: "GEM-002",
           task: "コード実装(GitHub側)",
           priority: "高",
           status: "完了",
@@ -996,6 +1048,7 @@
           output: "https://github.com/gurii-gabreh/gemini-monitor/pull/1"
         },
         {
+          id: "GEM-003",
           task: "GAS(スプレッドシート紐付き)への手動デプロイ",
           priority: "高",
           status: "完了",
@@ -1010,6 +1063,7 @@
     },
     {
       repo: "gemini-monitor",
+      id: "GEM-004",
       task: "問題点が問題ないかを調べて",
       title: "測定時間帯フィルタの動作確認(実測ログ検証)",
       priority: "高",
@@ -1026,6 +1080,7 @@
     },
     {
       repo: "ai-research-radar",
+      id: "AIR-001",
       task: "Gemini調査実行",
       priority: "高",
       status: "対応中",
@@ -1036,6 +1091,7 @@
       output: "",
       subtasks: [
         {
+          id: "AIR-002",
           task: "GitHub Pagesデプロイの修正",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
@@ -1045,6 +1101,7 @@
           checkHistory: [{ date: "2026-08-02", summary: "Pages未有効化が原因と特定、configure-pages@v5にenablement:trueを追加してデプロイ成功を確認。" }]
         },
         {
+          id: "AIR-003",
           task: "GEMINI_MODELの更新(gemini-2.5-flash→gemini-3.5-flash)",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
@@ -1055,6 +1112,7 @@
           checkHistory: [{ date: "2026-08-02", summary: "404エラーの原因(モデル提供終了)を特定し、gemini-3.5-flashへ切り替え。" }],
           subtasks: [
             {
+              id: "AIR-004",
               task: "gemini-3.5-flashの正式なリクエスト数上限(RPM/RPD)を公式ドキュメントで確認する",
               priority: "低", status: "未着手", updated: "-", category: "manual",
               note: "【作業タスク】", detail: "gemini-2.5-flashと比べてどうかは未検証。", output: "",
@@ -1069,6 +1127,7 @@
           ]
         },
         {
+          id: "AIR-005",
           task: "レート制限(429)の検知・可視化・自動リトライ",
           priority: "高", status: "完了", updated: "2026-08-02",
           note: "",
@@ -1078,6 +1137,7 @@
           checkHistory: [{ date: "2026-08-02", summary: "429専用検知(isRateLimitフラグ)を実装し、ステータス維持+備考明記で翌日自動リトライされるようにした。" }]
         },
         {
+          id: "AIR-006",
           task: "繰り返し調査マーカー(【毎日】【N回】)の実装",
           priority: "中", status: "完了", updated: "2026-08-02",
           note: "",
@@ -1087,6 +1147,7 @@
           checkHistory: [{ date: "2026-08-02", summary: "parseRepeatConfig_/repeatMarkerText_を実装し、【毎日】【N回】マーカーによる繰り返し調査に対応。" }]
         },
         {
+          id: "AIR-007",
           task: "Gemini混雑時間帯の自動最適化(gemini-monitor連携)",
           priority: "中", status: "完了", updated: "2026-08-01",
           note: "",
@@ -1096,6 +1157,7 @@
           checkHistory: [{ date: "2026-08-01", summary: "computeBestHour_/rescheduleToLeastCongestedHourを実装し、gemini-monitorの計測ログを参照して混雑時間帯を自動回避するようにした。" }]
         },
         {
+          id: "AIR-008",
           task: "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
           priority: "高", status: "対応中", updated: "2026-08-05",
           nextAction: "gas/Code.gsの再デプロイと、専用のClaude調査ルームの作成を行う(下の子タスク参照)",
@@ -1108,6 +1170,7 @@
           checkHistory: [{ date: "2026-08-01", summary: "GAS側のプル型同期・data/claude-fallback-results.jsonの仕様・README・依頼文を整備。実際の調査ルーム作成は人の対応待ちのまま。" }],
           subtasks: [
             {
+              id: "AIR-009",
               task: "Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存する(doGet/doPostは変更していないため再デプロイ不要)",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "", output: "",
@@ -1119,6 +1182,7 @@
               ]
             },
             {
+              id: "AIR-010",
               task: "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
               priority: "高", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "", output: "",
@@ -1135,6 +1199,7 @@
     },
     {
       repo: "usage-tracker",
+      id: "UST-001",
       task: "使用量分析ダッシュボード",
       priority: "中",
       status: "未着手",
@@ -1148,6 +1213,7 @@
       ],
       subtasks: [
         {
+          id: "UST-002",
           task: "Claude Codeでの1日あたりの作業量と利用上限の相関を、実測データから把握する",
           priority: "中", status: "完了", updated: "2026-08-05", category: "manual",
           note: "",
@@ -1155,6 +1221,7 @@
           output: ""
         },
         {
+          id: "UST-003",
           task: "実装進捗管理シートに使用量ログ・利用上限ログのタブを追加する",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
@@ -1169,6 +1236,7 @@
           ],
           subtasks: [
             {
+              id: "UST-004",
               task: "タブ構成が固まったら、各Routineへ使用量ログへの自動記録(タスク着手・完了のたびに書き込む部分)を依頼する",
               priority: "中", status: "未着手", updated: "-", category: "manual",
               note: "", detail: "このタブ追加が終わってから着手する後続タスク。", output: "",
@@ -1181,6 +1249,7 @@
           ]
         },
         {
+          id: "UST-005",
           task: "専用のGitHubリポジトリ・Apps Script・GitHub Pagesを新規に用意し、推移を可視化する",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
@@ -1197,6 +1266,7 @@
     },
     {
       repo: "Knowledge-Dashboard",
+      id: "KND-001",
       task: "ナレッジ管理ダッシュボード",
       priority: "中",
       status: "対応中",
@@ -1210,6 +1280,7 @@
       ],
       subtasks: [
         {
+          id: "KND-002",
           task: "progress-tracker-dashboardの実装知見(detail/issues/manualSetup等)を横断的に集約する",
           priority: "中", status: "対応中", updated: "2026-08-02", category: "manual",
           note: "",
@@ -1222,6 +1293,7 @@
           ]
         },
         {
+          id: "KND-003",
           task: "人が検索・閲覧できるダッシュボードと、他のClaude Codeセッションが参照できるJSONの両方を提供する",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
@@ -1235,6 +1307,7 @@
           ]
         },
         {
+          id: "KND-004",
           task: "各知見から関連するGoogleスプレッドシートへ直接アクセスできるようにする",
           priority: "中", status: "未着手", updated: "-", category: "manual",
           note: "",
@@ -1550,6 +1623,9 @@
 
     html += `<div class="row-meta-line">`;
     html += `<div class="meta-info">`;
+    if (node.id) {
+      html += `<span class="task-id-tag" data-copy-id="${node.id}" title="クリックでコピー。Claude Codeのチャットで「タスクID ${node.id} の詳細を教えて」のように伝えると、このタスクの詳細をチャットで確認できます">🆔 ${node.id}</span>`;
+    }
     html += `<span class="category-tag ${category}">${CATEGORY_LABELS[category]}</span>`;
     if (node.manualSetup) html += `<span class="chip manual-setup">⚠ 手動設定が必要</span>`;
     html += `</div>`;
@@ -1801,6 +1877,24 @@
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         requestKnowledgeUpdate(btn.dataset.knowledgeUpdate, btn.dataset.knowledgeUpdateRepo);
+      });
+    });
+    // タスクIDタグをクリックするとクリップボードへコピーする。Claude Codeのチャット側へ
+    // 「タスクID ○○の詳細を教えて」のように貼り付けて伝える運用を想定している。
+    feed.querySelectorAll("[data-copy-id]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const id = el.dataset.copyId;
+        const showCopied = () => {
+          el.classList.add("copied");
+          el.textContent = "✓ コピーしました";
+          setTimeout(() => { el.classList.remove("copied"); el.textContent = `🆔 ${id}`; }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(id).then(showCopied).catch(() => showToast(`タスクID: ${id}`));
+        } else {
+          showToast(`タスクID: ${id}`);
+        }
       });
     });
   }

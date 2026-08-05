@@ -12,6 +12,7 @@
   "tasks": [
     {
       "repo": "progress-tracker-dashboard",
+      "id": "PTD-001",
       "task": "初期セットアップ",
       "priority": "高",
       "status": "完了",
@@ -22,6 +23,7 @@
       "output": "",
       "subtasks": [
         {
+          "id": "PTD-002",
           "task": "スプレッドシート作成",
           "priority": "高",
           "status": "完了",
@@ -43,6 +45,7 @@
           ]
         },
         {
+          "id": "PTD-003",
           "task": "ダッシュボード雛形作成",
           "priority": "高",
           "status": "完了",
@@ -64,6 +67,7 @@
           ]
         },
         {
+          "id": "PTD-004",
           "task": "Routine設定",
           "priority": "高",
           "status": "完了",
@@ -85,6 +89,7 @@
           ]
         },
         {
+          "id": "PTD-005",
           "task": "タスクごとの簡易チャットスレッド機能(コメント)",
           "priority": "高",
           "status": "完了",
@@ -119,6 +124,7 @@
           ],
           "subtasks": [
             {
+              "id": "PTD-006",
               "task": "Routine側からのaddComment呼び出しが実際にコメントタブへ反映されるか検証する",
               "priority": "中",
               "status": "未着手",
@@ -136,6 +142,7 @@
           ]
         },
         {
+          "id": "PTD-007",
           "task": "依頼タスク⇄完了タブの自動移動(completeTasksアクション)",
           "priority": "高",
           "status": "完了",
@@ -166,6 +173,7 @@
           ],
           "subtasks": [
             {
+              "id": "PTD-008",
               "task": "RoutineからのcompleteTasks呼び出しが実際に完了タブへ反映されるか検証する",
               "priority": "中",
               "status": "未着手",
@@ -183,6 +191,7 @@
           ]
         },
         {
+          "id": "PTD-009",
           "task": "GAS Webアプリへの書き込みがこの環境から到達不可(script.google.comへの通信がブロックされている)への対応",
           "priority": "高",
           "status": "完了",
@@ -218,6 +227,7 @@
           "output": "gas/Code.gs",
           "subtasks": [
             {
+              "id": "PTD-010",
               "task": "「実装進捗管理シート」のApps Scriptエディタで最新のgas/Code.gsを貼り付けて保存し、ウェブアプリとして再デプロイする",
               "priority": "高",
               "status": "未着手",
@@ -234,6 +244,7 @@
               "output": ""
             },
             {
+              "id": "PTD-011",
               "task": "syncFromGithubの時間主導トリガー(例: 1時間おき)が未設定ならApps Scriptエディタの「トリガー」から設定する",
               "priority": "高",
               "status": "未着手",
@@ -254,6 +265,7 @@
     },
     {
       "repo": "progress-tracker-dashboard",
+      "id": "PTD-012",
       "task": "週次残タスクチェック",
       "priority": "中",
       "status": "対応中",
@@ -270,6 +282,7 @@
       ],
       "subtasks": [
         {
+          "id": "PTD-013",
           "task": "毎週月曜、依頼タスクタブ全体(全リポジトリ)を棚卸しする",
           "priority": "中",
           "status": "完了",
@@ -280,6 +293,7 @@
           "output": ""
         },
         {
+          "id": "PTD-014",
           "task": "スキップ放置・依頼日超過の未着手など、長期滞留タスクが無いか確認する",
           "priority": "中",
           "status": "完了",
@@ -290,6 +304,7 @@
           "output": ""
         },
         {
+          "id": "PTD-015",
           "task": "シートとdata/tasks.json側で内容がずれているものを指摘する",
           "priority": "中",
           "status": "完了",
@@ -300,6 +315,7 @@
           "output": ""
         },
         {
+          "id": "PTD-016",
           "task": "ai-research-radarの未処理キーワードが無いか確認する",
           "priority": "中",
           "status": "完了",
@@ -313,6 +329,7 @@
     },
     {
       "repo": "kizashi",
+      "id": "KIZ-001",
       "task": "都知事杯ハッカソン2026 企画・要件整理",
       "priority": "-",
       "status": "完了",
@@ -329,6 +346,7 @@
       "output": "企画書・起動プロンプトはgurii-gabreh/Kizashiリポジトリのgit履歴(コミットb4ffa9e)にのみ残存(現在は削除済み)",
       "subtasks": [
         {
+          "id": "KIZ-002",
           "task": "都知事杯オープンデータ・ハッカソン2026への提出企画を固める",
           "priority": "-",
           "status": "完了",
@@ -339,6 +357,7 @@
           "output": ""
         },
         {
+          "id": "KIZ-003",
           "task": "アプリのコンセプト・核心機能・「絶対にやらないこと」を整理する",
           "priority": "-",
           "status": "完了",
@@ -349,6 +368,7 @@
           "output": ""
         },
         {
+          "id": "KIZ-004",
           "task": "使用予定オープンデータを選定し、可能な範囲で実データを確認する",
           "priority": "-",
           "status": "完了",
@@ -362,6 +382,7 @@
     },
     {
       "repo": "kizashi",
+      "id": "KIZ-005",
       "task": "技術検証フェーズ(実データでの動作確認)",
       "priority": "高",
       "status": "未着手",
@@ -376,6 +397,7 @@
       "output": "",
       "subtasks": [
         {
+          "id": "KIZ-006",
           "task": "国土数値情報の東京都「土砂災害警戒区域データ」(A33-20_13_GML.zip, 20.9MB)を実際にダウンロードしGeoJSON化、UIプロトタイプのサンプルデータと差し替えて表示検証(座標系JGD2011→WGS84変換要否、ファイルサイズによる表示速度への影響、区部絞り込みの要否を含む)",
           "title": "土砂災害警戒区域データの実データ検証",
           "priority": "高",
@@ -395,6 +417,7 @@
           ]
         },
         {
+          "id": "KIZ-007",
           "task": "気象庁防災情報XMLの実地取得テスト(Cloudflare Workersから定期取得できるか、都・区市町村単位の警報有無を抽出できるか)",
           "title": "気象庁防災情報XMLの取得テスト",
           "priority": "高",
@@ -413,6 +436,7 @@
           ]
         },
         {
+          "id": "KIZ-008",
           "task": "東京都建設局サイト(d-keikai.metro.tokyo.lg.jp)のiframe埋め込み表示可否確認(X-Frame-Options等の制限有無)。できない場合はリンク提示に切り替え",
           "title": "建設局サイトのiframe埋め込み可否確認",
           "priority": "高",
@@ -429,6 +453,7 @@
           ]
         },
         {
+          "id": "KIZ-009",
           "task": "気象庁「土砂キキクル」5段階詳細危険度の生データを無料取得する手段の有無確認(無ければ公式ページ埋め込みで代替)",
           "title": "土砂キキクル詳細データの取得手段確認",
           "priority": "中",
@@ -446,6 +471,7 @@
           ]
         },
         {
+          "id": "KIZ-010",
           "task": "Cloudflare D1のセットアップ確認(ハッカソン特典での利用可否、無料枠の読み書き回数・容量上限)",
           "priority": "中",
           "status": "未着手",
@@ -462,6 +488,7 @@
           ]
         },
         {
+          "id": "KIZ-011",
           "task": "LINE Messaging APIの無料枠確認(現場ルームからの通知配信数が無料枠内に収まるか)",
           "priority": "中",
           "status": "未着手",
@@ -479,6 +506,7 @@
           ]
         },
         {
+          "id": "KIZ-012",
           "task": "国土地理院タイルの利用規約確認(商用・イベント利用時の出典表示義務等)",
           "priority": "低",
           "status": "未着手",
@@ -495,6 +523,7 @@
           ]
         },
         {
+          "id": "KIZ-013",
           "task": "前兆現象チェックリストの正式引用元確定(首相官邸・国交省砂防部のどちらを一次情報として引用するか)",
           "priority": "低",
           "status": "未着手",
@@ -513,6 +542,7 @@
     },
     {
       "repo": "supermarket-price-tracker",
+      "id": "SPT-001",
       "task": "きちんと処理が動いているか、スプレッドシート内容と履歴を確認して",
       "title": "価格収集の動作状況確認",
       "priority": "高",
@@ -532,6 +562,7 @@
       "nextAction": "外部処理(Pythonスクリプト)の稼働確認と、PR #1のマージ・GAS再デプロイを行う(下の子タスク参照)",
       "subtasks": [
         {
+          "id": "SPT-002",
           "task": "本番スプレッドシートの実データ・実行履歴を確認し、価格収集が実際に動いているか調べる",
           "priority": "高",
           "status": "完了",
@@ -542,6 +573,7 @@
           "output": "",
           "subtasks": [
             {
+              "id": "SPT-003",
               "task": "「収集待ちリスト」を消費して実際にトクバイのチラシを収集するはずの外部処理(Pythonスクリプト)が今も存在し、稼働しているか確認する",
               "priority": "高",
               "status": "未着手",
@@ -558,6 +590,7 @@
               ]
             },
             {
+              "id": "SPT-004",
               "task": "本番の「価格履歴」タブを直接開き、2026-07-27以降のデータが実際に増えているかどうかを確認する",
               "priority": "中",
               "status": "未着手",
@@ -576,6 +609,7 @@
           ]
         },
         {
+          "id": "SPT-005",
           "task": "未マージ・未反映の修正が無いか、GitHub側のブランチ・PR状況も合わせて確認する",
           "priority": "高",
           "status": "完了",
@@ -586,6 +620,7 @@
           "output": "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
           "subtasks": [
             {
+              "id": "SPT-006",
               "task": "PR #1をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイする(GEMINI_API_KEYが未設定ならScript Propertiesにも設定する)",
               "priority": "高",
               "status": "未着手",
@@ -619,6 +654,7 @@
     },
     {
       "repo": "gemini-monitor",
+      "id": "GEM-001",
       "task": "現状、午前0〜1時までしか測定していないが、それを1日目午前0〜11、次の日は午後12〜23時のように修正して",
       "title": "測定時間帯の日替わり自動切り替え",
       "priority": "高",
@@ -664,6 +700,7 @@
       ],
       "subtasks": [
         {
+          "id": "GEM-002",
           "task": "コード実装(GitHub側)",
           "priority": "高",
           "status": "完了",
@@ -673,6 +710,7 @@
           "output": "https://github.com/gurii-gabreh/gemini-monitor/pull/1"
         },
         {
+          "id": "GEM-003",
           "task": "GAS(スプレッドシート紐付き)への手動デプロイ",
           "priority": "高",
           "status": "完了",
@@ -687,6 +725,7 @@
     },
     {
       "repo": "gemini-monitor",
+      "id": "GEM-004",
       "task": "問題点が問題ないかを調べて",
       "title": "測定時間帯フィルタの動作確認(実測ログ検証)",
       "priority": "高",
@@ -709,6 +748,7 @@
     },
     {
       "repo": "ai-research-radar",
+      "id": "AIR-001",
       "task": "Gemini調査実行",
       "priority": "高",
       "status": "対応中",
@@ -719,6 +759,7 @@
       "output": "",
       "subtasks": [
         {
+          "id": "AIR-002",
           "task": "GitHub Pagesデプロイの修正",
           "priority": "高",
           "status": "完了",
@@ -740,6 +781,7 @@
           ]
         },
         {
+          "id": "AIR-003",
           "task": "GEMINI_MODELの更新(gemini-2.5-flash→gemini-3.5-flash)",
           "priority": "高",
           "status": "完了",
@@ -762,6 +804,7 @@
           ],
           "subtasks": [
             {
+              "id": "AIR-004",
               "task": "gemini-3.5-flashの正式なリクエスト数上限(RPM/RPD)を公式ドキュメントで確認する",
               "priority": "低",
               "status": "未着手",
@@ -781,6 +824,7 @@
           ]
         },
         {
+          "id": "AIR-005",
           "task": "レート制限(429)の検知・可視化・自動リトライ",
           "priority": "高",
           "status": "完了",
@@ -802,6 +846,7 @@
           ]
         },
         {
+          "id": "AIR-006",
           "task": "繰り返し調査マーカー(【毎日】【N回】)の実装",
           "priority": "中",
           "status": "完了",
@@ -823,6 +868,7 @@
           ]
         },
         {
+          "id": "AIR-007",
           "task": "Gemini混雑時間帯の自動最適化(gemini-monitor連携)",
           "priority": "中",
           "status": "完了",
@@ -844,6 +890,7 @@
           ]
         },
         {
+          "id": "AIR-008",
           "task": "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
           "priority": "高",
           "status": "対応中",
@@ -866,6 +913,7 @@
           ],
           "subtasks": [
             {
+              "id": "AIR-009",
               "task": "Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存する(doGet/doPostは変更していないため再デプロイ不要)",
               "priority": "高",
               "status": "未着手",
@@ -882,6 +930,7 @@
               ]
             },
             {
+              "id": "AIR-010",
               "task": "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
               "priority": "高",
               "status": "未着手",
@@ -903,6 +952,7 @@
     },
     {
       "repo": "usage-tracker",
+      "id": "UST-001",
       "task": "使用量分析ダッシュボード",
       "priority": "中",
       "status": "未着手",
@@ -919,6 +969,7 @@
       ],
       "subtasks": [
         {
+          "id": "UST-002",
           "task": "Claude Codeでの1日あたりの作業量と利用上限の相関を、実測データから把握する",
           "priority": "中",
           "status": "完了",
@@ -929,6 +980,7 @@
           "output": ""
         },
         {
+          "id": "UST-003",
           "task": "実装進捗管理シートに使用量ログ・利用上限ログのタブを追加する",
           "priority": "中",
           "status": "未着手",
@@ -946,6 +998,7 @@
           ],
           "subtasks": [
             {
+              "id": "UST-004",
               "task": "タブ構成が固まったら、各Routineへ使用量ログへの自動記録(タスク着手・完了のたびに書き込む部分)を依頼する",
               "priority": "中",
               "status": "未着手",
@@ -963,6 +1016,7 @@
           ]
         },
         {
+          "id": "UST-005",
           "task": "専用のGitHubリポジトリ・Apps Script・GitHub Pagesを新規に用意し、推移を可視化する",
           "priority": "中",
           "status": "未着手",
@@ -982,6 +1036,7 @@
     },
     {
       "repo": "Knowledge-Dashboard",
+      "id": "KND-001",
       "task": "ナレッジ管理ダッシュボード",
       "priority": "中",
       "status": "対応中",
@@ -998,6 +1053,7 @@
       ],
       "subtasks": [
         {
+          "id": "KND-002",
           "task": "progress-tracker-dashboardの実装知見(detail/issues/manualSetup等)を横断的に集約する",
           "priority": "中",
           "status": "対応中",
@@ -1013,6 +1069,7 @@
           ]
         },
         {
+          "id": "KND-003",
           "task": "人が検索・閲覧できるダッシュボードと、他のClaude Codeセッションが参照できるJSONの両方を提供する",
           "priority": "中",
           "status": "未着手",
@@ -1029,6 +1086,7 @@
           ]
         },
         {
+          "id": "KND-004",
           "task": "各知見から関連するGoogleスプレッドシートへ直接アクセスできるようにする",
           "priority": "中",
           "status": "未着手",
