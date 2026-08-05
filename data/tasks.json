@@ -127,16 +127,29 @@
               "id": "PTD-006",
               "task": "Routine側からのaddComment呼び出しが実際にコメントタブへ反映されるか検証する",
               "priority": "中",
-              "status": "未着手",
-              "updated": "-",
+              "status": "対応中",
+              "updated": "2026-08-05",
               "category": "research",
-              "note": "",
-              "detail": "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため未検証(ユーザーのブラウザからの送信・反映は確認済み)。プル型同期(syncFromGithub)経由での反映有無を確認する。",
+              "note": "2026-08-05、相談ルームでの方針決定: 直接POSTの可否はPTD-009(2026-08-01)の調査結果を援用して確認済みと判断(script.google.comへの接続自体がネットワーク層でブロックされており、addComment/completeTasksどちらのPOSTでも同じ403で失敗するため、actionの種類によらず結果は同じ。個別の再テストは不要)。残るプル型同期の反映確認は、前提のPTD-010(GAS再デプロイ)・PTD-011(トリガー設定)が未着手のため現時点では検証不可。",
+              "detail": "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため直接POSTは失敗する(ユーザーのブラウザからの送信・反映は確認済み)。残る確認事項は、プル型同期(syncFromGithub)経由でコメントが実際に反映されるかどうか。ただしPTD-010・PTD-011(GAS再デプロイ・トリガー設定)が完了するまでは検証自体が実施できない。",
               "output": "",
               "content": [
-                "適当なタスクに対し、doPostのaddCommentアクション({token, addComment:[{repo, task, text, author:\"routine\", at}]})を直接POSTで呼び出してみる(Routine実行環境からscript.google.comへ届くかどうかも合わせて確認する)",
-                "直接POSTが失敗する(ネットワークポリシーで遮断される)場合は、data/tasks.jsonの該当タスクのcomments配列にauthor:\"routine\"のコメントを追記してコミット・pushし、次回のsyncFromGithubトリガー実行後にスプレッドシートの「コメント」タブへ反映されるか確認する",
-                "確認できた結果(直接POST可否・プル型同期経由での反映可否)をcheckHistoryに追記する"
+                "(完了) 直接POSTの疎通確認: PTD-009の調査結果を援用。script.google.comへの接続自体がネットワークポリシーで遮断されており、addCommentアクションのPOSTも同じ403で失敗すると判断(ネットワーク層でのブロックのためaction種別に依存しない)。再テストは不要",
+                "PTD-010(GAS再デプロイ)・PTD-011(トリガー設定)が完了したことを確認できたら、適当なタスクのcomments配列にauthor:\"routine\"のテストコメントを追記してコミット・pushし、次回のsyncFromGithubトリガー実行後にスプレッドシートの「コメント」タブへ反映されるか確認する",
+                "確認できた結果(プル型同期経由での反映可否)をcheckHistoryに追記し、statusを完了にする"
+              ],
+              "checkHistory": [
+                {
+                  "date": "2026-08-05",
+                  "summary": "相談ルームで方針決定。直接POSTの可否はPTD-009の既存調査結果(script.google.comへの接続自体がネットワーク層で遮断済み)を援用し、addCommentも同じ理由で失敗すると判断して再テスト不要とした。残るプル型同期の反映確認はPTD-010・PTD-011(GAS再デプロイ・トリガー設定)の完了待ちで保留。"
+                }
+              ],
+              "comments": [
+                {
+                  "author": "user",
+                  "text": "直接POSTの再テストは不要。PTD-009の結果より、script.google.comへの接続自体がネットワーク層でブロックされているため、addComment/completeTasksどちらのPOSTでも同じ403になるはずで、actionの種類による違いは無いと判断した。PTD-010(GAS再デプロイ)・PTD-011(トリガー設定)が完了したことを確認できたら、適当なタスクのcomments配列にauthor:\"routine\"のテストコメントを追加してコミット・pushし、次回のsyncFromGithubトリガー実行後にスプレッドシートの「コメント」タブへ反映されているか確認して、結果をcheckHistoryに追記のうえ完了にすること。それまではこのタスクは対応中のまま待機でよい。",
+                  "at": "2026-08-05 22:00"
+                }
               ]
             }
           ]
