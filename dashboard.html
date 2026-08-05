@@ -152,14 +152,14 @@
   .repo-header .add-task-btn:hover { border-color: #fff; background: rgba(255, 255, 255, 0.15); }
 
   .table-head {
-    display: grid; grid-template-columns: 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
+    display: grid; grid-template-columns: 22px 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
     align-items: center; column-gap: 8px; padding: 6px 14px;
     background: color-mix(in srgb, var(--group-color, var(--accent)) 16%, var(--surface));
     border-bottom: 1px solid var(--border);
     font-size: 10.5px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.02em;
   }
-  .table-head span:nth-child(4) { text-align: left; }
-  .table-head span:not(:nth-child(4)) { text-align: center; }
+  .table-head span:nth-child(5) { text-align: left; }
+  .table-head span:not(:nth-child(5)) { text-align: center; }
 
   .empty.small { padding: 10px 16px 14px 16px; font-size: 12px; text-align: left; }
 
@@ -170,7 +170,7 @@
   .done-summary .done-date { font-size: 11px; opacity: .75; }
 
   .feed-row {
-    display: grid; grid-template-columns: 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
+    display: grid; grid-template-columns: 22px 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
     align-items: center; column-gap: 8px; padding: 7px 14px; cursor: default;
     background: color-mix(in srgb, var(--group-color, var(--accent)) 5%, var(--surface));
     border-bottom: 1px solid var(--border);
@@ -183,6 +183,17 @@
   .drag-handle {
     font-size: 11px; line-height: 1; color: var(--text-muted); cursor: grab; text-align: center;
   }
+
+  /* レベル列: 1=親タスク、2=子タスク、3=孫タスク、を数字バッジで明示する */
+  .level-badge {
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 5px; margin: 0 auto;
+    font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums;
+    background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+  }
+  .level-badge.lv-1 { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .level-badge.lv-2 { background: var(--status-doing-bg); color: var(--status-doing-fg); border-color: var(--status-doing-fg); }
+  .level-badge.lv-3, .level-badge.lv-4 { background: var(--status-skip-bg); color: var(--status-skip-fg); border-color: var(--status-skip-fg); }
 
   .chevron-btn {
     width: 20px; height: 20px; border: none; background: none; cursor: pointer;
@@ -205,7 +216,7 @@
   .row-meta-line {
     grid-column: 1 / -1; display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap;
     font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;
-    padding: 4px 0 0 56px;
+    padding: 4px 0 0 86px;
   }
   .meta-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .meta-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
@@ -1014,8 +1025,15 @@
           subtasks: [
             {
               task: "gemini-3.5-flashの正式なリクエスト数上限(RPM/RPD)を公式ドキュメントで確認する",
-              priority: "低", status: "未着手", updated: "-",
-              note: "", detail: "gemini-2.5-flashと比べてどうかは未検証。", output: ""
+              priority: "低", status: "未着手", updated: "-", category: "manual",
+              note: "【作業タスク】", detail: "gemini-2.5-flashと比べてどうかは未検証。", output: "",
+              steps: [
+                "Google AI for Developersの料金・レート制限ページ(https://ai.google.dev/gemini-api/docs/rate-limits)を開く",
+                "gemini-3.5-flashモデルの行を探し、無料枠のRPM(1分あたりのリクエスト数)・RPD(1日あたりのリクエスト数)の上限値を確認する",
+                "以前使っていたgemini-2.5-flashの上限値と比較し、収集頻度(現在の依頼タスク数・実行頻度)がこの上限内に収まるか概算する",
+                "収まらない可能性がある場合は、日次トリガーの実行間隔や1回あたりの処理件数を調整する必要がある旨をこのタスクのコメント欄に追記して報告する",
+                "確認できた上限値と収まるかどうかの結論をこのタスクのコメント欄に追記して報告する",
+              ]
             }
           ]
         },
@@ -1450,7 +1468,9 @@
     const category = taskCategory(node);
 
     const depthClass = depth > 0 ? ` depth-${Math.min(depth + 1, 4)}` : "";
+    const level = depth + 1; // 1=親タスク、2=子タスク、3=孫タスク
     let html = `<div class="feed-row${child ? " child" + depthClass : ""}" draggable="true" data-drag-path="${path}">`;
+    html += `<span class="level-badge lv-${Math.min(level, 4)}" title="レベル${level}(${level === 1 ? "親タスク" : level === 2 ? "子タスク" : level === 3 ? "孫タスク" : "ひ孫タスク"})">${level}</span>`;
     html += `<span class="drag-handle" title="ドラッグで並び替え">⋮⋮</span>`;
     if (hasChildren) {
       html += `<button class="chevron-btn${groupOpen ? " open" : ""}" data-group-toggle="${path}">▶</button>`;
@@ -1586,7 +1606,7 @@
             <button class="add-task-btn" data-add-parent="repo:${repo}" data-add-repo="${repo}" title="このリポジトリに新しいタスクを追加します">＋ 新規タスク</button>
           </div>
           <div class="table-head">
-            <span></span><span></span><span></span>
+            <span title="レベル: 1=親タスク/2=子タスク/3=孫タスク">Lv</span><span></span><span></span><span></span>
             <span>タスク</span><span>優先度</span><span>ステータス</span><span>更新日</span>
           </div>
           ${tree}

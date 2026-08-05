@@ -744,9 +744,17 @@
               "priority": "低",
               "status": "未着手",
               "updated": "-",
-              "note": "",
+              "category": "manual",
+              "note": "【作業タスク】",
               "detail": "gemini-2.5-flashと比べてどうかは未検証。",
-              "output": ""
+              "output": "",
+              "steps": [
+                "Google AI for Developersの料金・レート制限ページ(https://ai.google.dev/gemini-api/docs/rate-limits)を開く",
+                "gemini-3.5-flashモデルの行を探し、無料枠のRPM(1分あたりのリクエスト数)・RPD(1日あたりのリクエスト数)の上限値を確認する",
+                "以前使っていたgemini-2.5-flashの上限値と比較し、収集頻度(現在の依頼タスク数・実行頻度)がこの上限内に収まるか概算する",
+                "収まらない可能性がある場合は、日次トリガーの実行間隔や1回あたりの処理件数を調整する必要がある旨をこのタスクのコメント欄に追記して報告する",
+                "確認できた上限値と収まるかどうかの結論をこのタスクのコメント欄に追記して報告する"
+              ]
             }
           ]
         },
