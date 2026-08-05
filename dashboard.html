@@ -243,6 +243,7 @@
   }
   .task-id-tag:hover { border-color: var(--accent); color: var(--accent); }
   .task-id-tag.copied { background: var(--status-done-bg); color: var(--status-done-fg); border-style: solid; border-color: var(--status-done-fg); }
+  .done-id-tag { vertical-align: middle; margin-right: 2px; }
 
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -1738,15 +1739,18 @@
       // このタスク自身の完了済み項目(completedItems)も、完了した子タスク(doneSubs)と
       // 同じ「✓ 完了」欄にまとめて表示する(以前は別々のトグル+パネルで「完了」が2箇所に
       // 分かれて見えてしまっていたため、2026-08-05に統合)。
+      // doneSubsは実体が別のタスクノードなのでsub.idをそのまま使う。completedItemsは
+      // 独立したノードを持たない「このタスク自身のやること一覧の1項目」なので、代わりに
+      // 親タスク(node)自身のidを付けておく(どのタスクの完了項目かが分かるように)。
       const doneEntries = [
-        ...doneSubs.map(sub => ({ text: sub.title || sub.task, date: sub.updated && sub.updated !== "-" ? sub.updated : "" })),
-        ...(node.completedItems || []).map(c => ({ text: c.item, date: c.date || "" })),
+        ...doneSubs.map(sub => ({ text: sub.title || sub.task, date: sub.updated && sub.updated !== "-" ? sub.updated : "", id: sub.id })),
+        ...(node.completedItems || []).map(c => ({ text: c.item, date: c.date || "", id: node.id })),
       ];
       if (doneEntries.length) {
         html += `<div class="done-summary">`;
         html += `<div class="done-summary-label">✓ 完了 (${doneEntries.length})</div>`;
         html += `<ul class="done-summary-list">`;
-        html += doneEntries.map(e => `<li>${e.text}${e.date ? ` <span class="done-date">(${e.date})</span>` : ""}</li>`).join("");
+        html += doneEntries.map(e => `<li>${e.id ? `<span class="task-id-tag done-id-tag" data-copy-id="${e.id}" title="クリックでコピー">🆔 ${e.id}</span> ` : ""}${e.text}${e.date ? ` <span class="done-date">(${e.date})</span>` : ""}</li>`).join("");
         html += `</ul></div>`;
       }
       if (!pendingSubs.length && !doneEntries.length) {
