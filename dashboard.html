@@ -20,6 +20,8 @@
     --status-todo-fg: #5b6172;
     --status-skip-bg: #fdf0e0;
     --status-skip-fg: #a05a08;
+    --level1-bg: #f1ebfe;
+    --level1-fg: #6d28d9;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
   }
 
@@ -32,6 +34,7 @@
       --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
       --status-todo-bg: #22252f; --status-todo-fg: #969cab;
       --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+      --level1-bg: #2e2145; --level1-fg: #c4a5fc;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     }
   }
@@ -43,6 +46,7 @@
     --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
     --status-todo-bg: #22252f; --status-todo-fg: #969cab;
     --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+    --level1-bg: #2e2145; --level1-fg: #c4a5fc;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
   :root[data-theme="light"] {
@@ -53,6 +57,7 @@
     --status-doing-bg: #e4edfd; --status-doing-fg: #2054c4;
     --status-todo-bg: #eceef3; --status-todo-fg: #5b6172;
     --status-skip-bg: #fdf0e0; --status-skip-fg: #a05a08;
+    --level1-bg: #f1ebfe; --level1-fg: #6d28d9;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
   }
 
@@ -195,7 +200,7 @@
     font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums;
     background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
   }
-  .level-badge.lv-1 { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .level-badge.lv-1 { background: var(--level1-bg); color: var(--level1-fg); border-color: var(--level1-fg); }
   .level-badge.lv-2 { background: var(--status-doing-bg); color: var(--status-doing-fg); border-color: var(--status-doing-fg); }
   .level-badge.lv-3, .level-badge.lv-4 { background: var(--status-skip-bg); color: var(--status-skip-fg); border-color: var(--status-skip-fg); }
 
@@ -732,6 +737,21 @@
                 "Apps Scriptエディタ左側の「トリガー」アイコン(時計マーク)を開く",
                 "右下の「トリガーを追加」をクリック",
                 "実行する関数: syncFromGithub / イベントのソース: 時間主導型 / 時間の間隔の種類: 時間ベースのタイマー / 間隔: 例えば1時間おき、を選んで保存",
+              ],
+              output: ""
+            },
+            {
+              id: "PTD-017",
+              task: "依頼タスクタブ・完了タブに「タスクID」列を追加したgas/Code.gsを、再度貼り付けて保存・再デプロイする",
+              priority: "高", status: "未着手", updated: "-", category: "manual",
+              note: "PTD-010は2026-08-05時点の版で完了済みだが、その後さらにタスクID列対応を追加したため、改めて最新版の貼り付け・再デプロイが必要。",
+              detail: "依頼タスクタブ(12列目)・完了タブ(9列目)に「タスクID」列を追加し、dashboard.html側で各タスクに付与しているid({repo略号}-{連番}、例: KIZ-003)をここへ転記するようにした。新規タスク作成・完了処理の際に新しく反映されるだけでなく、syncFromGithub実行時に既存の全行へも遡って自動でバックフィルされる(該当タスクのタスクID列が空欄または内容が違えば都度補正する)ため、このデプロイ後に時間主導トリガーが1回実行されれば(または「⏩ Web→スプレッドシート反映」ボタンで即時実行すれば)、既存の依頼タスク・完了タブの全行にタスクIDが行き渡る。",
+              steps: [
+                "「実装進捗管理シート」を開く → 拡張機能 → Apps Script",
+                "gas/Code.gsの最新内容をエディタに貼り付けて保存",
+                "デプロイ → デプロイを管理 → 既存のウェブアプリデプロイの鉛筆アイコン",
+                "バージョンを「新しいバージョン」にして「デプロイ」を押す",
+                "反映を待たずに確認したい場合は、ダッシュボードの「⏩ Web→スプレッドシート反映」ボタンを押して即時同期する(既存の依頼タスク・完了タブの全行にタスクIDがバックフィルされる)",
               ],
               output: ""
             }
@@ -1657,7 +1677,11 @@
     if (hasDetailInfo) {
       html += `<span class="check-history-toggle" data-detail-panel-toggle="${path}">${detailOpen ? "詳細を閉じる ▲" : "📁 詳細 ▼"}</span>`;
     }
-    if (hasCompletedItems) {
+    // 子タスクを持つ行では、completedItems(このタスク自身のやること一覧のうち完了した項目)を
+    // 下の「✓ 完了 (N)」(完了した子タスクの一覧)に統合して表示するため、ここでは個別の
+    // トグルを出さない(以前は両方が別々に表示され「完了が2箇所に分かれている」状態だった)。
+    // 子タスクを持たない末端タスクは、completedItemsを表示する場所が他に無いため従来通り表示する。
+    if (hasCompletedItems && !hasChildren) {
       html += `<span class="check-history-toggle" data-completed-toggle="${path}">${completedOpen ? "完了したタスクを閉じる ▲" : `✓ 完了したタスク(${node.completedItems.length}) ▼`}</span>`;
     }
     if (!isPlaceholder) {
@@ -1690,7 +1714,7 @@
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
     }
     if (detailOpen) html += detailPanel(node, path, category);
-    if (completedOpen) html += completedPanel(node);
+    if (completedOpen && !hasChildren) html += completedPanel(node);
     if (openCheckHistory.has(path) && !isPlaceholder) {
       html += checkHistoryPanel(node);
     }
@@ -1711,14 +1735,21 @@
           child: true, repo: effectiveRepo, isLast: i === pendingSubs.length - 1, trail: childTrail,
         })).join("");
       }
-      if (doneSubs.length) {
+      // このタスク自身の完了済み項目(completedItems)も、完了した子タスク(doneSubs)と
+      // 同じ「✓ 完了」欄にまとめて表示する(以前は別々のトグル+パネルで「完了」が2箇所に
+      // 分かれて見えてしまっていたため、2026-08-05に統合)。
+      const doneEntries = [
+        ...doneSubs.map(sub => ({ text: sub.title || sub.task, date: sub.updated && sub.updated !== "-" ? sub.updated : "" })),
+        ...(node.completedItems || []).map(c => ({ text: c.item, date: c.date || "" })),
+      ];
+      if (doneEntries.length) {
         html += `<div class="done-summary">`;
-        html += `<div class="done-summary-label">✓ 完了 (${doneSubs.length})</div>`;
+        html += `<div class="done-summary-label">✓ 完了 (${doneEntries.length})</div>`;
         html += `<ul class="done-summary-list">`;
-        html += doneSubs.map(sub => `<li>${sub.title || sub.task}${sub.updated && sub.updated !== "-" ? ` <span class="done-date">(${sub.updated})</span>` : ""}</li>`).join("");
+        html += doneEntries.map(e => `<li>${e.text}${e.date ? ` <span class="done-date">(${e.date})</span>` : ""}</li>`).join("");
         html += `</ul></div>`;
       }
-      if (!pendingSubs.length && !doneSubs.length) {
+      if (!pendingSubs.length && !doneEntries.length) {
         html += `<div class="empty small">子タスクはありません</div>`;
       }
     }
@@ -2139,7 +2170,7 @@
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
         token: GAS_TOKEN,
-        newTasks: [{ repo, task, priority, status: "対応中", requestedAt: today, note: "" }],
+        newTasks: [{ repo, task, priority, status: "対応中", requestedAt: today, note: "", id: newTask.id }],
       }),
     })
       .then((res) => {
@@ -2233,7 +2264,7 @@
       body: JSON.stringify({
         token: GAS_TOKEN,
         scheduleComplete: [{
-          repo, task: node.task,
+          repo, task: node.task, id: node.id,
           note: node.note || "", detail: node.detail || "", issues: node.issues || "", output: node.output || "",
         }],
       }),

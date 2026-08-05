@@ -24,6 +24,8 @@
     --status-todo-fg: #5b6172;
     --status-skip-bg: #fdf0e0;
     --status-skip-fg: #a05a08;
+    --level1-bg: #f1ebfe;
+    --level1-fg: #6d28d9;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
   }
   @media (prefers-color-scheme: dark) {
@@ -35,6 +37,7 @@
       --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
       --status-todo-bg: #22252f; --status-todo-fg: #969cab;
       --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+      --level1-bg: #2e2145; --level1-fg: #c4a5fc;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     }
   }
@@ -141,7 +144,7 @@
     font-size: 9.5px; font-weight: 700; font-variant-numeric: tabular-nums;
     background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
   }
-  .level-badge.lv-1 { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .level-badge.lv-1 { background: var(--level1-bg); color: var(--level1-fg); border-color: var(--level1-fg); }
   .level-badge.lv-2 { background: var(--status-doing-bg); color: var(--status-doing-fg); border-color: var(--status-doing-fg); }
   .level-badge.lv-3, .level-badge.lv-4 { background: var(--status-skip-bg); color: var(--status-skip-fg); border-color: var(--status-skip-fg); }
 
@@ -610,7 +613,7 @@
     if (hasDetailInfo) {
       html += `<span class="check-history-toggle" data-detail-panel-toggle="${path}">${detailOpen ? "詳細 ▲" : "📁 詳細 ▼"}</span>`;
     }
-    if (hasCompletedItems) {
+    if (hasCompletedItems && !hasChildren) {
       html += `<span class="check-history-toggle" data-completed-toggle="${path}">${completedOpen ? "完了済 ▲" : `✓完了(${node.completedItems.length}) ▼`}</span>`;
     }
     if (!isPlaceholder) {
@@ -633,7 +636,7 @@
       html += `<div class="manual-setup-panel"><div class="m-label">⚠ 手動設定が必要</div><div class="m-body">${node.manualSetup}</div></div>`;
     }
     if (detailOpen) html += `<div class="detail-panel">${detailPanel(node, path, category)}</div>`;
-    if (completedOpen) html += completedPanel(node);
+    if (completedOpen && !hasChildren) html += completedPanel(node);
     if (openCheckHistory.has(path) && !isPlaceholder) html += `<div class="check-history-panel">${checkHistoryPanel(node)}</div>`;
     if (commentsOpen && !isPlaceholder) html += commentThread(node);
 
@@ -646,14 +649,18 @@
           child: true, repo: effectiveRepo, isLast: i === pendingSubs.length - 1, trail: childTrail,
         })).join("");
       }
-      if (doneSubs.length) {
+      const doneEntries = [
+        ...doneSubs.map(sub => ({ text: sub.title || sub.task, date: sub.updated && sub.updated !== "-" ? sub.updated : "" })),
+        ...(node.completedItems || []).map(c => ({ text: c.item, date: c.date || "" })),
+      ];
+      if (doneEntries.length) {
         html += `<div class="done-summary">`;
-        html += `<div class="done-summary-label">✓ 完了 (${doneSubs.length})</div>`;
+        html += `<div class="done-summary-label">✓ 完了 (${doneEntries.length})</div>`;
         html += `<ul class="done-summary-list">`;
-        html += doneSubs.map(sub => `<li>${sub.title || sub.task}${sub.updated && sub.updated !== "-" ? ` <span class="done-date">(${sub.updated})</span>` : ""}</li>`).join("");
+        html += doneEntries.map(e => `<li>${e.text}${e.date ? ` <span class="done-date">(${e.date})</span>` : ""}</li>`).join("");
         html += `</ul></div>`;
       }
-      if (!pendingSubs.length && !doneSubs.length) {
+      if (!pendingSubs.length && !doneEntries.length) {
         html += `<div class="empty small">子タスクはありません</div>`;
       }
     }

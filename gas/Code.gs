@@ -18,8 +18,13 @@ var SHEET_ID = "1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw";
 //   取消期限: "yyyy-MM-dd HH:mm"(JST)。この時刻を過ぎるとsyncFromGithub実行時に自動確定する
 //   元ステータス: 完了予約前のステータス(取り消し時にここへ戻す)
 //   完了データ: {note, detail, issues, output}のJSON文字列(確定時に完了タブへ書き込む内容)
-var PENDING_HEADERS = ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行", "完了予定", "取消期限", "元ステータス", "完了データ"];
-var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物"];
+// 12列目のタスクIDは、dashboard.html/data/tasks.json側で各タスクに付与しているid
+// ({repo略号}-{連番}、例: "KIZ-003")をそのまま転記したもの。列位置を変えると既存の
+// 固定インデックス参照(getRange(row, 4)等)が全てズレるため、必ず末尾に追加すること。
+var PENDING_ID_COL = 12;
+var PENDING_HEADERS = ["Repo", "Task", "優先度", "ステータス", "依頼日", "備考", "即実行", "完了予定", "取消期限", "元ステータス", "完了データ", "タスクID"];
+var DONE_ID_COL = 9;
+var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装ナレッジ", "問題点", "成果物", "タスクID"];
 // コメントタブの6〜7列目は、ユーザーの投稿(追加指示)に対してRoutineが後から返信したかどうかを
 // シート単体からも判別できるようにするための列。
 //   ステータス: author=userの行のみ使用。"未対応" → "対応済み"(Routineの返信を検知して自動更新)
@@ -58,7 +63,9 @@ function doPost(e) {
   var addedCount = 0;
   (body.newTasks || []).forEach(function (r) {
     if (findRow(pendingSheet, r.repo, r.task) === -1) {
-      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", r.status || "対応中", r.requestedAt || "", r.note || "", r.urgent ? "TRUE" : "FALSE"]);
+      // 8〜11列目(完了予定/取消期限/元ステータス/完了データ)は新規タスクでは未使用のため空欄、
+      // 12列目にタスクID(dashboard.html側で採番済みのidをそのまま転記)を入れる。
+      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", r.status || "対応中", r.requestedAt || "", r.note || "", r.urgent ? "TRUE" : "FALSE", "", "", "", "", r.id || ""]);
       addedCount++;
     }
   });
@@ -84,12 +91,14 @@ function doPost(e) {
   var completedCount = 0;
   (body.completeTasks || []).forEach(function (r) {
     var priority = "-";
+    var existingId = "";
     var pendingRow = findRow(pendingSheet, r.repo, r.task);
     if (pendingRow > 0) {
       priority = pendingSheet.getRange(pendingRow, 3).getValue() || "-";
+      existingId = pendingSheet.getRange(pendingRow, PENDING_ID_COL).getValue() || "";
       pendingSheet.deleteRow(pendingRow);
     }
-    var rowValues = [r.repo, r.task, priority, r.completedDate || "", r.note || "", r.detail || "", r.issues || "", r.output || ""];
+    var rowValues = [r.repo, r.task, priority, r.completedDate || "", r.note || "", r.detail || "", r.issues || "", r.output || "", r.id || existingId];
     var doneRow = findRow(doneSheet, r.repo, r.task);
     if (doneRow > 0) {
       doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
@@ -111,10 +120,11 @@ function doPost(e) {
       var priorStatus = pendingSheet.getRange(rowIndex, 4).getValue() || "未着手";
       pendingSheet.getRange(rowIndex, 4, 1, 1).setValue("完了予定");
       pendingSheet.getRange(rowIndex, 8, 1, 4).setValues([[true, deadline, priorStatus, payload]]);
+      if (r.id) pendingSheet.getRange(rowIndex, PENDING_ID_COL).setValue(r.id);
     } else {
       // 依頼タスクタブに元々行が無かった(Web側でのみ管理していた)タスクの場合は、
       // 完了予定行として新規に追加した上で、同じ確定フローに乗せる。
-      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", "完了予定", r.requestedAt || "", "", "FALSE", true, deadline, "未着手", payload]);
+      appendTaskRow(pendingSheet, [r.repo, r.task, r.priority || "-", "完了予定", r.requestedAt || "", "", "FALSE", true, deadline, "未着手", payload, r.id || ""]);
     }
     scheduledCount++;
   });
@@ -145,12 +155,18 @@ function listTasks() {
   ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
   ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
 
-  function rowsOf(sheet, keys) {
+  // keysは列1から順番に対応させるための配列(途中を飛ばせない)。keysで数えきれない、
+  // 離れた位置にある列(例: 依頼タスクタブの12列目=タスクID、10〜11列目は非公開のまま)は
+  // extraCols({名前: 0始まりの列インデックス})で個別に指定する。
+  function rowsOf(sheet, keys, extraCols) {
     var data = sheet.getDataRange().getValues();
     var out = [];
     for (var i = 1; i < data.length; i++) {
       var row = {};
       keys.forEach(function (k, idx) { row[k] = data[i][idx]; });
+      if (extraCols) {
+        Object.keys(extraCols).forEach(function (name) { row[name] = data[i][extraCols[name]]; });
+      }
       out.push(row);
     }
     return out;
@@ -158,8 +174,8 @@ function listTasks() {
 
   return {
     ok: true,
-    pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent", "scheduledComplete", "cancelDeadline"]),
-    done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "issues", "output"]),
+    pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent", "scheduledComplete", "cancelDeadline"], { id: PENDING_ID_COL - 1 }),
+    done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "issues", "output", "id"]),
     comments: rowsOf(commentSheet, ["repo", "task", "author", "text", "at", "status", "resolution"]),
   };
 }
@@ -190,7 +206,7 @@ function syncFromGithub() {
     var out = [];
     tasks.forEach(function (t) {
       var r = repo || t.repo;
-      out.push({ repo: r, task: t.task, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, issues: t.issues, output: t.output, comments: t.comments });
+      out.push({ repo: r, task: t.task, id: t.id, priority: t.priority, status: t.status, updated: t.updated, note: t.note, detail: t.detail, issues: t.issues, output: t.output, comments: t.comments });
       if (t.subtasks) out = out.concat(flatten(t.subtasks, r));
     });
     return out;
@@ -220,7 +236,7 @@ function syncFromGithub() {
         rowsToDelete.push(pendingRowForDelete);
         delete pendingIdx.index[key];
       }
-      var rowValues = [t.repo, t.task, t.priority || "-", t.updated || "", t.note || "", t.detail || "", t.issues || "", t.output || ""];
+      var rowValues = [t.repo, t.task, t.priority || "-", t.updated || "", t.note || "", t.detail || "", t.issues || "", t.output || "", t.id || ""];
       var doneRow = doneIdx.index[key];
       if (doneRow) {
         doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
@@ -233,6 +249,12 @@ function syncFromGithub() {
     } else {
       var pendingRow = pendingIdx.index[key];
       if (pendingRow) {
+        // タスクIDは完了予約(完了予定)中でも常に埋める/補正する(既存の依頼タスクタブの行に
+        // まだ無い場合の遡及反映も、この分岐で全件バックフィルされる)。
+        if (t.id) {
+          var idCell = pendingSheet.getRange(pendingRow, PENDING_ID_COL);
+          if (idCell.getValue() !== t.id) idCell.setValue(t.id);
+        }
         // 完了予約中(完了予定)の行は、tasks.json側のステータスで上書きしない
         // (取消期限まではユーザーの完了予約を優先し、Routine側の通常同期では触らない)。
         var currentStatus = pendingSheet.getRange(pendingRow, 4).getValue();
@@ -255,6 +277,7 @@ function syncFromGithub() {
         // 始まる行はRoutineの実装対象から除外される(運用ルール9参照)。
         pendingSheet.getRange(pendingIdx.nextRow, 1, 1, 7)
           .setValues([[t.repo, t.task, t.priority || "-", t.status || "未着手", t.updated || "", t.note || "", "FALSE"]]);
+        if (t.id) pendingSheet.getRange(pendingIdx.nextRow, PENDING_ID_COL).setValue(t.id);
         pendingIdx.index[key] = pendingIdx.nextRow;
         pendingIdx.nextRow++;
         createdPending++;
@@ -313,7 +336,8 @@ function finalizeScheduledCompletions_(pendingSheet, doneSheet) {
     var repo = row[0], task = row[1], priority = row[2] || "-";
     var payload = {};
     try { payload = JSON.parse(row[10] || "{}"); } catch (err) { payload = {}; }
-    var rowValues = [repo, task, priority, now.slice(0, 10), payload.note || "", payload.detail || "", payload.issues || "", payload.output || ""];
+    var existingId = row[PENDING_ID_COL - 1] || ""; // 0始まりのため-1(依頼タスクタブに残っていたタスクID列の値)
+    var rowValues = [repo, task, priority, now.slice(0, 10), payload.note || "", payload.detail || "", payload.issues || "", payload.output || "", existingId];
     var doneRow = findRow(doneSheet, repo, task);
     if (doneRow > 0) {
       doneSheet.getRange(doneRow, 1, 1, rowValues.length).setValues([rowValues]);
