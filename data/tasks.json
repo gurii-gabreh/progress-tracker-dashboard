@@ -121,9 +121,15 @@
               "priority": "中",
               "status": "未着手",
               "updated": "-",
+              "category": "research",
               "note": "",
               "detail": "Routine実行環境からscript.google.comへの通信がネットワークポリシーで遮断されているため未検証(ユーザーのブラウザからの送信・反映は確認済み)。プル型同期(syncFromGithub)経由での反映有無を確認する。",
-              "output": ""
+              "output": "",
+              "content": [
+                "適当なタスクに対し、doPostのaddCommentアクション({token, addComment:[{repo, task, text, author:\"routine\", at}]})を直接POSTで呼び出してみる(Routine実行環境からscript.google.comへ届くかどうかも合わせて確認する)",
+                "直接POSTが失敗する(ネットワークポリシーで遮断される)場合は、data/tasks.jsonの該当タスクのcomments配列にauthor:\"routine\"のコメントを追記してコミット・pushし、次回のsyncFromGithubトリガー実行後にスプレッドシートの「コメント」タブへ反映されるか確認する",
+                "確認できた結果(直接POST可否・プル型同期経由での反映可否)をcheckHistoryに追記する"
+              ]
             }
           ]
         },
@@ -161,9 +167,15 @@
               "priority": "中",
               "status": "未着手",
               "updated": "-",
+              "category": "research",
               "note": "",
               "detail": "ネットワークポリシーの制約のため未検証。実際の移動は現在プル型同期(syncFromGithub)経由で行われている。",
-              "output": ""
+              "output": "",
+              "content": [
+                "完了済みタスクに対し、doPostのcompleteTasksアクション({token, completeTasks:[{repo, task, completedDate, note, detail, issues, output}]})を直接POSTで呼び出してみる(Routine実行環境からscript.google.comへ届くかどうかも合わせて確認する)",
+                "直接POSTが失敗する(ネットワークポリシーで遮断される)場合は、data/tasks.jsonの該当タスクをstatus:完了にしてコミット・pushし、次回のsyncFromGithubトリガー実行後に依頼タスクタブ→完了タブへ実際に移動しているか確認する",
+                "確認できた結果(直接POST可否・プル型同期経由での移動可否)をcheckHistoryに追記する"
+              ]
             }
           ]
         },
