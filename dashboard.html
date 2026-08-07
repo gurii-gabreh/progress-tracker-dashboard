@@ -20,6 +20,10 @@
     --status-todo-fg: #5b6172;
     --status-skip-bg: #fdf0e0;
     --status-skip-fg: #a05a08;
+    --status-decision-bg: #fff3c4;
+    --status-decision-fg: #92650a;
+    --status-running-bg: #f1ebfe;
+    --status-running-fg: #6d28d9;
     --level1-bg: #f1ebfe;
     --level1-fg: #6d28d9;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
@@ -34,6 +38,8 @@
       --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
       --status-todo-bg: #22252f; --status-todo-fg: #969cab;
       --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+      --status-decision-bg: #453a0f; --status-decision-fg: #f2ce4e;
+      --status-running-bg: #2e2145; --status-running-fg: #c4a5fc;
       --level1-bg: #2e2145; --level1-fg: #c4a5fc;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
     }
@@ -46,6 +52,8 @@
     --status-doing-bg: #17263f; --status-doing-fg: #7fabfd;
     --status-todo-bg: #22252f; --status-todo-fg: #969cab;
     --status-skip-bg: #3a2a10; --status-skip-fg: #f0a94e;
+    --status-decision-bg: #453a0f; --status-decision-fg: #f2ce4e;
+    --status-running-bg: #2e2145; --status-running-fg: #c4a5fc;
     --level1-bg: #2e2145; --level1-fg: #c4a5fc;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
@@ -57,6 +65,8 @@
     --status-doing-bg: #e4edfd; --status-doing-fg: #2054c4;
     --status-todo-bg: #eceef3; --status-todo-fg: #5b6172;
     --status-skip-bg: #fdf0e0; --status-skip-fg: #a05a08;
+    --status-decision-bg: #fff3c4; --status-decision-fg: #92650a;
+    --status-running-bg: #f1ebfe; --status-running-fg: #6d28d9;
     --level1-bg: #f1ebfe; --level1-fg: #6d28d9;
     --shadow: 0 1px 2px rgba(20, 22, 30, 0.04), 0 8px 24px rgba(20, 22, 30, 0.06);
   }
@@ -104,6 +114,15 @@
   .help-item { display: flex; gap: 8px; flex-wrap: wrap; }
   .help-term { font-weight: 700; color: var(--accent); flex: 0 0 auto; min-width: 108px; }
   .help-desc { color: var(--text-muted); flex: 1 1 200px; }
+
+  .extra-settings-panel {
+    display: none; flex-direction: column; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 12px;
+  }
+  .extra-settings-panel.open { display: flex; }
+  .extra-settings-item { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+  .extra-settings-desc { margin: 0; color: var(--text-muted); }
 
   .stat-strip {
     display: flex; flex-direction: column; gap: 6px;
@@ -221,6 +240,9 @@
   .next-action {
     font-size: 11.5px; color: var(--accent); margin-top: 2px; line-height: 1.35;
   }
+  .task-goal {
+    font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.35;
+  }
   .cell-priority, .cell-updated {
     font-size: 11.5px; color: var(--text-muted); text-align: center; font-variant-numeric: tabular-nums;
   }
@@ -255,6 +277,8 @@
   .chip.skip { background: var(--status-skip-bg); color: var(--status-skip-fg); }
   .chip.scheduled { background: var(--status-skip-bg); color: var(--status-skip-fg); }
   .chip.manual-setup { background: var(--status-skip-bg); color: var(--status-skip-fg); }
+  .chip.decision { background: var(--status-decision-bg); color: var(--status-decision-fg); font-weight: 600; }
+  .chip.running { background: var(--status-running-bg); color: var(--status-running-fg); }
 
   .category-tag {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -470,12 +494,10 @@
       <div class="header-top">
         <div class="eyebrow">Progress Tracker</div>
         <div class="header-actions">
-          <button class="settings-btn" id="refresh-btn" title="スプレッドシートの依頼タスクタブを取得し、未反映のタスクを一覧に追加します">🔄 更新</button>
           <button class="settings-btn" id="sync-now-btn" title="Web(tasks.json)側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ Web→スプレッドシート反映</button>
-          <button class="settings-btn" id="github-diff-btn" title="GitHubの最新コミットがダッシュボードの記録より新しいリポジトリ(=直接Claude Codeとやり取りして進めた分)を探し、「確認して」という依頼タスクを置きます(この場でtasks.jsonが更新されるわけではありません。実際の反映は次回のRoutine実行時です)">📥 Claude→Web反映</button>
-          <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
           <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
           <button class="settings-btn" id="manager-room-prompt-btn" title="全リポジトリ横断で相談・優先度判断・実行振り分けを行うマネージャールームを開くときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🗨 マネージャールーム依頼文</button>
+          <button class="settings-btn" id="extra-settings-toggle-btn" aria-expanded="false" title="普段は使わない操作(Claude→Web反映・Routine設定)をまとめています">⚙ 設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
       </div>
@@ -485,13 +507,23 @@
         データ元: <a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>
       </div>
       <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
+      <!-- 普段は使わない操作(通常のフローの安全網・例外対応用)をここにまとめる。
+           常時表に出しておくと「何用のボタンか分からない」という声があったため2026-08-07に格納。 -->
+      <div class="extra-settings-panel" id="extra-settings-panel">
+        <div class="extra-settings-item">
+          <button class="settings-btn" id="github-diff-btn">📥 Claude→Web反映</button>
+          <p class="extra-settings-desc">通常は使いません。直接Claude Codeとやり取りして進めた分など、Web(tasks.json)にまだ反映されていないGitHub上の活動を検知するための安全網です。2段階の仕組みで、①ボタンを押すと、記録より新しいコミットがあるリポジトリを探し「確認して」という依頼タスクを置きます。②その依頼を、Routineが次回の定期実行時に読んで、実際にtasks.jsonへ書き込みます。ボタンを押した瞬間には反映されません。</p>
+        </div>
+        <div class="extra-settings-item">
+          <button class="settings-btn" id="open-settings-btn">⚙ Routine設定</button>
+          <p class="extra-settings-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</p>
+        </div>
+      </div>
       <div class="help-panel" id="help-panel">
-        <div class="help-item"><span class="help-term">🔄 更新</span><span class="help-desc">スプレッドシートの依頼タスクタブを確認し、まだ一覧に無い新規タスクを取り込みます。</span></div>
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
-        <div class="help-item"><span class="help-term">📥 Claude→Web反映</span><span class="help-desc">直接Claude Codeとやり取りして進めた分など、Web(tasks.json)にまだ反映されていないGitHub上の活動を探すボタンです。2段階の仕組みで、①ボタンを押すと、記録より新しいコミットがあるリポジトリを探し「確認して」という依頼タスクを置きます。②その依頼を、この部屋(Routine)が次回の定期実行時に読んで、実際にtasks.jsonへ書き込みます。ボタンを押した瞬間には反映されません。</span></div>
-        <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
         <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
         <div class="help-item"><span class="help-term">🗨 マネージャールーム依頼文</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
+        <div class="help-item"><span class="help-term">⚙ 設定</span><span class="help-desc">普段は使わない操作(Claude→Web反映・Routine設定)をまとめてあります。新規タスクの依頼はスプレッドシートへの直接記載ではなく、相談ルーム/マネージャールームから行ってください。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
         <div class="help-item"><span class="help-term">引継ぎ用プロンプト作成</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
@@ -580,8 +612,11 @@
   // 「子タスク対応待ち」は集計用ステータスではなく表示専用のラベル(下記renderRowのdisplayStatus参照)。
   // 子タスクを持つ行が未完了の場合、そこに進行中/未着手などの推定ステータスを出すと「この行自体の
   // 状態」と誤解されやすいため、「子タスクの状況待ちである」ことが一目で分かるラベルに差し替える。
-  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled", "子タスク対応待ち": "skip" };
-  const STATUS_ORDER = ["進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
+  // 「判断待ち」「実行中」はマネージャールーム運用向けに2026-08-07追加。
+  // 判断待ち = あなたの返事がないと先に進めない(最優先で目に入るべき)。
+  // 実行中 = 裏でサブエージェントが並列作業中(あなたの対応は不要、進捗共有のみ)。
+  const STATUS_CLASS = { "完了": "done", "進行中": "doing", "未着手": "todo", "スキップ": "skip", "新規": "new", "対応中": "doing", "完了予定": "scheduled", "子タスク対応待ち": "skip", "判断待ち": "decision", "実行中": "running" };
+  const STATUS_ORDER = ["判断待ち", "実行中", "進行中", "対応中", "未着手", "新規", "スキップ", "完了予定", "完了"];
 
   // ダッシュボードから追加した新規タスクをスプレッドシートの依頼タスクタブへ反映するためのGASエンドポイント。
   // このファイルは公開リポジトリにあるため、このトークンは「追記のみ」の最小権限として運用すること
@@ -650,6 +685,9 @@
     if (!t.subtasks || !t.subtasks.length) return t.status;
     const statuses = t.subtasks.map(s => aggregateStatus(s));
     if (statuses.every(s => s === "完了")) return "完了";
+    // 判断待ちの子が1件でもあれば、親も最優先(判断待ち)として浮上させる。
+    if (statuses.some(s => s === "判断待ち")) return "判断待ち";
+    if (statuses.some(s => s === "実行中")) return "実行中";
     if (statuses.some(s => s === "進行中" || s === "対応中")) return "進行中";
     if (statuses.some(s => s === "完了予定")) return "完了予定";
     if (statuses.some(s => s === "未着手")) return statuses.some(s => s === "完了") ? "進行中" : "未着手";
@@ -746,8 +784,10 @@
     const hasKnowledge = !!(node.note || node.detail || node.issues || node.output);
     if (!hasContent && !hasSteps && !hasKnowledge) return "";
     const tabs = [];
-    if (hasContent) tabs.push(["content", "📌 タスク内容"]);
+    // 「実施手順」を一番左に配置(2026-08-07変更)。まず何をどの順でやるかが最優先で目に入るように、
+    // タスク内容・実装ナレッジより前に置く。
     if (hasSteps) tabs.push(["steps", "📋 実施手順"]);
+    if (hasContent) tabs.push(["content", "📌 タスク内容"]);
     if (hasKnowledge) tabs.push(["knowledge", "📖 実装ナレッジ"]);
     const saved = detailTab.get(path);
     const activeTab = tabs.some(([k]) => k === saved) ? saved : tabs[0][0];
@@ -868,6 +908,11 @@
     html += `<div class="cell-task" style="padding-left:${depth * 28}px">`;
     const treeGuide = depth > 0 ? `<span class="tree-guide">${"　".repeat(depth - 1)}└ </span>` : "";
     html += `<div class="task-text${isPlaceholder ? " muted" : ""}">${treeGuide}${node.urgent ? '<span class="urgent-flag">⚡ 即実行 </span>' : ""}${node.title || node.task}</div>`;
+    // 親タスク(子を持つ行)は、何のためのタスクかが一覧からすぐ分かるよう🎯目的を出す
+    // (2026-08-07追加。子タスクは個別のやることだけを書く場所なので目的は出さない)。
+    if (!child && node.goal) {
+      html += `<div class="task-goal">🎯 ${node.goal}</div>`;
+    }
     // 「次にすること」を、詳細タブを開かなくても一覧上ですぐ分かるように1行だけ表示する。
     // 未完了(集計ステータスが完了以外)の行だけ対象。子タスクを持つ行はnextAction(手書きの要約)を
     // 優先し、無ければ表示しない。子タスクを持たない行はnextActionが無ければcontent/stepsの
@@ -884,7 +929,10 @@
     // 子タスクを持つ行が未完了の場合、推定ステータス(進行中/未着手等)をそのまま出すと
     // 「この行自体がその状態」に見えて紛らわしいため、「子タスク対応待ち」に表示だけ差し替える
     // (並び替え・集計には引き続き実際のaggregateStatus結果を使うため、statusはそのまま)。
-    const displayStatus = (hasChildren && status !== "完了") ? "子タスク対応待ち" : status;
+    // ただし「判断待ち」「実行中」は、あなたが今すぐ気づくべき最優先の状態なので、
+    // 子タスク対応待ちに埋もれさせず、そのまま表に出す(2026-08-07追加)。
+    const URGENT_STATUS = ["判断待ち", "実行中"];
+    const displayStatus = (hasChildren && status !== "完了" && !URGENT_STATUS.includes(status)) ? "子タスク対応待ち" : status;
     html += `<div class="cell-status">${chip(displayStatus)}</div>`;
     html += `<div class="cell-updated">${node.updated !== "-" ? node.updated : "―"}</div>`;
 
@@ -1604,10 +1652,14 @@
     });
   }
 
+  // 2026-08-07、🔄更新ボタン(依頼タスクタブから新規タスクを人が直接入力する運用)は廃止した
+  // (新規タスクの依頼は相談ルーム/マネージャールーム経由に統一)。ただしRoutineが書き込む
+  // コメント(comments)を静かに取り込む役割は引き続き必要なため、関数自体とページ読み込み時の
+  // silent呼び出しは残す。ボタンが無くなったのでDOM操作はすべてbtnが存在する場合のみ行う。
   function refreshFromSheet(silent) {
     const btn = document.getElementById("refresh-btn");
-    const original = btn.textContent;
-    if (!silent) {
+    const original = btn ? btn.textContent : "";
+    if (!silent && btn) {
       btn.disabled = true;
       btn.textContent = "更新中...";
     }
@@ -1622,14 +1674,14 @@
         mergeCommentsIntoView(data.comments || []);
         renderStats();
         renderFeed();
-        if (silent) return;
+        if (silent || !btn) return;
         btn.textContent = added > 0 ? `✓ ${added}件追加` : "✓ 変化なし";
       })
       .catch(() => {
-        if (!silent) btn.textContent = "更新失敗";
+        if (!silent && btn) btn.textContent = "更新失敗";
       })
       .finally(() => {
-        if (silent) return;
+        if (silent || !btn) return;
         setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 2500);
       });
   }
@@ -1891,11 +1943,15 @@
   document.getElementById("manager-room-prompt-btn").addEventListener("click", showManagerRoomPromptModal);
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
-  document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
   document.getElementById("github-diff-btn").addEventListener("click", checkGithubActivity);
   document.getElementById("help-toggle-btn").addEventListener("click", (e) => {
     const panel = document.getElementById("help-panel");
+    const open = panel.classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", String(open));
+  });
+  document.getElementById("extra-settings-toggle-btn").addEventListener("click", (e) => {
+    const panel = document.getElementById("extra-settings-panel");
     const open = panel.classList.toggle("open");
     e.currentTarget.setAttribute("aria-expanded", String(open));
   });
