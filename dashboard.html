@@ -475,6 +475,7 @@
           <button class="settings-btn" id="github-diff-btn" title="GitHubの最新コミットがダッシュボードの記録より新しいリポジトリ(=直接Claude Codeとやり取りして進めた分)を探し、「確認して」という依頼タスクを置きます(この場でtasks.jsonが更新されるわけではありません。実際の反映は次回のRoutine実行時です)">📥 Claude→Web反映</button>
           <button class="settings-btn" id="open-settings-btn" title="実行頻度・時刻の変更依頼文を作成します(自動反映ではありません)">⚙ Routine設定</button>
           <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
+          <button class="settings-btn" id="manager-room-prompt-btn" title="全リポジトリ横断で相談・優先度判断・実行振り分けを行うマネージャールームを開くときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🗨 マネージャールーム依頼文</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
       </div>
@@ -490,6 +491,7 @@
         <div class="help-item"><span class="help-term">📥 Claude→Web反映</span><span class="help-desc">直接Claude Codeとやり取りして進めた分など、Web(tasks.json)にまだ反映されていないGitHub上の活動を探すボタンです。2段階の仕組みで、①ボタンを押すと、記録より新しいコミットがあるリポジトリを探し「確認して」という依頼タスクを置きます。②その依頼を、この部屋(Routine)が次回の定期実行時に読んで、実際にtasks.jsonへ書き込みます。ボタンを押した瞬間には反映されません。</span></div>
         <div class="help-item"><span class="help-term">⚙ Routine設定</span><span class="help-desc">自動実行の頻度・時刻を変更したいときの依頼文を作成します(コピーしてこのRoutineのチャットに貼ると反映されます)。</span></div>
         <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
+        <div class="help-item"><span class="help-term">🗨 マネージャールーム依頼文</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
         <div class="help-item"><span class="help-term">引継ぎ用プロンプト作成</span><span class="help-desc">このタスクの状況・実装ナレッジをまとめたテキストを作成します。別のClaude Codeセッションに貼って作業の続きを依頼するときに使います。</span></div>
@@ -2659,6 +2661,46 @@
     showHandoffModal(buildTaskRoomPromptText(), "タスクごとの相談ルーム 依頼文テンプレート", true);
   }
   document.getElementById("task-room-prompt-btn").addEventListener("click", showTaskRoomPromptModal);
+
+  // 全リポジトリ横断のマネージャールームを開くときに最初に貼る依頼文のテンプレート。
+  // 定期実行(Routine)には登録しない、呼んだときだけ動く使い捨てのルーム。
+  // 役割は「要点だけ吸い上げて相談・優先度判断」と「実行の振り分け(自動Routine行き/その場で直接実行)」の2つ。
+  function buildManagerRoomPromptText() {
+    return [
+      "全リポジトリ横断のマネージャールームとして動いてほしい。",
+      "",
+      "【最初にやること】",
+      "1. 実装進捗管理シートの依頼タスクタブ全体と、",
+      "   gurii-gabreh/progress-tracker-dashboard の data/tasks.json(対象リポジトリ全部)を読む",
+      "2. 高優先度のもの・依存関係(同じブロッカー待ちのタスク群)・滞留しているもの・",
+      "   完了済みなのに未着手に戻っているものなどを横断的にチェックする",
+      "3. その結果を、生の履歴やnote全文を貼らず要点だけに圧縮して提示する",
+      "   (タスクID・状況・引っかかっている理由・提案アクション、程度の一覧でよい)",
+      "",
+      "【その後】",
+      "一覧を出したらすぐ実行に移らず、まずこのルームで相談する(どれから着手するか、",
+      "懸念点の整理、判断が難しいものの壁打ちなど)。方針が決まったタスクごとに、",
+      "以下のどちらで進めるかをこちらに確認してから振り分ける:",
+      "- 自動実装Routine(平日9/12/15/18時実行)に任せる",
+      "  → 該当タスクのcomments(追加指示)に指示を書き込むだけにする(このルームでは実装しない)",
+      "- 今すぐこの場で直接実行してほしいと言われたものだけ",
+      "  → このルームで実際に実装まで行う(必要な場合は対象リポジトリごとにサブタスクとして進める)",
+      "",
+      "【反映】",
+      "対応した内容は都度、",
+      "1. dashboard.html / data/tasks.json の該当タスクを更新し、checkHistoryに追記してgit commit・push",
+      "2. スプレッドシートへの反映は直接API POSTだと403で失敗する実績があるため、",
+      "   ブラウザでダッシュボードを開き「⏩ Web→スプレッドシート反映」ボタンを実際に押す",
+      "   (ブラウザ操作の手段が無ければ、押すようこちらに伝えて終わる)",
+      "",
+      "毎週月曜の「週次残タスクチェックRoutine」は棚卸し・報告専門で実行権限が無いので、",
+      "このルームの役割(判断・振り分け・実行)とは重複しない。",
+    ].join("\n");
+  }
+  function showManagerRoomPromptModal() {
+    showHandoffModal(buildManagerRoomPromptText(), "マネージャールーム 依頼文テンプレート", true);
+  }
+  document.getElementById("manager-room-prompt-btn").addEventListener("click", showManagerRoomPromptModal);
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("refresh-btn").addEventListener("click", () => refreshFromSheet(false));
