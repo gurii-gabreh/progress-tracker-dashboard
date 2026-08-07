@@ -678,11 +678,18 @@
               id: "PTD-008",
               task: "RoutineからのcompleteTasks呼び出しが実際に完了タブへ反映されるか検証する",
               priority: "中", status: "未着手", updated: "-", category: "research",
-              note: "", detail: "ネットワークポリシーの制約のため未検証。実際の移動は現在プル型同期(syncFromGithub)経由で行われている。", output: "",
+              note: "PTD-011(syncFromGithubトリガー設定)が2026-08-07に完了し、プル型同期が自動実行される体制が整った。直接POST試行とプル型同期経由の反映確認は次回Routine実行時に対応予定(comments参照)。",
+              detail: "ネットワークポリシーの制約のため未検証。実際の移動は現在プル型同期(syncFromGithub)経由で行われている。", output: "",
               content: [
                 "完了済みタスクに対し、doPostのcompleteTasksアクション({token, completeTasks:[{repo, task, completedDate, note, detail, issues, output}]})を直接POSTで呼び出してみる(Routine実行環境からscript.google.comへ届くかどうかも合わせて確認する)",
                 "直接POSTが失敗する(ネットワークポリシーで遮断される)場合は、data/tasks.jsonの該当タスクをstatus:完了にしてコミット・pushし、次回のsyncFromGithubトリガー実行後に依頼タスクタブ→完了タブへ実際に移動しているか確認する",
                 "確認できた結果(直接POST可否・プル型同期経由での移動可否)をcheckHistoryに追記する",
+              ],
+              checkHistory: [
+                { date: "2026-08-07", summary: "PTD-011(トリガー設定)完了によりプル型同期の自動実行体制が整ったことを確認。次回Routine実行時に、直接POST試行とcompleteTasksのプル型同期反映確認を行うようRoutineへ指示。" },
+              ],
+              comments: [
+                { author: "user", text: "PTD-010(GAS再デプロイ)・PTD-011(syncFromGithubトリガー設定)がいずれも完了した。次回の自動実装Routine実行時に、このタスク(PTD-008)のcontentの手順通り、①completeTasksアクションへの直接POSTを試行し疎通可否を確認、②直接POSTが失敗する場合はdata/tasks.json側の適当な完了済みタスクを材料に、次回syncFromGithub実行後に依頼タスクタブ→完了タブへ実際に移動しているかスプレッドシートで確認、の2点を実施し、結果をcheckHistoryに追記すること。", at: "2026-08-07 15:17" },
               ]
             }
           ]
@@ -731,13 +738,19 @@
             {
               id: "PTD-011",
               task: "syncFromGithubの時間主導トリガー(例: 1時間おき)が未設定ならApps Scriptエディタの「トリガー」から設定する",
-              priority: "高", status: "未着手", updated: "-", category: "manual",
-              note: "",
+              priority: "高", status: "完了", updated: "2026-08-07", category: "manual",
+              completedItems: [
+                { item: "Apps Scriptエディタの「トリガー」からsyncFromGithubの時間主導トリガーを設定した", date: "2026-08-07" },
+              ],
+              note: "本人より2026-08-07にトリガー設定完了の報告あり。これによりPTD-009で導入したプル型同期(syncFromGithub)が定期的に自動実行される体制が整った。",
               detail: "",
               steps: [
                 "Apps Scriptエディタ左側の「トリガー」アイコン(時計マーク)を開く",
                 "右下の「トリガーを追加」をクリック",
                 "実行する関数: syncFromGithub / イベントのソース: 時間主導型 / 時間の間隔の種類: 時間ベースのタイマー / 間隔: 例えば1時間おき、を選んで保存",
+              ],
+              checkHistory: [
+                { date: "2026-08-07", summary: "本人よりsyncFromGithubの時間主導トリガー設定完了の報告。プル型同期が定期実行される体制が整い、PTD-008(completeTasksのプル型同期検証)の残っていたブロッカーが解消。" },
               ],
               output: ""
             },
