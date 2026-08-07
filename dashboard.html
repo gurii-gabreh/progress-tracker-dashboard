@@ -147,6 +147,7 @@
   }
   .avatar.lg { width: 34px; height: 34px; border-radius: 8px; font-size: 15px; }
 
+  .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
   .filter-btn {
     font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
@@ -154,6 +155,13 @@
     cursor: pointer;
   }
   .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .view-toggle-btn {
+    font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted);
+    cursor: pointer;
+  }
+  .view-toggle-btn.active { background: var(--status-running-fg); border-color: var(--status-running-fg); color: #fff; }
+  .flat-done-toggle { margin: 8px 0; }
 
   .feed {
     display: flex; flex-direction: column; gap: 14px;
@@ -266,6 +274,9 @@
   .task-id-tag:hover { border-color: var(--accent); color: var(--accent); }
   .task-id-tag.copied { background: var(--status-done-bg); color: var(--status-done-fg); border-style: solid; border-color: var(--status-done-fg); }
   .done-id-tag { vertical-align: middle; margin-right: 2px; }
+  .repo-badge-flat {
+    font-size: 10.5px; font-weight: 700; color: #fff; padding: 2px 8px; border-radius: 999px;
+  }
 
   .chip {
     font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
@@ -541,7 +552,10 @@
   </div>
 
   <div class="scroll-area">
-    <div id="filter-row" class="filter-row"></div>
+    <div class="filter-bar">
+      <div id="filter-row" class="filter-row"></div>
+      <button class="view-toggle-btn" id="flat-mode-toggle-btn" title="リポジトリでグルーピングせず、判断待ち→実行中→未対応の順で1本のリストにまとめて表示します。スマホでの確認向け">📱 一覧表示</button>
+    </div>
     <div id="feed" class="feed"></div>
 
     <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
@@ -721,6 +735,11 @@
   const openComments = new Set();   // key: node path -> 追加指示(コメント)パネルの開閉
   const openCheckHistory = new Set(); // key: node path -> 履歴(checkHistory)パネルの開閉
   let dragSourcePath = null;        // ドラッグ中のタスクのpath(ブラウザ内の並び替え専用。スプレッドシートには反映されない)
+  // モバイル一覧(2026-08-07追加): リポジトリでグルーピングせず、全リポジトリ横断で
+  // 「今どれが自分の対応待ちか」を1本のリストで見るための表示モード。データソースは
+  // 通常表示と完全に同じ(TASKS)なので、切り替えても相違は起きない。
+  let flatMode = false;
+  let flatShowCompleted = false;    // フラット表示で完了済みをたたむかどうか
 
   function renderFilters() {
     const row = document.getElementById("filter-row");
@@ -868,7 +887,7 @@
   }
 
   // trail: 自分より上の各階層の配列(深さ=インデント幅の計算にのみ使う)。
-  function renderRow(node, path, { child, repo, isLast = true, trail = [] } = {}) {
+  function renderRow(node, path, { child, repo, isLast = true, trail = [], flatRepoBadge = false } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
     const hasDetailInfo = !!((node.content && node.content.length) || node.note || node.detail || node.issues || node.output);
@@ -938,6 +957,11 @@
 
     html += `<div class="row-meta-line">`;
     html += `<div class="meta-info">`;
+    // モバイル一覧(リポジトリ横断のフラット表示)では、グループ見出しが無いのでどのリポジトリの
+    // タスクか行の中に出す(2026-08-07追加)。
+    if (flatRepoBadge) {
+      html += `<span class="repo-badge-flat" style="background:${avatarColor({ repo: effectiveRepo })}">${repoDisplayName(effectiveRepo)}</span>`;
+    }
     if (node.id) {
       html += `<span class="task-id-tag" data-copy-id="${node.id}" title="クリックでコピー。Claude Codeのチャットで「タスクID ${node.id} の詳細を教えて」のように伝えると、このタスクの詳細をチャットで確認できます">🆔 ${node.id}</span>`;
     }
@@ -1031,6 +1055,211 @@
     return html;
   }
 
+  // モバイル一覧用: node以下(node自身含む)を再帰的にたどり、子タスクを持たない「実際に
+  // 対応すべき末端タスク」だけをpath付きで集める。通常表示のグループ木と完全に同じTASKSを
+  // 見ているので、データが食い違うことはない。
+  function collectLeaves(node, path, repo, acc) {
+    if (node.subtasks && node.subtasks.length) {
+      node.subtasks.forEach((sub, i) => collectLeaves(sub, `${path}.${i}`, repo, acc));
+    } else {
+      acc.push({ node, path, repo });
+    }
+  }
+
+  // リポジトリでグルーピングせず、判断待ち→実行中→…→完了の順に1本のリストで並べる表示。
+  // 完了済みは既定でたたむ(件数が多いと「今対応すべきもの」が埋もれるため)。
+  function buildFlatFeedHtml(list) {
+    const leaves = [];
+    list.forEach((t) => collectLeaves(t, `${TASKS.indexOf(t)}`, t.repo, leaves));
+    if (!leaves.length) return `<div class="empty">タスクがありません</div>`;
+
+    const pending = leaves.filter(l => l.node.status !== "完了");
+    const done = leaves.filter(l => l.node.status === "完了");
+    pending.sort((a, b) => {
+      const s = STATUS_ORDER.indexOf(a.node.status) - STATUS_ORDER.indexOf(b.node.status);
+      if (s !== 0) return s;
+      return (PRIORITY_ORDER[a.node.priority] ?? 9) - (PRIORITY_ORDER[b.node.priority] ?? 9);
+    });
+
+    const rowHtml = (l) => renderRow(l.node, l.path, { isLast: true, flatRepoBadge: true, repo: l.repo });
+    const pendingHtml = pending.map(rowHtml).join("") || `<div class="empty small">対応待ちのタスクはありません</div>`;
+    const doneHtml = done.map(rowHtml).join("");
+    const doneToggleHtml = done.length
+      ? `<button class="check-history-toggle flat-done-toggle" id="flat-done-toggle">${flatShowCompleted ? "完了済みを閉じる ▲" : `✓ 完了済み(${done.length}) ▼`}</button>`
+      : "";
+
+    return `
+      <div class="task-group flat-group">
+        <div class="table-head">
+          <span title="レベル: 1=親タスク/2=子タスク/3=孫タスク">Lv</span><span></span><span></span><span></span>
+          <span>タスク</span><span>優先度</span><span>ステータス</span><span>更新日</span>
+        </div>
+        ${pendingHtml}
+      </div>
+      ${doneToggleHtml}
+      ${flatShowCompleted ? `<div class="task-group flat-group">${doneHtml}</div>` : ""}`;
+  }
+
+  // renderFeed()が組み立てたHTML(グループ表示・フラット表示どちらでも)に対して
+  // 展開/折りたたみ・コメント送信・ドラッグ並び替えなどのイベントを配線する。
+  // data属性ベースなので、どちらの表示モードで生成されたHTMLでも同じように動く。
+  function wireFeedEvents(feed) {
+  const flatDoneToggle = document.getElementById("flat-done-toggle");
+  if (flatDoneToggle) {
+    flatDoneToggle.addEventListener("click", () => {
+      flatShowCompleted = !flatShowCompleted;
+      renderFeed();
+    });
+  }
+  feed.querySelectorAll("[data-drag-path]").forEach(row => {
+    row.addEventListener("dragstart", (e) => {
+      e.stopPropagation();
+      dragSourcePath = row.dataset.dragPath;
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", dragSourcePath);
+    });
+    row.addEventListener("dragend", () => {
+      row.classList.remove("dragging");
+      dragSourcePath = null;
+    });
+    row.addEventListener("dragover", (e) => {
+      if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      row.classList.add("drag-over");
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drag-over"));
+    row.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      row.classList.remove("drag-over");
+      if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
+      reorderTask(dragSourcePath, row.dataset.dragPath);
+    });
+  });
+  feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = btn.dataset.groupToggle;
+      if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+      renderFeed();
+    });
+  });
+  // レコード(行)自体のクリックでも展開・折りたたみできるようにする。行内の各ボタン・リンク・
+  // 入力欄のクリックハンドラは全てe.stopPropagation()しているため、ここまで伝播してくるのは
+  // 行の「空いている部分」をクリックした場合のみ(三角ボタンの二重発火は起きない)。
+  feed.querySelectorAll("[data-row-toggle]").forEach(row => {
+    row.addEventListener("click", () => {
+      const key = row.dataset.rowToggle;
+      if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-detail-panel-toggle]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = el.dataset.detailPanelToggle;
+      if (openDetail.has(key)) openDetail.delete(key); else openDetail.add(key);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-detail-tab]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      detailTab.set(btn.dataset.detailTab, btn.dataset.detailTabKey);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-completed-toggle]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = el.dataset.completedToggle;
+      if (openCompleted.has(key)) openCompleted.delete(key); else openCompleted.add(key);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-comments-toggle]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = el.dataset.commentsToggle;
+      if (openComments.has(key)) openComments.delete(key); else openComments.add(key);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-check-history-toggle]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const key = el.dataset.checkHistoryToggle;
+      if (openCheckHistory.has(key)) openCheckHistory.delete(key); else openCheckHistory.add(key);
+      renderFeed();
+    });
+  });
+  feed.querySelectorAll("[data-handoff]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const node = findNodeByPath(btn.dataset.handoff);
+      showHandoffModal(buildHandoffText(node, btn.dataset.handoffRepo));
+    });
+  });
+  feed.querySelectorAll("[data-complete]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      completeTaskManually(btn.dataset.complete, btn.dataset.completeRepo);
+    });
+  });
+  feed.querySelectorAll("[data-cancel]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      cancelCompleteManually(btn.dataset.cancel, btn.dataset.cancelRepo);
+    });
+  });
+  feed.querySelectorAll("[data-add-parent]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showAddTaskModal(btn.dataset.addParent, btn.dataset.addRepo);
+    });
+  });
+  feed.querySelectorAll("[data-comment-input]").forEach(el => {
+    el.addEventListener("click", (e) => e.stopPropagation());
+  });
+  feed.querySelectorAll("[data-comment-send]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const path = btn.dataset.commentSend;
+      const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
+      const text = textarea.value.trim();
+      if (!text) return;
+      textarea.value = "";
+      sendComment(path, btn.dataset.commentRepo, text);
+    });
+  });
+  feed.querySelectorAll("[data-knowledge-update]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      requestKnowledgeUpdate(btn.dataset.knowledgeUpdate, btn.dataset.knowledgeUpdateRepo);
+    });
+  });
+  // タスクIDタグをクリックするとクリップボードへコピーする。Claude Codeのチャット側へ
+  // 「タスクID ○○の詳細を教えて」のように貼り付けて伝える運用を想定している。
+  feed.querySelectorAll("[data-copy-id]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = el.dataset.copyId;
+      const showCopied = () => {
+        el.classList.add("copied");
+        el.textContent = "✓ コピーしました";
+        setTimeout(() => { el.classList.remove("copied"); el.textContent = `🆔 ${id}`; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(id).then(showCopied).catch(() => showToast(`タスクID: ${id}`));
+      } else {
+        showToast(`タスクID: ${id}`);
+      }
+    });
+  });
+  }
+
   function renderFeed() {
     const feed = document.getElementById("feed");
     let list = TASKS;
@@ -1040,6 +1269,12 @@
 
     if (!list.length) {
       feed.innerHTML = `<div class="empty">タスクがありません</div>`;
+      return;
+    }
+
+    if (flatMode) {
+      feed.innerHTML = buildFlatFeedHtml(list);
+      wireFeedEvents(feed);
       return;
     }
 
@@ -1079,153 +1314,7 @@
         </div>`;
     }).join("");
 
-    feed.querySelectorAll("[data-drag-path]").forEach(row => {
-      row.addEventListener("dragstart", (e) => {
-        e.stopPropagation();
-        dragSourcePath = row.dataset.dragPath;
-        row.classList.add("dragging");
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", dragSourcePath);
-      });
-      row.addEventListener("dragend", () => {
-        row.classList.remove("dragging");
-        dragSourcePath = null;
-      });
-      row.addEventListener("dragover", (e) => {
-        if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-        row.classList.add("drag-over");
-      });
-      row.addEventListener("dragleave", () => row.classList.remove("drag-over"));
-      row.addEventListener("drop", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        row.classList.remove("drag-over");
-        if (!dragSourcePath || dragSourcePath === row.dataset.dragPath) return;
-        reorderTask(dragSourcePath, row.dataset.dragPath);
-      });
-    });
-    feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const key = btn.dataset.groupToggle;
-        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
-        renderFeed();
-      });
-    });
-    // レコード(行)自体のクリックでも展開・折りたたみできるようにする。行内の各ボタン・リンク・
-    // 入力欄のクリックハンドラは全てe.stopPropagation()しているため、ここまで伝播してくるのは
-    // 行の「空いている部分」をクリックした場合のみ(三角ボタンの二重発火は起きない)。
-    feed.querySelectorAll("[data-row-toggle]").forEach(row => {
-      row.addEventListener("click", () => {
-        const key = row.dataset.rowToggle;
-        if (openGroups.has(key)) openGroups.delete(key); else openGroups.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-detail-panel-toggle]").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const key = el.dataset.detailPanelToggle;
-        if (openDetail.has(key)) openDetail.delete(key); else openDetail.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-detail-tab]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        detailTab.set(btn.dataset.detailTab, btn.dataset.detailTabKey);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-completed-toggle]").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const key = el.dataset.completedToggle;
-        if (openCompleted.has(key)) openCompleted.delete(key); else openCompleted.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-comments-toggle]").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const key = el.dataset.commentsToggle;
-        if (openComments.has(key)) openComments.delete(key); else openComments.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-check-history-toggle]").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const key = el.dataset.checkHistoryToggle;
-        if (openCheckHistory.has(key)) openCheckHistory.delete(key); else openCheckHistory.add(key);
-        renderFeed();
-      });
-    });
-    feed.querySelectorAll("[data-handoff]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const node = findNodeByPath(btn.dataset.handoff);
-        showHandoffModal(buildHandoffText(node, btn.dataset.handoffRepo));
-      });
-    });
-    feed.querySelectorAll("[data-complete]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        completeTaskManually(btn.dataset.complete, btn.dataset.completeRepo);
-      });
-    });
-    feed.querySelectorAll("[data-cancel]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        cancelCompleteManually(btn.dataset.cancel, btn.dataset.cancelRepo);
-      });
-    });
-    feed.querySelectorAll("[data-add-parent]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showAddTaskModal(btn.dataset.addParent, btn.dataset.addRepo);
-      });
-    });
-    feed.querySelectorAll("[data-comment-input]").forEach(el => {
-      el.addEventListener("click", (e) => e.stopPropagation());
-    });
-    feed.querySelectorAll("[data-comment-send]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const path = btn.dataset.commentSend;
-        const textarea = feed.querySelector(`[data-comment-input="${path}"]`);
-        const text = textarea.value.trim();
-        if (!text) return;
-        textarea.value = "";
-        sendComment(path, btn.dataset.commentRepo, text);
-      });
-    });
-    feed.querySelectorAll("[data-knowledge-update]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        requestKnowledgeUpdate(btn.dataset.knowledgeUpdate, btn.dataset.knowledgeUpdateRepo);
-      });
-    });
-    // タスクIDタグをクリックするとクリップボードへコピーする。Claude Codeのチャット側へ
-    // 「タスクID ○○の詳細を教えて」のように貼り付けて伝える運用を想定している。
-    feed.querySelectorAll("[data-copy-id]").forEach(el => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const id = el.dataset.copyId;
-        const showCopied = () => {
-          el.classList.add("copied");
-          el.textContent = "✓ コピーしました";
-          setTimeout(() => { el.classList.remove("copied"); el.textContent = `🆔 ${id}`; }, 1500);
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(id).then(showCopied).catch(() => showToast(`タスクID: ${id}`));
-        } else {
-          showToast(`タスクID: ${id}`);
-        }
-      });
-    });
+    wireFeedEvents(feed);
   }
 
   function findNodeByPath(path) {
@@ -1954,6 +2043,12 @@
     const panel = document.getElementById("extra-settings-panel");
     const open = panel.classList.toggle("open");
     e.currentTarget.setAttribute("aria-expanded", String(open));
+  });
+  document.getElementById("flat-mode-toggle-btn").addEventListener("click", (e) => {
+    flatMode = !flatMode;
+    e.currentTarget.classList.toggle("active", flatMode);
+    e.currentTarget.textContent = flatMode ? "📋 通常表示に戻す" : "📱 一覧表示";
+    renderFeed();
   });
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
