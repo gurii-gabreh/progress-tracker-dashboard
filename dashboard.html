@@ -489,6 +489,45 @@
   }
   .modal-copy-btn.copied { background: var(--status-done-fg); }
 
+  .orch-modal-box { max-width: 640px; }
+  .orch-diagram { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .orch-node {
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface-2); font-size: 13px; font-weight: 700;
+  }
+  .orch-arrow-down { font-size: 12px; color: var(--text-muted); line-height: 1.2; text-align: center; white-space: pre-line; }
+  .orch-accounts { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; width: 100%; }
+  .orch-account {
+    flex: 1 1 200px; max-width: 240px; border: 1px dashed var(--border); border-radius: 12px;
+    padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .orch-account-label {
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+  }
+  .orch-room {
+    width: 100%; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--surface-2); padding: 10px 10px; text-align: center;
+  }
+  .orch-room-title { font-size: 13px; font-weight: 700; }
+  .orch-room-desc { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+  .orch-room-btn {
+    margin-top: 8px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--accent); cursor: pointer;
+  }
+  .orch-room-btn:hover { border-color: var(--accent); }
+  .orch-cross-arrow {
+    flex: 0 0 auto; font-size: 11px; color: var(--text-muted); text-align: center;
+    line-height: 1.3; padding: 0 2px;
+  }
+  .orch-output { width: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .orch-output label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+  .orch-output textarea {
+    width: 100%; min-height: 180px; resize: vertical; font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; line-height: 1.6; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  }
+
   .toast {
     position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 12px);
     max-width: min(90vw, 420px); padding: 10px 16px; border-radius: 999px;
@@ -508,6 +547,7 @@
           <button class="settings-btn" id="sync-now-btn" title="Web(tasks.json)側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ Web→スプレッドシート反映</button>
           <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
           <button class="settings-btn" id="manager-room-prompt-btn" title="全リポジトリ横断で相談・優先度判断・実行振り分けを行うマネージャールームを開くときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🗨 マネージャールーム依頼文</button>
+          <button class="settings-btn" id="orchestration-diagram-btn" title="複数のClaudeアカウントで、マネージャールームが相談を受けつつ作業ルームに実装を振り分ける構成を図解します。図中のボタンから各ルーム宛の依頼文もコピーできます">🗺 オーケストレーション構成</button>
           <button class="settings-btn" id="extra-settings-toggle-btn" aria-expanded="false" title="普段は使わない操作(Claude→Web反映・Routine設定)をまとめています">⚙ 設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -534,6 +574,7 @@
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
         <div class="help-item"><span class="help-term">🗨 マネージャールーム依頼文</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
+        <div class="help-item"><span class="help-term">🗺 オーケストレーション構成</span><span class="help-desc">複数のClaudeアカウント(メインアカウント/サブアカウント)を使い、マネージャールームがユーザーの相談を受けつつ実装作業を作業ルームに振り分ける構成を図解します。図中の各ルームのボタンを押すと、そのルーム宛の依頼文テンプレートが下のテキストエリアに表示され、コピーできます。</span></div>
         <div class="help-item"><span class="help-term">⚙ 設定</span><span class="help-desc">普段は使わない操作(Claude→Web反映・Routine設定)をまとめてあります。新規タスクの依頼はスプレッドシートへの直接記載ではなく、相談ルーム/マネージャールームから行ってください。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
@@ -2030,6 +2071,128 @@
     showHandoffModal(buildManagerRoomPromptText(), "マネージャールーム 依頼文テンプレート", true);
   }
   document.getElementById("manager-room-prompt-btn").addEventListener("click", showManagerRoomPromptModal);
+
+  // 複数のClaudeアカウント(メインアカウント/サブアカウント)を使い、
+  // マネージャールームが相談を受けつつ実装を作業ルームに振り分ける構成の説明図。
+  // 図中のルームボタンは、そのルーム宛の依頼文テンプレートを下のテキストエリアに出すだけで、
+  // 実際の送信は行わない(あくまでコピーして貼る運用)。
+  function buildOrchManagerRoomPromptText() {
+    return [
+      "このセッションは「マネージャールーム」として動いてほしい。",
+      "",
+      "【役割】",
+      "ユーザーからの相談・依頼を受け付け、実装が必要な内容を整理したうえで、",
+      "実装作業そのものは専用の「作業ルーム」(同じアカウント内、または別のサブアカウントの",
+      "セッション)に振り分けること。このルーム自身では実装作業を行わない。",
+      "",
+      "【進め方】",
+      "1. 相談内容を聞き、実装すべきタスクとして具体化する",
+      "2. どの作業ルーム(アカウント)に振り分けるかを判断する",
+      "   (処理が混み合っている場合はサブアカウント側の作業ルームに回すなど)",
+      "3. 作業ルームには「作業ルーム宛」の依頼文テンプレートをベースに、",
+      "   タスクの具体的な内容を書き加えて依頼する",
+      "4. 作業ルームからの完了報告(リポジトリ直下のstatus.json)を確認し、ユーザーに報告する",
+      "",
+      "不明点があれば、作業ルームに振り分ける前にこのルームで確認してください。",
+    ].join("\n");
+  }
+  function buildOrchWorkerRoomPromptText() {
+    return [
+      "このセッションは「作業ルーム」です。以下のタスクを実装してください。",
+      "",
+      "■ 内容",
+      "{マネージャールームから指示された実装内容をここに書く}",
+      "",
+      "■ 進め方",
+      "1. まずリポジトリの現状の技術構成(フレームワーク、既存のUI構造など)を確認してください",
+      "2. 既存のスタイル・構造に合わせて実装してください",
+      "3. 実装が完了したら、変更をコミット・プッシュしてください",
+      "   (新規のfeatureブランチを作成すること。mainには直接プッシュしないこと)",
+      "4. 完了したら、リポジトリ直下に status.json を作成し、以下の形式で結果を記録してコミットしてください:",
+      '   {"status": "done", "summary": "作業内容の要約", "timestamp": "ISO8601形式の日時"}',
+      "5. 不明点があれば、実装を進める前に一度作業を止めて質問内容をまとめてください",
+    ].join("\n");
+  }
+
+  function showOrchestrationDiagramModal() {
+    const root = document.getElementById("modal-root");
+    const roomHtml = (account, roomType, icon, title, desc) => `
+          <div class="orch-room">
+            <div class="orch-room-title">${icon} ${title}</div>
+            <div class="orch-room-desc">${desc}</div>
+            <button class="orch-room-btn" data-room="${roomType}" data-account="${escapeHtml(account)}">依頼文を見る</button>
+          </div>`;
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box orch-modal-box">
+          <div class="modal-header">
+            <h2>オーケストレーション構成の説明</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="orch-diagram">
+              <div class="orch-node">👤 ユーザー</div>
+              <div class="orch-arrow-down">↓ 相談・依頼</div>
+              <div class="orch-accounts">
+                <div class="orch-account">
+                  <div class="orch-account-label">メインアカウント</div>
+                  ${roomHtml("メインアカウント", "manager", "🧭", "マネージャールーム", "相談を受け、タスクを整理して作業ルームに振り分ける")}
+                  <div class="orch-arrow-down">↓ 実装を依頼</div>
+                  ${roomHtml("メインアカウント", "worker", "🛠", "作業ルーム", "タスクを実装し、完了したらstatus.jsonに記録")}
+                </div>
+                <div class="orch-cross-arrow">⇄<br>負荷分散・<br>振り分け</div>
+                <div class="orch-account">
+                  <div class="orch-account-label">サブアカウント</div>
+                  ${roomHtml("サブアカウント", "manager", "🧭", "マネージャールーム", "メインから回ってきたタスクをさらに作業ルームに振り分ける")}
+                  <div class="orch-arrow-down">↓ 実装を依頼</div>
+                  ${roomHtml("サブアカウント", "worker", "🛠", "作業ルーム", "タスクを実装し、完了したらstatus.jsonに記録")}
+                </div>
+              </div>
+              <div class="orch-output">
+                <label for="orch-textarea">依頼文テンプレート</label>
+                <textarea id="orch-textarea" readonly placeholder="上のルームのボタンを押すと、その部屋への依頼文テンプレートがここに表示されます。"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-copy-btn" id="orch-copy-btn" disabled>コピー</button>
+          </div>
+        </div>
+      </div>`;
+
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
+    });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+
+    const textarea = document.getElementById("orch-textarea");
+    const copyBtn = document.getElementById("orch-copy-btn");
+    root.querySelectorAll(".orch-room-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const text = btn.dataset.room === "manager" ? buildOrchManagerRoomPromptText() : buildOrchWorkerRoomPromptText();
+        textarea.value = `【宛先: ${btn.dataset.account} / ${btn.dataset.room === "manager" ? "マネージャールーム" : "作業ルーム"}】\n\n${text}`;
+        copyBtn.disabled = false;
+      });
+    });
+
+    copyBtn.addEventListener("click", async (e) => {
+      const btn = e.currentTarget;
+      if (!textarea.value) return;
+      textarea.select();
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(textarea.value);
+        copied = true;
+      } catch (err) {
+        try { copied = document.execCommand("copy"); } catch (err2) { copied = false; }
+      }
+      btn.textContent = copied ? "コピーしました ✓" : "コピー不可(手動で選択してください)";
+      btn.classList.toggle("copied", copied);
+      setTimeout(() => { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
+    });
+  }
+  document.getElementById("orchestration-diagram-btn").addEventListener("click", showOrchestrationDiagramModal);
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
