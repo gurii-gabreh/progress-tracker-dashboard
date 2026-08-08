@@ -476,9 +476,12 @@ function appendTaskRow(sheet, values) {
 // 書き起こしたタスク名とで、全角/半角の数字や「〜」(波ダッシュ)と「~」(半角チルダ)などの
 // 表記ゆれが生じることがある。これをrepo+task完全一致で突き合わせると照合に失敗し、
 // 完了後も依頼タスクタブの行が消えずに残る不具合になるため、比較前に正規化する。
+// 2026-08-08: 「(例: 1時間おき)」のような注釈がRoutine側の書き起こしで「(1時間おき)」に
+// 削られ、依頼タスクタブの元行が完了後も消えずに残る事例(PTD-011)を検知したため、
+// 「例:」「例:」の注釈句も比較前に除去する。
 function normalizeKey(s) {
   if (s === null || s === undefined) return "";
-  return String(s).normalize("NFKC").replace(/[〜～]/g, "~").trim();
+  return String(s).normalize("NFKC").replace(/[〜～]/g, "~").replace(/例\s*[:：]\s*/g, "").trim();
 }
 
 function findRow(sheet, repo, task) {
