@@ -956,6 +956,66 @@
       ]
     },
     {
+      "repo": "kizashi",
+      "id": "KIZ-023",
+      "task": "募集要項5「提供ツール」に記載のCloudflare Paidプラン相当のサービス公開環境を利用申請する",
+      "title": "Cloudflare Paidプラン相当の利用申請",
+      "priority": "高",
+      "status": "未着手",
+      "updated": "2026-08-08",
+      "category": "manual",
+      "note": "2026-08-08、公式募集要項で判明。利用申請後、順次付与とのこと。これが使えればKIZ-015の「本番未デプロイ」が解消し、エントリー項目③のデモURL欄も埋められる。",
+      "detail": "申請方法は募集要項本文には詳細が無いため、Slack「#03_事務局への質問」または案内メール・Slack上の別アナウンスで申請導線を確認する必要がある。",
+      "output": "",
+      "steps": [
+        "Slack「#03_事務局への質問」または過去のアナウンスで、Cloudflare Paidプラン相当の利用申請方法を確認する",
+        "申請し、付与され次第 wrangler deploy で結(ゆい)を本番デプロイする",
+        "デプロイ後のURLを kizashi-app/submission/entry-form-draft.md のデモURL欄とdata/tasks.jsonのKIZ-015へ反映する"
+      ]
+    },
+    {
+      "repo": "kizashi",
+      "id": "KIZ-024",
+      "task": "エントリー項目①〜⑥(各300字程度)の下書きを作成する",
+      "title": "エントリー項目下書き作成",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-08-08",
+      "note": "マネージャールームで作成。企画整理.md・README・presentation.pptxの内容を元に、募集要項9の6項目(チーム情報/サービス概要/技術詳細/実行力/オープンデータ利用状況/プレゼン資料)を下書き済み。",
+      "completedItems": [
+        {
+          "item": "①〜⑥の下書きをkizashi-app/submission/entry-form-draft.mdとして作成、kizashiリポジトリへコミット",
+          "date": "2026-08-08"
+        }
+      ],
+      "detail": "③技術詳細には募集要項が明示的に求める「生成AI等の活用方法」欄も含め、Claude Codeを実装パートナーとして活用した経緯を記載。デモURLはKIZ-023の本番デプロイ待ちでプレースホルダーのまま。⑤オープンデータ利用状況はdata-usage-evidence.md(KIZ-020)の内容と整合させた6件を記載。",
+      "output": "kizashi-app/submission/entry-form-draft.md",
+      "checkHistory": [
+        {
+          "date": "2026-08-08",
+          "summary": "募集要項の提出物要件(エントリー項目①〜⑥)に沿って下書きを作成。"
+        }
+      ]
+    },
+    {
+      "repo": "kizashi",
+      "id": "KIZ-025",
+      "task": "提出用スクリーンショットを、募集要項の上限(最大3点)に合わせて4枚から3枚へ絞り込む",
+      "title": "スクリーンショットを3枚に絞り込み",
+      "priority": "高",
+      "status": "未着手",
+      "updated": "2026-08-08",
+      "category": "manual",
+      "note": "2026-08-08、募集要項確認で発覚(画面キャプチャは最大3点までだが現在4枚: map/floorplan/precursor/chat_optional)。本人が実際にアプリを動かして見た上でどれを残すか判断する方針。",
+      "detail": "",
+      "output": "",
+      "steps": [
+        "kizashi-app/srcをローカルで動かす(または既存のスクリーンショット4枚)を見て、残す3枚を選ぶ",
+        "選んだ3枚をkizashi-app/submission/に残し、外す1枚を削除するかどうかをこのタスクのコメント欄で指示する",
+        "entry-form-draft.mdの⑥プレゼン資料欄を確定版に更新する"
+      ]
+    },
+    {
       "repo": "supermarket-price-tracker",
       "id": "SPT-001",
       "task": "きちんと処理が動いているか、スプレッドシート内容と履歴を確認して",
