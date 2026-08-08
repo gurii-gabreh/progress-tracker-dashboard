@@ -983,13 +983,31 @@
       "task": "東京都建設局河川部の土砂災害危険度データ(CC BY、2026-07-16更新)を、結の地図表示に組み込む(差し替えまたは補強)かどうかを検討・実施する",
       "title": "都独自データへの差し替え検討",
       "priority": "中",
-      "status": "未着手",
+      "status": "完了",
       "updated": "2026-08-08",
-      "note": "KIZ-022で発見。KIZ-006の国土数値情報A33データより新しい可能性があるが、実際の差し替えは技術検証(GeoJSON変換・23区絞り込み等)をもう一度行う工数がかかる。8/23提出締切までの時間を踏まえ、やるかどうかは要判断。",
-      "detail": "",
-      "output": "",
-      "content": [
-        "https://www.kensetsu.metro.tokyo.lg.jp/river/dosha_saigai からデータをダウンロードし、KIZ-006と同様の変換(23区絞り込み・簡略化)を行った上でprototype/data・src/public/dataの警戒区域データを差し替えるか、または既存データを維持しつつ出典として追記するだけに留めるかを決める"
+      "note": "本人が「土砂災害警戒区域等(土石流/急傾斜地の崩壊/地滑り)」3ファイル(Shp、EPSG:4326)をダウンロードしてこのルームへアップロード。差し替えを実施した。",
+      "completedItems": [
+        {
+          "item": "Shapefile(pyshp)でデータを読み込み、属性(GENSHONAME/KUBUN/SHOZAICHI/KOKUJIDATE等、人間可読で前回のコード推測問題が解消)を確認。座標系がWGS84のため再投影は不要だった",
+          "date": "2026-08-08"
+        },
+        {
+          "item": "23区へ絞り込み(1811件、旧データの1818件とほぼ同数・同じ急傾斜地の崩壊のみという構成も一致し変換の正しさを裏付け)、shapelyで簡略化(Douglas-Peucker、tolerance 0.00005)しファイルサイズを旧データ相当の約880KBに収めた",
+          "date": "2026-08-08"
+        },
+        {
+          "item": "prototype/data・src/public/dataの両方のGeoJSONを差し替え、UI上の出典表記(出典：東京都建設局河川部、CC BYライセンス、改変明示、区域図の誤差に関する注記)をprototype・src両方とREADMEに反映",
+          "date": "2026-08-08"
+        }
+      ],
+      "detail": "東京都建設局河川部「東京都土砂災害危険度情報関連データ」(CC BY 4.0、2026-07-16更新)へ地図の核心データを差し替えた。国土数値情報A33データ(KIZ-006)より属性が明瞭(現象名・区分が人間可読)で更新も新しい。ライセンス上必須の出典表記・改変明示・区域図誤差の注記もUIに追加済み。",
+      "issues": "この環境(GSI地図タイルCDN・Leaflet CDNとも到達不可)ではブラウザでの実描画確認ができず、GeoJSONの構造検証(全1811件の topological validity・座標範囲・スキーマ一致)のみで確認した。実際のタイル描画確認はKIZ-017(実機での撮り直し)に引き継ぐ。",
+      "output": "kizashi-app/prototype/data/tokyo_23wards_sabo_zones.geojson, kizashi-app/src/public/data/tokyo_23wards_sabo_zones.geojson",
+      "checkHistory": [
+        {
+          "date": "2026-08-08",
+          "summary": "本人アップロードのShapefile3件をGeoJSONへ変換・23区絞り込み・簡略化し、prototype/src両方のデータ・出典表記を東京都建設局河川部データへ差し替え。構造検証は完了、実ブラウザでの描画確認はKIZ-017へ引き継ぎ。"
+        }
       ]
     },
     {
