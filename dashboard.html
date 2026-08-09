@@ -508,6 +508,7 @@
           <button class="settings-btn" id="sync-now-btn" title="Web(tasks.json)側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ Web→スプレッドシート反映</button>
           <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
           <button class="settings-btn" id="manager-room-prompt-btn" title="全リポジトリ横断で相談・優先度判断・実行振り分けを行うマネージャールームを開くときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🗨 マネージャールーム依頼文</button>
+          <button class="settings-btn" id="new-consultation-prompt-btn" title="新規リポジトリ・新しい調査/相談事項など、既存タスクに紐付かない話を始めるときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🆕 新規相談 依頼文</button>
           <button class="settings-btn" id="extra-settings-toggle-btn" aria-expanded="false" title="普段は使わない操作(Claude→Web反映・Routine設定)をまとめています">⚙ 設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -534,6 +535,7 @@
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
         <div class="help-item"><span class="help-term">🗨 マネージャールーム依頼文</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
+        <div class="help-item"><span class="help-term">🆕 新規相談依頼文</span><span class="help-desc">新規リポジトリの立ち上げ・新しい調査/相談事項など、既存タスクに紐付かない話を始めるときの依頼文テンプレートを表示します。聞き取り形式で内容を詰め、自動化タスク化(依頼タスクタブへ起票)やナレッジ蓄積(Knowledge-Dashboardのrequirements.json)が必要なものだけ記録し、軽微な相談はその場で回答して終わります。</span></div>
         <div class="help-item"><span class="help-term">⚙ 設定</span><span class="help-desc">普段は使わない操作(Claude→Web反映・Routine設定)をまとめてあります。新規タスクの依頼はスプレッドシートへの直接記載ではなく、相談ルーム/マネージャールームから行ってください。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
@@ -2030,6 +2032,48 @@
     showHandoffModal(buildManagerRoomPromptText(), "マネージャールーム 依頼文テンプレート", true);
   }
   document.getElementById("manager-room-prompt-btn").addEventListener("click", showManagerRoomPromptModal);
+
+  // 新規相談ルーム(既存タスクに紐付かない、新しい話を始めるための入口)を開くときに
+  // 最初に貼る依頼文のテンプレート(2026-08-08追加、運用ルール31参照)。
+  // 目的は2つだけ: (1)自立型アプリ(自動実装Routine)へ繋いでタスク自動化すること、
+  // (2)後で参照できるようナレッジ(requirements.json)として蓄積すること。
+  // この2つに繋がらない軽微な相談は、記録せずその場で回答して終わってよい。
+  function buildNewConsultationPromptText() {
+    return [
+      "新規相談ルームとして動いてほしい。既存タスクに紐付かない、新しい依頼・調査・相談を",
+      "ここに書く。",
+      "",
+      "【依頼内容】",
+      "(ここに書き換えて、話したいことを書く)",
+      "",
+      "【このルームにやってほしいこと】",
+      "1. まず gurii-gabreh/progress-tracker-dashboard の data/tasks.json と、",
+      "   (存在すれば) gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json・",
+      "   data/requirements.json を読み、関連する過去の実績・判断が無いか確認する",
+      "2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、埋まっていない点だけを",
+      "   順に質問していく。過去の実績で埋まる点は聞き直さない",
+      "3. 聞き取りの中で、この相談が次のどれに当たるかを判断する(ユーザーに確認しても良い):",
+      "   a. 新規リポジトリが必要な話 → 要件定義シートとしてまとめる対象",
+      "   b. 既存リポジトリのタスクで済む話 → 通常のタスクとして起票すれば足りる",
+      "   c. 調査・確認だけで完結する話 → 調べて回答すれば終わり",
+      "   d. その場で回答すれば終わる軽微な相談 → 記録は不要、答えて終わる",
+      "",
+      "【出力の出し分け】",
+      "- a(新規リポジトリ)の場合: 聞き取りが十分固まったら要件定義シートの下書きを提示し、",
+      "  ユーザーの確定を得てから、gurii-gabreh/Knowledge-Dashboard の data/requirements.json へ",
+      "  1件追加してcommit・push。あわせて対応するタスクを依頼タスクタブ/data/tasks.jsonへ",
+      "  起票し、自動実装Routineが拾える状態にする",
+      "- b(既存リポジトリのタスク)の場合: 依頼タスクタブ/data/tasks.jsonへ通常通り起票するだけでよい",
+      "  (要件定義シートは不要)",
+      "- c・dの場合: 記録は不要。その場で調べて回答・相談に乗って終わってよい",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+  function showNewConsultationPromptModal() {
+    showHandoffModal(buildNewConsultationPromptText(), "新規相談ルーム 依頼文テンプレート", true);
+  }
+  document.getElementById("new-consultation-prompt-btn").addEventListener("click", showNewConsultationPromptModal);
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
