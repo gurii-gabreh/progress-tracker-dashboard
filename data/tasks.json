@@ -1017,22 +1017,23 @@
       "task": "募集要項5「提供ツール」に記載のCloudflare Paidプラン相当のサービス公開環境を利用申請する",
       "title": "Cloudflare Paidプラン相当の利用申請",
       "priority": "高",
-      "status": "対応中",
+      "status": "完了",
       "updated": "2026-08-08",
       "category": "manual",
-      "note": "2026-08-08、公式募集要項で判明。利用申請後、順次付与とのこと。これが使えればKIZ-015の「本番未デプロイ」が解消し、エントリー項目③のデモURL欄も埋められる。\n[2026-08-08] 本人より申請済みの報告あり。付与待ちのステータス。",
-      "detail": "申請方法は募集要項本文には詳細が無いため、Slack「#03_事務局への質問」または案内メール・Slack上の別アナウンスで申請導線を確認する必要がある。",
+      "note": "2026-08-08、公式募集要項で判明。利用申請後、順次付与とのこと。これが使えればKIZ-015の「本番未デプロイ」が解消し、エントリー項目③のデモURL欄も埋められる。\n[2026-08-08] 本人より申請・付与完了の報告あり。",
+      "completedItems": [
+        {
+          "item": "Cloudflare Paidプラン相当の利用申請を行い、付与された",
+          "date": "2026-08-08"
+        }
+      ],
+      "detail": "申請・付与完了。次は実際にkizashi-app/srcを本番デプロイし、URLをエントリー項目③・KIZ-015へ反映するステップ(KIZ-027として追加)。",
       "output": "",
       "checkHistory": [
         {
           "date": "2026-08-08",
-          "summary": "Cloudflare Paidプラン相当の利用申請を送信済み。事務局からの付与を待っている状態。付与され次第、本番デプロイ(wrangler deploy)へ進む。"
+          "summary": "Cloudflare Paidプラン相当の利用申請を送信し、事務局から付与を受けた。次は本番デプロイ(wrangler deploy)。"
         }
-      ],
-      "steps": [
-        "Slack「#03_事務局への質問」または過去のアナウンスで、Cloudflare Paidプラン相当の利用申請方法を確認する",
-        "申請し、付与され次第 wrangler deploy で結(ゆい)を本番デプロイする",
-        "デプロイ後のURLを kizashi-app/submission/entry-form-draft.md のデモURL欄とdata/tasks.jsonのKIZ-015へ反映する"
       ]
     },
     {
@@ -1057,6 +1058,27 @@
           "date": "2026-08-08",
           "summary": "募集要項の提出物要件(エントリー項目①〜⑥)に沿って下書きを作成。"
         }
+      ]
+    },
+    {
+      "repo": "kizashi",
+      "id": "KIZ-027",
+      "task": "付与されたCloudflare Paidプラン相当の環境へ、kizashi-app/srcを本番デプロイする(wrangler deploy)",
+      "title": "本番デプロイ",
+      "priority": "高",
+      "status": "未着手",
+      "updated": "2026-08-08",
+      "category": "manual",
+      "note": "KIZ-023でCloudflare Paidプラン相当が付与済み。デプロイ自体はwrangler loginなどユーザー自身のCloudflare認証情報が必要なため、このルームでは実行できない。",
+      "detail": "",
+      "output": "",
+      "steps": [
+        "kizashi-app/srcで wrangler login (付与されたアカウントで認証)",
+        "wrangler d1 create等、必要なら本番D1データベースを作成しwrangler.tomlを更新する",
+        "npm run migrate(本番向け)でスキーマを適用する",
+        "wrangler secret put INTAKE_ENC_KEY 等、必要なシークレットを設定する",
+        "wrangler deploy で本番デプロイする",
+        "発行されたURLを kizashi-app/submission/entry-form-draft.md のデモURL欄と、data/tasks.jsonのKIZ-015・KIZ-023へ反映する"
       ]
     },
     {
