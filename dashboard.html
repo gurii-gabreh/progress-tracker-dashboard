@@ -99,6 +99,22 @@
     border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer;
   }
   .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .dropdown-wrap { position: relative; display: inline-block; }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 200px;
+    display: flex; flex-direction: column; gap: 2px; padding: 6px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .dropdown-menu[hidden] { display: none; }
+  .dropdown-item {
+    display: block; width: 100%; text-align: left; font-size: 12.5px; font-weight: 600;
+    padding: 7px 10px; border-radius: 7px; border: none; background: none; color: var(--text);
+    cursor: pointer; white-space: nowrap;
+  }
+  .dropdown-item:hover { background: var(--surface-2); color: var(--accent); }
+
   header h1 { margin: 0; font-size: 22px; font-weight: 700; text-wrap: balance; }
   header .meta { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
   header .meta a { color: var(--accent); text-decoration: none; }
@@ -545,10 +561,15 @@
         <div class="eyebrow">Progress Tracker</div>
         <div class="header-actions">
           <button class="settings-btn" id="sync-now-btn" title="Web(tasks.json)側の最新の完了・追加指示を、GAS経由で今すぐスプレッドシートへ反映します">⏩ Web→スプレッドシート反映</button>
-          <button class="settings-btn" id="task-room-prompt-btn" title="タスクごとの相談ルームを開くときに最初に貼る依頼文のテンプレートを表示します。タスクIDの部分だけ書き換えれば使い回せます">🗨 相談ルーム依頼文</button>
-          <button class="settings-btn" id="manager-room-prompt-btn" title="全リポジトリ横断で相談・優先度判断・実行振り分けを行うマネージャールームを開くときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🗨 マネージャールーム依頼文</button>
-          <button class="settings-btn" id="orchestration-diagram-btn" title="複数のClaudeアカウントで、マネージャールームが相談を受けつつ作業ルームに実装を振り分ける構成を図解します。図中のボタンから各ルーム宛の依頼文もコピーできます">🗺 オーケストレーション構成</button>
-          <button class="settings-btn" id="new-consultation-prompt-btn" title="新規リポジトリ・新しい調査/相談事項など、既存タスクに紐付かない話を始めるときに、新規チャットの最初に貼る依頼文のテンプレートを表示します">🆕 新規相談 依頼文</button>
+          <div class="dropdown-wrap" id="prompt-dropdown-wrap">
+            <button class="settings-btn" id="prompt-dropdown-btn" aria-expanded="false" aria-haspopup="true" title="ルームを開くときに貼る依頼文テンプレートをまとめて選べます">📋 依頼文作成 ▾</button>
+            <div class="dropdown-menu" id="prompt-dropdown-menu" role="menu" hidden>
+              <button class="dropdown-item" id="task-room-prompt-btn" role="menuitem">🗨 タスク相談ルーム</button>
+              <button class="dropdown-item" id="manager-room-prompt-btn" role="menuitem">🗨 マネージャールーム</button>
+              <button class="dropdown-item" id="new-consultation-prompt-btn" role="menuitem">🆕 新規相談</button>
+              <button class="dropdown-item" id="orchestration-diagram-btn" role="menuitem">🗺 オーケストレーション構成</button>
+            </div>
+          </div>
           <button class="settings-btn" id="extra-settings-toggle-btn" aria-expanded="false" title="普段は使わない操作(Claude→Web反映・Routine設定)をまとめています">⚙ 設定</button>
           <button class="settings-btn" id="help-toggle-btn" aria-expanded="false" title="各ボタンの説明を表示・非表示します">❓ 使い方</button>
         </div>
@@ -573,10 +594,11 @@
       </div>
       <div class="help-panel" id="help-panel">
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
-        <div class="help-item"><span class="help-term">🗨 相談ルーム依頼文</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
-        <div class="help-item"><span class="help-term">🗨 マネージャールーム依頼文</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
-        <div class="help-item"><span class="help-term">🗺 オーケストレーション構成</span><span class="help-desc">複数のClaudeアカウント(メインアカウント/サブアカウント)を使い、マネージャールームがユーザーの相談を受けつつ実装作業を作業ルームに振り分ける構成を図解します。図中の各ルームのボタンを押すと、そのルーム宛の依頼文テンプレートが下のテキストエリアに表示され、コピーできます。</span></div>
-        <div class="help-item"><span class="help-term">🆕 新規相談依頼文</span><span class="help-desc">新規リポジトリの立ち上げ・新しい調査/相談事項など、既存タスクに紐付かない話を始めるときの依頼文テンプレートを表示します。聞き取り形式で内容を詰め、自動化タスク化(依頼タスクタブへ起票)やナレッジ蓄積(Knowledge-Dashboardのrequirements.json)が必要なものだけ記録し、軽微な相談はその場で回答して終わります。</span></div>
+        <div class="help-item"><span class="help-term">📋 依頼文作成</span><span class="help-desc">ルームを開くときに貼る依頼文テンプレートをまとめたドロップダウンです(2026-08-08、ボタン数が増えたため集約)。4つから選べます:</span></div>
+        <div class="help-item"><span class="help-term">┗ 🗨 タスク相談ルーム</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
+        <div class="help-item"><span class="help-term">┗ 🗨 マネージャールーム</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
+        <div class="help-item"><span class="help-term">┗ 🆕 新規相談</span><span class="help-desc">新規リポジトリの立ち上げ・新しい調査/相談事項など、既存タスクに紐付かない話を始めるときの依頼文テンプレートを表示します。聞き取り形式で内容を詰め、自動化タスク化(依頼タスクタブへ起票)やナレッジ蓄積(Knowledge-Dashboardのrequirements.json)が必要なものだけ記録し、軽微な相談はその場で回答して終わります。</span></div>
+        <div class="help-item"><span class="help-term">┗ 🗺 オーケストレーション構成</span><span class="help-desc">複数のClaudeアカウント(メインアカウント/サブアカウント)を使い、マネージャールームがユーザーの相談を受けつつ実装作業を作業ルームに振り分ける構成を図解します。図中の各ルームのボタンを押すと、そのルーム宛の依頼文テンプレートが下のテキストエリアに表示され、コピーできます。</span></div>
         <div class="help-item"><span class="help-term">⚙ 設定</span><span class="help-desc">普段は使わない操作(Claude→Web反映・Routine設定)をまとめてあります。新規タスクの依頼はスプレッドシートへの直接記載ではなく、相談ルーム/マネージャールームから行ってください。</span></div>
         <div class="help-item"><span class="help-term">▶ シェブロン</span><span class="help-desc">クリックすると子タスクの一覧を開閉します(初期状態は閉じています)。</span></div>
         <div class="help-item"><span class="help-term">＋ 新規タスク</span><span class="help-desc">リポジトリ名の横のものはそのリポジトリに新しいタスクを、タスク行のものはそのタスクの下に子タスクを追加します。</span></div>
@@ -2250,6 +2272,31 @@
     showHandoffModal(buildNewConsultationPromptText(), "新規相談ルーム 依頼文テンプレート", true);
   }
   document.getElementById("new-consultation-prompt-btn").addEventListener("click", showNewConsultationPromptModal);
+
+  // 依頼文作成ボタンのドロップダウン(2026-08-08、ヘッダーのボタン数が増えすぎたため1つに集約)。
+  // メニュー内の各項目(タスク相談ルーム/マネージャールーム/新規相談/オーケストレーション構成)は
+  // IDをそのまま維持しているので、既存のクリックハンドラは変更不要。ここでは開閉のみ扱う。
+  (function setupPromptDropdown() {
+    const wrap = document.getElementById("prompt-dropdown-wrap");
+    const btn = document.getElementById("prompt-dropdown-btn");
+    const menu = document.getElementById("prompt-dropdown-menu");
+    const closeMenu = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = menu.hidden;
+      menu.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    menu.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", () => closeMenu());
+    });
+    document.addEventListener("click", (e) => {
+      if (!wrap.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+  })();
 
   document.getElementById("open-settings-btn").addEventListener("click", showRoutineSettingsModal);
   document.getElementById("sync-now-btn").addEventListener("click", syncNow);
