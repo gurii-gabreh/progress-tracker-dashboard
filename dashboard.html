@@ -2067,6 +2067,13 @@
       "",
       "毎週月曜の「週次残タスクチェックRoutine」は棚卸し・報告専門で実行権限が無いので、",
       "このルームの役割(判断・振り分け・実行)とは重複しない。",
+      "",
+      "【本人の傾向を踏まえたアドバイス】",
+      "gurii-gabreh/progress-tracker-dashboard の data/requirements.json の",
+      "userProfile.patterns(confirmedByUser:trueのもの)を確認し、該当しそうな場面では",
+      "「これまでの傾向からすると、こういう間違い・進み方になりやすいです」と要所で",
+      "先回りしてアドバイスする。新しい傾向に気づいたら、本人に確認し「確かにそうだ」と",
+      "認められたものだけ userProfile.patterns へ追記する(AI側だけで決めつけて追加しない)。",
     ].join("\n");
   }
   function showManagerRoomPromptModal() {
@@ -2213,8 +2220,14 @@
       "1. まず gurii-gabreh/progress-tracker-dashboard の data/tasks.json と、",
       "   (存在すれば) gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json・",
       "   data/requirements.json を読み、関連する過去の実績・判断が無いか確認する",
+      "   (data/requirements.json の userProfile.patterns も必ず確認する)",
       "2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、埋まっていない点だけを",
       "   順に質問していく。過去の実績で埋まる点は聞き直さない",
+      "2.5. userProfile.patterns に該当しそうな傾向(confirmedByUser:trueのもののみ)が",
+      "   見えたら、要所で「これまでの傾向からすると、こういう間違い・進み方になりやすいです」と",
+      "   先回りして一言アドバイスする。指摘は事実(過去の実例)に基づき、押し付けがましくならない",
+      "   ように。ユーザーが「確かにそうだ」と認めた新しい傾向があれば、本人の了承を得たうえで",
+      "   userProfile.patterns へ追記してよい(AI側が一方的に決めつけて追加しない)",
       "3. 聞き取りの中で、この相談が次のどれに当たるかを判断する(ユーザーに確認しても良い):",
       "   a. 新規リポジトリが必要な話 → 要件定義シートとしてまとめる対象",
       "   b. 既存リポジトリのタスクで済む話 → 通常のタスクとして起票すれば足りる",
