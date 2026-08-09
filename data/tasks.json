@@ -1638,65 +1638,129 @@
       "task": "ナレッジ管理ダッシュボード",
       "priority": "中",
       "status": "対応中",
-      "updated": "2026-08-02",
+      "updated": "2026-08-08",
       "category": "manual",
-      "nextAction": "専用ルームでの実装状況(GitHub Actionsワークフロー・knowledge-index.json生成)を確認し、進んでいなければ追加指示を送る(下の子タスク参照)",
-      "note": "【作業タスク】リポジトリ(gurii-gabreh/Knowledge-Dashboard)は作成済み。専用の別ルームで構築を開始中。共有Routineの実装対象ではない。",
+      "nextAction": "当初目的だった実装知見の集約(KND-005)と、自動更新の仕組み(KND-006)に着手する(下の子タスク参照)",
+      "note": "【作業タスク】リポジトリ(gurii-gabreh/Knowledge-Dashboard)は作成済み。専用の別ルームで構築中。共有Routineの実装対象ではない。\n[2026-08-08] マネージャールームで実リポジトリを確認したところ、当初計画(tasks.json由来の実装知見の集約)とは別に、本人の判断で「Google Drive上の全ナレッジ系スプレッドシートを一覧化し、AI・管理者どちらにも使いやすくする」方向へ意図的に広げていたことが判明・確認済み。実際にGoogle Drive上の全スプレッドシート(44件)を検索・一覧化するdashboard.html+data/spreadsheets.jsonが完成していた(2026-08-01時点)が、これはトラッカー未反映のままだった。当初の「実装知見の集約」自体は、この一覧化作業を優先したため未着手のまま。",
       "output": "",
       "checkHistory": [
         {
           "date": "2026-08-02",
           "summary": "リポジトリを作成し、アーキテクチャ案(tasks.jsonのプル型集約・knowledge-index.json生成・index.html公開)を依頼文としてまとめ、専用ルームへ渡した。実際の構築はまだ。"
+        },
+        {
+          "date": "2026-08-08",
+          "summary": "マネージャールームで実リポジトリを確認。専属ルームが「全スプレッドシートの一覧化」へ意図的に方針を広げ、2026-08-01時点でその部分は完成させていたと判明(本人確認済み)。トラッカーを実態に合わせて更新。当初目的の実装知見集約(KND-005)は仕切り直しの新規タスクとして残す。"
         }
       ],
       "subtasks": [
         {
           "id": "KND-002",
-          "task": "progress-tracker-dashboardの実装知見(detail/issues/manualSetup等)を横断的に集約する",
+          "task": "Google Drive上の全スプレッドシート(ナレッジ系を含む)を検索し、一覧ダッシュボードを構築する",
+          "title": "スプレッドシート一覧ダッシュボード構築",
           "priority": "中",
-          "status": "対応中",
-          "updated": "2026-08-02",
-          "category": "manual",
-          "note": "",
-          "detail": "アーキテクチャ案: progress-tracker-dashboardのdata/tasks.jsonを正本としプル型で取得(書き込み不要のためGAS新設は不要)。GitHub Actionsで定期的に取得・再帰的に平坦化してdata/knowledge-index.jsonを生成・コミットする。専用ルームでの実際の構築(GitHub Actionsワークフロー)はまだ行われていない(依頼文の受け渡しのみ完了)。",
-          "output": "",
-          "steps": [
-            "この作業は専用のClaude調査ルーム(別セッション)に依頼済みで、実際の構築(GitHub Actionsワークフローの作成)はそちらが進める",
-            "gurii-gabreh/Knowledge-Dashboardリポジトリを開き、data/knowledge-index.jsonが生成されているか、GitHub Actionsのワークフローが実行された形跡があるかを確認する",
-            "まだ進んでいない場合は、その専用ルームのセッションを開いて進捗を確認するか、追加の指示を送る"
+          "status": "完了",
+          "updated": "2026-08-01",
+          "note": "2026-08-08、マネージャールームで実物確認。当初の「tasks.json由来の実装知見集約」から、本人判断で「全スプレッドシートの一覧化」へ意図的にスコープを広げたもの。",
+          "completedItems": [
+            {
+              "item": "Google Driveを`mimeType=application/vnd.google-apps.spreadsheet`で検索し、44件のスプレッドシート(id/タイトル/カテゴリ/URL/所有者/更新日時/フォルダパス)をdata/spreadsheets.jsonとして生成",
+              "date": "2026-08-01"
+            },
+            {
+              "item": "検索・カテゴリ絞り込み・並び替え・フォルダ単位の折りたたみに対応した955行のdashboard.html(単一の静的ページ、外部依存なし、データ埋め込み済み)を構築",
+              "date": "2026-08-01"
+            }
+          ],
+          "detail": "gurii-gabreh/Knowledge-Dashboardリポジトリのdashboard.html・data/spreadsheets.jsonとして実装済み。ブラウザで直接開ける単一静的ページ。ただしGitHub Pages等への公開設定・自動更新の仕組みは未確認(KND-006参照)。",
+          "issues": "一覧の自動更新の仕組みが無く、Drive上のスプレッドシートが増減しても都度Claudeに依頼して作り直す必要がある(README記載の既知の制約)。",
+          "output": "https://github.com/gurii-gabreh/Knowledge-Dashboard (dashboard.html, data/spreadsheets.json)",
+          "checkHistory": [
+            {
+              "date": "2026-08-01",
+              "summary": "専属ルームが全スプレッドシートの一覧ダッシュボードを構築(44件)。"
+            },
+            {
+              "date": "2026-08-08",
+              "summary": "マネージャールームが実物を確認し、完了として反映。"
+            }
           ]
         },
         {
           "id": "KND-003",
           "task": "人が検索・閲覧できるダッシュボードと、他のClaude Codeセッションが参照できるJSONの両方を提供する",
           "priority": "中",
-          "status": "未着手",
-          "updated": "-",
-          "category": "manual",
-          "note": "",
-          "detail": "・index.html(GitHub Pages)で検索・閲覧できるようにする\n・他のClaude Codeセッションからは https://raw.githubusercontent.com/gurii-gabreh/Knowledge-Dashboard/main/data/knowledge-index.json を直接取得して過去の実装知見を参照できる設計",
+          "status": "完了",
+          "updated": "2026-08-01",
+          "note": "2026-08-08、マネージャールームで確認。スプレッドシート一覧(KND-002)の範囲では両方満たされている。",
+          "completedItems": [
+            {
+              "item": "dashboard.html(人が検索・閲覧できるビュー)とdata/spreadsheets.json(他セッションが取得できるJSON)の両方が揃っていることを確認",
+              "date": "2026-08-01"
+            }
+          ],
+          "detail": "スプレッドシート一覧の範囲ではこの要件は満たされている。ただし当初想定していた「実装知見(knowledge-index.json)」の閲覧・取得は、KND-005が完了してから改めて同じパターンで対応する想定。",
           "output": "",
-          "steps": [
-            "上のタスク(knowledge-index.jsonの集約)が完了してから着手する",
-            "専用のClaude調査ルームでindex.html(GitHub Pages用)の構築が進んでいるか確認する",
-            "構築後、GitHub PagesのURLを開いて検索・閲覧ができるか確認する",
-            "https://raw.githubusercontent.com/gurii-gabreh/Knowledge-Dashboard/main/data/knowledge-index.json に実際にアクセスし、JSONが取得できるか確認する"
+          "checkHistory": [
+            {
+              "date": "2026-08-08",
+              "summary": "スプレッドシート一覧の範囲で人/AI両方の閲覧手段が揃っていることを確認し完了とした。"
+            }
           ]
         },
         {
           "id": "KND-004",
           "task": "各知見から関連するGoogleスプレッドシートへ直接アクセスできるようにする",
           "priority": "中",
+          "status": "完了",
+          "updated": "2026-08-01",
+          "note": "2026-08-08、マネージャールームで確認。当初想定(知見ごとの個別リンク抽出)より広い形だが、目的(スプレッドシートへの直接アクセス)は結果的に満たされている。",
+          "completedItems": [
+            {
+              "item": "スプレッドシート一覧ダッシュボードにより、44件全てのスプレッドシートへ1クリックでアクセスできる状態になった(個々の知見に紐付ける形ではなく、全件を横断的に一覧化する形での達成)",
+              "date": "2026-08-01"
+            }
+          ],
+          "detail": "当初は「知見の項目ごとにリンクを抽出する」設計だったが、実際には「全スプレッドシートを一覧化してどこからでもアクセスできるようにする」形で、より広く目的を達成した。",
+          "output": "",
+          "checkHistory": [
+            {
+              "date": "2026-08-08",
+              "summary": "スプレッドシート一覧ダッシュボードが目的を広い形で満たしていることを確認し完了とした。"
+            }
+          ]
+        },
+        {
+          "id": "KND-005",
+          "task": "progress-tracker-dashboardのdata/tasks.json(detail/issues/manualSetup等)・data/requirements.jsonを横断的に集約したknowledge-index.jsonを生成する",
+          "title": "実装知見・要件知見の集約(当初目的、仕切り直し)",
+          "priority": "中",
           "status": "未着手",
-          "updated": "-",
+          "updated": "2026-08-08",
           "category": "manual",
-          "note": "",
-          "detail": "・スプレッドシートリンクの抽出ルール(完全URL採用/「SPREADSHEET_ID: <ID>」記載からのURL再構成)を依頼文に含めて渡した",
+          "note": "2026-08-08追加。当初のKND-002がこれだったが、専属ルームがスプレッドシート一覧化(現KND-002)を優先したため未着手のまま残っていたものを、仕切り直しとして新規タスク化した。",
+          "detail": "アーキテクチャ案: progress-tracker-dashboardのdata/tasks.json・data/requirements.jsonを正本としプル型で取得(書き込み不要のためGAS新設は不要)。GitHub Actionsで定期的に取得・再帰的に平坦化してdata/knowledge-index.jsonを生成・コミットする。KND-002のスプレッドシート一覧ダッシュボードとは別のJSON・別の切り口として、同じdashboard.html上に追加するか、別ページにするかは専属ルームの判断に委ねる。",
           "output": "",
           "steps": [
-            "上の2つのタスクが完了してから着手する",
-            "専用のClaude調査ルームに渡した依頼文(スプレッドシートリンクの抽出ルールを含む)の対応状況を確認する",
-            "完成したダッシュボード上で、各知見の項目から実際にスプレッドシートへのリンクをクリックし、正しいシートに遷移するか確認する"
+            "gurii-gabreh/progress-tracker-dashboardのdata/tasks.json・data/requirements.jsonを再帰的に平坦化し、各タスクのdetail/issues/manualSetumpや、requirements.jsonのrequirements/userProfileを抽出するロジックを設計する",
+            "GitHub Actions(または自己バインドRoutine)で定期的に取得・data/knowledge-index.jsonとして生成・コミットする仕組みを構築する",
+            "KND-002のダッシュボードに、この知見一覧も検索・閲覧できる形で統合する"
+          ]
+        },
+        {
+          "id": "KND-006",
+          "task": "スプレッドシート一覧・知見一覧の自動更新の仕組みを用意する(GitHub Actionsまたは自己バインドRoutine)",
+          "title": "自動更新の仕組み構築",
+          "priority": "低",
+          "status": "未着手",
+          "updated": "2026-08-08",
+          "category": "manual",
+          "note": "2026-08-08追加。README(gurii-gabreh/Knowledge-Dashboard)に「自動同期の仕組みはまだ無い、progress-tracker-dashboardと同様のRoutine方式が使える」と明記されている既知の課題。",
+          "detail": "",
+          "output": "",
+          "steps": [
+            "progress-tracker-dashboardの自己バインドRoutine方式(session_01DDATKE77mbQxkj4HUZ91Gt)を参考に、Knowledge-Dashboard専属の自己バインドRoutineを設定するか検討する",
+            "定期的にGoogle Driveの検索・data/tasks.json等の取得・spreadsheets.json/knowledge-index.jsonの再生成・コミットを自動化する"
           ]
         }
       ],
