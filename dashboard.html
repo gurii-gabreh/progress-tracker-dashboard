@@ -2531,7 +2531,9 @@
       },
       knowledge: {
         btn: document.getElementById("top-tab-knowledge"), panel: document.getElementById("knowledge-view"),
-        iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/",
+        // Knowledge-Dashboardのページ名はdashboard.html(index.htmlではない)なので、
+        // ディレクトリ直下だとGitHub Pagesのindex.html探索で404になる。明示的にファイル名まで指定する。
+        iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/dashboard.html",
       },
     };
     function activate(view) {
