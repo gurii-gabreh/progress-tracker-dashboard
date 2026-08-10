@@ -1813,8 +1813,8 @@
       "status": "対応中",
       "updated": "2026-08-09",
       "category": "manual",
-      "nextAction": "作業ルーム(session_pending)がcredentials/service_account.jsonの提供を待っている状態",
-      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供を依頼中。",
+      "nextAction": "作業ルームへ、新パイプラインのスキャフォールド(JSON出力/一覧HTML/GASコード)作成を依頼済み。GASのApps Scriptへの貼り付け・デプロイはユーザー自身が実施予定。実データ処理(本タスクの本題)は認証情報提供後に着手",
+      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。",
       "content": [
         "背景: これまでtext-extractionはローカル(Mac)からPythonのbatch.pyがclaude CLIをサブプロセス呼び出しして画像の文字起こしを行っていたが、CLIが原因不明のエラー(code=1、エラーメッセージ空)で全件失敗するようになった。CLIサブプロセス経由をやめ、作業ルーム自身の画像読み取り能力で直接処理する方式に切り替える",
         "対象データ: Googleドライブの直近の失敗分フォルダ(https://drive.google.com/drive/u/0/folders/1BM7Utm0zLntiz1uVH_zY5sPgjnBhogT7)。出力先はtext-extractionのconfig.json内spreadsheet_id/sheet_nameで指定される既存スプレッドシート(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名)"
@@ -1834,6 +1834,10 @@
         {
           "date": "2026-08-09",
           "summary": "マネージャールームで登録、即時着手。作業ルームへ処理を依頼したが、Drive/Sheetsへの書き込みに必要なcredentials/service_account.jsonがローカルのみにありリポジトリ・このセッションいずれからも参照できないと判明。ユーザーへ提供方法を確認中。"
+        },
+        {
+          "date": "2026-08-10",
+          "summary": "アウトプット方式をユーザーと相談し、JSON出力→GASでスプレッドシートへ自動書き込み→一覧HTMLでレビュー、の3点セット構成に決定。既存のローカルPythonパイプラインとは別ディレクトリで分離管理する方針。GASのデプロイ(Apps Scriptへの貼り付け)はユーザー自身が行う前提で、作業ルームにスキャフォールド作成を依頼。"
         }
       ]
     },
@@ -1846,8 +1850,8 @@
       "status": "対応中",
       "updated": "2026-08-09",
       "category": "manual",
-      "nextAction": "TEX-001と同じ作業ルームで、認証情報提供後にあわせて処理する",
-      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。今後繰り返し使う定期処理テンプレートとして、TEX-001(今回分)と同内容だが対象フォルダをconfig.json記載の標準の処理対象サブフォルダとする版。運用方法(都度登録/定期実行)はTEX-001完了後に検討する。",
+      "nextAction": "TEX-001と同じスキャフォールド(JSON/一覧HTML/GAS)を共用。認証情報提供後、実データ処理をあわせて着手する",
+      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。今後繰り返し使う定期処理テンプレートとして、TEX-001(今回分)と同内容だが対象フォルダをconfig.json記載の標準の処理対象サブフォルダとする版。運用方法(都度登録/定期実行)はTEX-001完了後に検討する。\n[2026-08-10] TEX-001と同じ出力アーキテクチャ(JSON→GAS自動書き込み→一覧HTMLレビュー、旧Pythonパイプラインとは別ディレクトリ)を共用する方針。",
       "content": [
         "対象データ: Googleドライブの処理対象フォルダ(text-extractionのconfig.json内target_subfolder_idで指定される標準の処理対象サブフォルダ)。出力先はconfig.json内spreadsheet_id/sheet_nameで指定される既存スプレッドシート(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名)"
       ],
@@ -1866,6 +1870,10 @@
         {
           "date": "2026-08-09",
           "summary": "マネージャールームで標準テンプレートとして登録。TEX-001と同じ認証情報の壁待ち。"
+        },
+        {
+          "date": "2026-08-10",
+          "summary": "TEX-001で決定したJSON+GAS+一覧HTMLの出力アーキテクチャを共用する方針を確認。スキャフォールドはTEX-001側の作業ルームで作成中。"
         }
       ]
     }
