@@ -856,7 +856,7 @@
     return [...repos].sort((a, b) => (PINNED_REPOS.includes(a) ? 0 : 1) - (PINNED_REPOS.includes(b) ? 0 : 1));
   }
   // GitHub上の実際のリポジトリ名の大文字/小文字が、内部識別子(Repo列)と異なるものだけここに書く。
-  const GITHUB_REPO_NAME = { kizashi: "Kizashi" };
+  const GITHUB_REPO_NAME = { kizashi: "Kizashi", "text-extraction": "Text-Extraction" };
   // この文字列で始まるnoteの依頼タスクは、スプレッドシート上には残すがダッシュボードには
   // タスクカードとして表示しない(Routineが内部的に処理すれば十分で、一覧を埋めたくないもの向け)。
   const HIDDEN_TASK_NOTE_PREFIX = "【自動検知・非表示】";
