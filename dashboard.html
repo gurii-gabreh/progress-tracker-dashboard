@@ -81,7 +81,7 @@
 
   .wrap { max-width: 720px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; padding: 0 16px; }
 
-  /* 上部タブ(マネージャーアプリ/アプリ一覧)。新規ウィンドウを開くのではなく、この
+  /* 上部タブ(マネージャーアプリ/アプリ一覧/ナレッジ)。新規ウィンドウを開くのではなく、この
      タブ切り替えでヘッダーより下の表示を差し替える(2026-08-10追加、背景: ウィンドウが
      ポコポコ増えると見づらいため)。 */
   .app-shell { height: 100vh; display: flex; flex-direction: column; }
@@ -607,6 +607,7 @@
   <div class="top-tab-bar">
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
+    <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -722,6 +723,9 @@
   </div>
   <div id="applist-view" class="view-panel">
     <iframe id="applist-iframe" title="アプリ一覧" loading="lazy"></iframe>
+  </div>
+  <div id="knowledge-view" class="view-panel">
+    <iframe id="knowledge-iframe" title="ナレッジ一覧" loading="lazy"></iframe>
   </div>
   </div>
 </div>
@@ -2172,6 +2176,10 @@
     return [
       "タスクID {タスクID} について相談したい。",
       "",
+      "【最初にやること】",
+      "gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json を確認し、",
+      "同じリポジトリ・似た内容の過去の実装知見が無いか調べてから相談に乗ってください。",
+      "",
       "【運用ルール】",
       "このルームで方針や内容が決まったら、都度以下を実行してください:",
       "1. gurii-gabreh/progress-tracker-dashboard の dashboard.html / data/tasks.json の",
@@ -2204,6 +2212,9 @@
       "   完了済みなのに未着手に戻っているものなどを横断的にチェックする",
       "3. その結果を、生の履歴やnote全文を貼らず要点だけに圧縮して提示する",
       "   (タスクID・状況・引っかかっている理由・提案アクション、程度の一覧でよい)",
+      "4. 相談・実装の判断材料として、gurii-gabreh/Knowledge-Dashboard の",
+      "   data/knowledge-index.json(過去タスクの実装知見・要件知見)と data/requirements.json を",
+      "   必要に応じて参照する(過去に似た実装・判断が無いか確認してから提案する)",
       "",
       "【その後】",
       "一覧を出したらすぐ実行に移らず、まずこのルームで相談する(どれから着手するか、",
@@ -2374,7 +2385,7 @@
       "",
       "【このルームにやってほしいこと】",
       "1. まず gurii-gabreh/progress-tracker-dashboard の data/tasks.json と、",
-      "   (存在すれば) gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json・",
+      "   gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json・",
       "   data/requirements.json を読み、関連する過去の実績・判断が無いか確認する",
       "   (data/requirements.json の userProfile.patterns も必ず確認する)",
       "2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、埋まっていない点だけを",
@@ -2460,15 +2471,21 @@
     renderFeed();
   });
 
-  // 上部タブ(🧭マネージャーアプリ / 🗂アプリ一覧)。新規ウィンドウを開くのではなく、
-  // ヘッダーより下の表示だけをこのタブで切り替える(2026-08-10追加)。アプリ一覧タブは
-  // gurii-gabreh/my-dashboard(GitHub Pages)をiframe埋め込みし、初回クリック時にだけ
-  // src をセットして読み込む(使わない場合は余計な外部リクエストをしない)。
-  const APPLIST_URL = "https://gurii-gabreh.github.io/my-dashboard/";
+  // 上部タブ(🧭マネージャーアプリ / 🗂アプリ一覧 / 🧠ナレッジ)。新規ウィンドウを開くのではなく、
+  // ヘッダーより下の表示だけをこのタブで切り替える(2026-08-10追加)。アプリ一覧・ナレッジタブは
+  // それぞれ対象リポジトリのGitHub Pagesをiframe埋め込みし、初回クリック時にだけsrcをセットして
+  // 読み込む(使わない場合は余計な外部リクエストをしない)。
   (function setupTopTabs() {
     const tabs = {
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
-      applist: { btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view") },
+      applist: {
+        btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
+        iframeId: "applist-iframe", url: "https://gurii-gabreh.github.io/my-dashboard/",
+      },
+      knowledge: {
+        btn: document.getElementById("top-tab-knowledge"), panel: document.getElementById("knowledge-view"),
+        iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/",
+      },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2476,13 +2493,13 @@
         btn.classList.toggle("active", active);
         panel.classList.toggle("active", active);
       });
-      if (view === "applist") {
-        const iframe = document.getElementById("applist-iframe");
-        if (!iframe.src) iframe.src = APPLIST_URL;
+      const tab = tabs[view];
+      if (tab.iframeId) {
+        const iframe = document.getElementById(tab.iframeId);
+        if (!iframe.src) iframe.src = tab.url;
       }
     }
-    tabs.manager.btn.addEventListener("click", () => activate("manager"));
-    tabs.applist.btn.addEventListener("click", () => activate("applist"));
+    Object.entries(tabs).forEach(([key, { btn }]) => btn.addEventListener("click", () => activate(key)));
   })();
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
