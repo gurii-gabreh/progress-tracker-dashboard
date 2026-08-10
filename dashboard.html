@@ -79,7 +79,26 @@
     line-height: 1.5; overflow: hidden;
   }
 
-  .wrap { max-width: 720px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; padding: 0 16px; }
+  .wrap { max-width: 720px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; padding: 0 16px; }
+
+  /* 上部タブ(マネージャーアプリ/アプリ一覧)。新規ウィンドウを開くのではなく、この
+     タブ切り替えでヘッダーより下の表示を差し替える(2026-08-10追加、背景: ウィンドウが
+     ポコポコ増えると見づらいため)。 */
+  .app-shell { height: 100vh; display: flex; flex-direction: column; }
+  .top-tab-bar {
+    flex: 0 0 auto; display: flex; gap: 6px; padding: 10px 16px 0;
+    background: var(--bg); max-width: 720px; margin: 0 auto; width: 100%; box-sizing: border-box;
+  }
+  .top-tab-btn {
+    font-size: 12.5px; font-weight: 700; padding: 7px 16px; border-radius: 10px 10px 0 0;
+    border: 1px solid var(--border); border-bottom: none; background: var(--surface-2);
+    color: var(--text-muted); cursor: pointer;
+  }
+  .top-tab-btn.active { background: var(--surface); color: var(--accent); }
+  .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
+  .view-panel.active { display: flex; flex-direction: column; }
+  #applist-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
@@ -584,7 +603,14 @@
   .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 </style>
 
-<div class="wrap">
+<div class="app-shell">
+  <div class="top-tab-bar">
+    <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
+    <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
+  </div>
+  <div class="view-panel-area">
+  <div id="manager-view" class="view-panel active">
+  <div class="wrap">
   <div class="sticky-top">
     <header>
       <div class="header-top">
@@ -691,6 +717,12 @@
     <div id="feed" class="feed"></div>
 
     <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
+  </div>
+  </div>
+  </div>
+  <div id="applist-view" class="view-panel">
+    <iframe id="applist-iframe" title="アプリ一覧" loading="lazy"></iframe>
+  </div>
   </div>
 </div>
 
@@ -2421,6 +2453,31 @@
     e.currentTarget.textContent = flatMode ? "📋 通常表示に戻す" : "📱 一覧表示";
     renderFeed();
   });
+
+  // 上部タブ(🧭マネージャーアプリ / 🗂アプリ一覧)。新規ウィンドウを開くのではなく、
+  // ヘッダーより下の表示だけをこのタブで切り替える(2026-08-10追加)。アプリ一覧タブは
+  // gurii-gabreh/my-dashboard(GitHub Pages)をiframe埋め込みし、初回クリック時にだけ
+  // src をセットして読み込む(使わない場合は余計な外部リクエストをしない)。
+  const APPLIST_URL = "https://gurii-gabreh.github.io/my-dashboard/";
+  (function setupTopTabs() {
+    const tabs = {
+      manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
+      applist: { btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view") },
+    };
+    function activate(view) {
+      Object.entries(tabs).forEach(([key, { btn, panel }]) => {
+        const active = key === view;
+        btn.classList.toggle("active", active);
+        panel.classList.toggle("active", active);
+      });
+      if (view === "applist") {
+        const iframe = document.getElementById("applist-iframe");
+        if (!iframe.src) iframe.src = APPLIST_URL;
+      }
+    }
+    tabs.manager.btn.addEventListener("click", () => activate("manager"));
+    tabs.applist.btn.addEventListener("click", () => activate("applist"));
+  })();
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
   // dashboard.html側とdata/tasks.json側の二重管理で更新もれ・相違が起きやすかったため撤廃。
