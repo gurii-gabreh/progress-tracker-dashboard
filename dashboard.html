@@ -131,6 +131,22 @@
   .help-term { font-weight: 700; color: var(--accent); flex: 0 0 auto; min-width: 108px; }
   .help-desc { color: var(--text-muted); flex: 1 1 200px; }
 
+  .usecase-block {
+    margin-bottom: 6px; padding-bottom: 10px; border-bottom: 1px dashed var(--border);
+  }
+  .usecase-heading { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .usecase-heading-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .usecase-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 6px 8px; border-radius: 8px; background: var(--surface-2); margin-bottom: 6px;
+  }
+  .usecase-situation { flex: 1 1 200px; font-size: 12px; }
+  .usecase-arrow { font-size: 13px; color: var(--text-muted); flex: 0 0 auto; }
+  .usecase-action {
+    font-size: 11.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+    padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex: 0 0 auto;
+  }
+
   .extra-settings-panel {
     display: none; flex-direction: column; gap: 10px;
     background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
@@ -607,6 +623,40 @@
         </div>
       </div>
       <div class="help-panel" id="help-panel">
+        <div class="usecase-block">
+          <div class="usecase-heading">🔎 こんな時は、これを使う</div>
+          <div class="usecase-row">
+            <span class="usecase-situation">💭 新しいアプリの構想・既存タスクに紐付かない相談がある</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">📋依頼文作成 ▸ 🆕 新規相談</span>
+          </div>
+          <div class="usecase-row">
+            <span class="usecase-situation">🎯 特定の1タスクを進めたい・相談したい</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">📋依頼文作成 ▸ 🗨 タスク相談ルーム</span>
+          </div>
+          <div class="usecase-row">
+            <span class="usecase-situation">🧭 全リポジトリを横断して状況把握・優先度を整理したい</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">📋依頼文作成 ▸ 🗨 マネージャールーム</span>
+          </div>
+          <div class="usecase-row">
+            <span class="usecase-situation">🔁 複数アカウントで実装を作業ルームへ振り分ける構成を知りたい</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">📋依頼文作成 ▸ 🗺 オーケストレーション構成</span>
+          </div>
+          <div class="usecase-row">
+            <span class="usecase-situation">🔧 Claude Codeで直接進めた分がWebに反映されているか不安</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">⚙ 設定 ▸ 📥 Claude→Web反映</span>
+          </div>
+          <div class="usecase-row">
+            <span class="usecase-situation">⏱ 自動実行(Routine)の頻度・時刻を変えたい</span>
+            <span class="usecase-arrow">→</span>
+            <span class="usecase-action">⚙ 設定 ▸ ⚙ Routine設定</span>
+          </div>
+          <div class="usecase-heading-sub">↓ 各ボタン・操作の詳しい説明</div>
+        </div>
         <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">📋 依頼文作成</span><span class="help-desc">ルームを開くときに貼る依頼文テンプレートをまとめたドロップダウンです(2026-08-08、ボタン数が増えたため集約)。4つから選べます:</span></div>
         <div class="help-item"><span class="help-term">┗ 🗨 タスク相談ルーム</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
