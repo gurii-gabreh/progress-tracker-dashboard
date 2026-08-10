@@ -1908,6 +1908,30 @@
               "summary": "作業ルームからのstatus.json完了報告をマネージャールームが確認・反映。GitHub Actionsによる自動更新workflow(knowledge-index.jsonのみ)が完了。"
             }
           ]
+        },
+        {
+          "id": "KND-007",
+          "task": "ナレッジ用Driveフォルダ(ショートカット集約)からdata/spreadsheets.jsonを自動更新するGASを実装する",
+          "title": "スプレッドシート一覧の自動更新(GAS・ショートカット方式)",
+          "priority": "中",
+          "status": "作業ルーム対応中",
+          "updated": "2026-08-10",
+          "category": "manual",
+          "workerSession": "session_01NV1JKQeev6sXtCEDGbo7ar",
+          "nextAction": "作業ルームの完了報告(PR)待ち。反映後、ユーザーがApps Scriptへのデプロイ・拡張サービス(Drive API)有効化・GitHubトークンのScript Properties設定・日次トリガー設定関数の実行を行う必要あり",
+          "note": "2026-08-10、マネージャールームで登録・即時着手。KND-006時点で未解決だった「spreadsheets.jsonの自動更新」課題(Drive検索に認証が絡みGitHub Actionsでは自動化できなかった)を、ユーザー提案の方式で解決する。\n方式: ユーザーが専用のGoogleドライブフォルダ(ID: 1K7teb5iGkdphV78M773vxlhbNd2fnQxd)を作成し、既存のナレッジ系スプレッドシートは元の場所のまま、このフォルダには「ショートカット」だけを集約する(新規DB追加時もショートカットを1つ追加するだけで済む)。GAS(Apps Script)はスクリプト所有者自身のGoogleアカウント権限でDriveApp/拡張Drive APIサービスがそのまま使えるため、GitHub Actionsのような別途認証が不要。日次トリガーでフォルダを列挙・ショートカットを解決し、GitHub Contents API経由でdata/spreadsheets.jsonを直接コミット更新する設計を作業ルームに依頼した。",
+          "content": [
+            "GAS側の実装: 対象フォルダ内のショートカットを列挙し、拡張Drive APIサービス(Drive.Files.get + shortcutDetails.targetId)で参照先の実ファイルIDを解決。メタデータを取得し、既存spreadsheets.jsonと互換のJSONを組み立て、UrlFetchApp経由でGitHub Contents APIへ直接コミットする。GitHubトークンはPropertiesServiceに保持しコードにハードコードしない。日次トリガー設定用の関数も用意する。",
+            "デプロイ手順はREADMEに明記してもらうが、実際のApps Scriptへの貼り付け・拡張サービス有効化・トークン発行/設定・トリガー設定関数の実行はユーザー自身が行う"
+          ],
+          "detail": "",
+          "output": "",
+          "checkHistory": [
+            {
+              "date": "2026-08-10",
+              "summary": "マネージャールームで登録、作業ルーム(session_01NV1JKQeev6sXtCEDGbo7ar)へ即時依頼。"
+            }
+          ]
         }
       ],
       "goal": "実装ナレッジの横断集約・可視化を実施"
