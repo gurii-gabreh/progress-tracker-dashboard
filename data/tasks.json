@@ -1753,11 +1753,11 @@
       "id": "KND-001",
       "task": "ナレッジ管理ダッシュボード",
       "priority": "中",
-      "status": "対応中",
-      "updated": "2026-08-08",
+      "status": "完了",
+      "updated": "2026-08-09",
       "category": "manual",
-      "nextAction": "当初目的だった実装知見の集約(KND-005)と、自動更新の仕組み(KND-006)に着手する(下の子タスク参照)",
-      "note": "【作業タスク】リポジトリ(gurii-gabreh/Knowledge-Dashboard)は作成済み。専用の別ルームで構築中。共有Routineの実装対象ではない。\n[2026-08-08] マネージャールームで実リポジトリを確認したところ、当初計画(tasks.json由来の実装知見の集約)とは別に、本人の判断で「Google Drive上の全ナレッジ系スプレッドシートを一覧化し、AI・管理者どちらにも使いやすくする」方向へ意図的に広げていたことが判明・確認済み。実際にGoogle Drive上の全スプレッドシート(44件)を検索・一覧化するdashboard.html+data/spreadsheets.jsonが完成していた(2026-08-01時点)が、これはトラッカー未反映のままだった。当初の「実装知見の集約」自体は、この一覧化作業を優先したため未着手のまま。",
+      "nextAction": "",
+      "note": "【作業タスク】リポジトリ(gurii-gabreh/Knowledge-Dashboard)は作成済み。専用の別ルームで構築。共有Routineの実装対象ではない。\n[2026-08-08] マネージャールームで実リポジトリを確認したところ、当初計画(tasks.json由来の実装知見の集約)とは別に、本人の判断で「Google Drive上の全ナレッジ系スプレッドシートを一覧化し、AI・管理者どちらにも使いやすくする」方向へ意図的に広げていたことが判明・確認済み。実際にGoogle Drive上の全スプレッドシート(44件)を検索・一覧化するdashboard.html+data/spreadsheets.jsonが完成していた(2026-08-01時点)が、これはトラッカー未反映のままだった。当初の「実装知見の集約」自体は、この一覧化作業を優先したため未着手のまま。\n[2026-08-10] 当初目的の実装知見集約(KND-005)・自動更新(KND-006)も作業ルームで完了し、子タスク全件が完了したため本タスクも完了とした。",
       "output": "",
       "checkHistory": [
         {
@@ -1767,6 +1767,10 @@
         {
           "date": "2026-08-08",
           "summary": "マネージャールームで実リポジトリを確認。専属ルームが「全スプレッドシートの一覧化」へ意図的に方針を広げ、2026-08-01時点でその部分は完成させていたと判明(本人確認済み)。トラッカーを実態に合わせて更新。当初目的の実装知見集約(KND-005)は仕切り直しの新規タスクとして残す。"
+        },
+        {
+          "date": "2026-08-10",
+          "summary": "KND-005・KND-006の作業ルーム完了報告(status.json、2026-08-09付)を確認・反映し、子タスク全件完了につき本タスクも完了とした。"
         }
       ],
       "subtasks": [
@@ -1851,16 +1855,29 @@
           "task": "progress-tracker-dashboardのdata/tasks.json(detail/issues/manualSetup等)・data/requirements.jsonを横断的に集約したknowledge-index.jsonを生成する",
           "title": "実装知見・要件知見の集約(当初目的、仕切り直し)",
           "priority": "中",
-          "status": "対応中",
-          "updated": "2026-08-08",
+          "status": "完了",
+          "updated": "2026-08-09",
           "category": "manual",
-          "note": "2026-08-08追加。当初のKND-002がこれだったが、専属ルームがスプレッドシート一覧化(現KND-002)を優先したため未着手のまま残っていたものを、仕切り直しとして新規タスク化した。\n[2026-08-08] マネージャールームで「調査・実装は作業ルームに任せる」方針を確認し、KND-006とあわせて新規セッション(session_01NmrwAVCqdJD8G9M8Q7FdyS)へ実装を依頼した。完了報告(status.json)待ち。",
-          "detail": "アーキテクチャ案: progress-tracker-dashboardのdata/tasks.json・data/requirements.jsonを正本としプル型で取得(書き込み不要のためGAS新設は不要)。GitHub Actionsで定期的に取得・再帰的に平坦化してdata/knowledge-index.jsonを生成・コミットする。KND-002のスプレッドシート一覧ダッシュボードとは別のJSON・別の切り口として、同じdashboard.html上に追加するか、別ページにするかは専属ルームの判断に委ねる。",
-          "output": "",
+          "note": "2026-08-08追加。当初のKND-002がこれだったが、専属ルームがスプレッドシート一覧化(現KND-002)を優先したため未着手のまま残っていたものを、仕切り直しとして新規タスク化した。\n[2026-08-08] マネージャールームで「調査・実装は作業ルームに任せる」方針を確認し、KND-006とあわせて新規セッション(session_01NmrwAVCqdJD8G9M8Q7FdyS)へ実装を依頼した。\n[2026-08-10] status.jsonの完了報告を確認し反映(報告自体は2026-08-09 14:56付、マネージャールームでの反映が翌日になったもの)。scripts/generate-knowledge-index.jsを新規作成し、tasks.json(再帰的にsubtasksまで平坦化、detail/issuesいずれかが非空のもの)とrequirements.json(requirements配列・userProfile.patternsのconfirmedByUser:trueのもの)からdata/knowledge-index.jsonを生成(56件: 実装タスク55件・ユーザー思考パターン1件)。dashboard.htmlに「📊スプレッドシート一覧」「🧠実装ナレッジ」のタブを追加し、実装ナレッジタブは全文検索・リポジトリ別/種別チップ絞り込み・並び替え・カード展開に対応。Playwright確認済み、コンソールエラー無し。",
+          "completedItems": [
+            {
+              "item": "scripts/generate-knowledge-index.jsで data/knowledge-index.json を生成(56件)し、dashboard.htmlに実装ナレッジタブとして統合",
+              "date": "2026-08-09"
+            }
+          ],
+          "detail": "アーキテクチャ案: progress-tracker-dashboardのdata/tasks.json・data/requirements.jsonを正本としプル型で取得(書き込み不要のためGAS新設は不要)。GitHub Actionsで定期的に取得・再帰的に平坦化してdata/knowledge-index.jsonを生成・コミットする。KND-002のスプレッドシート一覧ダッシュボードとは別のJSON・別の切り口として、同じdashboard.html上にタブとして統合された。",
+          "issues": "requirements配列は現時点で空でスキーマ実例が無かったため、将来項目が追加されても壊れないよう{type:'requirement', ...元のフィールドをそのままパススルー}という汎用抽出にしたとの申し送りあり。",
+          "output": "https://raw.githubusercontent.com/gurii-gabreh/Knowledge-Dashboard/main/data/knowledge-index.json (他のClaude Codeセッションが直接fetch可能)",
           "steps": [
             "gurii-gabreh/progress-tracker-dashboardのdata/tasks.json・data/requirements.jsonを再帰的に平坦化し、各タスクのdetail/issues/manualSetumpや、requirements.jsonのrequirements/userProfileを抽出するロジックを設計する",
             "GitHub Actions(または自己バインドRoutine)で定期的に取得・data/knowledge-index.jsonとして生成・コミットする仕組みを構築する",
             "KND-002のダッシュボードに、この知見一覧も検索・閲覧できる形で統合する"
+          ],
+          "checkHistory": [
+            {
+              "date": "2026-08-10",
+              "summary": "作業ルーム(session_01NmrwAVCqdJD8G9M8Q7FdyS)からのstatus.json完了報告(2026-08-09付)をマネージャールームが確認・反映。knowledge-index.json生成+dashboard.htmlタブ統合が完了。"
+            }
           ]
         },
         {
@@ -1868,15 +1885,28 @@
           "task": "スプレッドシート一覧・知見一覧の自動更新の仕組みを用意する(GitHub Actionsまたは自己バインドRoutine)",
           "title": "自動更新の仕組み構築",
           "priority": "低",
-          "status": "対応中",
-          "updated": "2026-08-08",
+          "status": "完了",
+          "updated": "2026-08-09",
           "category": "manual",
-          "note": "2026-08-08追加。README(gurii-gabreh/Knowledge-Dashboard)に「自動同期の仕組みはまだ無い、progress-tracker-dashboardと同様のRoutine方式が使える」と明記されている既知の課題。\n[2026-08-08] KND-005とあわせて新規セッション(session_01NmrwAVCqdJD8G9M8Q7FdyS)へ、knowledge-index.json分についてはGitHub Actionsでの自動化を依頼した(spreadsheets.jsonのDrive検索部分は認証の都合上、対応困難なら見送り可としている)。完了報告(status.json)待ち。",
+          "note": "2026-08-08追加。README(gurii-gabreh/Knowledge-Dashboard)に「自動同期の仕組みはまだ無い、progress-tracker-dashboardと同様のRoutine方式が使える」と明記されている既知の課題。\n[2026-08-08] KND-005とあわせて新規セッション(session_01NmrwAVCqdJD8G9M8Q7FdyS)へ、knowledge-index.json分についてはGitHub Actionsでの自動化を依頼した(spreadsheets.jsonのDrive検索部分は認証の都合上、対応困難なら見送り可としている)。\n[2026-08-10] status.jsonの完了報告を確認し反映。.github/workflows/update-knowledge-index.ymlを追加し、毎日21:00 UTC(06:00 JST)にgenerate-knowledge-index.jsを実行、差分があればgithub-actions[bot]としてmainへ直接コミット(workflow_dispatchで手動実行も可)。内容に変化が無ければgeneratedAtも据え置き空コミットを避ける設計。data/spreadsheets.json(Drive検索・認証が絡む方)は自動化対象外のまま、README記載の通り引き続き手動更新(Claudeへの依頼)。",
+          "completedItems": [
+            {
+              "item": ".github/workflows/update-knowledge-index.ymlで毎日06:00 JSTに自動更新(差分が無ければ空コミットしない設計)",
+              "date": "2026-08-09"
+            }
+          ],
           "detail": "",
-          "output": "",
+          "issues": "data/spreadsheets.json(Google Drive検索・認証が絡む方)はGitHub Actionsでの自動化対象外。README記載の通り引き続き手動更新(Claudeへの依頼)のまま。",
+          "output": "https://github.com/gurii-gabreh/Knowledge-Dashboard/blob/main/.github/workflows/update-knowledge-index.yml",
           "steps": [
             "progress-tracker-dashboardの自己バインドRoutine方式(session_01DDATKE77mbQxkj4HUZ91Gt)を参考に、Knowledge-Dashboard専属の自己バインドRoutineを設定するか検討する",
             "定期的にGoogle Driveの検索・data/tasks.json等の取得・spreadsheets.json/knowledge-index.jsonの再生成・コミットを自動化する"
+          ],
+          "checkHistory": [
+            {
+              "date": "2026-08-10",
+              "summary": "作業ルームからのstatus.json完了報告をマネージャールームが確認・反映。GitHub Actionsによる自動更新workflow(knowledge-index.jsonのみ)が完了。"
+            }
           ]
         }
       ],
