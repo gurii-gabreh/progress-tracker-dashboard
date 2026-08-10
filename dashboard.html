@@ -153,18 +153,39 @@
   .usecase-block {
     margin-bottom: 6px; padding-bottom: 10px; border-bottom: 1px dashed var(--border);
   }
-  .usecase-heading { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .usecase-heading-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  .usecase-row {
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    padding: 6px 8px; border-radius: 8px; background: var(--surface-2); margin-bottom: 6px;
+  .usecase-heading { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .usecase-heading-sub { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+  /* 関連図(2026-08-10): ほとんどの相談・依頼はマネージャールームが入口、というハブ構造を
+     視覚化する。各ケースはクリックで詳細(具体的な進め方)が開く折りたたみ式。 */
+  .usecase-hub {
+    text-align: center; font-size: 13px; font-weight: 700; color: var(--accent);
+    background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px;
+    padding: 8px 10px; margin: 0 auto 4px; max-width: 260px;
   }
-  .usecase-situation { flex: 1 1 200px; font-size: 12px; }
-  .usecase-arrow { font-size: 13px; color: var(--text-muted); flex: 0 0 auto; }
-  .usecase-action {
-    font-size: 11.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
-    padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex: 0 0 auto;
+  .usecase-hub-sub { display: block; font-size: 10.5px; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+  .usecase-branches {
+    position: relative; margin: 0 0 0 20px; padding-left: 16px;
+    border-left: 2px dashed var(--border);
   }
+  .usecase-branch { position: relative; margin-bottom: 6px; }
+  .usecase-branch::before {
+    content: ''; position: absolute; left: -16px; top: 15px; width: 14px; height: 2px;
+    background: var(--border);
+  }
+  .usecase-node {
+    display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
+    font-size: 12px; font-family: inherit; color: var(--text); cursor: pointer;
+    background: var(--surface-2); border: none; border-radius: 8px; padding: 7px 10px;
+  }
+  .usecase-node:hover { background: var(--accent-soft); }
+  .usecase-node::after { content: '▸'; margin-left: auto; color: var(--text-muted); font-size: 10px; }
+  .usecase-node.open::after { content: '▾'; }
+  .usecase-detail {
+    font-size: 11.5px; color: var(--text-muted); padding: 8px 10px 4px 26px; line-height: 1.7;
+  }
+  .usecase-detail ol { padding-left: 18px; }
+  .usecase-detail .usecase-note { margin-top: 2px; color: var(--text-muted); }
 
   .extra-settings-panel {
     display: none; flex-direction: column; gap: 10px;
@@ -652,35 +673,50 @@
       <div class="help-panel" id="help-panel">
         <div class="usecase-block">
           <div class="usecase-heading">🔎 こんな時は、これを使う</div>
-          <div class="usecase-row">
-            <span class="usecase-situation">💭 新しいアプリの構想・既存タスクに紐付かない相談がある</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">📋依頼文作成 ▸ 🆕 新規相談</span>
-          </div>
-          <div class="usecase-row">
-            <span class="usecase-situation">🎯 特定の1タスクを進めたい・相談したい</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">📋依頼文作成 ▸ 🗨 タスク相談ルーム</span>
-          </div>
-          <div class="usecase-row">
-            <span class="usecase-situation">🧭 全リポジトリを横断して状況把握・優先度を整理したい</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">📋依頼文作成 ▸ 🗨 マネージャールーム</span>
-          </div>
-          <div class="usecase-row">
-            <span class="usecase-situation">🔁 複数アカウントで実装を作業ルームへ振り分ける構成を知りたい</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">📋依頼文作成 ▸ 🗺 オーケストレーション構成</span>
-          </div>
-          <div class="usecase-row">
-            <span class="usecase-situation">🔧 Claude Codeで直接進めた分がWebに反映されているか不安</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">⚙ 設定 ▸ 📥 Claude→Web反映</span>
-          </div>
-          <div class="usecase-row">
-            <span class="usecase-situation">⏱ 自動実行(Routine)の頻度・時刻を変えたい</span>
-            <span class="usecase-arrow">→</span>
-            <span class="usecase-action">⚙ 設定 ▸ ⚙ Routine設定</span>
+          <div class="usecase-hub">🗨 マネージャールーム<span class="usecase-hub-sub">ほとんどの相談・依頼はここが入口</span></div>
+          <div class="usecase-branches">
+            <div class="usecase-branch">
+              <button class="usecase-node" data-usecase-toggle="uc-1">💭 新しいアプリの構想・既存タスクに紐付かない相談がある</button>
+              <div class="usecase-detail" id="uc-1" hidden>
+                <ol>
+                  <li>新規ルームを作り、マネージャールーム用の依頼文を貼り付けて実行</li>
+                  <li>その後、相談事項を開始</li>
+                </ol>
+                <p class="usecase-note">※ 既に作成済みのルームがあれば、そこに追記していく</p>
+              </div>
+            </div>
+            <div class="usecase-branch">
+              <button class="usecase-node" data-usecase-toggle="uc-2">➕ 既存タスクへのタスク追加方法</button>
+              <div class="usecase-detail" id="uc-2" hidden>
+                <ol>
+                  <li>マネージャールームに、どのアプリへ新規追加したいかを伝えるだけ</li>
+                </ol>
+              </div>
+            </div>
+            <div class="usecase-branch">
+              <button class="usecase-node" data-usecase-toggle="uc-3">🎯 特定の1タスクを進めたい・相談したい</button>
+              <div class="usecase-detail" id="uc-3" hidden>
+                <ol>
+                  <li>すべてマネージャールームに相談する</li>
+                </ol>
+              </div>
+            </div>
+            <div class="usecase-branch">
+              <button class="usecase-node" data-usecase-toggle="uc-4">🔁 複数アカウントで実装を作業ルームへ振り分ける構成を知りたい</button>
+              <div class="usecase-detail" id="uc-4" hidden>
+                <ol>
+                  <li>マネージャールームに相談すると、AI側が自動判断して実装・調査などの作業を自動で割り振る仕様になっている</li>
+                </ol>
+              </div>
+            </div>
+            <div class="usecase-branch">
+              <button class="usecase-node" data-usecase-toggle="uc-5">🔄 スプレッドシートやWeb画面に最新のタスク情報を反映したい</button>
+              <div class="usecase-detail" id="uc-5" hidden>
+                <ol>
+                  <li>マネージャールームに、Claudeへの更新を依頼する</li>
+                </ol>
+              </div>
+            </div>
           </div>
           <div class="usecase-heading-sub">↓ 各ボタン・操作の詳しい説明</div>
         </div>
@@ -2469,6 +2505,15 @@
     e.currentTarget.classList.toggle("active", flatMode);
     e.currentTarget.textContent = flatMode ? "📋 通常表示に戻す" : "📱 一覧表示";
     renderFeed();
+  });
+  // 「こんな時は、これを使う」の各ケース(関連図の枝)。既定は折りたたみ、クリックで開閉する。
+  document.querySelectorAll("[data-usecase-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const detail = document.getElementById(btn.dataset.usecaseToggle);
+      const open = detail.hidden;
+      detail.hidden = !open;
+      btn.classList.toggle("open", open);
+    });
   });
 
   // 上部タブ(🧭マネージャーアプリ / 🗂アプリ一覧 / 🧠ナレッジ)。新規ウィンドウを開くのではなく、
