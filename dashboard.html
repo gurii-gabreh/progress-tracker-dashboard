@@ -198,6 +198,12 @@
     margin-left: auto; border-color: rgba(255, 255, 255, 0.55); color: #fff;
   }
   .repo-header .add-task-btn:hover { border-color: #fff; background: rgba(255, 255, 255, 0.15); }
+  .group-collapse-btn {
+    border: none; background: transparent; color: #fff; cursor: pointer;
+    font-size: 11px; padding: 2px 4px; line-height: 1; opacity: 0.85;
+  }
+  .group-collapse-btn:hover { opacity: 1; }
+  .group-count-tag { font-size: 11px; color: rgba(255, 255, 255, 0.85); }
 
   .table-head {
     display: grid; grid-template-columns: 22px 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
@@ -703,6 +709,12 @@
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyBq4sD_LZBbgRhGpYYcDzve3jLOJ0_lrxlT89bFHjFlUWhgO975uArRicaveEJMKP9/exec";
   const GAS_TOKEN = "8a2fad1907b8d935f758ede8f66d05d7";
   const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
+  // 特定リポジトリに紐づかない相談テーマの置き場。ステータス順の並びだと下に埋もれがちなので、
+  // 上部の概要ストリップ・フィード一覧のどちらでも常に先頭に固定表示する(2026-08-10)。
+  const PINNED_REPOS = ["相談事項"];
+  function sortReposPinnedFirst(repos) {
+    return [...repos].sort((a, b) => (PINNED_REPOS.includes(a) ? 0 : 1) - (PINNED_REPOS.includes(b) ? 0 : 1));
+  }
   // GitHub上の実際のリポジトリ名の大文字/小文字が、内部識別子(Repo列)と異なるものだけここに書く。
   const GITHUB_REPO_NAME = { kizashi: "Kizashi" };
   // この文字列で始まるnoteの依頼タスクは、スプレッドシート上には残すがダッシュボードには
@@ -799,6 +811,7 @@
   const openCompleted = new Set();  // key: node path -> 完了したタスク(completedItems)パネルの開閉
   const openComments = new Set();   // key: node path -> 追加指示(コメント)パネルの開閉
   const openCheckHistory = new Set(); // key: node path -> 履歴(checkHistory)パネルの開閉
+  const collapsedRepoGroups = new Set(); // key: repo名 -> このリポジトリのグループ全体(タスク一覧本体)を折りたたみ中かどうか。既定は展開(未登録=展開)
   let dragSourcePath = null;        // ドラッグ中のタスクのpath(ブラウザ内の並び替え専用。スプレッドシートには反映されない)
   // モバイル一覧(2026-08-07追加): リポジトリでグルーピングせず、全リポジトリ横断で
   // 「今どれが自分の対応待ちか」を1本のリストで見るための表示モード。データソースは
@@ -827,11 +840,14 @@
 
   function renderStats() {
     const strip = document.getElementById("stat-strip");
-    const repos = [...new Set(TASKS.filter(isCode).map(t => t.repo))];
+    // 以前はisCode(コード実装リポジトリ)のみをここに出していたが、フィード側には
+    // 「相談事項」のようなmanualカテゴリの枠も表示されているのに、この上部ストリップにだけ
+    // 出てこないのはズレがあるため、TASKSに存在する全リポジトリを対象にする(2026-08-10)。
+    const repos = sortReposPinnedFirst([...new Set(TASKS.map(t => t.repo))]);
     const rows = repos.map(repo => {
       const nodes = TASKS.filter(t => t.repo === repo);
       const allDone = nodes.every(t => aggregateStatus(t) === "完了");
-      const color = REPO_COLORS[repo] || "#5b6172";
+      const color = avatarColor({ repo });
       const avatarText = REPO_AVATAR_TEXT[repo] || repo.slice(0, 2).toUpperCase();
       return `
         <div class="stat-row" data-stat-repo="${repo}">
@@ -1203,6 +1219,14 @@
       reorderTask(dragSourcePath, row.dataset.dragPath);
     });
   });
+  feed.querySelectorAll("[data-group-collapse-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const repo = btn.dataset.groupCollapseToggle;
+      if (collapsedRepoGroups.has(repo)) collapsedRepoGroups.delete(repo); else collapsedRepoGroups.add(repo);
+      renderFeed();
+    });
+  });
   feed.querySelectorAll("[data-group-toggle]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1352,6 +1376,10 @@
       byRepo.get(t.repo).push(t);
     });
 
+    const sortedRepoOrder = sortReposPinnedFirst(repoOrder);
+    repoOrder.length = 0;
+    repoOrder.push(...sortedRepoOrder);
+
     // パスのルートは常に元のTASKS配列でのindexを使う(フィルタ/並び替えでlistの順序がTASKSとズレるため)
     feed.innerHTML = repoOrder.map((repo) => {
       const nodes = byRepo.get(repo);
@@ -1363,19 +1391,26 @@
       const cats = new Set(nodes.map(taskCategory));
       const typeTagHtml = cats.size === 1 ? `<span class="type-tag">${CATEGORY_LABELS[[...cats][0]]}</span>` : "";
       const tree = nodes.map((t, i) => renderRow(t, `${TASKS.indexOf(t)}`, { isLast: i === nodes.length - 1 })).join("");
+      // グループ全体(タスク一覧本体)の折りたたみ。画面が小さいと1グループだけで画面の大半を
+      // 占めてしまうため、ヘッダーは常に表示したまま本体だけ開閉できるようにしている(2026-08-10追加)。
+      // 既定(未クリック)は展開状態。
+      const collapsed = collapsedRepoGroups.has(repo);
       return `
         <div class="task-group" data-repo-group="${repo}" style="--group-color:${avatarColor(first)}">
           <div class="repo-header">
+            <button class="group-collapse-btn" data-group-collapse-toggle="${repo}" title="${collapsed ? "タスク一覧を展開" : "タスク一覧を折りたたむ"}">${collapsed ? "▶" : "▼"}</button>
             <div class="avatar lg" style="background:${avatarColor(first)}">${avatarText}</div>
             <span class="repo-name">${repoDisplayName(repo)}</span>
             ${typeTagHtml}
+            <span class="group-count-tag">${nodes.length}件</span>
             <button class="add-task-btn" data-add-parent="repo:${repo}" data-add-repo="${repo}" title="このリポジトリに新しいタスクを追加します">＋ 新規タスク</button>
           </div>
+          ${collapsed ? "" : `
           <div class="table-head">
             <span title="レベル: 1=親タスク/2=子タスク/3=孫タスク">Lv</span><span></span><span></span><span></span>
             <span>タスク</span><span>優先度</span><span>ステータス</span><span>更新日</span>
           </div>
-          ${tree}
+          ${tree}`}
         </div>`;
     }).join("");
 
