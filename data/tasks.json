@@ -1982,19 +1982,24 @@
       "task": "gurii-gabreh/text-extraction: 画像の文字起こし処理を作業ルームで直接実行する(今回分・直近の失敗画像)",
       "title": "文字起こし処理(今回分の失敗画像)",
       "priority": "高",
-      "status": "作業ルーム対応中",
+      "status": "対応中",
       "updated": "2026-08-10",
       "category": "manual",
-      "workerSession": "session_013jKGMVzHtC4d4wiJFnLTrT",
-      "nextAction": "3回目の依頼中。1回目(session_01Ftguz2MBoPUNjynZHqHxGk)は進捗ゼロで強制停止、2回目(session_014M59jXBigQMphh2NRagAb1)はコンテナ起動失敗(chdirエラー)。早期に最初のコミットを出すよう指示済み。実データ処理(本タスクの本題)は認証情報提供後に着手",
-      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。",
+      "nextAction": "スキャフォールドはマネージャールームが直接実装し完了(PR #1マージ済み)。実データ処理(本タスクの本題)は認証情報提供後に着手",
+      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。\n[2026-08-10・重要] スキャフォールド作成が3回とも作業ルームで失敗した根本原因が判明: リポジトリ`gurii-gabreh/text-extraction`は`gurii-gabreh/Text-Extraction`(大文字)へリネームされていた。旧URLでもgitコマンド単体はリダイレクトに追従するため問題ないが、create_sessionでの作業ルーム起動時のコンテナ構築処理がリダイレクト前提のディレクトリ名でchdirしてしまい失敗していたと考えられる(2回目の失敗ログ「chdir /home/user/text-extraction: no such file or directory」と符合)。今後この repo へ作業ルームを依頼する際は、必ず`https://github.com/gurii-gabreh/Text-Extraction`(大文字)を使うこと。これに気づかず3回同じURLで依頼していたため、最終的にユーザー指示でマネージャールームが直接(git clone/push/PR作成)対応した。",
       "content": [
         "背景: これまでtext-extractionはローカル(Mac)からPythonのbatch.pyがclaude CLIをサブプロセス呼び出しして画像の文字起こしを行っていたが、CLIが原因不明のエラー(code=1、エラーメッセージ空)で全件失敗するようになった。CLIサブプロセス経由をやめ、作業ルーム自身の画像読み取り能力で直接処理する方式に切り替える",
         "対象データ: Googleドライブの直近の失敗分フォルダ(https://drive.google.com/drive/u/0/folders/1BM7Utm0zLntiz1uVH_zY5sPgjnBhogT7)。出力先はtext-extractionのconfig.json内spreadsheet_id/sheet_nameで指定される既存スプレッドシート(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名)"
       ],
-      "detail": "",
+      "detail": "claude_pipeline/(output/latest.json・review.html・gas/Code.gs・README.md)として実装済み(PR #1、gurii-gabreh/Text-Extraction、マージ済み)。既存のcore/*.py・batch.py・app.pyは一切変更していない。GAS(Code.gs)は元ファイル名で重複チェックし、同じJSONへの再実行でも二重追記しない設計。output/sample.jsonでreview.htmlの表示(欠損フィールド警告・正解ハイライト含む)を確認済み。",
       "issues": "",
-      "output": "",
+      "output": "https://github.com/gurii-gabreh/Text-Extraction/pull/1",
+      "completedItems": [
+        {
+          "item": "claude_pipeline/ディレクトリ一式(JSON出力スキーマ・サンプル・review.html・GAS・README)をマネージャールームが直接実装し、PR #1として作成・マージ",
+          "date": "2026-08-10"
+        }
+      ],
       "steps": [
         "対象フォルダ内の画像を一覧取得する",
         "各画像を直接読み取り、question_number(第◯問)・question_text(問題文本文。メタ情報・模擬試験進捗表示は除外)・choice_a〜d(選択肢ア〜エ本文、ラベル除く)・answer(「正解：」直後の1文字、「あなたの解答：」は無視)を抽出する。「分類：」「解説：」以降は読み取り対象外",
@@ -2022,7 +2027,11 @@
         },
         {
           "date": "2026-08-10",
-          "summary": "session_014M59jXBigQMphh2NRagAb1はコンテナ起動自体に失敗(chdir /home/user/text-extraction: no such file or directory、リポジトリクローン前にディレクトリ移動を試みたインフラ側の一時的な不具合と思われる)。アーカイブし、3回目としてsession_013jKGMVzHtC4d4wiJFnLTrTへ再依頼。"
+          "summary": "session_014M59jXBigQMphh2NRagAb1はコンテナ起動自体に失敗(chdir /home/user/text-extraction: no such file or directory)。アーカイブし、3回目としてsession_013jKGMVzHtC4d4wiJFnLTrTへ再依頼。"
+        },
+        {
+          "date": "2026-08-10",
+          "summary": "3回目も同一エラーで失敗。ユーザーの指示でマネージャールームが直接対応することに変更。調査の結果、リポジトリがgurii-gabreh/text-extraction→Text-Extraction(大文字)へリネームされていたことが根本原因と判明。マネージャールームがclaude_pipeline/一式を実装し、正しいURL(Text-Extraction)でPR #1を作成・マージした。"
         }
       ]
     },
@@ -2035,7 +2044,7 @@
       "status": "未着手",
       "updated": "2026-08-10",
       "category": "manual",
-      "nextAction": "TEX-001のスキャフォールド作成が仕切り直しのため、そちらの完了を待って共用する",
+      "nextAction": "TEX-001でスキャフォールド(claude_pipeline/)が完成したため共用可能。実データ処理は認証情報提供後に着手",
       "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。今後繰り返し使う定期処理テンプレートとして、TEX-001(今回分)と同内容だが対象フォルダをconfig.json記載の標準の処理対象サブフォルダとする版。運用方法(都度登録/定期実行)はTEX-001完了後に検討する。\n[2026-08-10] TEX-001と同じ出力アーキテクチャ(JSON→GAS自動書き込み→一覧HTMLレビュー、旧Pythonパイプラインとは別ディレクトリ)を共用する方針。",
       "content": [
         "対象データ: Googleドライブの処理対象フォルダ(text-extractionのconfig.json内target_subfolder_idで指定される標準の処理対象サブフォルダ)。出力先はconfig.json内spreadsheet_id/sheet_nameで指定される既存スプレッドシート(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名)"
