@@ -1933,6 +1933,10 @@
             {
               "date": "2026-08-10",
               "summary": "作業ルームがPR #2(gas/update-spreadsheets.gs + README更新)を作成。内容確認のうえマネージャールームがマージ。デプロイ(Apps Scriptへの貼り付け・Drive API有効化・GITHUB_TOKEN設定・setupDailyTrigger実行)はユーザー側の残タスク。"
+            },
+            {
+              "date": "2026-08-10",
+              "summary": "ユーザーがデプロイ・実行完了。GAS自体は正常動作(data/spreadsheets.jsonは44件→1件に正しく絞り込み済み、直近実行も全て成功)を確認。ただしdashboard.htmlのスプレッドシート一覧タブは、2026-08-01時点で作った44件のデータをHTML内に埋め込み(`const DATA`)で持っており、data/spreadsheets.jsonを実行時に読みに行っていなかったため、Web上は44件のまま変化していなかった。実装ナレッジタブと同じfetch方式に統一する修正(PR #3)をマネージャールームが実施・マージし解消。\n[調査時の余談] 確認中、このリポジトリのGitHub上の「デフォルトブランチ」設定がmainではなく古いブランチ(claude/spreadsheet-list-dashboard-te7yvs、8/1時点)になっていることが判明。マネージャールームがブランチ指定なしでファイル取得した際にこれを誤ってmainだと勘違いし、一時「mainがリセットされた」と誤報告してしまった(実際はmainは正常、ユーザーへ訂正済み)。紛らわしいため、デフォルトブランチをmainに直すことを提案し、ユーザーの返答待ち。"
             }
           ]
         }
