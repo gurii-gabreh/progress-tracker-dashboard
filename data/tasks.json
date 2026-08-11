@@ -449,6 +449,18 @@
     },
     {
       "repo": "相談事項",
+      "id": "PTD-020",
+      "task": "AIを活用したエンジニアとして更に上を目指すための方向性の相談。都庁主催のハッカソンのようなコンテストへの参加で実績を作っていく方針について",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-10",
+      "category": "manual",
+      "note": "",
+      "detail": "",
+      "output": ""
+    },
+    {
+      "repo": "相談事項",
       "id": "PTD-021",
       "task": "現在のAI技術で副業として成立しそうな項目の調査。また、技術力を伸ばせば就ける職種についての調査",
       "priority": "中",
@@ -2273,38 +2285,38 @@
       ]
     },
     {
-      "repo": "progress-tracker-dashboard",
-      "id": "PTD-020",
-      "task": "AIを活用したエンジニアとして更に上を目指すための方向性の相談。都庁主催のハッカソンのようなコンテストへの参加で実績を作っていく方針について",
+      "repo": "AIエンジニア方向性",
+      "id": "PTD-037",
+      "task": "AIエンジニアとしての方向性検討(実績調査・必要スキル調査)",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "2026-08-11、元は相談事項(PTD-019配下)にあったが、実際に着手する調査タスク(下記子タスク)を持つため、後日相談専用の「相談事項」枠から外し、progress-tracker-dashboard直下の通常タスクへ移した。",
+      "note": "2026-08-11新規登録。「相談事項」や「結(kizashi)」と同じ、独立したrepoグループとして親タスク化(README運用ルール34)。子タスクはPTD-035・PTD-036(同じrepo値のフラットな並列タスク)。",
       "detail": "",
       "output": ""
     },
     {
-      "repo": "progress-tracker-dashboard",
+      "repo": "AIエンジニア方向性",
       "id": "PTD-035",
       "task": "AIの技術として現状の実績のある内容の吸い出し",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "PTD-020(方向性の相談)の子タスク。",
+      "note": "PTD-037(AIエンジニアとしての方向性検討)の子タスク。",
       "detail": "",
       "output": ""
     },
     {
-      "repo": "progress-tracker-dashboard",
+      "repo": "AIエンジニア方向性",
       "id": "PTD-036",
       "task": "今後独立・現場に出た際に必要となるスキルの調査",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "PTD-020(方向性の相談)の子タスク。",
+      "note": "PTD-037(AIエンジニアとしての方向性検討)の子タスク。",
       "detail": "",
       "output": ""
     }
