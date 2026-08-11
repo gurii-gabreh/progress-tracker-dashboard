@@ -104,24 +104,18 @@
   .view-panel.active { display: flex; flex-direction: column; }
   #applist-iframe, #knowledge-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
-  /* ⚙ 運用ポリシータブ(2026-08-11追加)。data/policy.jsonを読み込んで表示する。
-     iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する。 */
+  /* 🤖 AI基本設定タブ(2026-08-11追加)。data/ai-config.jsonを読み込んで表示する。
+     iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する
+     (.policy-*という命名は元々⚙運用ポリシータブ用に作ったものを流用している名残)。 */
   .policy-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   .policy-wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
   .policy-meta { font-size: 12.5px; color: var(--text-muted); }
   .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
-  .policy-card.inactive { opacity: 0.5; }
-  .policy-card-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-  .policy-id { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 999px; }
-  .policy-title { font-weight: 700; font-size: 14px; }
-  .policy-scope { font-size: 11px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
   .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
 
-  /* 🤖 AI基本設定タブ(2026-08-11追加)。⚙運用ポリシータブと同じ.policy-*クラスを流用し、
-     セクション見出し・外部リンクカードだけ追加する。 */
+  /* 🤖 AI基本設定タブ(2026-08-11追加、schemaVersion 2で箇条書き表示に変更)。 */
   .ai-config-section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
   .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
-  .ai-config-role-label { font-weight: 700; font-size: 12.5px; color: var(--accent); margin-bottom: 2px; }
   .ai-config-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .ai-config-toolbar .policy-meta { flex: 1 1 auto; }
   .ai-config-bullets { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--text); }
@@ -671,7 +665,6 @@
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
-    <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -805,14 +798,6 @@
   </div>
   <div id="knowledge-view" class="view-panel">
     <iframe id="knowledge-iframe" title="ナレッジ一覧" loading="lazy"></iframe>
-  </div>
-  <div id="policy-view" class="view-panel">
-    <div class="policy-scroll">
-      <div class="policy-wrap">
-        <div class="policy-meta" id="policy-meta">読み込み中…</div>
-        <div id="policy-list"></div>
-      </div>
-    </div>
   </div>
   <div id="ai-config-view" class="view-panel">
     <div class="policy-scroll">
@@ -2288,7 +2273,9 @@
       "タスクID {タスクID} について相談したい。",
       "",
       "【最初にやること】",
-      "gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json を確認し、",
+      "gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "data/policy.json(運用ポリシー)を読み、その内容(役割分担・第二意見チェックの運用等)に従ってください。",
+      "そのうえで gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json を確認し、",
       "同じリポジトリ・似た内容の過去の実装知見が無いか調べてから相談に乗ってください。",
       "",
       "【運用ルール】",
@@ -2317,13 +2304,16 @@
       "全リポジトリ横断のマネージャールームとして動いてほしい。",
       "",
       "【最初にやること】",
-      "1. 実装進捗管理シートの依頼タスクタブ全体と、",
+      "1. gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "   data/policy.json(運用ポリシー)を読み、司令塔としての役割分担・第二意見チェックの",
+      "   運用基準などに従う",
+      "2. 実装進捗管理シートの依頼タスクタブ全体と、",
       "   gurii-gabreh/progress-tracker-dashboard の data/tasks.json(対象リポジトリ全部)を読む",
-      "2. 高優先度のもの・依存関係(同じブロッカー待ちのタスク群)・滞留しているもの・",
+      "3. 高優先度のもの・依存関係(同じブロッカー待ちのタスク群)・滞留しているもの・",
       "   完了済みなのに未着手に戻っているものなどを横断的にチェックする",
-      "3. その結果を、生の履歴やnote全文を貼らず要点だけに圧縮して提示する",
+      "4. その結果を、生の履歴やnote全文を貼らず要点だけに圧縮して提示する",
       "   (タスクID・状況・引っかかっている理由・提案アクション、程度の一覧でよい)",
-      "4. 相談・実装の判断材料として、gurii-gabreh/Knowledge-Dashboard の",
+      "5. 相談・実装の判断材料として、gurii-gabreh/Knowledge-Dashboard の",
       "   data/knowledge-index.json(過去タスクの実装知見・要件知見)と data/requirements.json を",
       "   必要に応じて参照する(過去に似た実装・判断が無いか確認してから提案する)",
       "",
@@ -2373,12 +2363,14 @@
       "セッション)に振り分けること。このルーム自身では実装作業を行わない。",
       "",
       "【進め方】",
-      "1. 相談内容を聞き、実装すべきタスクとして具体化する",
-      "2. どの作業ルーム(アカウント)に振り分けるかを判断する",
+      "1. gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "   data/policy.json(運用ポリシー)を読み、その内容に従う",
+      "2. 相談内容を聞き、実装すべきタスクとして具体化する",
+      "3. どの作業ルーム(アカウント)に振り分けるかを判断する",
       "   (処理が混み合っている場合はサブアカウント側の作業ルームに回すなど)",
-      "3. 作業ルームには「作業ルーム宛」の依頼文テンプレートをベースに、",
+      "4. 作業ルームには「作業ルーム宛」の依頼文テンプレートをベースに、",
       "   タスクの具体的な内容を書き加えて依頼する",
-      "4. 作業ルームからの完了報告(リポジトリ直下のstatus.json)を確認し、ユーザーに報告する",
+      "5. 作業ルームからの完了報告(リポジトリ直下のstatus.json)を確認し、ユーザーに報告する",
       "",
       "不明点があれば、作業ルームに振り分ける前にこのルームで確認してください。",
     ].join("\n");
@@ -2391,13 +2383,16 @@
       "{マネージャールームから指示された実装内容をここに書く}",
       "",
       "■ 進め方",
-      "1. まずリポジトリの現状の技術構成(フレームワーク、既存のUI構造など)を確認してください",
-      "2. 既存のスタイル・構造に合わせて実装してください",
-      "3. 実装が完了したら、変更をコミット・プッシュしてください",
+      "1. まず gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "   data/policy.json(運用ポリシー)を読み、作業ルームとしての役割・第二意見チェックの",
+      "   運用基準などに従ってください",
+      "2. リポジトリの現状の技術構成(フレームワーク、既存のUI構造など)を確認してください",
+      "3. 既存のスタイル・構造に合わせて実装してください",
+      "4. 実装が完了したら、変更をコミット・プッシュしてください",
       "   (新規のfeatureブランチを作成すること。mainには直接プッシュしないこと)",
-      "4. 完了したら、リポジトリ直下に status.json を作成し、以下の形式で結果を記録してコミットしてください:",
+      "5. 完了したら、リポジトリ直下に status.json を作成し、以下の形式で結果を記録してコミットしてください:",
       '   {"status": "done", "summary": "作業内容の要約", "timestamp": "ISO8601形式の日時"}',
-      "5. 不明点があれば、実装を進める前に一度作業を止めて質問内容をまとめてください",
+      "6. 不明点があれば、実装を進める前に一度作業を止めて質問内容をまとめてください",
     ].join("\n");
   }
 
@@ -2495,7 +2490,8 @@
       "(ここに書き換えて、話したいことを書く)",
       "",
       "【このルームにやってほしいこと】",
-      "1. まず gurii-gabreh/progress-tracker-dashboard の data/tasks.json と、",
+      "1. まず gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "   data/policy.json(運用ポリシー)・data/tasks.json と、",
       "   gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json・",
       "   data/requirements.json を読み、関連する過去の実績・判断が無いか確認する",
       "   (data/requirements.json の userProfile.patterns も必ず確認する)",
@@ -2608,7 +2604,6 @@
         // ディレクトリ直下だとGitHub Pagesのindex.html探索で404になる。明示的にファイル名まで指定する。
         iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/dashboard.html",
       },
-      policy: { btn: document.getElementById("top-tab-policy"), panel: document.getElementById("policy-view") },
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
     };
     function activate(view) {
@@ -2657,43 +2652,9 @@
   }
   loadTasksData();
 
-  // data/policy.json(運用ポリシーの正本)を読み込んで⚙運用ポリシータブに表示する(2026-08-11追加)。
-  // プッシュ型(依頼文テンプレートへの書き込み)だけでは既に動いている長寿命ルームに変更が
-  // 反映されないため、各ルームがこのファイルをプル型で読みに行く方式に切り替えた際に、
-  // 人間がブラウザ上で現在のポリシーを確認できるようにする専用ページ(README運用ルール32参照)。
-  const SCOPE_LABELS = { manager: "マネージャールーム", worker: "作業ルーム(共有Routine)" };
-  function loadPolicyData() {
-    const metaEl = document.getElementById("policy-meta");
-    const listEl = document.getElementById("policy-list");
-    return fetch("data/policy.json", { cache: "no-store" })
-      .then((res) => {
-        if (!res.ok) throw new Error(`data/policy.json の取得に失敗しました(HTTP ${res.status})`);
-        return res.json();
-      })
-      .then((data) => {
-        metaEl.textContent = `version ${data.version} ・ 最終更新: ${data.updatedAt}`;
-        const rules = Array.isArray(data.rules) ? data.rules : [];
-        listEl.innerHTML = rules.map((rule) => {
-          const scope = (rule.appliesTo || []).map((s) => SCOPE_LABELS[s] || s).join(" / ");
-          return `
-            <div class="policy-card${rule.active === false ? " inactive" : ""}">
-              <div class="policy-card-head">
-                <span class="policy-id">${escapeHtml(rule.id || "")}</span>
-                <span class="policy-title">${escapeHtml(rule.title || "")}</span>
-                <span class="policy-scope">${escapeHtml(scope)}</span>
-                ${rule.active === false ? '<span class="policy-scope">無効</span>' : ""}
-              </div>
-              <div class="policy-detail">${escapeHtml(rule.detail || "")}</div>
-            </div>`;
-        }).join("") || `<div class="empty">ルールはまだ登録されていません。</div>`;
-      })
-      .catch((err) => {
-        console.error(err);
-        metaEl.textContent = "";
-        listEl.innerHTML = `<div class="empty">data/policy.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
-      });
-  }
-  loadPolicyData();
+  // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
+  // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、
+  // ⚙運用ポリシータブを廃止。ファイル自体・各ルームの読み込みは運用ルール32のまま維持)。
 
   // data/ai-config.json(AI基本設定の正本)を読み込んで🤖AI基本設定タブに表示する(2026-08-11追加)。
   // 人が読む箇条書き(data.web)とAIが実際に従う詳細情報(data.ai)を分けて持つ構成(schemaVersion 2)。
