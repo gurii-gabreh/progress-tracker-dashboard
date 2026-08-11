@@ -90,7 +90,9 @@
   .top-tab-bar {
     flex: 0 0 auto; display: flex; gap: 6px; padding: 10px 16px 0;
     background: var(--bg); max-width: 720px; margin: 0 auto; width: 100%; box-sizing: border-box;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
+  .top-tab-bar::-webkit-scrollbar { display: none; }
   .top-tab-btn {
     font-size: 12.5px; font-weight: 700; padding: 7px 16px; border-radius: 10px 10px 0 0;
     border: 1px solid var(--border); border-bottom: none; background: var(--surface-2);
@@ -101,6 +103,35 @@
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
   #applist-iframe, #knowledge-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+
+  /* ⚙ 運用ポリシータブ(2026-08-11追加)。data/policy.jsonを読み込んで表示する。
+     iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する。 */
+  .policy-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .policy-wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+  .policy-meta { font-size: 12.5px; color: var(--text-muted); }
+  .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .policy-card.inactive { opacity: 0.5; }
+  .policy-card-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .policy-id { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 999px; }
+  .policy-title { font-weight: 700; font-size: 14px; }
+  .policy-scope { font-size: 11px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+  .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+
+  /* 🤖 AI基本設定タブ(2026-08-11追加)。⚙運用ポリシータブと同じ.policy-*クラスを流用し、
+     セクション見出し・外部リンクカードだけ追加する。 */
+  .ai-config-section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
+  .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
+  .ai-config-role-label { font-weight: 700; font-size: 12.5px; color: var(--accent); margin-bottom: 2px; }
+  .ai-config-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ai-config-toolbar .policy-meta { flex: 1 1 auto; }
+  .ai-config-bullets { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--text); }
+  .ai-config-bullets li { margin: 2px 0; }
+  .ai-config-edit-textarea {
+    width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; line-height: 1.7;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; resize: vertical; min-height: 72px;
+  }
+  .ai-config-edit-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
 
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
@@ -221,6 +252,10 @@
   }
   .stat-indicator.done { background: var(--status-done-bg); color: var(--status-done-fg); }
   .stat-indicator.pending { background: var(--status-doing-bg); color: var(--status-doing-fg); }
+  .stat-id-tag {
+    flex: 0 0 auto; font-size: 10.5px; font-weight: 700; color: var(--accent);
+    background: var(--accent-soft); padding: 2px 8px; border-radius: 999px;
+  }
 
   .avatar {
     width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
@@ -270,6 +305,10 @@
   }
   .group-collapse-btn:hover { opacity: 1; }
   .group-count-tag { font-size: 11px; color: rgba(255, 255, 255, 0.85); }
+  .id-prefix-tag {
+    font-size: 10.5px; font-weight: 700; color: #fff; letter-spacing: 0.03em;
+    background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 1px 8px;
+  }
 
   .table-head {
     display: grid; grid-template-columns: 22px 16px 20px 20px minmax(120px, 1fr) 52px 92px 78px;
@@ -631,6 +670,8 @@
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
+    <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
+    <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -764,6 +805,26 @@
   </div>
   <div id="knowledge-view" class="view-panel">
     <iframe id="knowledge-iframe" title="ナレッジ一覧" loading="lazy"></iframe>
+  </div>
+  <div id="policy-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="policy-meta" id="policy-meta">読み込み中…</div>
+        <div id="policy-list"></div>
+      </div>
+    </div>
+  </div>
+  <div id="ai-config-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="ai-config-toolbar">
+          <div class="policy-meta" id="ai-config-meta">読み込み中…</div>
+          <button class="settings-btn" id="ai-config-edit-toggle-btn" hidden>✏️ 編集</button>
+          <button class="settings-btn" id="ai-config-apply-btn" hidden>⏩ JSONへ反映を依頼</button>
+        </div>
+        <div id="ai-config-body"></div>
+      </div>
+    </div>
   </div>
   </div>
 </div>
@@ -990,10 +1051,16 @@
       const allDone = nodes.every(t => aggregateStatus(t) === "完了");
       const color = avatarColor({ repo });
       const avatarText = REPO_AVATAR_TEXT[repo] || repo.slice(0, 2).toUpperCase();
+      // タスクIDの頭文字(例: PTD/KIZ)。avatarText(見た目用の丸アイコン、例:「PR」「結」)とは別物で、
+      // 実際のタスクid(例: PTD-019)の先頭から動的に取り出す(2026-08-11、この📋リポジトリ概要
+      // ストリップへの追加が本来の依頼箇所だった)。
+      const idPrefixMatch = nodes.map(t => t.id).find(Boolean)?.match(/^([A-Za-z]+)-/);
+      const idTagHtml = idPrefixMatch ? `<span class="stat-id-tag">${escapeHtml(idPrefixMatch[1])}</span>` : "";
       return `
         <div class="stat-row" data-stat-repo="${repo}">
           <div class="avatar" style="background:${color}">${avatarText}</div>
           <span class="name">${repoDisplayName(repo)}</span>
+          ${idTagHtml}
           <span class="stat-indicator ${allDone ? "done" : "pending"}">${allDone ? "✓ すべて完了" : "● 未完了あり"}</span>
         </div>`;
     });
@@ -1531,6 +1598,11 @@
       // (代わりに各タスク行のメタ情報に個別で種別バッジを出す)。
       const cats = new Set(nodes.map(taskCategory));
       const typeTagHtml = cats.size === 1 ? `<span class="type-tag">${CATEGORY_LABELS[[...cats][0]]}</span>` : "";
+      // タスクIDの頭文字(例: PTD/KIZ)をヘッダーに表示する(2026-08-11追加)。README運用ルール24の
+      // 略号表をJS側に二重管理で持たせず、実際のid(例: PTD-019)の先頭から動的に取り出す。
+      // 「相談事項」のようなrepo名自体は略号表に無い擬似グループでも、実idから正しく拾える。
+      const idPrefixMatch = nodes.map((t) => t.id).find(Boolean)?.match(/^([A-Za-z]+)-/);
+      const idPrefixHtml = idPrefixMatch ? `<span class="id-prefix-tag">${escapeHtml(idPrefixMatch[1])}</span>` : "";
       const tree = nodes.map((t, i) => renderRow(t, `${TASKS.indexOf(t)}`, { isLast: i === nodes.length - 1 })).join("");
       // グループ全体(タスク一覧本体)の折りたたみ。画面が小さいと1グループだけで画面の大半を
       // 占めてしまうため、ヘッダーは常に表示したまま本体だけ開閉できるようにしている(2026-08-10追加)。
@@ -1542,6 +1614,7 @@
             <button class="group-collapse-btn" data-group-collapse-toggle="${repo}" title="${collapsed ? "タスク一覧を展開" : "タスク一覧を折りたたむ"}">${collapsed ? "▶" : "▼"}</button>
             <div class="avatar lg" style="background:${avatarColor(first)}">${avatarText}</div>
             <span class="repo-name">${repoDisplayName(repo)}</span>
+            ${idPrefixHtml}
             ${typeTagHtml}
             <span class="group-count-tag">${nodes.length}件</span>
             <button class="add-task-btn" data-add-parent="repo:${repo}" data-add-repo="${repo}" title="このリポジトリに新しいタスクを追加します">＋ 新規タスク</button>
@@ -2535,6 +2608,8 @@
         // ディレクトリ直下だとGitHub Pagesのindex.html探索で404になる。明示的にファイル名まで指定する。
         iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/dashboard.html",
       },
+      policy: { btn: document.getElementById("top-tab-policy"), panel: document.getElementById("policy-view") },
+      "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2581,4 +2656,167 @@
       });
   }
   loadTasksData();
+
+  // data/policy.json(運用ポリシーの正本)を読み込んで⚙運用ポリシータブに表示する(2026-08-11追加)。
+  // プッシュ型(依頼文テンプレートへの書き込み)だけでは既に動いている長寿命ルームに変更が
+  // 反映されないため、各ルームがこのファイルをプル型で読みに行く方式に切り替えた際に、
+  // 人間がブラウザ上で現在のポリシーを確認できるようにする専用ページ(README運用ルール32参照)。
+  const SCOPE_LABELS = { manager: "マネージャールーム", worker: "作業ルーム(共有Routine)" };
+  function loadPolicyData() {
+    const metaEl = document.getElementById("policy-meta");
+    const listEl = document.getElementById("policy-list");
+    return fetch("data/policy.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/policy.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        metaEl.textContent = `version ${data.version} ・ 最終更新: ${data.updatedAt}`;
+        const rules = Array.isArray(data.rules) ? data.rules : [];
+        listEl.innerHTML = rules.map((rule) => {
+          const scope = (rule.appliesTo || []).map((s) => SCOPE_LABELS[s] || s).join(" / ");
+          return `
+            <div class="policy-card${rule.active === false ? " inactive" : ""}">
+              <div class="policy-card-head">
+                <span class="policy-id">${escapeHtml(rule.id || "")}</span>
+                <span class="policy-title">${escapeHtml(rule.title || "")}</span>
+                <span class="policy-scope">${escapeHtml(scope)}</span>
+                ${rule.active === false ? '<span class="policy-scope">無効</span>' : ""}
+              </div>
+              <div class="policy-detail">${escapeHtml(rule.detail || "")}</div>
+            </div>`;
+        }).join("") || `<div class="empty">ルールはまだ登録されていません。</div>`;
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        listEl.innerHTML = `<div class="empty">data/policy.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadPolicyData();
+
+  // data/ai-config.json(AI基本設定の正本)を読み込んで🤖AI基本設定タブに表示する(2026-08-11追加)。
+  // 人が読む箇条書き(data.web)とAIが実際に従う詳細情報(data.ai)を分けて持つ構成(schemaVersion 2)。
+  // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
+  // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
+  let aiConfigData = null;
+  let aiConfigEditing = false;
+  const AI_CONFIG_SECTIONS = ["orchestration", "aiDirectory", "secondOpinionCheck", "management"];
+
+  function findNodeById(id, nodes = TASKS) {
+    for (const node of nodes) {
+      if (node.id === id) return node;
+      if (node.subtasks) {
+        const found = findNodeById(id, node.subtasks);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  function renderAiConfigView() {
+    const bodyEl = document.getElementById("ai-config-body");
+    const editBtn = document.getElementById("ai-config-edit-toggle-btn");
+    const applyBtn = document.getElementById("ai-config-apply-btn");
+    if (!aiConfigData) return;
+    const web = aiConfigData.web || {};
+    editBtn.hidden = false;
+    editBtn.textContent = aiConfigEditing ? "✕ 編集をやめる" : "✏️ 編集";
+    applyBtn.hidden = !aiConfigEditing;
+
+    bodyEl.innerHTML = AI_CONFIG_SECTIONS.map((key) => {
+      const section = web[key] || {};
+      const points = section.points || [];
+      const linkHtml = section.link
+        ? `<a class="ai-config-link" href="${escapeHtml(section.link.url)}" target="_blank" rel="noopener">📄 ${escapeHtml(section.link.label || "参照先")}</a>`
+        : "";
+      const body = aiConfigEditing
+        ? `<textarea class="ai-config-edit-textarea" data-ai-config-section="${key}" rows="${Math.max(3, points.length + 1)}">${escapeHtml(points.join("\n"))}</textarea>
+           <div class="ai-config-edit-hint">1行1項目。空行は無視されます。</div>`
+        : `<ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
+      return `
+        <div class="ai-config-section-title">${escapeHtml(section.title || key)}</div>
+        <div class="policy-card">${body}</div>`;
+    }).join("");
+  }
+
+  function loadAiConfigData() {
+    const metaEl = document.getElementById("ai-config-meta");
+    const bodyEl = document.getElementById("ai-config-body");
+    return fetch("data/ai-config.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/ai-config.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        aiConfigData = data;
+        metaEl.textContent = `最終更新: ${data.updatedAt}`;
+        renderAiConfigView();
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        bodyEl.innerHTML = `<div class="empty">data/ai-config.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadAiConfigData();
+
+  // 「⏩ JSONへ反映を依頼」: 静的なダッシュボードにはGitHubへの書き込み権限が無いため、直接
+  // data/ai-config.jsonを書き換えることはできない(運用ルール20と同じ制約)。既存の「追加指示」
+  // 経路(sendComment相当)をそのまま流用し、この機能を追加したタスク(PTD-029)へのコメントとして
+  // 編集内容を送る。次回のRoutine/マネージャールーム実行時に読み取られ、data/ai-config.jsonへ
+  // 反映される想定(README運用ルール8と同じ仕組み)。
+  document.getElementById("ai-config-edit-toggle-btn").addEventListener("click", () => {
+    aiConfigEditing = !aiConfigEditing;
+    renderAiConfigView();
+  });
+
+  document.getElementById("ai-config-apply-btn").addEventListener("click", () => {
+    const updatedWeb = {};
+    document.querySelectorAll("[data-ai-config-section]").forEach((el) => {
+      const key = el.dataset.aiConfigSection;
+      const points = el.value.split("\n").map((s) => s.trim()).filter(Boolean);
+      const original = (aiConfigData.web || {})[key] || {};
+      updatedWeb[key] = { ...original, points };
+    });
+
+    const node = findNodeById("PTD-029");
+    if (!node) {
+      showToast("⚠ PTD-029が見つからず送信できませんでした");
+      return;
+    }
+    const text = "ダッシュボードの🤖AI基本設定タブで編集された内容を、data/ai-config.jsonのwebセクションへ" +
+      "反映してください(schemaVersion 2、data.ai側の詳細情報は変更不要)。編集後の内容:\n" +
+      JSON.stringify(updatedWeb, null, 2);
+
+    if (!node.comments) node.comments = [];
+    const at = new Date().toISOString().slice(0, 16).replace("T", " ");
+    node.comments.push({ author: "user", text, at });
+    showToast("送信中…");
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        addComment: [{ repo: node.repo || "progress-tracker-dashboard", task: node.task, text, author: "user", at }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 反映依頼を送信しました(次回のルーム対応でJSONに反映されます)");
+      })
+      .catch(() => {
+        showToast("⚠ 送信に失敗しました(次回のRoutine実行時にPTD-029のコメントから拾われる見込みです)");
+      });
+
+    aiConfigEditing = false;
+    // 反映されるまでは実データ(aiConfigData)を書き換えず、依頼内容だけをコメントとして送る
+    // (実際のJSON更新はマネージャールーム/作業ルーム側でこの依頼を見て行う)。
+    renderAiConfigView();
+  });
 </script>
