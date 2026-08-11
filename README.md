@@ -256,8 +256,11 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       変更しない
     - リポジトリ略号: `progress-tracker-dashboard`→`PTD`、`kizashi`→`KIZ`、
       `supermarket-price-tracker`→`SPT`、`gemini-monitor`→`GEM`、`ai-research-radar`→`AIR`、
-      `usage-tracker`→`UST`、`Knowledge-Dashboard`→`KND`(将来リポジトリが増えた場合は、
-      repo名の先頭3文字を大文字にしたものをデフォルトの略号とする)
+      `usage-tracker`→`UST`、`Knowledge-Dashboard`→`KND`、`相談事項`→`PTD`(相談事項は
+      progress-tracker-dashboard配下の後日相談枠のため、id接頭辞もPTDのまま)、
+      `AIエンジニア方向性`→`AIE`(2026-08-11追加。運用ルール34の「親タスクは独立したrepo値を
+      持つ」に伴い新設した専用repoのため、PTDとは別の接頭辞を割り当てた)(将来リポジトリが
+      増えた場合は、repo名の先頭3文字を大文字にしたものをデフォルトの略号とする)
     - `dashboard.html`側では`nextTaskId(repo)`という採番用のヘルパー関数を用意しており、
       ダッシュボード上の「＋新規タスク」ボタンや「🔄 更新」によるスプレッドシートからの
       取り込み(`mergeSheetTasksIntoView`)では自動的にこの関数でidが付与される。**Routineが
