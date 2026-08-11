@@ -449,42 +449,6 @@
     },
     {
       "repo": "相談事項",
-      "id": "PTD-020",
-      "task": "AIを活用したエンジニアとして更に上を目指すための方向性の相談。都庁主催のハッカソンのようなコンテストへの参加で実績を作っていく方針について",
-      "priority": "中",
-      "status": "未着手",
-      "updated": "2026-08-11",
-      "category": "manual",
-      "note": "2026-08-11、PTD-020を親タスク化(相談事項・kizashi「結」と同じレベル)。子タスクPTD-035・PTD-036は、このタスクの下にネストせず、PTD-019配下のPTD-020〜026と同じ並び(repo:相談事項のフラットな並列タスク)として登録している。",
-      "detail": "",
-      "output": ""
-    },
-    {
-      "repo": "相談事項",
-      "id": "PTD-035",
-      "task": "AIの技術として現状の実績のある内容の吸い出し",
-      "priority": "中",
-      "status": "未着手",
-      "updated": "2026-08-11",
-      "category": "manual",
-      "note": "PTD-020(方向性の相談)の子タスク。",
-      "detail": "",
-      "output": ""
-    },
-    {
-      "repo": "相談事項",
-      "id": "PTD-036",
-      "task": "今後独立・現場に出た際に必要となるスキルの調査",
-      "priority": "中",
-      "status": "未着手",
-      "updated": "2026-08-11",
-      "category": "manual",
-      "note": "PTD-020(方向性の相談)の子タスク。",
-      "detail": "",
-      "output": ""
-    },
-    {
-      "repo": "相談事項",
       "id": "PTD-021",
       "task": "現在のAI技術で副業として成立しそうな項目の調査。また、技術力を伸ばせば就ける職種についての調査",
       "priority": "中",
@@ -2307,6 +2271,42 @@
           "summary": "ユーザーから「クレジットの一覧をAI基本設定タブの横に追加して」「表だけで、入手した情報があれば随時更新していく形でいい」と依頼を受け対応。usage-tracker本体の完成を待たず、暫定の単純な表(data/credit-log.json)として先に用意した。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-020",
+      "task": "AIを活用したエンジニアとして更に上を目指すための方向性の相談。都庁主催のハッカソンのようなコンテストへの参加で実績を作っていく方針について",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-11",
+      "category": "manual",
+      "note": "2026-08-11、元は相談事項(PTD-019配下)にあったが、実際に着手する調査タスク(下記子タスク)を持つため、後日相談専用の「相談事項」枠から外し、progress-tracker-dashboard直下の通常タスクへ移した。",
+      "detail": "",
+      "output": ""
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-035",
+      "task": "AIの技術として現状の実績のある内容の吸い出し",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-11",
+      "category": "manual",
+      "note": "PTD-020(方向性の相談)の子タスク。",
+      "detail": "",
+      "output": ""
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-036",
+      "task": "今後独立・現場に出た際に必要となるスキルの調査",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-11",
+      "category": "manual",
+      "note": "PTD-020(方向性の相談)の子タスク。",
+      "detail": "",
+      "output": ""
     }
   ]
 }
