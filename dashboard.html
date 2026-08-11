@@ -102,6 +102,19 @@
   .view-panel.active { display: flex; flex-direction: column; }
   #applist-iframe, #knowledge-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
+  /* ⚙ 運用ポリシータブ(2026-08-11追加)。data/policy.jsonを読み込んで表示する。
+     iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する。 */
+  .policy-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .policy-wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+  .policy-meta { font-size: 12.5px; color: var(--text-muted); }
+  .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .policy-card.inactive { opacity: 0.5; }
+  .policy-card-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .policy-id { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 999px; }
+  .policy-title { font-weight: 700; font-size: 14px; }
+  .policy-scope { font-size: 11px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+  .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
     padding-top: 20px; padding-bottom: 12px; background: var(--bg);
@@ -631,6 +644,7 @@
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
+    <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -764,6 +778,14 @@
   </div>
   <div id="knowledge-view" class="view-panel">
     <iframe id="knowledge-iframe" title="ナレッジ一覧" loading="lazy"></iframe>
+  </div>
+  <div id="policy-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="policy-meta" id="policy-meta">読み込み中…</div>
+        <div id="policy-list"></div>
+      </div>
+    </div>
   </div>
   </div>
 </div>
@@ -2535,6 +2557,7 @@
         // ディレクトリ直下だとGitHub Pagesのindex.html探索で404になる。明示的にファイル名まで指定する。
         iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/dashboard.html",
       },
+      policy: { btn: document.getElementById("top-tab-policy"), panel: document.getElementById("policy-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2581,4 +2604,42 @@
       });
   }
   loadTasksData();
+
+  // data/policy.json(運用ポリシーの正本)を読み込んで⚙運用ポリシータブに表示する(2026-08-11追加)。
+  // プッシュ型(依頼文テンプレートへの書き込み)だけでは既に動いている長寿命ルームに変更が
+  // 反映されないため、各ルームがこのファイルをプル型で読みに行く方式に切り替えた際に、
+  // 人間がブラウザ上で現在のポリシーを確認できるようにする専用ページ(README運用ルール32参照)。
+  const SCOPE_LABELS = { manager: "マネージャールーム", worker: "作業ルーム(共有Routine)" };
+  function loadPolicyData() {
+    const metaEl = document.getElementById("policy-meta");
+    const listEl = document.getElementById("policy-list");
+    return fetch("data/policy.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/policy.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        metaEl.textContent = `version ${data.version} ・ 最終更新: ${data.updatedAt}`;
+        const rules = Array.isArray(data.rules) ? data.rules : [];
+        listEl.innerHTML = rules.map((rule) => {
+          const scope = (rule.appliesTo || []).map((s) => SCOPE_LABELS[s] || s).join(" / ");
+          return `
+            <div class="policy-card${rule.active === false ? " inactive" : ""}">
+              <div class="policy-card-head">
+                <span class="policy-id">${escapeHtml(rule.id || "")}</span>
+                <span class="policy-title">${escapeHtml(rule.title || "")}</span>
+                <span class="policy-scope">${escapeHtml(scope)}</span>
+                ${rule.active === false ? '<span class="policy-scope">無効</span>' : ""}
+              </div>
+              <div class="policy-detail">${escapeHtml(rule.detail || "")}</div>
+            </div>`;
+        }).join("") || `<div class="empty">ルールはまだ登録されていません。</div>`;
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        listEl.innerHTML = `<div class="empty">data/policy.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadPolicyData();
 </script>
