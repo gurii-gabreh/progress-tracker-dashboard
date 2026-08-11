@@ -122,6 +122,16 @@
   .ai-config-section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
   .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
   .ai-config-role-label { font-weight: 700; font-size: 12.5px; color: var(--accent); margin-bottom: 2px; }
+  .ai-config-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ai-config-toolbar .policy-meta { flex: 1 1 auto; }
+  .ai-config-bullets { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--text); }
+  .ai-config-bullets li { margin: 2px 0; }
+  .ai-config-edit-textarea {
+    width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; line-height: 1.7;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; resize: vertical; min-height: 72px;
+  }
+  .ai-config-edit-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
 
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
@@ -660,8 +670,8 @@
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
-    <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
+    <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -807,7 +817,11 @@
   <div id="ai-config-view" class="view-panel">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="policy-meta" id="ai-config-meta">読み込み中…</div>
+        <div class="ai-config-toolbar">
+          <div class="policy-meta" id="ai-config-meta">読み込み中…</div>
+          <button class="settings-btn" id="ai-config-edit-toggle-btn" hidden>✏️ 編集</button>
+          <button class="settings-btn" id="ai-config-apply-btn" hidden>⏩ JSONへ反映を依頼</button>
+        </div>
         <div id="ai-config-body"></div>
       </div>
     </div>
@@ -2682,8 +2696,50 @@
   loadPolicyData();
 
   // data/ai-config.json(AI基本設定の正本)を読み込んで🤖AI基本設定タブに表示する(2026-08-11追加)。
-  // マネージャールームを司令塔とする役割分担、AIツール一覧スプレッドシートの参照先、第二意見チェック
-  // (data/policy.jsonへの参照)、管理方針(自動管理・GAS経由のスプレッドシート同期原則)をまとめる。
+  // 人が読む箇条書き(data.web)とAIが実際に従う詳細情報(data.ai)を分けて持つ構成(schemaVersion 2)。
+  // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
+  // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
+  let aiConfigData = null;
+  let aiConfigEditing = false;
+  const AI_CONFIG_SECTIONS = ["orchestration", "aiDirectory", "secondOpinionCheck", "management"];
+
+  function findNodeById(id, nodes = TASKS) {
+    for (const node of nodes) {
+      if (node.id === id) return node;
+      if (node.subtasks) {
+        const found = findNodeById(id, node.subtasks);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  function renderAiConfigView() {
+    const bodyEl = document.getElementById("ai-config-body");
+    const editBtn = document.getElementById("ai-config-edit-toggle-btn");
+    const applyBtn = document.getElementById("ai-config-apply-btn");
+    if (!aiConfigData) return;
+    const web = aiConfigData.web || {};
+    editBtn.hidden = false;
+    editBtn.textContent = aiConfigEditing ? "✕ 編集をやめる" : "✏️ 編集";
+    applyBtn.hidden = !aiConfigEditing;
+
+    bodyEl.innerHTML = AI_CONFIG_SECTIONS.map((key) => {
+      const section = web[key] || {};
+      const points = section.points || [];
+      const linkHtml = section.link
+        ? `<a class="ai-config-link" href="${escapeHtml(section.link.url)}" target="_blank" rel="noopener">📄 ${escapeHtml(section.link.label || "参照先")}</a>`
+        : "";
+      const body = aiConfigEditing
+        ? `<textarea class="ai-config-edit-textarea" data-ai-config-section="${key}" rows="${Math.max(3, points.length + 1)}">${escapeHtml(points.join("\n"))}</textarea>
+           <div class="ai-config-edit-hint">1行1項目。空行は無視されます。</div>`
+        : `<ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
+      return `
+        <div class="ai-config-section-title">${escapeHtml(section.title || key)}</div>
+        <div class="policy-card">${body}</div>`;
+    }).join("");
+  }
+
   function loadAiConfigData() {
     const metaEl = document.getElementById("ai-config-meta");
     const bodyEl = document.getElementById("ai-config-body");
@@ -2693,54 +2749,9 @@
         return res.json();
       })
       .then((data) => {
+        aiConfigData = data;
         metaEl.textContent = `最終更新: ${data.updatedAt}`;
-        const orch = data.orchestration || {};
-        const roleCards = (orch.roles || []).map((r) => `
-          <div class="policy-card">
-            <div class="ai-config-role-label">${escapeHtml(r.role || "")}</div>
-            <div class="policy-detail">${escapeHtml(r.responsibility || "")}</div>
-          </div>`).join("");
-
-        const dir = data.aiDirectory || {};
-        const src = dir.sourceOfTruth || {};
-        const vetted = (dir.vettedForSecondOpinion || []).map((v) => `
-          <div class="policy-card">
-            <div class="policy-card-head"><span class="policy-title">${escapeHtml(v.name || "")}</span></div>
-            <div class="policy-detail">${escapeHtml(v.access || "")}${v.note ? `\n${escapeHtml(v.note)}` : ""}</div>
-          </div>`).join("");
-
-        const secondOpinion = data.secondOpinionCheck || {};
-        const mgmt = data.management || {};
-
-        bodyEl.innerHTML = `
-          <div class="policy-card">
-            <div class="policy-detail">${escapeHtml(data.description || "")}</div>
-          </div>
-
-          <div class="ai-config-section-title">🧭 オーケストレーション(司令塔: ${escapeHtml(orch.commandCenter || "")})</div>
-          <div class="policy-card">
-            <div class="policy-detail">${escapeHtml(orch.description || "")}</div>
-          </div>
-          ${roleCards}
-
-          <div class="ai-config-section-title">🔍 AIディレクトリ</div>
-          <div class="policy-card">
-            <div class="policy-detail">${escapeHtml(src.usage || "")}</div>
-            ${src.url ? `<a class="ai-config-link" href="${escapeHtml(src.url)}" target="_blank" rel="noopener">📄 ${escapeHtml(src.label || "参照先シート")}</a>` : ""}
-          </div>
-          ${vetted}
-
-          <div class="ai-config-section-title">🧪 第二意見チェック</div>
-          <div class="policy-card">
-            <div class="policy-detail">${escapeHtml(secondOpinion.summary || "")}</div>
-            ${secondOpinion.ref ? `<div class="policy-scope" style="margin-top:6px; display:inline-block;">${escapeHtml(secondOpinion.ref)}</div>` : ""}
-          </div>
-
-          <div class="ai-config-section-title">⚙ 管理方針</div>
-          <div class="policy-card">
-            <div class="policy-detail">${escapeHtml(mgmt.note || "")}${mgmt.spreadsheetSync ? `\n\n${escapeHtml(mgmt.spreadsheetSync)}` : ""}</div>
-          </div>
-        `;
+        renderAiConfigView();
       })
       .catch((err) => {
         console.error(err);
@@ -2749,4 +2760,63 @@
       });
   }
   loadAiConfigData();
+
+  // 「⏩ JSONへ反映を依頼」: 静的なダッシュボードにはGitHubへの書き込み権限が無いため、直接
+  // data/ai-config.jsonを書き換えることはできない(運用ルール20と同じ制約)。既存の「追加指示」
+  // 経路(sendComment相当)をそのまま流用し、この機能を追加したタスク(PTD-029)へのコメントとして
+  // 編集内容を送る。次回のRoutine/マネージャールーム実行時に読み取られ、data/ai-config.jsonへ
+  // 反映される想定(README運用ルール8と同じ仕組み)。
+  document.getElementById("ai-config-edit-toggle-btn").addEventListener("click", () => {
+    aiConfigEditing = !aiConfigEditing;
+    renderAiConfigView();
+  });
+
+  document.getElementById("ai-config-apply-btn").addEventListener("click", () => {
+    const updatedWeb = {};
+    document.querySelectorAll("[data-ai-config-section]").forEach((el) => {
+      const key = el.dataset.aiConfigSection;
+      const points = el.value.split("\n").map((s) => s.trim()).filter(Boolean);
+      const original = (aiConfigData.web || {})[key] || {};
+      updatedWeb[key] = { ...original, points };
+    });
+
+    const node = findNodeById("PTD-029");
+    if (!node) {
+      showToast("⚠ PTD-029が見つからず送信できませんでした");
+      return;
+    }
+    const text = "ダッシュボードの🤖AI基本設定タブで編集された内容を、data/ai-config.jsonのwebセクションへ" +
+      "反映してください(schemaVersion 2、data.ai側の詳細情報は変更不要)。編集後の内容:\n" +
+      JSON.stringify(updatedWeb, null, 2);
+
+    if (!node.comments) node.comments = [];
+    const at = new Date().toISOString().slice(0, 16).replace("T", " ");
+    node.comments.push({ author: "user", text, at });
+    showToast("送信中…");
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        addComment: [{ repo: node.repo || "progress-tracker-dashboard", task: node.task, text, author: "user", at }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 反映依頼を送信しました(次回のルーム対応でJSONに反映されます)");
+      })
+      .catch(() => {
+        showToast("⚠ 送信に失敗しました(次回のRoutine実行時にPTD-029のコメントから拾われる見込みです)");
+      });
+
+    aiConfigEditing = false;
+    // 反映されるまでは実データ(aiConfigData)を書き換えず、依頼内容だけをコメントとして送る
+    // (実際のJSON更新はマネージャールーム/作業ルーム側でこの依頼を見て行う)。
+    renderAiConfigView();
+  });
 </script>

@@ -1,48 +1,85 @@
 {
-  "schemaVersion": 1,
-  "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。",
+  "schemaVersion": 2,
+  "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
   "updatedAt": "2026-08-11",
-  "orchestration": {
-    "commandCenter": "manager-room",
-    "description": "マネージャールームが司令塔となり、全リポジトリを横断して状況を把握し、優先度・懸念点の整理、実行の振り分け(自動Routineに任せる/その場で直接実行する)を行う。実際の実装作業は作業ルーム(共有Routineの定期実行、またはタスクごとの相談ルーム)が担当する。ルームの具体的な対応表(どのリポジトリがどのセッションIDか)はREADME.mdの「ルームマッピング」を正本とし、ここでは二重管理しない。",
-    "roles": [
-      {
-        "role": "manager-room",
-        "responsibility": "全リポジトリ横断の状況把握・優先度判断・振り分け。data/policy.json・data/ai-config.json(本ファイル)の自動管理。新規相談の聞き取り・要件定義。"
-      },
-      {
-        "role": "worker-room",
-        "responsibility": "個別リポジトリ/タスクの実装。実行の最初にdata/policy.json・data/ai-config.jsonを読み、その内容に従う(README運用ルール32・33)。"
-      }
-    ]
-  },
-  "aiDirectory": {
-    "sourceOfTruth": {
-      "label": "AIツール一覧スプレッドシート",
-      "url": "https://docs.google.com/spreadsheets/d/1GrR8vUc5A_C2Lo6C4Yrt_qqoN_gk6-M_Qw1WAuhp0ZI/edit?gid=2031406243",
-      "usage": "新しいタスクに最適なAIを探したいときは、まずこのシートを基準に候補を洗い出す。掲載数が多く更新頻度も高いため、全件をこのリポジトリのJSONへミラーせず、正本はスプレッドシート側に置いたまま参照する。"
+  "web": {
+    "orchestration": {
+      "title": "🧭 オーケストレーション",
+      "points": [
+        "司令塔: マネージャールーム(全リポジトリ横断の状況把握・優先度判断・振り分け)",
+        "実装: 作業ルーム(共有Routineの定期実行、またはタスクごとの相談ルーム)が担当",
+        "ルームの具体的な対応表はREADME.mdの「ルームマッピング」を参照(二重管理しない)"
+      ]
     },
-    "vettedForSecondOpinion": [
-      {
-        "name": "DeepSeek",
-        "access": "無料Web版(chat.deepseek.com)。高精度モード(DeepThink)を明示的に選ぶこと",
-        "note": "コーディング系ベンチマークでGemini Pro級以上の実績(2026-08-11時点の評価)。APIも従量課金で利用可(無料枠は少額)"
-      },
-      {
-        "name": "Kimi K2 (Moonshot AI)",
-        "access": "無料Web版(kimi.com)",
-        "note": "エージェント的コーディング・長文コンテキストに強い。DeepSeekと観点の異なる2つ目の意見源として併用"
+    "aiDirectory": {
+      "title": "🔍 AIディレクトリ",
+      "points": [
+        "最適なAIを探したいときは、下記のAIツール一覧スプレッドシートを基準に候補を洗い出す",
+        "第二意見チェックで使う候補: DeepSeek(無料Web版・DeepThinkモード)、Kimi K2(無料Web版)"
+      ],
+      "link": {
+        "label": "AIツール一覧スプレッドシート",
+        "url": "https://docs.google.com/spreadsheets/d/1GrR8vUc5A_C2Lo6C4Yrt_qqoN_gk6-M_Qw1WAuhp0ZI/edit?gid=2031406243"
       }
-    ]
+    },
+    "secondOpinionCheck": {
+      "title": "🧪 第二意見チェック",
+      "points": [
+        "後戻り困難・複数リポジトリ影響・要件解釈が曖昧な判断が完了したタイミングで実施(目安週2〜3件)",
+        "起票基準・チェック内容の詳細な正本はdata/policy.json(POL-001・POL-002)"
+      ]
+    },
+    "management": {
+      "title": "⚙ 管理方針",
+      "points": [
+        "司令塔(マネージャールーム)が自動的に管理・commitする(ユーザーの手動編集は不要)",
+        "スプレッドシートへの書き込みは常にGAS(gas/Code.gs)経由に統一する"
+      ]
+    }
   },
-  "secondOpinionCheck": {
-    "ref": "data/policy.json の POL-001・POL-002",
-    "summary": "後戻り困難・複数リポジトリ影響・要件解釈が曖昧な判断に該当する実装が完了したタイミングで、上記vettedForSecondOpinionのAIに第二意見を確認する。詳細な起票基準・チェック内容の正本はdata/policy.jsonに置き、二重管理を避けるためここでは参照のみ持つ。"
-  },
-  "management": {
-    "commandCenter": "manager-room",
-    "autoManaged": true,
-    "note": "本ファイルはマネージャールームが司令塔として自動的に更新・管理する。ユーザーが直接JSONを編集する必要はなく、相談内容に応じてマネージャールームが判断し、必要な変更をこのファイルへcommitする。",
-    "spreadsheetSync": "このプロジェクトでスプレッドシートへ書き込む経路は常にGAS(gas/Code.gs)経由に統一する(直接API書き込みはしない。README「目標アーキテクチャ」と同じ原則)。本ファイル自体は現時点で専用スプレッドシートを持たず、マネージャールームからの直接commitで管理するが、将来この内容の一部をスプレッドシート起点で更新する運用に拡張する場合も、書き込みは必ずGAS経由にするというこの原則を踏襲する。"
+  "ai": {
+    "orchestration": {
+      "commandCenter": "manager-room",
+      "description": "マネージャールームが司令塔となり、全リポジトリを横断して状況を把握し、優先度・懸念点の整理、実行の振り分け(自動Routineに任せる/その場で直接実行する)を行う。実際の実装作業は作業ルーム(共有Routineの定期実行、またはタスクごとの相談ルーム)が担当する。ルームの具体的な対応表(どのリポジトリがどのセッションIDか)はREADME.mdの「ルームマッピング」を正本とし、ここでは二重管理しない。",
+      "roles": [
+        {
+          "role": "manager-room",
+          "responsibility": "全リポジトリ横断の状況把握・優先度判断・振り分け。data/policy.json・data/ai-config.json(本ファイル)の自動管理。新規相談の聞き取り・要件定義。実装そのものは行わず作業ルームへ振る(2026-08-11、ユーザー指摘により明記)。"
+        },
+        {
+          "role": "worker-room",
+          "responsibility": "個別リポジトリ/タスクの実装。実行の最初にdata/policy.json・data/ai-config.jsonを読み、その内容に従う(README運用ルール32・33)。"
+        }
+      ]
+    },
+    "aiDirectory": {
+      "sourceOfTruth": {
+        "label": "AIツール一覧スプレッドシート",
+        "url": "https://docs.google.com/spreadsheets/d/1GrR8vUc5A_C2Lo6C4Yrt_qqoN_gk6-M_Qw1WAuhp0ZI/edit?gid=2031406243",
+        "usage": "新しいタスクに最適なAIを探したいときは、まずこのシートを基準に候補を洗い出す。掲載数が多く更新頻度も高いため、全件をこのリポジトリのJSONへミラーせず、正本はスプレッドシート側に置いたまま参照する。"
+      },
+      "vettedForSecondOpinion": [
+        {
+          "name": "DeepSeek",
+          "access": "無料Web版(chat.deepseek.com)。高精度モード(DeepThink)を明示的に選ぶこと",
+          "note": "コーディング系ベンチマークでGemini Pro級以上の実績(2026-08-11時点の評価)。APIも従量課金で利用可(無料枠は少額)"
+        },
+        {
+          "name": "Kimi K2 (Moonshot AI)",
+          "access": "無料Web版(kimi.com)",
+          "note": "エージェント的コーディング・長文コンテキストに強い。DeepSeekと観点の異なる2つ目の意見源として併用"
+        }
+      ]
+    },
+    "secondOpinionCheck": {
+      "ref": "data/policy.json の POL-001・POL-002",
+      "summary": "後戻り困難・複数リポジトリ影響・要件解釈が曖昧な判断に該当する実装が完了したタイミングで、上記vettedForSecondOpinionのAIに第二意見を確認する。詳細な起票基準・チェック内容の正本はdata/policy.jsonに置き、二重管理を避けるためここでは参照のみ持つ。"
+    },
+    "management": {
+      "commandCenter": "manager-room",
+      "autoManaged": true,
+      "note": "本ファイルはマネージャールームが司令塔として自動的に更新・管理する。ユーザーが直接JSONを編集する必要はなく、相談内容に応じてマネージャールームが判断し、必要な変更をこのファイルへcommitする。",
+      "spreadsheetSync": "このプロジェクトでスプレッドシートへ書き込む経路は常にGAS(gas/Code.gs)経由に統一する(直接API書き込みはしない。README「目標アーキテクチャ」と同じ原則)。本ファイル自体は現時点で専用スプレッドシートを持たず、マネージャールームからの直接commitで管理するが、将来この内容の一部をスプレッドシート起点で更新する運用に拡張する場合も、書き込みは必ずGAS経由にするというこの原則を踏襲する。"
+    }
   }
 }
