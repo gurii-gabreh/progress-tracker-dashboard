@@ -2301,12 +2301,24 @@
       "id": "AIE-002",
       "task": "AIの技術として現状の実績のある内容の吸い出し",
       "priority": "中",
-      "status": "未着手",
+      "status": "完了",
       "updated": "2026-08-11",
       "category": "manual",
       "note": "AIE-001(AIエンジニアとしての方向性検討)の子タスク。",
-      "detail": "",
-      "output": ""
+      "content": [
+        "progress-tracker-dashboardのdata/tasks.jsonを横断的に読み、各管理対象リポジトリで実際に完了した実績を棚卸しする"
+      ],
+      "detail": "全リポジトリのdata/tasks.jsonを横断集計(2026-08-11時点、完了/総数): progress-tracker-dashboard 21/25、kizashi(結) 20/28、supermarket-price-tracker 3/6、gemini-monitor 4/4、ai-research-radar 5/10、usage-tracker 1/6(設計のみ)、Knowledge-Dashboard 7/7、study-app 1/1、text-extraction 0/2、相談事項 0/9(後日相談枠)。\n\n【実績の要点、大きく3系統に分類できる】\n(1) オーケストレーション・システム設計力(progress-tracker-dashboard, Knowledge-Dashboard, ai-research-radar): 複数AI・複数リポジトリを横断するタスク管理基盤(スプレッドシート正本+GAS中継+GitHub)、運用ポリシーのプル型配信(data/policy.json)、第二意見チェックの自動起票基準、クロスリポジトリのナレッジ集約。ai-research-radarはgemini-monitorの計測データを読みに行き最適な実行時間帯を自動選択する連携まで実装している。\n(2) 実運用下でのトラブルシューティング・インフラ制約対応(progress-tracker-dashboard, supermarket-price-tracker, gemini-monitor): 「Routine実行環境からscript.google.comへの書き込みがネットワークポリシーでブロックされる」という想定外の制約を、書き込み方向を逆転させるアーキテクチャ変更(プル型同期)で根本解決。supermarket-price-trackerでは本番データ収集の停止を検知し、放置されていた未マージ修正3件をPR化。gemini-monitorでは「UIのトグルがバックエンドに反映されていない」という気づきにくいバグを発見・修正。\n(3) 実プロダクトのエンドツーエンド遂行力(kizashi/結、都知事杯オープンデータ・ハッカソン2026提出): 個人的な実体験を起点にした企画、複数の公的データソース(国土数値情報・気象庁・国土地理院・東京都建設局)の選定と利用規約確認、セキュリティ実装(AES-GCM暗号化、リクエスト認証)、外部APIの無料枠制約設計(LINE Messaging API月200通)、Cloudflare Workers+D1でのインフラ構築、ライセンス上のグレーゾーンを避けるための設計変更(国土地理院タイル自体を使わない方針転換)、プレゼン動画台本・エントリー項目下書きまでの提出物一式。\n\n【総合評価】単発のアプリ制作にとどまらず、AIエージェントを使った開発プロセス自体を統制・運用する仕組み(オーケストレーション)を構築しながら、実際に公開データ・外部APIを扱う実プロダクトを規約遵守・セキュリティ配慮込みで最後まで仕上げている点が特徴。技術力の証明(オーケストレーション基盤)と実績の証明(kizashi提出)を両輪で語れる状態にある。",
+      "output": "",
+      "completedItems": [
+        { "item": "progress-tracker-dashboardのdata/tasks.jsonを全リポジトリ横断で集計・分析し、実績を3系統(オーケストレーション設計/運用トラブルシューティング/実プロダクト遂行)に整理", "date": "2026-08-11" }
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-08-11",
+          "summary": "ユーザーから「横断的にみて判断してほしい」「他のリポジトリもすべて見て判断をしてほしい」と依頼を受け対応。Knowledge-Dashboardリポジトリを追加確認したが、実際の実装ナレッジはprogress-tracker-dashboardのdata/tasks.json自体に既に集約されていたため、そちらを横断集計する形で実績を棚卸しした。"
+        }
+      ]
     },
     {
       "repo": "AIエンジニア方向性",
