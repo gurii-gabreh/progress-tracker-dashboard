@@ -2286,37 +2286,37 @@
     },
     {
       "repo": "AIエンジニア方向性",
-      "id": "PTD-037",
+      "id": "AIE-001",
       "task": "AIエンジニアとしての方向性検討(実績調査・必要スキル調査)",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "2026-08-11新規登録。「相談事項」や「結(kizashi)」と同じ、独立したrepoグループとして親タスク化(README運用ルール34)。子タスクはPTD-035・PTD-036(同じrepo値のフラットな並列タスク)。",
+      "note": "2026-08-11新規登録。「相談事項」や「結(kizashi)」と同じ、独立したrepoグループとして親タスク化(README運用ルール34)。専用repoのため、id接頭辞もPTDではなくAIEを新設した(運用ルール24参照)。子タスクはAIE-002・AIE-003(同じrepo値のフラットな並列タスク)。",
       "detail": "",
       "output": ""
     },
     {
       "repo": "AIエンジニア方向性",
-      "id": "PTD-035",
+      "id": "AIE-002",
       "task": "AIの技術として現状の実績のある内容の吸い出し",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "PTD-037(AIエンジニアとしての方向性検討)の子タスク。",
+      "note": "AIE-001(AIエンジニアとしての方向性検討)の子タスク。",
       "detail": "",
       "output": ""
     },
     {
       "repo": "AIエンジニア方向性",
-      "id": "PTD-036",
+      "id": "AIE-003",
       "task": "今後独立・現場に出た際に必要となるスキルの調査",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "PTD-037(AIエンジニアとしての方向性検討)の子タスク。",
+      "note": "AIE-001(AIエンジニアとしての方向性検討)の子タスク。",
       "detail": "",
       "output": ""
     }
