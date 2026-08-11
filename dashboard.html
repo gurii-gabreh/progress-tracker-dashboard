@@ -115,6 +115,12 @@
   .policy-scope { font-size: 11px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
   .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
 
+  /* 🤖 AI基本設定タブ(2026-08-11追加)。⚙運用ポリシータブと同じ.policy-*クラスを流用し、
+     セクション見出し・外部リンクカードだけ追加する。 */
+  .ai-config-section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
+  .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
+  .ai-config-role-label { font-weight: 700; font-size: 12.5px; color: var(--accent); margin-bottom: 2px; }
+
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
     padding-top: 20px; padding-bottom: 12px; background: var(--bg);
@@ -234,6 +240,10 @@
   }
   .stat-indicator.done { background: var(--status-done-bg); color: var(--status-done-fg); }
   .stat-indicator.pending { background: var(--status-doing-bg); color: var(--status-doing-fg); }
+  .stat-id-tag {
+    flex: 0 0 auto; font-size: 10.5px; font-weight: 700; color: var(--accent);
+    background: var(--accent-soft); padding: 2px 8px; border-radius: 999px;
+  }
 
   .avatar {
     width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
@@ -649,6 +659,7 @@
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-policy" data-view="policy">⚙ 運用ポリシー</button>
+    <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -788,6 +799,14 @@
       <div class="policy-wrap">
         <div class="policy-meta" id="policy-meta">読み込み中…</div>
         <div id="policy-list"></div>
+      </div>
+    </div>
+  </div>
+  <div id="ai-config-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="policy-meta" id="ai-config-meta">読み込み中…</div>
+        <div id="ai-config-body"></div>
       </div>
     </div>
   </div>
@@ -1016,10 +1035,16 @@
       const allDone = nodes.every(t => aggregateStatus(t) === "完了");
       const color = avatarColor({ repo });
       const avatarText = REPO_AVATAR_TEXT[repo] || repo.slice(0, 2).toUpperCase();
+      // タスクIDの頭文字(例: PTD/KIZ)。avatarText(見た目用の丸アイコン、例:「PR」「結」)とは別物で、
+      // 実際のタスクid(例: PTD-019)の先頭から動的に取り出す(2026-08-11、この📋リポジトリ概要
+      // ストリップへの追加が本来の依頼箇所だった)。
+      const idPrefixMatch = nodes.map(t => t.id).find(Boolean)?.match(/^([A-Za-z]+)-/);
+      const idTagHtml = idPrefixMatch ? `<span class="stat-id-tag">${escapeHtml(idPrefixMatch[1])}</span>` : "";
       return `
         <div class="stat-row" data-stat-repo="${repo}">
           <div class="avatar" style="background:${color}">${avatarText}</div>
           <span class="name">${repoDisplayName(repo)}</span>
+          ${idTagHtml}
           <span class="stat-indicator ${allDone ? "done" : "pending"}">${allDone ? "✓ すべて完了" : "● 未完了あり"}</span>
         </div>`;
     });
@@ -2568,6 +2593,7 @@
         iframeId: "knowledge-iframe", url: "https://gurii-gabreh.github.io/Knowledge-Dashboard/dashboard.html",
       },
       policy: { btn: document.getElementById("top-tab-policy"), panel: document.getElementById("policy-view") },
+      "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2652,4 +2678,73 @@
       });
   }
   loadPolicyData();
+
+  // data/ai-config.json(AI基本設定の正本)を読み込んで🤖AI基本設定タブに表示する(2026-08-11追加)。
+  // マネージャールームを司令塔とする役割分担、AIツール一覧スプレッドシートの参照先、第二意見チェック
+  // (data/policy.jsonへの参照)、管理方針(自動管理・GAS経由のスプレッドシート同期原則)をまとめる。
+  function loadAiConfigData() {
+    const metaEl = document.getElementById("ai-config-meta");
+    const bodyEl = document.getElementById("ai-config-body");
+    return fetch("data/ai-config.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/ai-config.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        metaEl.textContent = `最終更新: ${data.updatedAt}`;
+        const orch = data.orchestration || {};
+        const roleCards = (orch.roles || []).map((r) => `
+          <div class="policy-card">
+            <div class="ai-config-role-label">${escapeHtml(r.role || "")}</div>
+            <div class="policy-detail">${escapeHtml(r.responsibility || "")}</div>
+          </div>`).join("");
+
+        const dir = data.aiDirectory || {};
+        const src = dir.sourceOfTruth || {};
+        const vetted = (dir.vettedForSecondOpinion || []).map((v) => `
+          <div class="policy-card">
+            <div class="policy-card-head"><span class="policy-title">${escapeHtml(v.name || "")}</span></div>
+            <div class="policy-detail">${escapeHtml(v.access || "")}${v.note ? `\n${escapeHtml(v.note)}` : ""}</div>
+          </div>`).join("");
+
+        const secondOpinion = data.secondOpinionCheck || {};
+        const mgmt = data.management || {};
+
+        bodyEl.innerHTML = `
+          <div class="policy-card">
+            <div class="policy-detail">${escapeHtml(data.description || "")}</div>
+          </div>
+
+          <div class="ai-config-section-title">🧭 オーケストレーション(司令塔: ${escapeHtml(orch.commandCenter || "")})</div>
+          <div class="policy-card">
+            <div class="policy-detail">${escapeHtml(orch.description || "")}</div>
+          </div>
+          ${roleCards}
+
+          <div class="ai-config-section-title">🔍 AIディレクトリ</div>
+          <div class="policy-card">
+            <div class="policy-detail">${escapeHtml(src.usage || "")}</div>
+            ${src.url ? `<a class="ai-config-link" href="${escapeHtml(src.url)}" target="_blank" rel="noopener">📄 ${escapeHtml(src.label || "参照先シート")}</a>` : ""}
+          </div>
+          ${vetted}
+
+          <div class="ai-config-section-title">🧪 第二意見チェック</div>
+          <div class="policy-card">
+            <div class="policy-detail">${escapeHtml(secondOpinion.summary || "")}</div>
+            ${secondOpinion.ref ? `<div class="policy-scope" style="margin-top:6px; display:inline-block;">${escapeHtml(secondOpinion.ref)}</div>` : ""}
+          </div>
+
+          <div class="ai-config-section-title">⚙ 管理方針</div>
+          <div class="policy-card">
+            <div class="policy-detail">${escapeHtml(mgmt.note || "")}${mgmt.spreadsheetSync ? `\n\n${escapeHtml(mgmt.spreadsheetSync)}` : ""}</div>
+          </div>
+        `;
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        bodyEl.innerHTML = `<div class="empty">data/ai-config.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadAiConfigData();
 </script>
