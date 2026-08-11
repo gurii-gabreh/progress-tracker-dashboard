@@ -1,0 +1,5 @@
+{
+  "description": "AI利用料金・使用量(クレジット)について分かった情報を、分かった時点で随時記録する表。usage-tracker(data/tasks.json UST-001〜006参照)の本格的な可視化サイトができるまでの暫定置き場。usage-trackerが完成したら移行する想定。",
+  "updatedAt": "2026-08-11",
+  "entries": []
+}

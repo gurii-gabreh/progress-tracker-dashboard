@@ -2252,6 +2252,30 @@
           "summary": "AI基本設定まわりの一連の対応(data/ai-config.json新設・ID頭文字バッジ・web/ai分離とタブ配置変更・タブバーのはみ出し修正)を実施。ユーザー指摘を受け、親タスク+子タスクの形へ再構成した(以後の指示もこの単位で記録する)。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-034",
+      "task": "💳クレジットタブを新設(data/credit-log.jsonの暫定表)",
+      "priority": "低",
+      "status": "完了",
+      "updated": "2026-08-11",
+      "note": "",
+      "content": [
+        "usage-tracker本体(UST-001〜006)ができるまでの暫定として、data/credit-log.jsonに分かった情報を随時追記していける単純な表を、AI基本設定タブの隣に用意する"
+      ],
+      "detail": "dashboard.htmlに「💳 クレジット」タブを🤖AI基本設定の隣に追加。data/credit-log.json(description/updatedAt/entries配列)を新設し、entries(date/service/detail/note)をそのまま表として描画する。現時点でentriesは空(まだ記録なし)。usage-trackerが実際に構築されたら、そちらへ移行する想定(UST-005参照)。",
+      "output": "",
+      "completedItems": [
+        { "item": "data/credit-log.json新設(空のentries配列)", "date": "2026-08-11" },
+        { "item": "dashboard.htmlへの💳クレジットタブ追加(表形式で表示)", "date": "2026-08-11" }
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-08-11",
+          "summary": "ユーザーから「クレジットの一覧をAI基本設定タブの横に追加して」「表だけで、入手した情報があれば随時更新していく形でいい」と依頼を受け対応。usage-tracker本体の完成を待たず、暫定の単純な表(data/credit-log.json)として先に用意した。"
+        }
+      ]
     }
   ]
 }
