@@ -30,6 +30,11 @@ var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装�
 //   ステータス: author=userの行のみ使用。"未対応" → "対応済み"(Routineの返信を検知して自動更新)
 //   対応内容: 対応済みになった際の、Routine側の返信本文をそのまま転記(問題点があればここに残る)
 var COMMENT_HEADERS = ["Repo", "Task", "発言者", "本文", "日時", "ステータス", "対応内容"];
+// ナレッジタブ: ステータス(完了・対応中・未着手問わず)全タスクを1行ずつ機械的に反映する専用タブ。
+// 「完了」タブの実装ナレッジ列は完了タスクのみが対象で、対応中タスクの実装ナレッジは
+// どこにも転記されない欠落があったため新設した(2026-08-12)。data/tasks.jsonの内容を
+// そのままミラーするだけで、Routine側が「書いたかどうか」を要約・判断せずに済むようにする。
+var KNOWLEDGE_HEADERS = ["Repo", "Task", "タスクID", "ステータス", "更新日", "実装ナレッジ", "備考", "問題点", "成果物"];
 // 📚学習ログタブの「確認した」ボタンの記録先。localStorageだけだと端末をまたいで見えず、
 // GitHub側(data/concept-log.json)からも状態が分からないため、押すたびにこのタブへ1行追記して
 // 永続化する(2026-08-11追加)。
@@ -208,6 +213,7 @@ function syncFromGithub() {
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
   var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
   var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
+  var knowledgeSheet = getOrCreateSheet(ss, "ナレッジ", KNOWLEDGE_HEADERS);
   ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
   ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
 
@@ -230,6 +236,27 @@ function syncFromGithub() {
   }
 
   var allTasks = flatten(data.tasks, null);
+
+  // ナレッジタブへの反映: ステータスを問わず全タスクを1行ずつ機械的にupsertする。
+  // 完了・対応中・未着手のどれであっても、data/tasks.json側のnote/detail/issues/outputを
+  // そのまま転記するだけで、要約や取捨選択は行わない(空欄なら空欄のまま書く。「何も書かれて
+  // いない」こと自体がシート上で一目で分かるようにするのが目的のため)。
+  var knowledgeIdx = buildSheetIndex(knowledgeSheet);
+  var updatedKnowledge = 0;
+  allTasks.forEach(function (t) {
+    if (!t.repo || !t.task || t.task.indexOf("(") === 0) return; // repo未設定・プレースホルダー行は対象外
+    var key = indexKey(t.repo, t.task);
+    var rowValues = [t.repo, t.task, t.id || "", t.status || "", t.updated || "", t.detail || "", t.note || "", t.issues || "", t.output || ""];
+    var row = knowledgeIdx.index[key];
+    if (row) {
+      knowledgeSheet.getRange(row, 1, 1, rowValues.length).setValues([rowValues]);
+    } else {
+      knowledgeSheet.getRange(knowledgeIdx.nextRow, 1, 1, rowValues.length).setValues([rowValues]);
+      knowledgeIdx.index[key] = knowledgeIdx.nextRow;
+      knowledgeIdx.nextRow++;
+    }
+    updatedKnowledge++;
+  });
 
   // 依頼タスク・完了タブは、タスク数分ループしながら毎回findRow(=シート全体を再読み込み)を
   // 呼んでいると、タスク数が増えるほど実行時間が線形以上に伸びる。特にdoPost経由({syncNow:true})の
@@ -334,6 +361,7 @@ function syncFromGithub() {
   return {
     ok: true, movedToDone: movedToDone, updatedPending: updatedPending, createdPending: createdPending,
     addedComments: addedComments, finalizedScheduled: finalizedCount, updatedCommentStatuses: updatedCommentStatuses,
+    updatedKnowledge: updatedKnowledge,
   };
 }
 
