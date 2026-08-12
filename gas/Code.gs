@@ -30,6 +30,10 @@ var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装�
 //   ステータス: author=userの行のみ使用。"未対応" → "対応済み"(Routineの返信を検知して自動更新)
 //   対応内容: 対応済みになった際の、Routine側の返信本文をそのまま転記(問題点があればここに残る)
 var COMMENT_HEADERS = ["Repo", "Task", "発言者", "本文", "日時", "ステータス", "対応内容"];
+// 📚学習ログタブの「確認した」ボタンの記録先。localStorageだけだと端末をまたいで見えず、
+// GitHub側(data/concept-log.json)からも状態が分からないため、押すたびにこのタブへ1行追記して
+// 永続化する(2026-08-11追加)。
+var CONCEPT_LOG_HEADERS = ["日時", "分野", "概念ID", "概念名", "文脈"];
 
 function doGet(e) {
   var action = e.parameter && e.parameter.action;
@@ -141,9 +145,18 @@ function doPost(e) {
     }
   });
 
+  // 📚学習ログタブの「確認した」ボタン。押すたびに1件ずつ、その場でこのタブへ記録する
+  // (GASが1日1回のタイマーでまとめて記録するのではなく、押した瞬間に即時記録する方式)。
+  var conceptLogSheet = getOrCreateSheet(ss, "学習ログ確認", CONCEPT_LOG_HEADERS);
+  var confirmedCount = 0;
+  (body.confirmConcept || []).forEach(function (c) {
+    conceptLogSheet.appendRow([c.at || jstNow_(), c.category || "", c.id || "", c.concept || "", c.context || ""]);
+    confirmedCount++;
+  });
+
   return ContentService.createTextOutput(JSON.stringify({
     ok: true, added: addedCount, markedUrgent: urgentCount, commented: commentCount,
-    completed: completedCount, scheduled: scheduledCount, canceled: canceledCount,
+    completed: completedCount, scheduled: scheduledCount, canceled: canceledCount, confirmed: confirmedCount,
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -152,6 +165,7 @@ function listTasks() {
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
   var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
   var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
+  var conceptLogSheet = getOrCreateSheet(ss, "学習ログ確認", CONCEPT_LOG_HEADERS);
   ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
   ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
 
@@ -177,6 +191,9 @@ function listTasks() {
     pending: rowsOf(pendingSheet, ["repo", "task", "priority", "status", "requestedAt", "note", "urgent", "scheduledComplete", "cancelDeadline"], { id: PENDING_ID_COL - 1 }),
     done: rowsOf(doneSheet, ["repo", "task", "priority", "completedAt", "note", "detail", "issues", "output", "id"]),
     comments: rowsOf(commentSheet, ["repo", "task", "author", "text", "at", "status", "resolution"]),
+    // 📚学習ログの確認記録。今のところ読み取り専用で公開するのみ(data/concept-log.jsonへの
+    // 反映はRoutine/マネージャールームが必要に応じて手動で行う想定。自動反映は未実装)。
+    conceptConfirmations: rowsOf(conceptLogSheet, ["at", "category", "id", "concept", "context"]),
   };
 }
 

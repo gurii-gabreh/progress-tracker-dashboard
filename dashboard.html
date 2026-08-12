@@ -2917,7 +2917,9 @@
                       ${item.note ? `<div class="concept-item-note">${escapeHtml(item.note)}</div>` : ""}
                       <div class="concept-item-meta">${escapeHtml(item.context || "")}${item.date ? ` ・ ${escapeHtml(item.date)}` : ""}</div>
                     </div>
-                    <button class="concept-check-btn${isChecked ? " checked" : ""}" data-concept-check="${escapeHtml(item.id)}">${isChecked ? "✓ 確認済" : "確認した"}</button>
+                    <button class="concept-check-btn${isChecked ? " checked" : ""}" data-concept-check="${escapeHtml(item.id)}"
+                      data-concept-category="${escapeHtml(cat.label || cat.key)}" data-concept-name="${escapeHtml(item.concept || "")}"
+                      data-concept-context="${escapeHtml(item.context || "")}">${isChecked ? "✓ 確認済" : "確認した"}</button>
                   </div>`;
               }).join("")
             : `<div class="empty">まだ記録はありません。</div>`;
@@ -2926,6 +2928,9 @@
             <div class="policy-card">${body}</div>`;
         }).join("");
 
+        // 「確認した」を押すたびに: (1) 端末のlocalStorageへ即座に反映(表示の即時性)、
+        // (2) GAS経由でスプレッドシート「学習ログ確認」タブへ1行記録(端末をまたいだ永続化)。
+        // チェックを外す操作はローカル表示の取り消しのみで、記録済みの行は消さない(ログのため)。
         wrap.querySelectorAll("[data-concept-check]").forEach((btn) => {
           btn.addEventListener("click", () => {
             const id = btn.dataset.conceptCheck;
@@ -2934,6 +2939,18 @@
             btn.classList.toggle("checked", nowChecked);
             btn.textContent = nowChecked ? "✓ 確認済" : "確認した";
             btn.closest(".concept-item").classList.toggle("checked", nowChecked);
+            if (!nowChecked) return;
+            fetch(GAS_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({
+                token: GAS_TOKEN,
+                confirmConcept: [{
+                  at: new Date().toISOString().slice(0, 16).replace("T", " "),
+                  category: btn.dataset.conceptCategory, id, concept: btn.dataset.conceptName, context: btn.dataset.conceptContext,
+                }],
+              }),
+            }).catch(() => { showToast("⚠ スプレッドシートへの記録に失敗しました(この端末上の表示は反映済みです)"); });
           });
         });
       })
