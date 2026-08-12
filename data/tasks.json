@@ -2328,7 +2328,7 @@
       "status": "未着手",
       "updated": "2026-08-11",
       "category": "manual",
-      "note": "2026-08-11新規登録。「相談事項」や「結(kizashi)」と同じ、独立したrepoグループとして親タスク化(README運用ルール34)。専用repoのため、id接頭辞もPTDではなくAIEを新設した(運用ルール24参照)。子タスクはAIE-002・AIE-003(同じrepo値のフラットな並列タスク)。",
+      "note": "2026-08-11新規登録。「相談事項」や「結(kizashi)」と同じ、独立したrepoグループとして親タスク化(README運用ルール34)。専用repoのため、id接頭辞もPTDではなくAIEを新設した(運用ルール24参照)。子タスクはAIE-002・AIE-003(同じrepo値のフラットな並列タスク)。\n【将来のリポジトリ分離】2026-08-11、本人より「あとで専用リポジトリを新規に作るので、その際はそちらへ移動させてほしい」と申告あり。それまでの暫定として、AIE-*系タスク一式(data/tasks.json)と、学習ログ機能一式(dashboard.htmlの📚学習ログタブ、data/concept-log.json、data/policy.json POL-004)はprogress-tracker-dashboard側に置いている。専用リポジトリ作成時は、UST-001(usage-tracker)と同様に新しいGitHubリポジトリ・専用ルームを立て、これらをまとめて移設すること。",
       "detail": "",
       "output": ""
     },
