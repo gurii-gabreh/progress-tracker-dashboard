@@ -1,0 +1,12 @@
+{
+  "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
+  "updatedAt": "2026-08-11",
+  "categories": [
+    { "key": "architecture", "label": "🏗 アーキテクチャ", "items": [] },
+    { "key": "server", "label": "🖥 サーバー・インフラ", "items": [] },
+    { "key": "security", "label": "🔒 セキュリティ", "items": [] },
+    { "key": "ai-llm", "label": "🤖 AI/LLM", "items": [] },
+    { "key": "db", "label": "🗄 データベース", "items": [] },
+    { "key": "testing", "label": "🧪 テスト", "items": [] }
+  ]
+}

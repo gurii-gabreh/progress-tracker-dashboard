@@ -149,6 +149,24 @@
   .credit-table th, .credit-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
   .credit-table th { color: var(--text-muted); font-weight: 700; font-size: 11.5px; }
 
+  /* 📚 学習ログタブ(2026-08-11追加)。 */
+  .concept-cat-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
+  .concept-item {
+    display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .concept-item:last-child { border-bottom: none; }
+  .concept-item-body { flex: 1 1 auto; min-width: 0; }
+  .concept-item-title { font-size: 13px; font-weight: 700; }
+  .concept-item-note { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+  .concept-item-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .concept-check-btn {
+    flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer;
+  }
+  .concept-check-btn.checked { border-color: var(--status-done-fg); color: var(--status-done-fg); background: var(--status-done-bg); }
+  .concept-item.checked .concept-item-title { text-decoration: line-through; opacity: 0.6; }
+
   .sticky-top {
     flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;
     padding-top: 20px; padding-bottom: 12px; background: var(--bg);
@@ -688,6 +706,7 @@
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
+    <button class="top-tab-btn" id="top-tab-concept" data-view="concept">📚 学習ログ</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -842,6 +861,17 @@
           <div class="policy-detail">usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定置き場です。分かった情報を`data/credit-log.json`へ随時追記していきます。</div>
         </div>
         <div id="credit-table-wrap"></div>
+      </div>
+    </div>
+  </div>
+  <div id="concept-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="policy-meta" id="concept-meta">読み込み中…</div>
+        <div class="policy-card">
+          <div class="policy-detail">実装のたびに出てきた概念を、AIエンジニア方向性の6分野別に記録します。毎日眺めて「✓ 確認した」を押すと、この端末に復習済みとして記録されます(GitHubには書き込みません)。</div>
+        </div>
+        <div id="concept-categories"></div>
       </div>
     </div>
   </div>
@@ -2640,6 +2670,7 @@
       },
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
+      concept: { btn: document.getElementById("top-tab-concept"), panel: document.getElementById("concept-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2848,6 +2879,88 @@
       });
   }
   loadCreditLogData();
+
+  // data/concept-log.json(📚学習ログタブ)。実装のたびに出てきた概念をAIエンジニア方向性の
+  // 6分野別に記録する(POL-004)。「✓ 確認した」の状態は共有データではなく個人の復習チェックなので
+  // GitHubへは書き込まず、ブラウザのlocalStorageだけで完結させる(2026-08-11追加)。
+  const CONCEPT_CHECKED_KEY = "conceptLogChecked";
+  function getConceptChecked() {
+    try { return JSON.parse(localStorage.getItem(CONCEPT_CHECKED_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function setConceptChecked(id, checked) {
+    const state = getConceptChecked();
+    if (checked) state[id] = true; else delete state[id];
+    localStorage.setItem(CONCEPT_CHECKED_KEY, JSON.stringify(state));
+  }
+  function loadConceptLogData() {
+    const metaEl = document.getElementById("concept-meta");
+    const wrap = document.getElementById("concept-categories");
+    return fetch("data/concept-log.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/concept-log.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        metaEl.textContent = `最終更新: ${data.updatedAt}`;
+        const checked = getConceptChecked();
+        const cats = Array.isArray(data.categories) ? data.categories : [];
+        wrap.innerHTML = cats.map((cat) => {
+          const items = cat.items || [];
+          const body = items.length
+            ? items.map((item) => {
+                const isChecked = !!checked[item.id];
+                return `
+                  <div class="concept-item${isChecked ? " checked" : ""}" data-concept-item="${escapeHtml(item.id)}">
+                    <div class="concept-item-body">
+                      <div class="concept-item-title">${escapeHtml(item.concept || "")}</div>
+                      ${item.note ? `<div class="concept-item-note">${escapeHtml(item.note)}</div>` : ""}
+                      <div class="concept-item-meta">${escapeHtml(item.context || "")}${item.date ? ` ・ ${escapeHtml(item.date)}` : ""}</div>
+                    </div>
+                    <button class="concept-check-btn${isChecked ? " checked" : ""}" data-concept-check="${escapeHtml(item.id)}"
+                      data-concept-category="${escapeHtml(cat.label || cat.key)}" data-concept-name="${escapeHtml(item.concept || "")}"
+                      data-concept-context="${escapeHtml(item.context || "")}">${isChecked ? "✓ 確認済" : "確認した"}</button>
+                  </div>`;
+              }).join("")
+            : `<div class="empty">まだ記録はありません。</div>`;
+          return `
+            <div class="concept-cat-title">${escapeHtml(cat.label || cat.key)}</div>
+            <div class="policy-card">${body}</div>`;
+        }).join("");
+
+        // 「確認した」を押すたびに: (1) 端末のlocalStorageへ即座に反映(表示の即時性)、
+        // (2) GAS経由でスプレッドシート「学習ログ確認」タブへ1行記録(端末をまたいだ永続化)。
+        // チェックを外す操作はローカル表示の取り消しのみで、記録済みの行は消さない(ログのため)。
+        wrap.querySelectorAll("[data-concept-check]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.dataset.conceptCheck;
+            const nowChecked = !btn.classList.contains("checked");
+            setConceptChecked(id, nowChecked);
+            btn.classList.toggle("checked", nowChecked);
+            btn.textContent = nowChecked ? "✓ 確認済" : "確認した";
+            btn.closest(".concept-item").classList.toggle("checked", nowChecked);
+            if (!nowChecked) return;
+            fetch(GAS_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({
+                token: GAS_TOKEN,
+                confirmConcept: [{
+                  at: new Date().toISOString().slice(0, 16).replace("T", " "),
+                  category: btn.dataset.conceptCategory, id, concept: btn.dataset.conceptName, context: btn.dataset.conceptContext,
+                }],
+              }),
+            }).catch(() => { showToast("⚠ スプレッドシートへの記録に失敗しました(この端末上の表示は反映済みです)"); });
+          });
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        wrap.innerHTML = `<div class="empty">data/concept-log.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadConceptLogData();
 
   // 「⏩ JSONへ反映を依頼」: 静的なダッシュボードにはGitHubへの書き込み権限が無いため、直接
   // data/ai-config.jsonを書き換えることはできない(運用ルール20と同じ制約)。既存の「追加指示」
