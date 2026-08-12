@@ -2596,6 +2596,31 @@
       ],
       "detail": "2026-08-11、マネージャールームでの相談から登録。「AIが無いと何もできない」への反証を自分のログとして積み上げる目的だったが、同日中に撤回(note参照)。",
       "output": ""
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-038",
+      "task": "💳クレジットと同じ位置づけで「📚 学習ログ」タブを新設(data/concept-log.json)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-11",
+      "note": "",
+      "content": [
+        "実装のたびに出てきた概念を、AIエンジニア方向性の6分野(architecture/server/security/ai-llm/db/testing)別に自動記録し、毎日眺めて復習できる学習サイトをprogress-tracker-dashboard側に用意する"
+      ],
+      "detail": "data/concept-log.jsonを新設(6分野それぞれにitems配列、現時点は空)。dashboard.htmlに「📚 学習ログ」タブを追加(💳クレジットの隣)。分野ごとにカード表示し、各項目に「確認した」ボタンを付けた。復習チェックの状態は共有せず個人の記憶定着専用のため、GitHubへは書き込まずブラウザのlocalStorageのみに保存する設計にした。自動記録の仕組みはdata/policy.json POL-004を拡張し、実装作業を行う全ルームが該当概念があれば`concept-log.json`へ追記してcommitするルールとして常設化した。",
+      "output": "",
+      "completedItems": [
+        { "item": "data/concept-log.json新設(6分野、空のitems配列)", "date": "2026-08-11" },
+        { "item": "dashboard.htmlへの📚学習ログタブ追加(確認ボタン=localStorage方式)", "date": "2026-08-11" },
+        { "item": "data/policy.json POL-004拡張(concept-log.jsonへの自動記録ルール)", "date": "2026-08-11" }
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-08-11",
+          "summary": "ユーザーから「自分独自の学習サイトを作ってほしい」と依頼を受け対応。実装のたびに出てきた概念を6分野別に自動記録し、日々の復習チェック(端末ローカル保存)ができる仕組みをprogress-tracker-dashboard内に構築した。"
+        }
+      ]
     }
   ]
 }
