@@ -2086,6 +2086,10 @@
             {
               "date": "2026-08-13",
               "summary": "本人がSettings > Pages > SourceをGitHub Actionsへ切り替え完了と報告。念のためworkflow_dispatchでデプロイを再実行し、成功(conclusion: success)を確認。"
+            },
+            {
+              "date": "2026-08-13",
+              "summary": "ユーザーから再度404の報告(実際の404画面のテキストを提示いただき確認)。ジョブログを直接確認したところデプロイ自体はReported success!で成功しており、原因はデプロイ方式の変更に伴う別の不具合と判明: progress-tracker-dashboard側のiframeは`.../Knowledge-Dashboard/dashboard.html`という具体的なファイル名を直接指定しているが、Actions方式のビルド(deploy-pages.yml)はdashboard.htmlをindex.htmlへリネームして公開する作りにしていたため、`/dashboard.html`というパス自体が存在せず404になっていた(以前のブランチ配信方式ではファイルがそのまま公開されていたため気づかれていなかった、私が今回の修正で作ってしまった回帰)。deploy-pages.ymlを修正し、index.htmlとdashboard.htmlの両方を同一内容で公開するようにして解消。修正後のデプロイ(run #31662221635)も成功を確認。"
             }
           ]
         }
