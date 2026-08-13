@@ -453,13 +453,14 @@
       "status": "完了",
       "updated": "2026-08-13",
       "category": "code",
-      "note": "2026-08-13、ユーザー指摘(1回目): 依頼メッセージで「README/policy.json/ai-configを読んでください」と書くだけでは、実際に読むかどうかはセッションの判断依存になってしまう(POL-003が対処していたのと同じ穴)。Claude Codeがセッション開始時に自動で読み込むCLAUDE.mdを使えば構造的に担保できるはずという指摘を受け、まずprogress-tracker-dashboard自身に作成。続けて「全てのリポジトリ、タスクに適用しろ」との指示を受け、他の管理対象リポジトリへも横展開した。\n2026-08-13、ユーザー指摘(2回目): 当初、他6リポジトリのCLAUDE.mdへルール文面(必読ファイル一覧・役割分担・POL-004/005)をそのまま複製してしまい、「ルールが変わるたびに7ファイル全部を書き換える羽目になる、1つに統一できないか」と指摘された。これはさっきスプレッドシートの「ナレッジ」タブで指摘されたのと同種の重複ミス。修正し、他6リポジトリのCLAUDE.mdはprogress-tracker-dashboard/CLAUDE.mdへのraw URL参照のみの3行程度に縮小した(実質を持つのはprogress-tracker-dashboard/CLAUDE.mdの1ファイルのみ)。",
+      "note": "2026-08-13、ユーザー指摘(1回目): 依頼メッセージで「README/policy.json/ai-configを読んでください」と書くだけでは、実際に読むかどうかはセッションの判断依存になってしまう(POL-003が対処していたのと同じ穴)。Claude Codeがセッション開始時に自動で読み込むCLAUDE.mdを使えば構造的に担保できるはずという指摘を受け、まずprogress-tracker-dashboard自身に作成。続けて「全てのリポジトリ、タスクに適用しろ」との指示を受け、他の管理対象リポジトリへも横展開した。\n2026-08-13、ユーザー指摘(2回目): 当初、他6リポジトリのCLAUDE.mdへルール文面をそのまま複製してしまい、「ルールが変わるたびに7ファイル全部を書き換える羽目になる、1つに統一できないか」と指摘された。修正し、他6リポジトリのCLAUDE.mdはURL参照のみの3行程度に縮小した。\n2026-08-13、ユーザー指摘(3回目): 「これで本当に必ず読むのか」「.mdファイルに直接置いておかないと自動で読まないのでは」と指摘された。参照のみに縮小した版は、CLAUDE.mdの文字列(URL)自体は自動で読み込まれるが、**そのURLを実際にWebFetch等でfetchするかどうかはモデルの判断依存に戻ってしまっており**、指示文で「読んでください」と書くのと同じ穴を1段階ズラして再現していただけだったと判明。最終的に、本当に外せない最重要ルール(役割分担・detail/note空欄放置禁止など数行)はインラインで複製し、詳細(policy.json等の全文)だけをURL参照にするハイブリッド構成に修正した(progress-tracker-dashboard自身のCLAUDE.mdは元からこの形だった)。",
       "completedItems": [
         { "item": "progress-tracker-dashboard: CLAUDE.md新設(必読3ファイルの一覧・manager-room/worker-roomの役割分担を明記。これが実質を持つ唯一のファイル)", "date": "2026-08-13" },
         { "item": "kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-appの6リポジトリへ、いったんルール文面を複製してCLAUDE.mdを作成", "date": "2026-08-13" },
-        { "item": "ユーザー指摘を受け、上記6リポジトリのCLAUDE.mdをprogress-tracker-dashboard/CLAUDE.mdへの参照のみ(3行程度)に縮小し直し、重複を解消", "date": "2026-08-13" }
+        { "item": "ユーザー指摘(2回目)を受け、上記6リポジトリのCLAUDE.mdをURL参照のみ(3行程度)に縮小し直し、重複を解消", "date": "2026-08-13" },
+        { "item": "ユーザー指摘(3回目)を受け、参照のみ版は実際にfetchされる保証が無いと判明したため、最重要ルール数行をインライン化し、詳細だけURL参照にするハイブリッド構成へ再修正", "date": "2026-08-13" }
       ],
-      "detail": "各リポジトリのCLAUDE.mdはリポジトリ名・一言説明に続けて、progress-tracker-dashboard/CLAUDE.mdのraw.githubusercontent.com URLを示すだけの最小の参照ファイルにした。ルールの実体(必読ファイル一覧・manager-room/worker-roomの役割分担・POL-004/POL-005の記録ルール)はprogress-tracker-dashboard/CLAUDE.mdの1箇所にのみ存在し、他6リポジトリ側には複製しない。これにより、ルール変更時はprogress-tracker-dashboard/CLAUDE.mdの1ファイルを更新するだけで済む。knowledge-dashboardのCLAUDE.mdのみ、KND-007/KND-008で判明したデフォルトブランチのズレ(古いブランチのまま)についての注意を例外的に追記している(そのリポジトリ固有の事情のため)。",
+      "detail": "各リポジトリのCLAUDE.mdは最終的に、(1)リポジトリ名・一言説明、(2)最重要ルール(このリポジトリはprogress-tracker-dashboardの管理対象/manager-room・worker-roomの役割分担/detail・note・checkHistoryを空欄のまま完了させない/意味のある実装判断はconcept-log.jsonに記録)を数行でインライン直接記載、(3)README.md/policy.json/ai-config.jsonへのraw URL(実際にfetchする必要がある旨を明記)、の3部構成にした。(2)の最重要ルールだけは全7リポジトリに複製されるが、変更頻度が低い内容に絞っているため許容範囲とした判断。knowledge-dashboardのCLAUDE.mdのみ、KND-007/KND-008で判明したデフォルトブランチのズレについての注意を例外的に追記している。",
       "issues": "usage-trackerは専用リポジトリがまだ作成されていない(UST-005が未着手のため)ため、CLAUDE.mdを置く先が無く対象外。専用リポジトリ作成後にCLAUDE.mdの新設も忘れずに行うこと。また、text-extraction・my-dashboardはこのセッションに既に接続されていたリポジトリだが、data/tasks.jsonのknownRepos一覧には含まれていないため、今回のスコープからは除外した(対象に含めるべきか要確認)。",
       "output": "各リポジトリのCLAUDE.md(例: https://github.com/gurii-gabreh/kizashi/blob/main/CLAUDE.md )",
       "checkHistory": [
