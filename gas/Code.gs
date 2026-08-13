@@ -30,9 +30,12 @@ var DONE_HEADERS = ["Repo", "Task", "優先度", "完了日", "備考", "実装�
 //   ステータス: author=userの行のみ使用。"未対応" → "対応済み"(Routineの返信を検知して自動更新)
 //   対応内容: 対応済みになった際の、Routine側の返信本文をそのまま転記(問題点があればここに残る)
 var COMMENT_HEADERS = ["Repo", "Task", "発言者", "本文", "日時", "ステータス", "対応内容"];
-// ナレッジタブ: ステータス(完了・対応中・未着手問わず)全タスクを1行ずつ機械的に反映する専用タブ。
-// 「完了」タブの実装ナレッジ列は完了タスクのみが対象で、対応中タスクの実装ナレッジは
-// どこにも転記されない欠落があったため新設した(2026-08-12)。data/tasks.jsonの内容を
+// 「対応中タスクのナレッジ」タブ: 完了していない(未着手・対応中・進行中等)タスクのみを対象に、
+// 1行ずつ機械的に反映する専用タブ。「完了」タブの実装ナレッジ列は完了タスクのみが対象で、
+// 完了していないタスクの実装ナレッジはどこにも転記されない欠落があったため新設した(2026-08-12)。
+// 完了タブと内容が重複しないよう、あるタスクが「完了」になった時点でこのタブの行は削除し、
+// 以後は完了タブ側にのみ実装ナレッジが残るようにする(完了タブ・このタブを合わせて見れば、
+// 常にどちらか片方にだけそのタスクの実装ナレッジがある状態になる)。data/tasks.jsonの内容を
 // そのままミラーするだけで、Routine側が「書いたかどうか」を要約・判断せずに済むようにする。
 var KNOWLEDGE_HEADERS = ["Repo", "Task", "タスクID", "ステータス", "更新日", "実装ナレッジ", "備考", "問題点", "成果物"];
 // 📚学習ログタブの「確認した」ボタンの記録先。localStorageだけだと端末をまたいで見えず、
@@ -213,7 +216,7 @@ function syncFromGithub() {
   var pendingSheet = getOrCreateSheet(ss, "依頼タスク", PENDING_HEADERS);
   var doneSheet = getOrCreateSheet(ss, "完了", DONE_HEADERS);
   var commentSheet = getOrCreateSheet(ss, "コメント", COMMENT_HEADERS);
-  var knowledgeSheet = getOrCreateSheet(ss, "ナレッジ", KNOWLEDGE_HEADERS);
+  var knowledgeSheet = getOrCreateSheet(ss, "対応中タスクのナレッジ", KNOWLEDGE_HEADERS);
   ensureHeaderColumns_(pendingSheet, PENDING_HEADERS);
   ensureHeaderColumns_(commentSheet, COMMENT_HEADERS);
 
@@ -237,19 +240,28 @@ function syncFromGithub() {
 
   var allTasks = flatten(data.tasks, null);
 
-  // ナレッジタブへの反映: ステータスを問わず全タスクを1行ずつ機械的にupsertする。
-  // 完了・対応中・未着手のどれであっても、data/tasks.json側のnote/detail/issues/outputを
-  // そのまま転記するだけで、要約や取捨選択は行わない(空欄なら空欄のまま書く。「何も書かれて
-  // いない」こと自体がシート上で一目で分かるようにするのが目的のため)。
+  // 「対応中タスクのナレッジ」タブへの反映: 完了していないタスクのみを1行ずつ機械的にupsertする。
+  // data/tasks.json側のnote/detail/issues/outputをそのまま転記するだけで、要約や取捨選択は
+  // 行わない(空欄なら空欄のまま書く。「何も書かれていない」こと自体がシート上で一目で
+  // 分かるようにするのが目的のため)。あるタスクが「完了」になった時点でこのタブの行は削除し、
+  // 完了タブと内容が重複しないようにする(完了タブ側は既存のmovedToDoneロジックが担当する)。
   var knowledgeIdx = buildSheetIndex(knowledgeSheet);
+  var knowledgeRowsToDelete = [];
   var updatedKnowledge = 0;
   allTasks.forEach(function (t) {
     if (!t.repo || !t.task || t.task.indexOf("(") === 0) return; // repo未設定・プレースホルダー行は対象外
     var key = indexKey(t.repo, t.task);
+    var existingRow = knowledgeIdx.index[key];
+    if (t.status === "完了") {
+      if (existingRow) {
+        knowledgeRowsToDelete.push(existingRow);
+        delete knowledgeIdx.index[key];
+      }
+      return;
+    }
     var rowValues = [t.repo, t.task, t.id || "", t.status || "", t.updated || "", t.detail || "", t.note || "", t.issues || "", t.output || ""];
-    var row = knowledgeIdx.index[key];
-    if (row) {
-      knowledgeSheet.getRange(row, 1, 1, rowValues.length).setValues([rowValues]);
+    if (existingRow) {
+      knowledgeSheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
     } else {
       knowledgeSheet.getRange(knowledgeIdx.nextRow, 1, 1, rowValues.length).setValues([rowValues]);
       knowledgeIdx.index[key] = knowledgeIdx.nextRow;
@@ -257,6 +269,9 @@ function syncFromGithub() {
     }
     updatedKnowledge++;
   });
+  // 行番号が大きいものから順に削除する(小さい方から消すと以降の行番号がずれるため)。
+  knowledgeRowsToDelete.sort(function (a, b) { return b - a; });
+  knowledgeRowsToDelete.forEach(function (row) { knowledgeSheet.deleteRow(row); });
 
   // 依頼タスク・完了タブは、タスク数分ループしながら毎回findRow(=シート全体を再読み込み)を
   // 呼んでいると、タスク数が増えるほど実行時間が線形以上に伸びる。特にdoPost経由({syncNow:true})の
