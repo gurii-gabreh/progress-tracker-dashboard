@@ -104,6 +104,22 @@
   .view-panel.active { display: flex; flex-direction: column; }
   #applist-iframe, #knowledge-iframe, #concept-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
+  /* 🏠 一覧タブ(2026-08-13追加)。タブ数が増えてきたためのナビゲーションハブ。my-dashboardの
+     「🏠一覧」カードグリッドと同じ考え方で、各タブへのショートカットカードを並べる。 */
+  .hub-scroll { flex: 1 1 auto; overflow-y: auto; }
+  .hub-wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
+  .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 18px; }
+  .hub-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+    text-align: left; font: inherit; color: inherit; width: 100%;
+  }
+  .hub-card:hover { border-color: var(--accent); }
+  .hub-card-icon { font-size: 22px; line-height: 1; }
+  .hub-card-title { font-size: 15px; font-weight: 800; }
+  .hub-card-desc { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); flex: 1 1 auto; }
+  .hub-card-cta { font-size: 12px; font-weight: 700; color: var(--accent); }
+
   /* 🤖 AI基本設定タブ(2026-08-11追加)。data/ai-config.jsonを読み込んで表示する。
      iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する
      (.policy-*という命名は元々⚙運用ポリシータブ用に作ったものを流用している名残)。 */
@@ -714,6 +730,7 @@
 
 <div class="app-shell">
   <div class="top-tab-bar">
+    <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
@@ -722,6 +739,52 @@
     <button class="top-tab-btn" id="top-tab-concept" data-view="concept">📚 学習スケジュール</button>
   </div>
   <div class="view-panel-area">
+  <div id="hub-view" class="view-panel">
+    <div class="hub-scroll">
+      <div class="hub-wrap">
+        <div class="tab-page-title">🏠 一覧</div>
+        <p class="tab-page-overview">タブが増えてきたため、各機能へのショートカットをまとめました。カードをクリックすると該当タブへ切り替わります。</p>
+        <div class="hub-grid">
+          <button type="button" class="hub-card" data-hub-nav="manager">
+            <span class="hub-card-icon">🧭</span>
+            <span class="hub-card-title">マネージャーアプリ</span>
+            <span class="hub-card-desc">全リポジトリの実装タスク・進捗を一覧管理する、このアプリの中心機能です。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="applist">
+            <span class="hub-card-icon">🗂</span>
+            <span class="hub-card-title">アプリ一覧</span>
+            <span class="hub-card-desc">価格トラッカー・試験対策アプリ等、個別アプリへのクイックアクセスページです。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="knowledge">
+            <span class="hub-card-icon">🧠</span>
+            <span class="hub-card-title">ナレッジ</span>
+            <span class="hub-card-desc">複数リポジトリの実装知見・要件定義・ユーザー傾向を横断集約したビューです。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="ai-config">
+            <span class="hub-card-icon">🤖</span>
+            <span class="hub-card-title">AI基本設定</span>
+            <span class="hub-card-desc">複数のAIセッション・ツールの役割分担、検証方法の基本方針をまとめたタブです。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="credit">
+            <span class="hub-card-icon">💳</span>
+            <span class="hub-card-title">クレジット</span>
+            <span class="hub-card-desc">AIツールの利用量・クレジット消費状況を記録する暫定タブです。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="concept">
+            <span class="hub-card-icon">📚</span>
+            <span class="hub-card-title">学習スケジュール</span>
+            <span class="hub-card-desc">学習タスクをレベル1(目標)〜レベル4(実行タスク)のWBSで管理し、進捗・遅延を可視化するスケジューラーです。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="manager-view" class="view-panel active">
   <div class="wrap">
   <div class="sticky-top">
@@ -2676,6 +2739,7 @@
   // 読み込む(使わない場合は余計な外部リクエストをしない)。
   (function setupTopTabs() {
     const tabs = {
+      hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
       applist: {
         btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
@@ -2707,6 +2771,9 @@
       }
     }
     Object.entries(tabs).forEach(([key, { btn }]) => btn.addEventListener("click", () => activate(key)));
+    document.querySelectorAll("[data-hub-nav]").forEach((el) => {
+      el.addEventListener("click", () => activate(el.dataset.hubNav));
+    });
   })();
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
