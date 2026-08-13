@@ -102,7 +102,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #concept-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🤖 AI基本設定タブ(2026-08-11追加)。data/ai-config.jsonを読み込んで表示する。
      iframe埋め込みの他タブと違い同一リポジトリ内のデータなので直接fetchして描画する
@@ -112,6 +112,10 @@
   .policy-meta { font-size: 12.5px; color: var(--text-muted); }
   .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
   .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+
+  /* タブ先頭のページタイトル・概要(2026-08-13追加。AI基本設定・クレジットタブから導入)。 */
+  .tab-page-title { font-size: 21px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .tab-page-overview { font-size: 13px; line-height: 1.6; color: var(--text-muted); margin: 0 0 16px; max-width: 72ch; }
 
   /* 🤖 AI基本設定タブ(2026-08-11追加、schemaVersion 2で箇条書き表示に変更)。 */
   .ai-config-section-title {
@@ -715,7 +719,7 @@
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
-    <button class="top-tab-btn" id="top-tab-concept" data-view="concept">📚 学習ログ</button>
+    <button class="top-tab-btn" id="top-tab-concept" data-view="concept">📚 学習スケジュール</button>
   </div>
   <div class="view-panel-area">
   <div id="manager-view" class="view-panel active">
@@ -853,6 +857,8 @@
   <div id="ai-config-view" class="view-panel">
     <div class="policy-scroll">
       <div class="policy-wrap">
+        <div class="tab-page-title">🤖 AI基本設定</div>
+        <p class="tab-page-overview">複数のAIセッション・ツールをどう役割分担し、どう検証しながら使うかの基本方針(オーケストレーション・AIディレクトリ・第二意見チェック・管理方針)と、全チャットルーム共通のCLAUDE.md核心ルールをまとめたタブです。</p>
         <div class="ai-config-toolbar">
           <div class="policy-meta" id="ai-config-meta">読み込み中…</div>
           <button class="settings-btn" id="ai-config-edit-toggle-btn" hidden>✏️ 編集</button>
@@ -878,24 +884,15 @@
   <div id="credit-view" class="view-panel">
     <div class="policy-scroll">
       <div class="policy-wrap">
+        <div class="tab-page-title">💳 クレジット</div>
+        <p class="tab-page-overview">AIツールの利用量・クレジット消費状況を記録するタブです。usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定的な記録置き場として、わかった情報をdata/credit-log.jsonへ随時追記しています。</p>
         <div class="policy-meta" id="credit-meta">読み込み中…</div>
-        <div class="policy-card">
-          <div class="policy-detail">usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定置き場です。分かった情報を`data/credit-log.json`へ随時追記していきます。</div>
-        </div>
         <div id="credit-table-wrap"></div>
       </div>
     </div>
   </div>
   <div id="concept-view" class="view-panel">
-    <div class="policy-scroll">
-      <div class="policy-wrap">
-        <div class="policy-meta" id="concept-meta">読み込み中…</div>
-        <div class="policy-card">
-          <div class="policy-detail">実装のたびに出てきた概念を、AIエンジニア方向性の6分野別に記録します。毎日眺めて「✓ 確認した」を押すと、この端末に復習済みとして記録されます(GitHubには書き込みません)。</div>
-        </div>
-        <div id="concept-categories"></div>
-      </div>
-    </div>
+    <iframe id="concept-iframe" title="学習スケジュール" loading="lazy"></iframe>
   </div>
   </div>
 </div>
@@ -2692,7 +2689,10 @@
       },
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
-      concept: { btn: document.getElementById("top-tab-concept"), panel: document.getElementById("concept-view") },
+      concept: {
+        btn: document.getElementById("top-tab-concept"), panel: document.getElementById("concept-view"),
+        iframeId: "concept-iframe", url: "https://gurii-gabreh.github.io/Study-Schedule/",
+      },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2996,88 +2996,6 @@
       });
   }
   loadCreditLogData();
-
-  // data/concept-log.json(📚学習ログタブ)。実装のたびに出てきた概念をAIエンジニア方向性の
-  // 6分野別に記録する(POL-004)。「✓ 確認した」の状態は共有データではなく個人の復習チェックなので
-  // GitHubへは書き込まず、ブラウザのlocalStorageだけで完結させる(2026-08-11追加)。
-  const CONCEPT_CHECKED_KEY = "conceptLogChecked";
-  function getConceptChecked() {
-    try { return JSON.parse(localStorage.getItem(CONCEPT_CHECKED_KEY) || "{}"); }
-    catch { return {}; }
-  }
-  function setConceptChecked(id, checked) {
-    const state = getConceptChecked();
-    if (checked) state[id] = true; else delete state[id];
-    localStorage.setItem(CONCEPT_CHECKED_KEY, JSON.stringify(state));
-  }
-  function loadConceptLogData() {
-    const metaEl = document.getElementById("concept-meta");
-    const wrap = document.getElementById("concept-categories");
-    return fetch("data/concept-log.json", { cache: "no-store" })
-      .then((res) => {
-        if (!res.ok) throw new Error(`data/concept-log.json の取得に失敗しました(HTTP ${res.status})`);
-        return res.json();
-      })
-      .then((data) => {
-        metaEl.textContent = `最終更新: ${data.updatedAt}`;
-        const checked = getConceptChecked();
-        const cats = Array.isArray(data.categories) ? data.categories : [];
-        wrap.innerHTML = cats.map((cat) => {
-          const items = cat.items || [];
-          const body = items.length
-            ? items.map((item) => {
-                const isChecked = !!checked[item.id];
-                return `
-                  <div class="concept-item${isChecked ? " checked" : ""}" data-concept-item="${escapeHtml(item.id)}">
-                    <div class="concept-item-body">
-                      <div class="concept-item-title">${escapeHtml(item.concept || "")}</div>
-                      ${item.note ? `<div class="concept-item-note">${escapeHtml(item.note)}</div>` : ""}
-                      <div class="concept-item-meta">${escapeHtml(item.context || "")}${item.date ? ` ・ ${escapeHtml(item.date)}` : ""}</div>
-                    </div>
-                    <button class="concept-check-btn${isChecked ? " checked" : ""}" data-concept-check="${escapeHtml(item.id)}"
-                      data-concept-category="${escapeHtml(cat.label || cat.key)}" data-concept-name="${escapeHtml(item.concept || "")}"
-                      data-concept-context="${escapeHtml(item.context || "")}">${isChecked ? "✓ 確認済" : "確認した"}</button>
-                  </div>`;
-              }).join("")
-            : `<div class="empty">まだ記録はありません。</div>`;
-          return `
-            <div class="concept-cat-title">${escapeHtml(cat.label || cat.key)}</div>
-            <div class="policy-card">${body}</div>`;
-        }).join("");
-
-        // 「確認した」を押すたびに: (1) 端末のlocalStorageへ即座に反映(表示の即時性)、
-        // (2) GAS経由でスプレッドシート「学習ログ確認」タブへ1行記録(端末をまたいだ永続化)。
-        // チェックを外す操作はローカル表示の取り消しのみで、記録済みの行は消さない(ログのため)。
-        wrap.querySelectorAll("[data-concept-check]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.dataset.conceptCheck;
-            const nowChecked = !btn.classList.contains("checked");
-            setConceptChecked(id, nowChecked);
-            btn.classList.toggle("checked", nowChecked);
-            btn.textContent = nowChecked ? "✓ 確認済" : "確認した";
-            btn.closest(".concept-item").classList.toggle("checked", nowChecked);
-            if (!nowChecked) return;
-            fetch(GAS_URL, {
-              method: "POST",
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify({
-                token: GAS_TOKEN,
-                confirmConcept: [{
-                  at: new Date().toISOString().slice(0, 16).replace("T", " "),
-                  category: btn.dataset.conceptCategory, id, concept: btn.dataset.conceptName, context: btn.dataset.conceptContext,
-                }],
-              }),
-            }).catch(() => { showToast("⚠ スプレッドシートへの記録に失敗しました(この端末上の表示は反映済みです)"); });
-          });
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        metaEl.textContent = "";
-        wrap.innerHTML = `<div class="empty">data/concept-log.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
-      });
-  }
-  loadConceptLogData();
 
   // 「⏩ JSONへ反映を依頼」: 静的なダッシュボードにはGitHubへの書き込み権限が無いため、直接
   // data/ai-config.jsonを書き換えることはできない(運用ルール20と同じ制約)。既存の「追加指示」
