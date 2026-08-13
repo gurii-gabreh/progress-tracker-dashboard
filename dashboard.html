@@ -115,6 +115,7 @@
 
   /* 🤖 AI基本設定タブ(2026-08-11追加、schemaVersion 2で箇条書き表示に変更)。 */
   .ai-config-section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
+  .ai-config-overview { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); margin: 0 0 10px; }
   .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
   .ai-config-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .ai-config-toolbar .policy-meta { flex: 1 1 auto; }
@@ -2820,6 +2821,9 @@
     bodyEl.innerHTML = AI_CONFIG_SECTIONS.map((key) => {
       const section = web[key] || {};
       const points = section.points || [];
+      const overviewHtml = section.overview
+        ? `<p class="ai-config-overview">${escapeHtml(section.overview)}</p>`
+        : "";
       const linkHtml = section.link
         ? `<a class="ai-config-link" href="${escapeHtml(section.link.url)}" target="_blank" rel="noopener">📄 ${escapeHtml(section.link.label || "参照先")}</a>`
         : "";
@@ -2830,7 +2834,7 @@
         : `<ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
       return `
         <div class="ai-config-section-title">${escapeHtml(section.title || key)}</div>
-        <div class="policy-card">${diagramHtml}${body}</div>`;
+        <div class="policy-card">${overviewHtml}${diagramHtml}${body}</div>`;
     }).join("");
   }
 

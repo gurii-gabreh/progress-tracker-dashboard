@@ -545,6 +545,23 @@
       ]
     },
     {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-043",
+      "task": "🤖AI基本設定タブの各セクション(オーケストレーション・AIディレクトリ・第二意見チェック・管理方針)に概要説明を追加する",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-13",
+      "note": "2026-08-13、ユーザー依頼: 各セクションの箇条書きだけだと初見で分かりにくいので、概要的な説明をそれぞれ入れてほしいとの指示。",
+      "detail": "data/ai-config.jsonのweb側4セクション(orchestration/aiDirectory/secondOpinionCheck/management)それぞれに`overview`フィールド(1〜2文の概要説明)を追加した。新しい情報を作ったわけではなく、既にai側(AIが実際に従う詳細情報)に存在していたdescription/summary/note等の記述を、人が読みやすい一言に要約しただけ(根拠は同ファイル内の既存記述)。dashboard.htmlのrenderAiConfigView()を修正し、各セクションのタイトル直下・箇条書きの上にoverviewを表示するようにした(編集モードでは従来通り箇条書きのみ編集対象、overview自体は編集UI対象外)。",
+      "output": "dashboard.html(AI基本設定タブ)・data/ai-config.json",
+      "checkHistory": [
+        {
+          "date": "2026-08-13",
+          "summary": "4セクション全てにoverviewを追加し、dashboard.html側の表示にも反映。"
+        }
+      ]
+    },
+    {
       "repo": "相談事項",
       "id": "PTD-019",
       "task": "相談事項(まとめて後日相談したいテーマ集)",
