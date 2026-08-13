@@ -1966,6 +1966,32 @@
               "summary": "ユーザーがデプロイ・実行完了。GAS自体は正常動作(data/spreadsheets.jsonは44件→1件に正しく絞り込み済み、直近実行も全て成功)を確認。ただしdashboard.htmlのスプレッドシート一覧タブは、2026-08-01時点で作った44件のデータをHTML内に埋め込み(`const DATA`)で持っており、data/spreadsheets.jsonを実行時に読みに行っていなかったため、Web上は44件のまま変化していなかった。実装ナレッジタブと同じfetch方式に統一する修正(PR #3)をマネージャールームが実施・マージし解消。\n[調査時の余談] 確認中、このリポジトリのGitHub上の「デフォルトブランチ」設定がmainではなく古いブランチ(claude/spreadsheet-list-dashboard-te7yvs、8/1時点)になっていることが判明。マネージャールームがブランチ指定なしでファイル取得した際にこれを誤ってmainだと勘違いし、一時「mainがリセットされた」と誤報告してしまった(実際はmainは正常、ユーザーへ訂正済み)。紛らわしいため、デフォルトブランチをmainに直すことを提案し、ユーザーの返答待ち。"
             }
           ]
+        },
+        {
+          "id": "KND-008",
+          "task": "🧠ナレッジタブ(Knowledge-Dashboard)がドライブ全件の古い表示のまま反映されない問題を修正する",
+          "title": "GitHub Pagesの配信元ブランチ不一致を解消",
+          "priority": "高",
+          "status": "対応中",
+          "updated": "2026-08-13",
+          "category": "code",
+          "nextAction": "リポジトリのSettings > Pages > Sourceを「GitHub Actions」に切り替える操作をユーザーに依頼する必要あり",
+          "note": "2026-08-13、progress-tracker-dashboardの🧠ナレッジタブがGoogle Drive全件(40件超、個人の履歴書や試験問題集まで含む)の一覧表示になっており、ナレッジ用に絞り込んだはずの内容が出ていないとユーザーから指摘。KND-007のcheckHistoryで既に発覚・「ユーザーの返答待ち」のまま放置されていたデフォルトブランチ不一致(git上のdefault branchが2026-08-01時点の古いブランチclaude/spreadsheet-list-dashboard-te7yvsのまま)が根本原因と判明。",
+          "detail": "mainブランチ自体の内容は既に正しい: data/spreadsheets.json はGAS(gas/update-spreadsheets.gs)により専用Driveフォルダ(ID: 1K7teb5iGkdphV78M773vxlhbNd2fnQxd)のショートカットのみへ正しく絞り込まれており(2026-08-13時点で9件)、dashboard.htmlもfetch方式に統一済み(PR #3で修正済み)。問題はGitHub Pagesの配信元が「デフォルトブランチ」設定に依存する形になっており、そのデフォルトブランチが2026-08-01のまま更新されていなかったため、mainへのその後の全ての変更(GASショートカット方式・fetch方式統一を含む)がライブサイトに一切反映されていなかったこと。progress-tracker-dashboard自身が使っているGitHub Actions経由のPagesデプロイ(.github/workflows/deploy-pages.yml、mainへのpushをトリガーに自動デプロイ、デフォルトブランチ設定に依存しない)と同じ仕組みをKnowledge-Dashboardにも追加し、mainへ直接commit済み。",
+          "issues": "ワークフローファイルを追加しただけでは効果が無い。リポジトリのSettings > Pages > Sourceを「デプロイ元ブランチ」から「GitHub Actions」へ切り替える操作が必要で、これはこの環境からは実行できずユーザー側の対応が必要。切り替え後、mainへの次回pushで自動デプロイされる(workflow_dispatchで手動実行も可)。あわせて、デフォルトブランチ自体をmainに変更することも推奨(KND-007で既に提案済み、未対応)。",
+          "output": "https://github.com/gurii-gabreh/Knowledge-Dashboard/blob/main/.github/workflows/deploy-pages.yml",
+          "checkHistory": [
+            {
+              "date": "2026-08-13",
+              "summary": "根本原因(GitHub Pagesの配信元ブランチがmainでない)を特定。progress-tracker-dashboardと同じGitHub Actions Pagesデプロイのワークフローファイルをmainへ追加。Pages Sourceの切り替えはユーザー対応待ち。"
+            }
+          ],
+          "steps": [
+            "gurii-gabreh/Knowledge-DashboardのSettings → Pages を開く",
+            "Source(ソース)を「Deploy from a branch」から「GitHub Actions」に切り替える",
+            "(推奨・任意)Settings → General → Default branch も、古いclaude/spreadsheet-list-dashboard-te7yvsからmainへ変更する",
+            "切り替え後、mainへの次回pushで自動デプロイされる。今すぐ確認したい場合はActionsタブから「Deploy static content to Pages」をworkflow_dispatchで手動実行する"
+          ]
         }
       ],
       "goal": "実装ナレッジの横断集約・可視化を実施"
