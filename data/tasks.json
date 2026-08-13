@@ -1069,6 +1069,34 @@
       "goal": "AI研究レーダーの調査実行基盤整備を実施"
     },
     {
+      "repo": "ai-research-radar",
+      "id": "AIR-011",
+      "task": "生成AI エージェント 最新動向",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-08",
+      "category": "research",
+      "note": "Gemini APIのレート制限で2026-08-02から6日連続で自動リトライが続いていたため、相談ルームでClaude側が代わりにWeb検索調査を実施し完了させた(AIR-008のClaudeフォールバックが本番投入される前の、手動での代替実施)。",
+      "completedItems": [
+        {
+          "item": "Claude・Gemini・ChatGPTそれぞれの最新機能(Cowork、Agent SDK、Gemini 3.5 Flash/Antigravity Agent、ChatGPT Agent/Tasks/Work等)を調査",
+          "date": "2026-08-08"
+        },
+        {
+          "item": "防災・災害情報共有分野でのAIエージェント活用事例を調査し、結(kizashi)の企画と照らして「既に一般的な領域」と「まだ手薄そうな領域」を整理",
+          "date": "2026-08-08"
+        }
+      ],
+      "detail": "■ Claude(Anthropic)\n・Claude Cowork: ファイル・カレンダー・メール・メッセージアプリ・Web等を横断し、細かい指示なしに複数ステップの作業を最後まで進める非技術者向けエージェント。2026年7月にクラウド対応・モバイル/Web展開し、PCを閉じてもタスクが継続、スマホで進捗確認・成果物受け取りが可能に。用途例: 領収書写真フォルダからの経費精算書作成、大量メモからのレポート作成、フォルダの自動整理。\n・Claude Agent SDK 2026: Dreaming(内省的な振り返りパス)、Outcomes、マルチエージェントオーケストレーション、MCP新仕様(OAuth/OIDC対応・プライベートネットワークトンネル)などを追加。ツール呼び出しが最大7倍高速化。\n\n■ Gemini(Google)\n・Gemini 3.5 Flash: フラッグシップ級の性能を高速に実現し、長時間の自律タスク(コーディング・監査・書類準備等)に強い。Antigravity Agent(プレビュー)は自律的に計画・コード実行・ファイル操作・Webブラウジングをサンドボックス内で行う。\n・Agent Identity(最小権限IAM)、Model Armor(ガードレール)など企業向けのエージェント統制機能も追加された。\n\n■ ChatGPT(OpenAI)\n・Operator→ChatGPT Agentへ統合: 仮想コンピュータを操作しWebブラウジング・ファイル操作・メール連携・フォーム入力・表計算編集などを自律実行(有料プラン)。\n・Tasks: リマインダー・定期リサーチクエリ・定期レポート等の予約実行機能。\n・ChatGPT Work: 文書・表計算・プレゼン・簡易Webアプリ作成など、数時間規模の複雑タスクに対応。\n\n■ 全般トレンド\n・「調査→検証→実行」のように役割分担するマルチエージェント協調(CrewAI/AutoGen等)が定着しつつある。\n・人が操作していない間も裏側で作業を進め続ける「Cowork型」の常時稼働エージェントが広がりつつある。\n\n■ 防災・災害情報共有分野での実例(結との関連)\n・IoTセンサー(雨量・土壌水分・振動等)×AIで危険予測し、SMS/アプリ/ダッシュボードへ自動通知するオープンソース警報システムの事例(FOSS Hack 2026等)。\n・インドの公式防災アプリ「Sachet」、日本の「NERV防災アプリ」など、位置連動のリアルタイム警報配信は既に一般的。\n・米CAL FIREは延焼予測・避難区域推奨を行うAIエージェントを実運用。\n・30言語以上に対応する音声AIエージェントによる緊急連絡、消防・警察・医療・自治体・ボランティア間で共有するリアルタイムデータレイヤーなど、複数機関間の情報共有をAIエージェントが担う事例が増えている。\n\n■ 結(kizashi)への示唆(既に世の中にあるもの/まだ手薄そうなもの)\n・「危険エリア可視化」「位置連動アラート配信」は、Sachet・NERV等の既存アプリで既に一般的な機能で、この領域単体では差別化しにくい。\n・一方、①事前問診フォームによる重複聞き取り解消、②現場情報を家族・関係者向けに人手を介さず要約・共有し続ける常時稼働型(Cowork型)のエージェント、③気象庁・都道府県・現場報告など複数の情報源を横断して自動で整合性検証するマルチエージェント連携、の3点は今回調べた範囲では類似の一般公開事例が見当たらず、差別化の余地がありそうに見える。",
+      "output": "https://claude.com/product/cowork, https://techcrunch.com/2026/07/07/the-coding-agent-wars-are-spilling-into-the-rest-of-the-office-claude-cowork/, https://blog.google/products/gemini/gemini-3/, https://blog.google/innovation-and-ai/technology/developers-tools/expanding-managed-agents-gemini-api-3-6-flash-hooks/, https://www.bloomberg.com/news/articles/2026-07-09/openai-unveils-chatgpt-work-agent-to-field-tasks-for-hours, https://digitaldefynd.com/IQ/agentic-ai-in-disaster-management-and-emergency-response/, https://nerv.app/en/, https://en.wikipedia.org/wiki/Sachet_(app)",
+      "checkHistory": [
+        {
+          "date": "2026-08-08",
+          "summary": "2026-08-02から6日連続でGemini APIのレート制限により自動リトライが続いていたため、相談ルームでClaude側がWeb検索で直接調査を代行。Claude/Gemini/ChatGPTそれぞれの最新エージェント機能と、防災・災害情報共有分野でのAI活用事例を調査し、結(kizashi)の企画との重複点・差別化の余地を整理して完了とした。"
+        }
+      ]
+    },
+    {
       "repo": "usage-tracker",
       "id": "UST-001",
       "task": "使用量分析ダッシュボード",
