@@ -479,12 +479,21 @@
       "id": "PTD-040",
       "task": "CROSS_REPO_PATシークレットを作成し、progress-tracker-dashboardのリポジトリシークレットへ登録する",
       "priority": "高",
-      "status": "未着手",
+      "status": "完了",
       "updated": "2026-08-13",
       "category": "manual",
-      "note": "【作業タスク】PTD-039で追加したCLAUDE.md自動同期ワークフロー(.github/workflows/sync-claude-md.yml)が、progress-tracker-dashboard以外の6リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)へ書き込むために必要なトークン。この場からはリポジトリシークレットを作成できないため、ユーザー側の対応が必要。",
-      "detail": "GitHubのPersonal Access Token(fine-grained推奨)を発行し、対象6リポジトリへのContents: Read and write権限を付与、progress-tracker-dashboardのActionsシークレットとして`CROSS_REPO_PAT`という名前で登録する。設定が完了するまで、data/claude-core-rules.mdを変更してもprogress-tracker-dashboard自身のCLAUDE.md(GITHUB_TOKENで足りる)しか更新されず、他6リポジトリは手動でCLAUDE.mdを合わせる必要がある。",
-      "output": "",
+      "note": "【作業タスク】PTD-039で追加したCLAUDE.md自動同期ワークフロー(.github/workflows/sync-claude-md.yml)が、progress-tracker-dashboard以外の6リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)へ書き込むために必要なトークン。この場からはリポジトリシークレットを作成できないため、ユーザー側の対応が必要だった。2026-08-13、本人が設定完了。",
+      "completedItems": [
+        { "item": "Fine-grained PATを対象6リポジトリのContents: Read and write権限で発行し、progress-tracker-dashboardのActionsシークレットにCROSS_REPO_PATとして登録", "date": "2026-08-13" }
+      ],
+      "detail": "GitHubのPersonal Access Token(fine-grained)を発行し、対象6リポジトリへのContents: Read and write権限を付与、progress-tracker-dashboardのActionsシークレットとして`CROSS_REPO_PAT`という名前で登録済み。動作確認として、まずworkflow_dispatchで手動実行(全7件「already up to date」、GET権限のみ確認)、続けてdata/claude-core-rules.mdへ軽微な文言変更をcommit・push(#69)して実際のPUTが発火するかを検証。ジョブログで全7リポジトリ(progress-tracker-dashboard含む)が`updated`と出力されたことを確認し、書き込み権限が実際に機能していることを実証した(2026-08-13 02:24 UTC、run #31660700851、conclusion: success)。",
+      "output": "https://github.com/gurii-gabreh/progress-tracker-dashboard/actions/runs/31660700851",
+      "checkHistory": [
+        {
+          "date": "2026-08-13",
+          "summary": "本人がCROSS_REPO_PATを発行・登録。workflow_dispatchでの初回実行は全件「already up to date」(GET権限のみ確認、PUTは未検証)だったため、claude-core-rules.mdへ軽微な文言を追加してpushし、実際にPUTが成功するかを追加検証。ジョブログで全7リポジトリが`updated`と出力され、書き込み権限が実際に機能していることを確認した。"
+        }
+      ],
       "steps": [
         "https://github.com/settings/personal-access-tokens/new を開く(Fine-grained personal access token)",
         "Repository access で「Only select repositories」を選び、kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-appの6つを選択する",
