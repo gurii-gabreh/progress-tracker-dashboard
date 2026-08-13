@@ -850,6 +850,19 @@
           <button class="settings-btn" id="ai-config-apply-btn" hidden>⏩ JSONへ反映を依頼</button>
         </div>
         <div id="ai-config-body"></div>
+
+        <div class="ai-config-section-title" style="margin-top: 18px;">📄 CLAUDE.md 核心ルール(全リポジトリ共通)</div>
+        <div class="policy-card">
+          <div class="ai-config-toolbar">
+            <div class="policy-meta" id="core-rules-meta">読み込み中…</div>
+            <button class="settings-btn" id="core-rules-edit-toggle-btn" hidden>✏️ 編集</button>
+            <button class="settings-btn" id="core-rules-apply-btn" hidden>⏩ 反映を依頼</button>
+          </div>
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            全管理対象リポジトリのCLAUDE.mdへGitHub Actionsで自動同期される正本です(data/claude-core-rules.md)。
+          </div>
+          <div id="core-rules-body"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2841,6 +2854,97 @@
       });
   }
   loadAiConfigData();
+
+  // data/claude-core-rules.md(CLAUDE.md核心ルールの正本)を🤖AI基本設定タブの下部に表示する
+  // (2026-08-13追加)。全リポジトリのCLAUDE.mdへ手で複製すると更新のたびに全ファイルを書き換える
+  // 羽目になる、という指摘を受けてGitHub Actions(sync-claude-md.yml)による自動同期を作った経緯があり、
+  // このウィジェットはその正本(単一のMarkdownファイル)をダッシュボードから直接見える・編集できる
+  // ようにするもの。ai-config.jsonの編集フローと同じ制約(静的ページはGitHubへ直接書き込めない)の
+  // ため、編集内容はPTD-041への追加指示コメントとして送るだけに留め、実際のcommitは次回の
+  // Routine/セッション実行時に行う。commitされればsync-claude-md.ymlが自動で全リポジトリへ広める。
+  let coreRulesText = "";
+  let coreRulesEditing = false;
+
+  function renderCoreRulesView() {
+    const bodyEl = document.getElementById("core-rules-body");
+    const editBtn = document.getElementById("core-rules-edit-toggle-btn");
+    const applyBtn = document.getElementById("core-rules-apply-btn");
+    editBtn.hidden = false;
+    editBtn.textContent = coreRulesEditing ? "✕ 編集をやめる" : "✏️ 編集";
+    applyBtn.hidden = !coreRulesEditing;
+    bodyEl.innerHTML = coreRulesEditing
+      ? `<textarea class="ai-config-edit-textarea" id="core-rules-edit-textarea" rows="14">${escapeHtml(coreRulesText)}</textarea>`
+      : `<pre style="white-space: pre-wrap; font: inherit; font-size: 13px; line-height: 1.7; color: var(--text); margin: 0;">${escapeHtml(coreRulesText)}</pre>`;
+  }
+
+  function loadCoreRulesData() {
+    const metaEl = document.getElementById("core-rules-meta");
+    const bodyEl = document.getElementById("core-rules-body");
+    return fetch("data/claude-core-rules.md", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/claude-core-rules.md の取得に失敗しました(HTTP ${res.status})`);
+        return res.text();
+      })
+      .then((text) => {
+        coreRulesText = text;
+        metaEl.textContent = "全リポジトリのCLAUDE.mdへ自動同期される正本";
+        renderCoreRulesView();
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        bodyEl.innerHTML = `<div class="empty">data/claude-core-rules.md を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadCoreRulesData();
+
+  document.getElementById("core-rules-edit-toggle-btn").addEventListener("click", () => {
+    coreRulesEditing = !coreRulesEditing;
+    renderCoreRulesView();
+  });
+
+  document.getElementById("core-rules-apply-btn").addEventListener("click", () => {
+    const textarea = document.getElementById("core-rules-edit-textarea");
+    const edited = textarea.value;
+
+    const node = findNodeById("PTD-041");
+    if (!node) {
+      showToast("⚠ PTD-041が見つからず送信できませんでした");
+      return;
+    }
+    const text = "ダッシュボードのCLAUDE.md核心ルールウィジェットで編集された内容を、" +
+      "data/claude-core-rules.mdへ反映してcommit・pushしてください(全リポジトリのCLAUDE.mdへは" +
+      "sync-claude-md.ymlが自動で反映するので、他リポジトリを手で編集する必要はありません)。編集後の内容:\n" +
+      edited;
+
+    if (!node.comments) node.comments = [];
+    const at = new Date().toISOString().slice(0, 16).replace("T", " ");
+    node.comments.push({ author: "user", text, at });
+    showToast("送信中…");
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: GAS_TOKEN,
+        addComment: [{ repo: node.repo || "progress-tracker-dashboard", task: node.task, text, author: "user", at }],
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.error) throw new Error(data.error);
+        showToast("✓ 反映依頼を送信しました(次回のルーム対応でcommitされます)");
+      })
+      .catch(() => {
+        showToast("⚠ 送信に失敗しました(次回のRoutine実行時にPTD-041のコメントから拾われる見込みです)");
+      });
+
+    coreRulesEditing = false;
+    renderCoreRulesView();
+  });
 
   // data/credit-log.json(💳クレジットタブ)。usage-tracker本体(UST-001〜006)ができるまでの
   // 暫定表示。分かった情報が入るたびにentries配列へ追記していく想定の、ごく単純な表(2026-08-11追加)。
