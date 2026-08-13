@@ -1,0 +1,24 @@
+name: Sync CLAUDE.md core rules
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "data/claude-core-rules.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync core rules to all managed repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CROSS_REPO_PAT: ${{ secrets.CROSS_REPO_PAT }}
+        run: python3 scripts/sync_claude_md.py
