@@ -60,6 +60,8 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
 
 ※ `kizashi`はスプレッドシートのRepo列・dashboard.htmlのKNOWN_REPOSでは技術的な識別子としてそのまま使う(照合ロジックが壊れるため変更しない)。人向けの表示名だけを「結(ゆい)土砂災害アプリ」としてdashboard.html側(REPO_DISPLAY_NAMES)で差し替えている。都知事杯オープンデータ・ハッカソン2026向けの土砂災害現場支援アプリで、実体はgurii-gabreh/Kizashiリポジトリ。2026-08-01時点、企画・要件整理フェーズは完了、技術検証フェーズ(実データでの動作確認)は未着手のまま作業タスクとして登録している(詳細は下記「作業タスク」参照)。
 
+**2026-08-13追記: Claude Code Remote(CCR)上の作業ルームセッションを新設**。マネージャールーム(`data/ai-config.json`の`commandCenter: "manager-room"`)自身が実装作業を直接行ってしまう違反が繰り返し発生した(2026-08-11に一度ルール化したにもかかわらず、2026-08-12〜13にgas/Code.gsの実装・別リポジトリ(Knowledge-Dashboard)へのGitHub Actionsワークフロー追加を直接行ってしまった)ことをユーザーから指摘され、実装依頼を委譲する先として`session_012kTdgM1PApMPsJC8N4ew95`(タイトル「progress-tracker-dashboard 作業ルーム」、CCRの`create_session`で作成)を新設した。以降、マネージャールーム(このセッションを含む)が実装が必要な作業を見つけた場合は、自分で実装せず、`send_message`でこのセッションへ依頼を送ること。上記表の`session_01XXX`系(claude.ai上のチャットルーム・共有Routine)とは別系統のCCRセッションであることに注意。
+
 ## 現在の状態
 
 - GASウェブアプリ: デプロイ済み(`gas/Code.gs`。GitHubとは自動連携していないため、コード変更時は
