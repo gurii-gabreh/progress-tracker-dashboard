@@ -467,7 +467,32 @@
         {
           "date": "2026-08-13",
           "summary": "progress-tracker-dashboard含む7リポジトリへCLAUDE.mdを新設完了。usage-trackerはリポジトリ未作成のため対象外。text-extraction・my-dashboardはknownRepos外のため今回は対象外(要確認の課題としてissuesに記録)。"
+        },
+        {
+          "date": "2026-08-13",
+          "summary": "「これも自動化できないか」との指摘を受け、data/claude-core-rules.mdを正本とし、GitHub Actions(.github/workflows/sync-claude-md.yml、scripts/sync_claude_md.py)が全7リポジトリのCLAUDE.md(CORE-RULESマーカー間)を自動同期する仕組みを追加。各リポジトリのCLAUDE.mdにマーカーを追加済み。progress-tracker-dashboard以外の6リポジトリへの書き込みにはCROSS_REPO_PATシークレットが必要で、まだ未設定(PTD-040として別途登録)。"
         }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-040",
+      "task": "CROSS_REPO_PATシークレットを作成し、progress-tracker-dashboardのリポジトリシークレットへ登録する",
+      "priority": "高",
+      "status": "未着手",
+      "updated": "2026-08-13",
+      "category": "manual",
+      "note": "【作業タスク】PTD-039で追加したCLAUDE.md自動同期ワークフロー(.github/workflows/sync-claude-md.yml)が、progress-tracker-dashboard以外の6リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)へ書き込むために必要なトークン。この場からはリポジトリシークレットを作成できないため、ユーザー側の対応が必要。",
+      "detail": "GitHubのPersonal Access Token(fine-grained推奨)を発行し、対象6リポジトリへのContents: Read and write権限を付与、progress-tracker-dashboardのActionsシークレットとして`CROSS_REPO_PAT`という名前で登録する。設定が完了するまで、data/claude-core-rules.mdを変更してもprogress-tracker-dashboard自身のCLAUDE.md(GITHUB_TOKENで足りる)しか更新されず、他6リポジトリは手動でCLAUDE.mdを合わせる必要がある。",
+      "output": "",
+      "steps": [
+        "https://github.com/settings/personal-access-tokens/new を開く(Fine-grained personal access token)",
+        "Repository access で「Only select repositories」を選び、kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-appの6つを選択する",
+        "Permissions → Repository permissions → Contents を「Read and write」にする",
+        "トークンを発行し、値をコピーする(表示は1回のみ)",
+        "gurii-gabreh/progress-tracker-dashboardの Settings → Secrets and variables → Actions → New repository secret を開く",
+        "Name に `CROSS_REPO_PAT`、Secret に発行したトークンを貼り付けて保存する",
+        "確認したい場合は、GitHubのActionsタブから「Sync CLAUDE.md core rules」をworkflow_dispatchで手動実行し、6リポジトリのCLAUDE.mdが更新されるか確認する"
       ]
     },
     {
