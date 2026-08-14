@@ -1342,11 +1342,11 @@
       "task": "付与されたCloudflare Paidプラン相当の環境へ、kizashi-app/srcを本番デプロイする(wrangler deploy)",
       "title": "本番デプロイ",
       "priority": "高",
-      "status": "未着手",
-      "updated": "2026-08-08",
+      "status": "完了",
+      "updated": "2026-08-14",
       "category": "manual",
-      "note": "KIZ-023でCloudflare Paidプラン相当が付与済み。デプロイ自体はwrangler loginなどユーザー自身のCloudflare認証情報が必要なため、このルームでは実行できない。",
-      "detail": "",
+      "note": "KIZ-023でCloudflare Paidプラン相当が付与済み。デプロイ自体はwrangler loginなどユーザー自身のCloudflare認証情報が必要なため、このルームでは実行できない。\n[2026-08-14] 本番デプロイ完了。デモURLをKIZ-028で使用する。",
+      "detail": "\n\n[2026-08-14] 本人が実際にwrangler loginでtokyo_odh_260アカウントへログインし、D1データベース(kizashi-app-local、database_id=518b5856-b7fa-4200-9ec0-6a3d71d1cb8a)を作成、マイグレーション適用後にwrangler deployを実行。本番URL: https://kizashi-app.yui-gurii.workers.dev 。デプロイ自体は成功。",
       "output": "",
       "steps": [
         "kizashi-app/srcで wrangler login (付与されたアカウントで認証)",
@@ -2857,6 +2857,39 @@
           "output": ""
         }
       ]
+    },
+    {
+      "id": "KIZ-029",
+      "task": "本番デプロイ後の実機テストで発見したUI不具合3件を修正する",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-08-14",
+      "repo": "kizashi",
+      "note": "2026-08-14、本人が本番URL(https://kizashi-app.yui-gurii.workers.dev)を実機(Mac、おそらくSafari)で確認した際に発見。",
+      "detail": "1) header.top(position:sticky)がスクロール時に本文の裏に埋もれる不具合。原因は親要素.appがdisplay:flexの直下にsticky要素を置いていたこと(WebKitの既知の不具合)。.appのflexを外して通常のブロック要素に戻して解消。\n2) タブ(地図/事前問診/前兆報告/AI相談)切り替え時に前の画面のスクロール位置が残ってしまう不具合。切り替え時にwindow.scrollTo(0,0)を追加。\n3) 「そっと話す」タブのラベルを「AI相談」に変更(index.html・README.md)。",
+      "output": "https://github.com/gurii-gabreh/Kizashi/commit/3fb7251"
+    },
+    {
+      "id": "KIZ-030",
+      "task": "音声入力で誤認識された内容を、確認画面でテキスト修正できるようにする",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-14",
+      "repo": "kizashi",
+      "note": "2026-08-14、ユーザーからの要望。従来は「はい/いいえ、もう一度話す」の2択のみで、誤認識のたびに音声入力をやり直す必要があった。",
+      "detail": "自由記述の質問(名前・最終確認場所・服装等)の確認ステップに「文字で修正する」の選択肢を追加した(voiceIntake.js)。選択するとテキスト入力欄が表示され、書き起こし結果を直接編集して確定できる。性別の質問は元々ボタン選択式(男性/女性)のため対象外とした。Playwrightで、誤認識→修正→確定の流れが正しくonFieldConfirmedに反映されることを確認済み。",
+      "output": "https://github.com/gurii-gabreh/Kizashi/commit/11a4738"
+    },
+    {
+      "id": "KIZ-031",
+      "task": "本番環境にAES暗号化キー(INTAKE_ENC_KEY)を設定する(wrangler secret put)",
+      "priority": "高",
+      "status": "対応中",
+      "updated": "2026-08-14",
+      "repo": "kizashi",
+      "note": "2026-08-14発覚: 事前問診フォームの保存が本番で失敗する不具合の原因。KIZ-027のデプロイ手順にこのステップの案内が抜けていたため未設定のままだった。crypto.jsはenv.INTAKE_ENC_KEY未設定時に明示的にエラーを投げる設計(README「本番投入前に必ずユーザー自身で確認」の一つ)。",
+      "detail": "対応手順: 1) `openssl rand -base64 32`でキーを生成 2) `npx wrangler secret put INTAKE_ENC_KEY`で本番に設定 3) `npx wrangler deploy`で再デプロイ 4) 事前問診の保存を再テスト。ユーザーへ手順を案内済みだが、実施完了の報告はまだ受けていない(要確認)。",
+      "output": ""
     }
   ]
 }
