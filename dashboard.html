@@ -1061,6 +1061,7 @@
     "ai-research-radar": "#b91c1c",
     "usage-tracker": "#4d7c0f",
     "Knowledge-Dashboard": "#0e7490",
+    "Study-Schedule": "#be185d",
   };
   const RESEARCH_COLOR = "#7c3aed";
   // 技術的な識別子(Repo列・KNOWN_REPOS)は変えず、画面上の表示名だけをここで差し替える。
@@ -1940,6 +1941,8 @@
   const REPO_ID_PREFIX = {
     "progress-tracker-dashboard": "PTD", "kizashi": "KIZ", "supermarket-price-tracker": "SPT",
     "gemini-monitor": "GEM", "ai-research-radar": "AIR", "usage-tracker": "UST", "Knowledge-Dashboard": "KND",
+    // study-appが既にSTUを使っているため、既定(先頭3文字)のままだと衝突する。SSCを明示指定。
+    "Study-Schedule": "SSC",
   };
   function nextTaskId(repo) {
     const prefix = REPO_ID_PREFIX[repo] || repo.slice(0, 3).toUpperCase();

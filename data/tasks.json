@@ -8,7 +8,8 @@
     "ai-research-radar",
     "usage-tracker",
     "Knowledge-Dashboard",
-    "study-app"
+    "study-app",
+    "Study-Schedule"
   ],
   "tasks": [
     {
@@ -330,8 +331,14 @@
               "note": "PTD-010は2026-08-05時点の版で完了済みだが、その後タスクID列対応(旧内容)、さらに2026-08-12に「対応中タスクのナレッジ」タブ新設(完了していないタスクのdetail/note/issues/outputをミラーする専用タブ、完了したら行ごと削除される)を追加したため、改めて最新版の貼り付け・再デプロイが必要だった。2026-08-12、本人よりデプロイ完了の報告あり。",
               "detail": "(1)依頼タスクタブ(12列目)・完了タブ(9列目)に「タスクID」列を追加。(2)2026-08-12: 新設した「対応中タスクのナレッジ」タブ(Repo, Task, タスクID, ステータス, 更新日, 実装ナレッジ, 備考, 問題点, 成果物)へ、完了していないタスクをsyncFromGithub実行のたびに機械的にupsertする処理を追加(README運用ルール35参照)。従来の完了タブは完了ステータスのタスクのみが対象で、対応中・未着手タスクのdetailはスプレッドシート側のどこにも転記されない欠落があったための対応。タスクが完了した時点でこのタブの行は削除され、以後は完了タブ側にのみ実装ナレッジが残る(完了タブと内容が重複しない設計、ユーザー指摘により当初の「全タスクをミラー」案から修正)。2026-08-12、本人がApps Scriptエディタでの貼り付け・再デプロイを完了し、「対応中タスクのナレッジ」タブが想定通り作成・稼働していることを本人が確認済み。",
               "completedItems": [
-                { "item": "最新のgas/Code.gsをApps Scriptエディタへ貼り付け・保存し、ウェブアプリとして再デプロイした", "date": "2026-08-12" },
-                { "item": "「対応中タスクのナレッジ」タブが想定通り作成・稼働していることを本人がスプレッドシート側で直接確認", "date": "2026-08-12" }
+                {
+                  "item": "最新のgas/Code.gsをApps Scriptエディタへ貼り付け・保存し、ウェブアプリとして再デプロイした",
+                  "date": "2026-08-12"
+                },
+                {
+                  "item": "「対応中タスクのナレッジ」タブが想定通り作成・稼働していることを本人がスプレッドシート側で直接確認",
+                  "date": "2026-08-12"
+                }
               ],
               "checkHistory": [
                 {
@@ -455,10 +462,22 @@
       "category": "code",
       "note": "2026-08-13、ユーザー指摘(1回目): 依頼メッセージで「README/policy.json/ai-configを読んでください」と書くだけでは、実際に読むかどうかはセッションの判断依存になってしまう(POL-003が対処していたのと同じ穴)。Claude Codeがセッション開始時に自動で読み込むCLAUDE.mdを使えば構造的に担保できるはずという指摘を受け、まずprogress-tracker-dashboard自身に作成。続けて「全てのリポジトリ、タスクに適用しろ」との指示を受け、他の管理対象リポジトリへも横展開した。\n2026-08-13、ユーザー指摘(2回目): 当初、他6リポジトリのCLAUDE.mdへルール文面をそのまま複製してしまい、「ルールが変わるたびに7ファイル全部を書き換える羽目になる、1つに統一できないか」と指摘された。修正し、他6リポジトリのCLAUDE.mdはURL参照のみの3行程度に縮小した。\n2026-08-13、ユーザー指摘(3回目): 「これで本当に必ず読むのか」「.mdファイルに直接置いておかないと自動で読まないのでは」と指摘された。参照のみに縮小した版は、CLAUDE.mdの文字列(URL)自体は自動で読み込まれるが、**そのURLを実際にWebFetch等でfetchするかどうかはモデルの判断依存に戻ってしまっており**、指示文で「読んでください」と書くのと同じ穴を1段階ズラして再現していただけだったと判明。最終的に、本当に外せない最重要ルール(役割分担・detail/note空欄放置禁止など数行)はインラインで複製し、詳細(policy.json等の全文)だけをURL参照にするハイブリッド構成に修正した(progress-tracker-dashboard自身のCLAUDE.mdは元からこの形だった)。",
       "completedItems": [
-        { "item": "progress-tracker-dashboard: CLAUDE.md新設(必読3ファイルの一覧・manager-room/worker-roomの役割分担を明記。これが実質を持つ唯一のファイル)", "date": "2026-08-13" },
-        { "item": "kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-appの6リポジトリへ、いったんルール文面を複製してCLAUDE.mdを作成", "date": "2026-08-13" },
-        { "item": "ユーザー指摘(2回目)を受け、上記6リポジトリのCLAUDE.mdをURL参照のみ(3行程度)に縮小し直し、重複を解消", "date": "2026-08-13" },
-        { "item": "ユーザー指摘(3回目)を受け、参照のみ版は実際にfetchされる保証が無いと判明したため、最重要ルール数行をインライン化し、詳細だけURL参照にするハイブリッド構成へ再修正", "date": "2026-08-13" }
+        {
+          "item": "progress-tracker-dashboard: CLAUDE.md新設(必読3ファイルの一覧・manager-room/worker-roomの役割分担を明記。これが実質を持つ唯一のファイル)",
+          "date": "2026-08-13"
+        },
+        {
+          "item": "kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-appの6リポジトリへ、いったんルール文面を複製してCLAUDE.mdを作成",
+          "date": "2026-08-13"
+        },
+        {
+          "item": "ユーザー指摘(2回目)を受け、上記6リポジトリのCLAUDE.mdをURL参照のみ(3行程度)に縮小し直し、重複を解消",
+          "date": "2026-08-13"
+        },
+        {
+          "item": "ユーザー指摘(3回目)を受け、参照のみ版は実際にfetchされる保証が無いと判明したため、最重要ルール数行をインライン化し、詳細だけURL参照にするハイブリッド構成へ再修正",
+          "date": "2026-08-13"
+        }
       ],
       "detail": "各リポジトリのCLAUDE.mdは最終的に、(1)リポジトリ名・一言説明、(2)最重要ルール(このリポジトリはprogress-tracker-dashboardの管理対象/manager-room・worker-roomの役割分担/detail・note・checkHistoryを空欄のまま完了させない/意味のある実装判断はconcept-log.jsonに記録)を数行でインライン直接記載、(3)README.md/policy.json/ai-config.jsonへのraw URL(実際にfetchする必要がある旨を明記)、の3部構成にした。(2)の最重要ルールだけは全7リポジトリに複製されるが、変更頻度が低い内容に絞っているため許容範囲とした判断。knowledge-dashboardのCLAUDE.mdのみ、KND-007/KND-008で判明したデフォルトブランチのズレについての注意を例外的に追記している。",
       "issues": "usage-trackerは専用リポジトリがまだ作成されていない(UST-005が未着手のため)ため、CLAUDE.mdを置く先が無く対象外。専用リポジトリ作成後にCLAUDE.mdの新設も忘れずに行うこと。また、text-extraction・my-dashboardはこのセッションに既に接続されていたリポジトリだが、data/tasks.jsonのknownRepos一覧には含まれていないため、今回のスコープからは除外した(対象に含めるべきか要確認)。",
@@ -484,7 +503,10 @@
       "category": "manual",
       "note": "【作業タスク】PTD-039で追加したCLAUDE.md自動同期ワークフロー(.github/workflows/sync-claude-md.yml)が、progress-tracker-dashboard以外の6リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)へ書き込むために必要なトークン。この場からはリポジトリシークレットを作成できないため、ユーザー側の対応が必要だった。2026-08-13、本人が設定完了。",
       "completedItems": [
-        { "item": "Fine-grained PATを対象6リポジトリのContents: Read and write権限で発行し、progress-tracker-dashboardのActionsシークレットにCROSS_REPO_PATとして登録", "date": "2026-08-13" }
+        {
+          "item": "Fine-grained PATを対象6リポジトリのContents: Read and write権限で発行し、progress-tracker-dashboardのActionsシークレットにCROSS_REPO_PATとして登録",
+          "date": "2026-08-13"
+        }
       ],
       "detail": "GitHubのPersonal Access Token(fine-grained)を発行し、対象6リポジトリへのContents: Read and write権限を付与、progress-tracker-dashboardのActionsシークレットとして`CROSS_REPO_PAT`という名前で登録済み。動作確認として、まずworkflow_dispatchで手動実行(全7件「already up to date」、GET権限のみ確認)、続けてdata/claude-core-rules.mdへ軽微な文言変更をcommit・push(#69)して実際のPUTが発火するかを検証。ジョブログで全7リポジトリ(progress-tracker-dashboard含む)が`updated`と出力されたことを確認し、書き込み権限が実際に機能していることを実証した(2026-08-13 02:24 UTC、run #31660700851、conclusion: success)。",
       "output": "https://github.com/gurii-gabreh/progress-tracker-dashboard/actions/runs/31660700851",
@@ -2765,10 +2787,22 @@
       "output": "",
       "issues": "gas/Code.gsの変更はGitHubと自動連携していないため、Apps Scriptエディタでの手動再デプロイが完了するまでは`confirmConcept`アクションは実際には動作しない(このプロジェクトの他のGAS変更と同じ既知の制約)。また、スプレッドシート「学習ログ確認」タブの内容をdata/concept-log.jsonへ反映する仕組みは未実装(現状は記録のみ、読み取り側は今後の対応)。",
       "completedItems": [
-        { "item": "data/concept-log.json新設(6分野、空のitems配列)", "date": "2026-08-11" },
-        { "item": "dashboard.htmlへの📚学習ログタブ追加(確認ボタン=localStorage方式)", "date": "2026-08-11" },
-        { "item": "data/policy.json POL-004拡張(concept-log.jsonへの自動記録ルール)", "date": "2026-08-11" },
-        { "item": "GAS(gas/Code.gs)にconfirmConceptアクション追加、スプレッドシート「学習ログ確認」タブへ即時記録", "date": "2026-08-11" }
+        {
+          "item": "data/concept-log.json新設(6分野、空のitems配列)",
+          "date": "2026-08-11"
+        },
+        {
+          "item": "dashboard.htmlへの📚学習ログタブ追加(確認ボタン=localStorage方式)",
+          "date": "2026-08-11"
+        },
+        {
+          "item": "data/policy.json POL-004拡張(concept-log.jsonへの自動記録ルール)",
+          "date": "2026-08-11"
+        },
+        {
+          "item": "GAS(gas/Code.gs)にconfirmConceptアクション追加、スプレッドシート「学習ログ確認」タブへ即時記録",
+          "date": "2026-08-11"
+        }
       ],
       "checkHistory": [
         {
@@ -2778,6 +2812,49 @@
         {
           "date": "2026-08-11",
           "summary": "「確認したかどうかを記録しておきたい、スプレッドシート+GASでできるか」との追加要望を受け、GASにconfirmConceptアクションを追加。ボタンを押すたびに即時記録する方式で実装(本人確認: GASの1日1回タイマー方式ではなく、押した時に都度記録する方式でよいとのこと)。要デプロイ。"
+        }
+      ]
+    },
+    {
+      "id": "SSC-001",
+      "task": "学習スケジュール",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-08-13",
+      "repo": "Study-Schedule",
+      "note": "2026-08-13、ユーザーとの相談から新規発足。学習タスクをレベル1(目標)〜レベル4(実行タスク)のWBS(階層構造)で管理し、1日1列のカレンダーで進捗・遅延を可視化する専用アプリ。gurii-gabreh/Study-Scheduleリポジトリを新規作成し、progress-tracker-dashboardの📚学習スケジュールタブ(旧・学習ログタブ)からiframe埋め込みで参照する構成にした。新規タスクの追加・ステータス更新は、リポジトリを直接編集するのではなく、このチャット(worker-room)への依頼経由でdata/tasks.jsonをcommitする運用。",
+      "detail": "index.html(ビューア)とdata/tasks.jsonをfetchするだけの静的サイト構成。GitHub Actions(.github/workflows/deploy-pages.yml)でmainへのpushごとにGitHub Pagesへ自動デプロイ(https://gurii-gabreh.github.io/Study-Schedule/)。\n\nデータ構造: data/tasks.jsonのrootを起点にchildrenで再帰的にツリーを構成する。葉ノード(childrenを持たないノード)だけがstart/plannedEnd/actualEnd/status/priorityを持つ実行タスクで、それ以外の中間ノードはchildrenの実績から開始日・終了日・ステータス・遅延日数・完了数をビューア側(index.html)が自動集計する(親の遅延は「集計後の日付差」ではなく「子の中で最も遅れているdelayDaysを引き継ぐ」方式。別ブランチの遅延が、未着手タスクの遠い予定終了日に埋もれて『順調』に見えてしまう問題があったため)。",
+      "output": "https://github.com/gurii-gabreh/Study-Schedule",
+      "subtasks": [
+        {
+          "id": "SSC-002",
+          "task": "学習スケジュールWBSアプリの新規構築",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-08-13",
+          "note": "事前にモックアップ(Artifact)で1行1タスク・1日1列カレンダー・レベル階層(Lv1〜4)のイメージ確認を行い、合意を得たうえで実アプリ化した。",
+          "detail": "index.html: data/tasks.jsonをfetchして表示する単一ページのビューア。行の折りたたみ(▸/⌄)、カレンダーセルのホバーツールチップ、ダーク/ライト両テーマ対応。Lv4(実行タスク)は太い実績バー、Lv1〜3(集計ノード)は細いバーで視覚的に区別し、当初の終了予定日を過ぎた分は遅延の重さに応じて4段階(順調/軽度/重度/深刻)の色で塗り分ける。\n\ndata/tasks.json: 初期状態は「学習目標を追加してください」のプレースホルダーのみ(架空のタスクを実データのように見せないため)。\n\n.github/workflows/deploy-pages.yml: Knowledge-Dashboardと同一構成でGitHub Pagesへ自動デプロイ。\n\nprogress-tracker-dashboard側の📚学習ログタブは「📚学習スケジュール」に改名し、旧concept-log.jsonのカード表示・「確認した」チェック機能(GAS連携含む)を廃止して、本サイトのiframe埋め込みに置き換えた(PTD側、PR #75で対応)。",
+          "output": "https://github.com/gurii-gabreh/Study-Schedule (index.html, data/tasks.json, .github/workflows/deploy-pages.yml)"
+        },
+        {
+          "id": "SSC-003",
+          "task": "AIE-021(6分野の概要把握)を最初の目標として反映",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-08-13",
+          "note": "AIE-021のdetailは既にdata/concept-overview.jsonへの保存経緯を記載済みで、内容もユーザー提示分と一致していたため、AIE-021自体への追記は不要と判断した。",
+          "detail": "Lv1(目標)を「6分野の概要を一通りさらう(全体像の把握)」とし、AIE-021・data/concept-overview.jsonと同じ6分野(アーキテクチャ/サーバー・インフラ/セキュリティ/AI・LLM/データベース/テスト)をLv2として展開した。各分野の4項目(用語+一言説明)はLv3タスクのsummaryへ格納している。",
+          "output": ""
+        },
+        {
+          "id": "SSC-004",
+          "task": "学習法研究に基づく3ステップ構成への分解とスケジュール算出",
+          "priority": "中",
+          "status": "完了",
+          "updated": "2026-08-13",
+          "note": "参照元スプレッドシート(書籍「疲れ切った人の勉強法」の章ごとの研究紹介まとめ)はGoogle Driveコネクタで内容を確認済み。詳細データの複製はせず、data/tasks.jsonのstudyPolicyフィールドに要約+参照リンクのみ保持する方針にした。",
+          "detail": "ユーザー共有のスプレッドシート(1V4bbJTbWvg2e37x7iIFEPbpv4Vc5slelF2-EI6CgouA)の内容に基づき、各分野(Lv2)を①インプット→②積極的想起チェック(検索練習、5-5/5-6/5-7)→③間隔反復レビュー(1〜2日空けて再想起、5-2/5-4)の3ステップ(Lv3、計18実行タスク)に分解した。\n\nスケジュールは「平日30分・休日1時間」の学習ペースで算出(①70分・②15分・③10分、③の前には研究に基づき意図的に1日の間隔を空ける)。2026-08-13開始、2026-09-15終了予定(約4.7週間、AIE-021の目安「2〜4週間」からやや超過するが、間隔反復に必要なギャップによるものとしてユーザー確認済み)。",
+          "output": ""
         }
       ]
     }
