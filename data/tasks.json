@@ -7,7 +7,8 @@
     "progress-tracker-dashboard",
     "ai-research-radar",
     "usage-tracker",
-    "Knowledge-Dashboard"
+    "Knowledge-Dashboard",
+    "text-extraction"
   ],
   "tasks": [
     {
@@ -1250,6 +1251,25 @@
         }
       ],
       "goal": "実装ナレッジの横断集約・可視化を実施"
+    },
+    {
+      "repo": "text-extraction",
+      "id": "TXT-001",
+      "task": "画像の文字起こし処理(作業ルームで直接実行)",
+      "priority": "高",
+      "status": "対応中",
+      "updated": "2026-08-15",
+      "category": "operation",
+      "note": "【作業タスク】text-extractionはKNOWN_REPOSに含まれておらず、通常の判定順だと研究・資料作成タスク扱いになるところだが、実態はGoogle Drive上の画像を読み取ってスプレッドシートへ書き出すデータ処理タスクのため、category=operationとして新規登録した。コード実装・PR作成は不要な運用タスクのため共有Routine(平日9/12/15/18時)の対象からは除外し、即実行(TRUE)指定により、既存の専用作業ルーム(session_01SRXYFKYnk5efKmq3speXKF「text-extraction app」、gurii-gabreh/Text-Extraction)へ次回定期実行を待たずに直接ディスパッチした。",
+      "nextAction": "作業ルーム(text-extraction app)からの完了報告(新規スプレッドシートURL)を待つ",
+      "detail": "■ 対象データ\nGoogleドライブの処理対象フォルダ: https://drive.google.com/drive/u/0/folders/1BM7Utm0zLntiz1uVH_zY5sPgjnBhogT7\n\n■ 処理内容\n1. 対象フォルダ内の画像を一覧取得する\n2. 各画像を直接読み取り、question_number(第◯問)/question_text(問題文本文。令和◯年度・問◯等のメタ情報や模擬試験モードの進捗表示は除外)/choice_a〜d(選択肢ア〜エの本文、ラベル除く)/answer(「正解：」の直後の1文字。「あなたの解答：」は無視)を抽出する\n3. 1枚だけでは必須項目(問題文 or 正解)が欠ける場合、ファイル名の時刻順で前後の画像を確認し、選択肢ア〜エが完全一致すれば同一問題とみなして統合する\n4. 前後を確認しても必須項目が揃わない画像は処理対象外として記録する\n\n■ 図・表の扱い\n・問題文中に図・表(手書き図、グラフ、UIスクリーンショット等)がある場合はその領域を画像として切り抜く\n・選択肢自体が図の場合は選択肢領域も切り抜き対象に含め(問題文の図と合わせて1枚でよい)、選択肢のテキスト欄にはラベル文字(ア/イ/ウ/エ)のみを記載する\n・通常のテキストの問題文・選択肢はそのまま書き起こす\n\n■ 出力先(既存のスプレッドシートは更新しないこと)\n・テキストデータ: 新規のGoogleスプレッドシート(またはExcel)を作成。列: 問題番号, 問題文, 選択肢ア, 選択肢イ, 選択肢ウ, 選択肢エ, 正解, 元ファイル名, 問題文画像(切り抜きがある場合のみ)\n・切り抜き画像: 元画像フォルダ内に新規サブフォルダを作成しまとめて保存\n\n■ 完了条件\n対象フォルダ内の全画像の処理結果(成功・失敗)が新規スプレッドシートにまとまっており、完了したらそのURLを報告すること。",
+      "output": "",
+      "checkHistory": [
+        {
+          "date": "2026-08-15",
+          "summary": "相談ルームでTXT-001として新規登録(優先度高・即実行TRUE)。category未確定(KNOWN_REPOS外)だったためoperation(運用・データ処理タスク)と判断し【作業タスク】マーカーで共有Routine対象から除外。既存の専用作業ルーム「text-extraction app」(session_01SRXYFKYnk5efKmq3speXKF)が見つかったため新規ルーム作成はせず、一次実行トリガーで同ルームへ即時ディスパッチした。"
+        }
+      ]
     }
   ]
 }
