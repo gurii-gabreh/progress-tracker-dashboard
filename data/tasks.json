@@ -2884,12 +2884,32 @@
       "id": "KIZ-031",
       "task": "本番環境にAES暗号化キー(INTAKE_ENC_KEY)を設定する(wrangler secret put)",
       "priority": "高",
-      "status": "対応中",
-      "updated": "2026-08-14",
+      "status": "完了",
+      "updated": "2026-08-15",
       "repo": "kizashi",
-      "note": "2026-08-14発覚: 事前問診フォームの保存が本番で失敗する不具合の原因。KIZ-027のデプロイ手順にこのステップの案内が抜けていたため未設定のままだった。crypto.jsはenv.INTAKE_ENC_KEY未設定時に明示的にエラーを投げる設計(README「本番投入前に必ずユーザー自身で確認」の一つ)。",
+      "note": "2026-08-14発覚: 事前問診フォームの保存が本番で失敗する不具合の原因。KIZ-027のデプロイ手順にこのステップの案内が抜けていたため未設定のままだった。crypto.jsはenv.INTAKE_ENC_KEY未設定時に明示的にエラーを投げる設計(README「本番投入前に必ずユーザー自身で確認」の一つ)。 / 2026-08-15: ユーザーがwrangler secret put実行・再デプロイ・本番での保存成功を確認済み。",
       "detail": "対応手順: 1) `openssl rand -base64 32`でキーを生成 2) `npx wrangler secret put INTAKE_ENC_KEY`で本番に設定 3) `npx wrangler deploy`で再デプロイ 4) 事前問診の保存を再テスト。ユーザーへ手順を案内済みだが、実施完了の報告はまだ受けていない(要確認)。",
       "output": ""
+    },
+    {
+      "id": "KIZ-032",
+      "task": "地図タブのズームボタン(＋－)がヘッダー上にはみ出す不具合を修正",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-15",
+      "repo": "kizashi",
+      "detail": "#mapにposition指定が無かったため、Leafletのズームボタン(position:absolute)が#mapのoverflow:hiddenで基準にできず、祖先要素(実質ページ最上部)を基準に描画されヘッダーの上に飛び出していた。#mapにposition:relativeを1行追加して解消(コミット901ea5d)。ユーザーの本番スクリーンショットで再現・確認後に修正、再デプロイ後に本人確認済み。",
+      "note": "2026-08-15: 本番反映・ユーザー確認済み。"
+    },
+    {
+      "id": "KIZ-033",
+      "task": "共有済みの間取り手書き図を、後から修正できるようにする",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-15",
+      "repo": "kizashi",
+      "detail": "従来はfloor_plansへのPOST(新規追加)のみで更新手段が無く、描き間違いを直す方法が無かった。PUT /api/rooms/:code/floorplans/:id を追加(incident_idも条件に含め他ルームからの更新は404で拒否)。フロント側はfloorplan.jsにloadBackground()を追加し、既存画像をcanvasの背景として読み込んでから上書き描画できるようにした。一覧の各間取りに「この間取りを修正する」ボタンを追加し、編集中は共有ボタンがPUTでの上書き保存に切り替わる(件数は増えない)。ローカルでwrangler dev + Playwright(Leaflet CDNがサンドボックスからブロックされるためスタブ注入)で、背景読み込み・上書き保存・件数不変・キャンセル動作を確認後、本番デプロイしユーザー確認済み(コミット1feadc3)。",
+      "note": "2026-08-15: 本番反映・ユーザー確認済み。"
     }
   ]
 }
