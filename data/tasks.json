@@ -3099,6 +3099,18 @@
           "output": ""
         }
       ]
+    },
+    {
+      "repo": "設計書テンプレート",
+      "id": "DGT-005",
+      "task": "学習記録ページの新規実装",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-16",
+      "category": "manual",
+      "note": "本人がリポジトリを新規に用意し、名前を共有してもらい次第、実装に着手する(現時点でリポジトリ未定のため保留)。",
+      "detail": "2026-08-16、progress-tracker-dashboard側のアーキテクチャ学習(「設計の見取り図」Artifact)の振り返り会話から発足。ページに載せる内容: (1)「設計の見取り図」の内容(デザインパターン・SOLID・Clean Architecture・モノリスvsマイクロサービス)、(2) 本人が自分の言葉でまとめた理解、(3) それに対する正誤の記録(訂正した4点: データの持ち方の誤認識、SOLID=継承という誤認識、依存ゼロという誤認識、DBが中心という誤認識)。\n\n2026-08-16追記: 内容に(4) 別AI(DeepSeek/Kimi/Gemini Pro等)による確認結果も明記することが確定。第二意見チェック(POL-002)の結果を、その場限りで終わらせず記録として残す位置づけ。モデル比較の参考情報(2026年時点): Artificial Analysis Intelligence Indexでは Kimi K2.6=54、DeepSeek V4 Pro=52。コーディングはKimi K2.6がSWE-bench Pro優位、DeepSeek V4 ProがLiveCodeBench優位。専門的科学推論(GPQA Diamond)はGemini 3.1 Proが94.3%で最も高い。本人はGemini Proを契約済みのため、追加費用なくGemini Proも第二意見チェックの選択肢に加えられる。3モデルを内容に応じて使い分ける方針。",
+      "output": ""
     }
   ]
 }
