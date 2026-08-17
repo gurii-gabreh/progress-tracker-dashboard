@@ -102,7 +102,21 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #concept-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #learning-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+
+  /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
+     上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
+  .manager-subview-toggle {
+    flex: 0 0 auto; display: flex; gap: 6px; padding: 8px 16px;
+    background: var(--surface-2); border-bottom: 1px solid var(--border);
+  }
+  .manager-subview-btn {
+    font-size: 12.5px; font-weight: 700; padding: 5px 14px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer;
+  }
+  .manager-subview-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .manager-subview { display: none; flex: 1 1 auto; min-height: 0; flex-direction: column; }
+  .manager-subview.active { display: flex; }
 
   /* 🏠 一覧タブ(2026-08-13追加)。タブ数が増えてきたためのナビゲーションハブ。my-dashboardの
      「🏠一覧」カードグリッドと同じ考え方で、各タブへのショートカットカードを並べる。 */
@@ -731,12 +745,11 @@
 <div class="app-shell">
   <div class="top-tab-bar">
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
-    <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 マネージャーアプリ</button>
+    <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
-    <button class="top-tab-btn" id="top-tab-concept" data-view="concept">📚 スケジュール管理</button>
   </div>
   <div class="view-panel-area">
   <div id="hub-view" class="view-panel">
@@ -747,8 +760,8 @@
         <div class="hub-grid">
           <button type="button" class="hub-card" data-hub-nav="manager">
             <span class="hub-card-icon">🧭</span>
-            <span class="hub-card-title">マネージャーアプリ</span>
-            <span class="hub-card-desc">全リポジトリの実装タスク・進捗を一覧管理する、このアプリの中心機能です。</span>
+            <span class="hub-card-title">タスクWBS</span>
+            <span class="hub-card-desc">タスクスケジュール(WBS)とマネージャーアプリ(全リポジトリの実装タスク・進捗管理)を切り替えて使える、このアプリの中心機能です。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
@@ -775,17 +788,23 @@
             <span class="hub-card-desc">AIツールの利用量・クレジット消費状況を記録する暫定タブです。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
-          <button type="button" class="hub-card" data-hub-nav="concept">
-            <span class="hub-card-icon">📚</span>
-            <span class="hub-card-title">スケジュール管理</span>
-            <span class="hub-card-desc">学習タスクと各アプリの開発タスクをレベル1(全体)〜レベル4(実行タスク)のWBSで管理し、進捗・遅延・実績時間を可視化するスケジューラーです。</span>
-            <span class="hub-card-cta">開く →</span>
-          </button>
         </div>
       </div>
     </div>
   </div>
   <div id="manager-view" class="view-panel active">
+  <div class="manager-subview-toggle">
+    <button type="button" class="manager-subview-btn active" id="manager-subtab-schedule" data-subview="schedule">🗓 タスクスケジュール</button>
+    <button type="button" class="manager-subview-btn" id="manager-subtab-app" data-subview="app">🧭 マネージャーアプリ</button>
+    <button type="button" class="manager-subview-btn" id="manager-subtab-learning" data-subview="learning">📚 学習記録</button>
+  </div>
+  <div id="manager-subview-schedule" class="manager-subview active">
+    <iframe id="schedule-iframe" title="タスクスケジュール" loading="lazy"></iframe>
+  </div>
+  <div id="manager-subview-learning" class="manager-subview">
+    <iframe id="learning-iframe" title="学習記録" loading="lazy"></iframe>
+  </div>
+  <div id="manager-subview-app" class="manager-subview">
   <div class="wrap">
   <div class="sticky-top">
     <header>
@@ -911,6 +930,7 @@
   </div>
   </div>
   </div>
+  </div>
   <div id="applist-view" class="view-panel">
     <iframe id="applist-iframe" title="アプリ一覧" loading="lazy"></iframe>
   </div>
@@ -953,9 +973,6 @@
         <div id="credit-table-wrap"></div>
       </div>
     </div>
-  </div>
-  <div id="concept-view" class="view-panel">
-    <iframe id="concept-iframe" title="スケジュール管理" loading="lazy"></iframe>
   </div>
   </div>
 </div>
@@ -2756,10 +2773,6 @@
       },
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
-      concept: {
-        btn: document.getElementById("top-tab-concept"), panel: document.getElementById("concept-view"),
-        iframeId: "concept-iframe", url: "https://gurii-gabreh.github.io/Study-Schedule/",
-      },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -2777,6 +2790,38 @@
     document.querySelectorAll("[data-hub-nav]").forEach((el) => {
       el.addEventListener("click", () => activate(el.dataset.hubNav));
     });
+  })();
+
+  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ/学習記録、2026-08-16追加、
+  // 2026-08-16に学習記録を追加)。上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
+  // (Study-Schedule改めTask-WBSリポジトリのGitHub Pages)を表示するため、ページ読み込み時に即iframeへ
+  // srcをセットする。学習記録(App-Development-Info)は既定表示ではないため、他のiframeタブと同じく
+  // 初回クリック時にだけsrcをセットする(遅延読み込み)。
+  (function setupManagerSubviewToggle() {
+    const SCHEDULE_URL = "https://gurii-gabreh.github.io/Task-WBS/";
+    const LEARNING_URL = "https://gurii-gabreh.github.io/App-Development-Info/";
+    const subviews = {
+      schedule: { btn: document.getElementById("manager-subtab-schedule"), panel: document.getElementById("manager-subview-schedule") },
+      app: { btn: document.getElementById("manager-subtab-app"), panel: document.getElementById("manager-subview-app") },
+      learning: {
+        btn: document.getElementById("manager-subtab-learning"), panel: document.getElementById("manager-subview-learning"),
+        iframeId: "learning-iframe", url: LEARNING_URL,
+      },
+    };
+    function activateSubview(key) {
+      Object.entries(subviews).forEach(([k, { btn, panel }]) => {
+        const active = k === key;
+        btn.classList.toggle("active", active);
+        panel.classList.toggle("active", active);
+      });
+      const sv = subviews[key];
+      if (sv.iframeId) {
+        const iframe = document.getElementById(sv.iframeId);
+        if (!iframe.src) iframe.src = sv.url;
+      }
+    }
+    Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
+    document.getElementById("schedule-iframe").src = SCHEDULE_URL;
   })();
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
