@@ -102,7 +102,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #schedule-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #learning-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
      上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
@@ -796,9 +796,13 @@
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="manager-subtab-schedule" data-subview="schedule">🗓 タスクスケジュール</button>
     <button type="button" class="manager-subview-btn" id="manager-subtab-app" data-subview="app">🧭 マネージャーアプリ</button>
+    <button type="button" class="manager-subview-btn" id="manager-subtab-learning" data-subview="learning">📚 学習記録</button>
   </div>
   <div id="manager-subview-schedule" class="manager-subview active">
     <iframe id="schedule-iframe" title="タスクスケジュール" loading="lazy"></iframe>
+  </div>
+  <div id="manager-subview-learning" class="manager-subview">
+    <iframe id="learning-iframe" title="学習記録" loading="lazy"></iframe>
   </div>
   <div id="manager-subview-app" class="manager-subview">
   <div class="wrap">
@@ -2788,15 +2792,21 @@
     });
   })();
 
-  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
-  // 上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール(Study-Schedule改め
-  // Task-WBSリポジトリのGitHub Pages)を表示するため、ページ読み込み時に即iframeへsrcをセットする
-  // (他のiframeタブと違い、クリックを待たず最初から表示されるサブビューのため遅延読み込みにしない)。
+  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ/学習記録、2026-08-16追加、
+  // 2026-08-16に学習記録を追加)。上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
+  // (Study-Schedule改めTask-WBSリポジトリのGitHub Pages)を表示するため、ページ読み込み時に即iframeへ
+  // srcをセットする。学習記録(App-Development-Info)は既定表示ではないため、他のiframeタブと同じく
+  // 初回クリック時にだけsrcをセットする(遅延読み込み)。
   (function setupManagerSubviewToggle() {
     const SCHEDULE_URL = "https://gurii-gabreh.github.io/Task-WBS/";
+    const LEARNING_URL = "https://gurii-gabreh.github.io/App-Development-Info/";
     const subviews = {
       schedule: { btn: document.getElementById("manager-subtab-schedule"), panel: document.getElementById("manager-subview-schedule") },
       app: { btn: document.getElementById("manager-subtab-app"), panel: document.getElementById("manager-subview-app") },
+      learning: {
+        btn: document.getElementById("manager-subtab-learning"), panel: document.getElementById("manager-subview-learning"),
+        iframeId: "learning-iframe", url: LEARNING_URL,
+      },
     };
     function activateSubview(key) {
       Object.entries(subviews).forEach(([k, { btn, panel }]) => {
@@ -2804,6 +2814,11 @@
         btn.classList.toggle("active", active);
         panel.classList.toggle("active", active);
       });
+      const sv = subviews[key];
+      if (sv.iframeId) {
+        const iframe = document.getElementById(sv.iframeId);
+        if (!iframe.src) iframe.src = sv.url;
+      }
     }
     Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
     document.getElementById("schedule-iframe").src = SCHEDULE_URL;
