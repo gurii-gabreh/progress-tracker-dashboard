@@ -1,5 +1,30 @@
 {
   "description": "AI利用料金・使用量(クレジット)について分かった情報を、分かった時点で随時記録する表。usage-tracker(data/tasks.json UST-001〜006参照)の本格的な可視化サイトができるまでの暫定置き場。usage-trackerが完成したら移行する想定。",
-  "updatedAt": "2026-08-11",
-  "entries": []
+  "updatedAt": "2026-08-16",
+  "entries": [
+    {
+      "date": "2026-08-16",
+      "service": "DeepSeek",
+      "detail": "無料Web版(chat.deepseek.com)はV4-Pro/V4-Flashが使え、サブスクリプション無し・明確な日次上限の公表も無い(混雑時のみ遅くなることがある)。開発者向けAPIは別物でトークン従量課金(有料)。",
+      "note": "POL-002(第二意見チェック)の選択肢の1つ。公式情報・比較記事で確認。"
+    },
+    {
+      "date": "2026-08-16",
+      "service": "Kimi",
+      "detail": "無料Web版(kimi.com)は最上位モデルK2.6が会員クレジットを消費せず使える(「1日30〜50件まで」という情報は古い/誤り)。APIは別課金で、最低$1のチャージが必要(Tier 0は1.5Mトークン/日の上限、$10チャージ[Tier 1]で日次上限解除)。",
+      "note": "POL-002(第二意見チェック)の選択肢の1つ。"
+    },
+    {
+      "date": "2026-08-16",
+      "service": "Google Gemini",
+      "detail": "2026年4月1日付でGemini Proモデル(2.5 Pro/3 Pro/3.1 Pro)が無料枠から外れ有料限定に変更。現行の無料枠はGemini 3.6 Flash中心+1日ごく少量のProのみ。フル活用にはGoogle AI Pro(月額$19.99)が必要。本人はGoogle AI Pro契約済みのため追加費用なしで利用可。",
+      "note": "POL-002(第二意見チェック)の選択肢に追加。GPQA Diamond(専門的推論)ではGemini 3.1 Proが3モデル中最高スコア(94.3%)。"
+    },
+    {
+      "date": "2026-08-16",
+      "service": "Cloudflare Workers",
+      "detail": "無料枠はリクエストあたりのCPU時間が非常に短く制限される(数十ms程度)。有料プラン($5/月〜)は既定30秒、設定で最大5分まで拡張可能。V8 isolate方式のためコールドスタートがほぼ発生しない(1ms未満で起動、コンテナ方式のLambda等は数百ms〜1秒)。",
+      "note": "App-Development-Info学習資料(サーバー・インフラ分野)の作成時に公式情報で確認。"
+    }
+  ]
 }
