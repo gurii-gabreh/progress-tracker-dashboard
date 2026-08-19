@@ -746,6 +746,7 @@
   <div class="top-tab-bar">
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
+    <button class="top-tab-btn" id="top-tab-learning" data-view="learning">🎓 学習</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
@@ -796,17 +797,9 @@
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="manager-subtab-schedule" data-subview="schedule">🗓 タスクスケジュール</button>
     <button type="button" class="manager-subview-btn" id="manager-subtab-app" data-subview="app">🧭 マネージャーアプリ</button>
-    <button type="button" class="manager-subview-btn" id="manager-subtab-materials" data-subview="materials">📖 学習資料</button>
-    <button type="button" class="manager-subview-btn" id="manager-subtab-records" data-subview="records">📝 学習記録</button>
   </div>
   <div id="manager-subview-schedule" class="manager-subview active">
     <iframe id="schedule-iframe" title="タスクスケジュール" loading="lazy"></iframe>
-  </div>
-  <div id="manager-subview-materials" class="manager-subview">
-    <iframe id="materials-iframe" title="学習資料" loading="lazy"></iframe>
-  </div>
-  <div id="manager-subview-records" class="manager-subview">
-    <iframe id="records-iframe" title="学習記録" loading="lazy"></iframe>
   </div>
   <div id="manager-subview-app" class="manager-subview">
   <div class="wrap">
@@ -933,6 +926,18 @@
     <footer>Routineが定期実行のたびにこのダッシュボードを更新します・タスクをクリックすると実装ナレッジを表示</footer>
   </div>
   </div>
+  </div>
+  </div>
+  <div id="learning-view" class="view-panel">
+  <div class="manager-subview-toggle">
+    <button type="button" class="manager-subview-btn active" id="learning-subtab-materials" data-subview="materials">📖 学習資料</button>
+    <button type="button" class="manager-subview-btn" id="learning-subtab-records" data-subview="records">📝 学習記録</button>
+  </div>
+  <div id="learning-subview-materials" class="manager-subview active">
+    <iframe id="materials-iframe" title="学習資料" loading="lazy"></iframe>
+  </div>
+  <div id="learning-subview-records" class="manager-subview">
+    <iframe id="records-iframe" title="学習記録" loading="lazy"></iframe>
   </div>
   </div>
   <div id="applist-view" class="view-panel">
@@ -2765,6 +2770,7 @@
     const tabs = {
       hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
+      learning: { btn: document.getElementById("top-tab-learning"), panel: document.getElementById("learning-view") },
       applist: {
         btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
         iframeId: "applist-iframe", url: "https://gurii-gabreh.github.io/my-dashboard/",
@@ -2796,24 +2802,41 @@
     });
   })();
 
-  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ/学習資料/学習記録、
-  // 2026-08-16追加)。上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
+  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
+  // 上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
   // (Study-Schedule改めTask-WBSリポジトリのGitHub Pages)を表示するため、ページ読み込み時に即iframeへ
-  // srcをセットする。学習資料・学習記録(App-Development-Info、materials/records別ページ)は
-  // 既定表示ではないため、他のiframeタブと同じく初回クリック時にだけsrcをセットする(遅延読み込み)。
+  // srcをセットする。
   (function setupManagerSubviewToggle() {
     const SCHEDULE_URL = "https://gurii-gabreh.github.io/Task-WBS/";
-    const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
-    const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
     const subviews = {
       schedule: { btn: document.getElementById("manager-subtab-schedule"), panel: document.getElementById("manager-subview-schedule") },
       app: { btn: document.getElementById("manager-subtab-app"), panel: document.getElementById("manager-subview-app") },
+    };
+    function activateSubview(key) {
+      Object.entries(subviews).forEach(([k, { btn, panel }]) => {
+        const active = k === key;
+        btn.classList.toggle("active", active);
+        panel.classList.toggle("active", active);
+      });
+    }
+    Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
+    document.getElementById("schedule-iframe").src = SCHEDULE_URL;
+  })();
+
+  // 🎓学習タブ内のサブ切り替え(学習資料/学習記録、2026-08-19。当初タスクWBS内のサブタブだったが
+  // 独立した最上位タブに昇格)。既定で学習資料(App-Development-Infoのmaterials/index.html)を表示
+  // するため、ページ読み込み時に即iframeへsrcをセットする。学習記録は他のiframeタブと同じく
+  // 初回クリック時にだけsrcをセットする(遅延読み込み)。
+  (function setupLearningSubviewToggle() {
+    const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
+    const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
+    const subviews = {
       materials: {
-        btn: document.getElementById("manager-subtab-materials"), panel: document.getElementById("manager-subview-materials"),
+        btn: document.getElementById("learning-subtab-materials"), panel: document.getElementById("learning-subview-materials"),
         iframeId: "materials-iframe", url: MATERIALS_URL,
       },
       records: {
-        btn: document.getElementById("manager-subtab-records"), panel: document.getElementById("manager-subview-records"),
+        btn: document.getElementById("learning-subtab-records"), panel: document.getElementById("learning-subview-records"),
         iframeId: "records-iframe", url: RECORDS_URL,
       },
     };
@@ -2830,7 +2853,7 @@
       }
     }
     Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
-    document.getElementById("schedule-iframe").src = SCHEDULE_URL;
+    document.getElementById("materials-iframe").src = MATERIALS_URL;
   })();
 
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
