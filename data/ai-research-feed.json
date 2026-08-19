@@ -1,0 +1,120 @@
+{
+  "schema": "日付,カテゴリ,タイトル,概要,ソースURL,収集日時,使うAI の7列。参考フォーマット: https://docs.google.com/spreadsheets/d/1pMTIWgWfPFEUkOh4V7KkDsSSYEeSlBDVNr9_zFxBm_o/edit?gid=905697318",
+  "topics": [
+    "アプリ作成時に活かせる技術・アーキテクチャ・データ構造・データのやり取り",
+    "最新のAI技術でできること・今後できると思われる技術の動向",
+    "今ある技術を組み合わせるとできる新しいこと",
+    "AIが使われている分野・使われやすいシチュエーション",
+    "AIの流行"
+  ],
+  "entries": [
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・標準化",
+      "title": "A2A Protocol v1.0が正式発表、150以上の組織が支持しLinux Foundation管理下に",
+      "summary": "AWS・Cisco・Google・IBM・Microsoft・Salesforce・SAP・ServiceNowが創設TSCメンバーとなるエージェント間通信の業界標準A2A(Agent2Agent)v1.0が2026年4月9日に発表された。MCPとは補完関係で、MCPはツール接続、A2Aはエージェント間の委任・調整を担う。",
+      "sourceUrl": "https://www.digitalapplied.com/blog/ai-agent-protocol-ecosystem-map-2026-mcp-a2a-acp-ucp",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・設計手法",
+      "title": "2026年のシステム設計、AIエージェント連携を前提としたイベント駆動・CQRSへ移行",
+      "summary": "同期処理のスケール課題に対応するためイベント駆動で疎結合化し、読み書き競合にはCQRSで最適化する設計が主流化。APIも「製品」として扱うAPI-as-a-productの考え方が広がっている。",
+      "sourceUrl": "https://qiita.com/yut-nagase/items/eb3b189d0c232f7c569e",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "モデル性能",
+      "title": "Llama 4 Scout、1000万トークンのコンテキストウィンドウを実現",
+      "summary": "MetaのLlama 4 Scoutが、interleaved iRoPE attentionという新方式により1000万トークンという破格のコンテキストウィンドウを達成。Llama 4 Maverickはネイティブなマルチモーダルmixture-of-expertsモデルとして提供される。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "モデル性能",
+      "title": "Claude Fable 5がSWE-Bench Proで80.3%、コーディングベンチマーク上位に",
+      "summary": "AnthropicのClaude Fable 5が主要コーディングベンチマークSWE-Bench Proで80.3%を記録し、今月報告された中でもトップクラスのスコアとなった。あわせて100万トークンのコンテキストウィンドウにも対応。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "製品・サービス",
+      "title": "Adobe・Johns Hopkins、静止画から歩き回れる3D世界を生成する「Wonder」を発表",
+      "summary": "2026年7月29日、Adobe ResearchとJohns Hopkins大学が、1枚の静止画や動画から6方向に移動可能な永続的3D空間を16fpsで生成するモデル「Wonder」を発表した。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術動向・予測",
+      "title": "小型言語モデル(SLM)が企業AI活用の主力になると予測",
+      "summary": "蒸留・量子化・省メモリ実行技術の進展により推論がエッジクラスタや組込み機器へ拡大。SLMが企業のAI施策の大半を担い、コストを抑えつつ高い精度を維持すると予測されている。",
+      "sourceUrl": "https://www.techinsights.com/outlook-summit-series-2026/ai-market",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "Gartner予測: 2026年末までに企業稼働の40%が産業用AIエージェントによる自律判断へ",
+      "summary": "IoT・エッジコンピューティングとAIエージェントの組み合わせにより、予知保全やスマートシティなど即時判断が必要な現場でエッジAIが実用化。Gartnerは2026年末までに企業の運用ワークロードの40%が自律判断を行う産業用AIエージェントを組み込むと予測。",
+      "sourceUrl": "https://flolive.net/blog/glossary/edge-computing-in-2026/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "AIエージェントがウォレットを保有し自律的にDeFi取引・API課金を実行",
+      "summary": "AIエージェントが自身のウォレットを持ち、トレジャリーのリバランス・API/計算資源の支払い・サブスク管理・DeFi取引などを自律実行する事例が拡大。ブロックチェーンベースのIoTセキュリティ市場は2026年に24億ドル規模に達する見込み。",
+      "sourceUrl": "https://devtechnosys.com/insights/autonomous-ai-agents-in-blockchain/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・業界動向",
+      "title": "医療(+15.1pt)・製造業(+14.2pt)でAI導入が急加速、中小企業の成功率は業界で差",
+      "summary": "2026年は医療・ヘルスケアと製造業でAI導入ポイントが特に伸長。中小企業のAI導入成功率はテクノロジー系88%、金融系83%、製造業75%。失敗パターンは製造業「データ品質」、医療「規制対応」、金融「監査要件」が壁になっている。",
+      "sourceUrl": "https://note.com/tasty_quail2338/n/n6d72ba793f0b",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "「Agentic AI」が2026年を象徴するキーワードに",
+      "summary": "ゴールを与えると計画・ツール実行・結果確認・再試行まで自律的に行う「Agentic AI」が2026年の中心的トレンドとして定着。単なる質問応答から、人と協働する「デジタル同僚」へと位置づけが変化している。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "Physical AI・ヒューマノイドロボットが研究段階から実配備へ",
+      "summary": "マルチモーダル技術の次のフェーズとしてPhysical AIとワールドモデルが台頭。研究段階だったヒューマノイドロボットが実際の職場への配備段階に入りつつある。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "学習用データの枯渇懸念で独自データの価値が上昇",
+      "summary": "研究者らは2026年後半までに大規模モデル学習に使える公開データが枯渇する可能性を警告。企業独自の非公開データの価値が相対的に高まっている。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    }
+  ]
+}
