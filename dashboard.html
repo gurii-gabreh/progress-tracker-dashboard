@@ -187,11 +187,17 @@
   }
   .ai-diagram-caption { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.4; }
 
-  /* 💳 クレジットタブ(2026-08-11追加)。usage-tracker本体ができるまでの暫定表示。 */
+  /* 💳 クレジットタブ(2026-08-11追加)。usage-tracker本体ができるまでの暫定表示。
+     2026-08-20、get_session(mcp__Claude_Code_Remote__get_session)が実測トークン数・
+     正確な5時間レート制限リセット時刻(rate_limit_info.resetsAt)を返すことが分かったため、
+     文字数からの概算ではなく実測値を記録・表示する形に更新。 */
   .credit-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .credit-table th, .credit-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
   .credit-table th { color: var(--text-muted); font-weight: 700; font-size: 11.5px; }
-  .credit-table tr.boundary-row td { background: var(--surface-2); font-weight: 700; color: var(--accent); }
+  .credit-table tr.boundary-row td { background: var(--surface-2); font-weight: 700; color: var(--accent); text-align: center; }
+  .credit-usage-sub { font-size: 10.5px; color: var(--text-muted); }
+  .credit-summary-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .credit-summary-chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
 
   /* 📚 学習ログタブ(2026-08-11追加)。 */
   .concept-cat-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
@@ -980,6 +986,7 @@
         <div class="tab-page-title">💳 クレジット</div>
         <p class="tab-page-overview">Claude Codeの5時間の利用上限までにどれだけタスクをこなせたかを記録するタブです(他AIツールの料金情報を記録する場所ではありません、2026-08-19訂正)。usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定的な記録置き場として、タスクを完了するたびにdata/credit-log.jsonへ自動で1行ずつ追記します。5時間の区切り(利用上限到達・リセット)はAI側からは検知できないため、ユーザーから連絡があった時だけ区切りとして記録し、連絡が無くても記録自体は継続します。</p>
         <div class="policy-meta" id="credit-meta">読み込み中…</div>
+        <div id="credit-summary"></div>
         <div id="credit-table-wrap"></div>
       </div>
     </div>
@@ -3110,10 +3117,15 @@
   // data/credit-log.json(💳クレジットタブ)。usage-tracker本体(UST-001〜006)ができるまでの
   // 暫定表示。Claude Codeの5時間の利用上限までにどれだけタスクをこなせたかを、タスク完了の
   // たびに1行ずつ自動記録する表(2026-08-11追加、2026-08-19に用途を訂正: 他AIの料金情報では
-  // なくこちらが本来の記録対象)。ユーザーから「利用上限に達した/リセットされた」と連絡が
-  // あった時だけ、type: "boundary" の行を区切りとして挟む。連絡が無くても記録は継続する。
+  // なくこちらが本来の記録対象)。
+  // 2026-08-20: get_sessionが実測の累積トークン数(usage)と、5時間レート制限の正確な
+  // リセット時刻(rateLimitResetsAt)を返すことが分かったため、記録の都度これらを保存する。
+  // 前の行のusageとの差分から「このタスクで消費した量」を計算して表示し、rateLimitResetsAtが
+  // 前の行と変わった箇所には自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要)。
+  // ユーザーが申告した区切り(type: "boundary")もそのまま仕切り行として表示できる。
   function loadCreditLogData() {
     const metaEl = document.getElementById("credit-meta");
+    const summaryEl = document.getElementById("credit-summary");
     const tableWrap = document.getElementById("credit-table-wrap");
     return fetch("data/credit-log.json", { cache: "no-store" })
       .then((res) => {
@@ -3124,34 +3136,71 @@
         metaEl.textContent = `最終更新: ${data.updatedAt}`;
         const entries = Array.isArray(data.entries) ? data.entries : [];
         if (!entries.length) {
+          summaryEl.innerHTML = "";
           tableWrap.innerHTML = `<div class="empty">まだ記録はありません。タスクを完了するたびにdata/credit-log.jsonのentriesへ自動追記していきます。</div>`;
           return;
         }
-        const rows = entries.map((e) => {
+
+        const taskEntries = entries.filter((e) => e.type !== "boundary");
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const todayCount = taskEntries.filter((e) => e.date === todayStr).length;
+        const lastWithReset = [...taskEntries].reverse().find((e) => e.rateLimitResetsAt);
+        const currentWindowCount = lastWithReset
+          ? taskEntries.filter((e) => e.rateLimitResetsAt === lastWithReset.rateLimitResetsAt).length
+          : null;
+        summaryEl.innerHTML = `
+          <div class="credit-summary-row">
+            <span class="credit-summary-chip">📅 今日: ${todayCount}件</span>
+            ${currentWindowCount !== null ? `<span class="credit-summary-chip">⏱ 今の5時間区切り: ${currentWindowCount}件</span>` : ""}
+          </div>`;
+
+        let prevUsageEntry = null;
+        let prevWindowKey = null;
+        const rowsHtml = [];
+        entries.forEach((e) => {
           if (e.type === "boundary") {
-            return `
-              <tr class="boundary-row">
-                <td>${escapeHtml(e.date || "")}</td>
-                <td colspan="3">⏱ ${escapeHtml(e.note || "5時間区切り")}</td>
-              </tr>`;
+            rowsHtml.push(`<tr class="boundary-row"><td colspan="6">⏱ ${escapeHtml(e.note || "5時間区切り(ユーザー申告)")}</td></tr>`);
+            return;
           }
-          return `
+          if (e.rateLimitResetsAt && prevWindowKey && e.rateLimitResetsAt !== prevWindowKey) {
+            rowsHtml.push(`<tr class="boundary-row"><td colspan="6">⏱ 5時間区切り(利用上限リセット、実測)</td></tr>`);
+          }
+          if (e.rateLimitResetsAt) prevWindowKey = e.rateLimitResetsAt;
+
+          let usageCell = "—";
+          if (e.usage) {
+            if (prevUsageEntry && prevUsageEntry.usage) {
+              const deltaCost = e.usage.costUsd - prevUsageEntry.usage.costUsd;
+              const deltaInOut = (e.usage.inputTokens - prevUsageEntry.usage.inputTokens)
+                + (e.usage.outputTokens - prevUsageEntry.usage.outputTokens);
+              usageCell = `$${deltaCost.toFixed(2)}<br><span class="credit-usage-sub">${deltaInOut.toLocaleString()} tok</span>`;
+            } else {
+              usageCell = `<span class="credit-usage-sub">記録開始</span>`;
+            }
+            prevUsageEntry = e;
+          }
+
+          rowsHtml.push(`
             <tr>
               <td>${escapeHtml(e.date || "")}</td>
+              <td>${escapeHtml(e.time || "—")}</td>
               <td>${escapeHtml(e.repo || "")}</td>
               <td>${escapeHtml(e.task || "")}</td>
+              <td>${usageCell}</td>
               <td>${escapeHtml(e.note || "")}</td>
-            </tr>`;
-        }).join("");
+            </tr>`);
+        });
+
         tableWrap.innerHTML = `
           <table class="credit-table">
-            <thead><tr><th>日付</th><th>リポジトリ</th><th>タスク内容</th><th>メモ</th></tr></thead>
-            <tbody>${rows}</tbody>
+            <thead><tr><th>日付</th><th>時刻</th><th>リポジトリ</th><th>タスク内容</th><th>消費(差分)</th><th>メモ</th></tr></thead>
+            <tbody>${rowsHtml.join("")}</tbody>
           </table>`;
       })
       .catch((err) => {
         console.error(err);
         metaEl.textContent = "";
+        summaryEl.innerHTML = "";
         tableWrap.innerHTML = `<div class="empty">data/credit-log.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
       });
   }

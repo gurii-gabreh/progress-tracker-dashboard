@@ -1,6 +1,6 @@
 {
-  "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/repo/task/noteを1行ずつ自動追記する。5時間の区切り(利用上限到達・リセット)はAI側からは検知できないため、ユーザーから連絡があった時だけtype:\"boundary\"の行を挟む。連絡が無くても通常のtask行の記録は継続する。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。",
-  "updatedAt": "2026-08-19",
+  "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/time/repo/task/noteを1行ずつ自動追記する(timeはJST・HH:MM形式)。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。【2026-08-20(1)】1日にどれだけ作業したか見た目で分からないという指摘を受け、time列と日別/直近5時間の自動集計を追加。2026-08-19以前の6件は時刻を記録していなかったため、time欄は空(直近5時間の集計には含めない。日別集計には含める)。【2026-08-20(2)】mcp__Claude_Code_Remote__get_sessionが実測の累積トークン数(usage: inputTokens/outputTokens/cacheReadTokens/cacheWriteTokens/costUsd)と、5時間レート制限の正確なリセット時刻(rateLimitResetsAt)を返すことが判明したため、以後のエントリにこの2つを追加。前の行のusageとの差分でタスクごとの消費量を表示し、rateLimitResetsAtが変わった箇所には実測ベースで自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要になった。申告ベースのtype:\"boundary\"も引き続き手動追加は可能)。usage/rateLimitResetsAtが無い過去のエントリは、差分計算・自動仕切りの対象外として「—」表示になる。",
+  "updatedAt": "2026-08-20",
   "entries": [
     {
       "date": "2026-08-19",
@@ -37,6 +37,28 @@
       "repo": "progress-tracker-dashboard",
       "task": "クレジットログの誤記載(他AI料金情報)を訂正し、本来の用途(利用上限までのタスク記録)へ再設計",
       "note": "このタブ自体の再設計作業"
+    },
+    {
+      "date": "2026-08-20",
+      "time": "08:45",
+      "repo": "progress-tracker-dashboard",
+      "task": "クレジットタブにtime列と日別/直近5時間の自動集計表示を追加",
+      "note": "「1日にどれだけ作業したか分かるようにしてほしい」との指摘を受けての改修。以後のエントリはtimeを記録する"
+    },
+    {
+      "date": "2026-08-20",
+      "time": "08:49",
+      "repo": "progress-tracker-dashboard",
+      "task": "get_sessionの実測トークン数・正確な5時間リセット時刻を使ってクレジットタブを再設計",
+      "note": "mcp__Claude_Code_Remote__get_sessionのexternal_metadata.usage(実測トークン)とrate_limit_info.resetsAt(5時間リセット時刻)を発見。以後この値をusage/rateLimitResetsAtとして記録し、前の行との差分で消費量を表示する",
+      "usage": {
+        "inputTokens": 101465,
+        "outputTokens": 165603,
+        "cacheReadTokens": 109224864,
+        "cacheWriteTokens": 1471066,
+        "costUsd": 40.30094595
+      },
+      "rateLimitResetsAt": "2026-08-20T04:30:00Z"
     }
   ]
 }
