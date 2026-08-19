@@ -102,7 +102,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #schedule-iframe, #learning-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
      上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
@@ -796,13 +796,17 @@
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="manager-subtab-schedule" data-subview="schedule">🗓 タスクスケジュール</button>
     <button type="button" class="manager-subview-btn" id="manager-subtab-app" data-subview="app">🧭 マネージャーアプリ</button>
-    <button type="button" class="manager-subview-btn" id="manager-subtab-learning" data-subview="learning">📚 学習記録</button>
+    <button type="button" class="manager-subview-btn" id="manager-subtab-materials" data-subview="materials">📖 学習資料</button>
+    <button type="button" class="manager-subview-btn" id="manager-subtab-records" data-subview="records">📝 学習記録</button>
   </div>
   <div id="manager-subview-schedule" class="manager-subview active">
     <iframe id="schedule-iframe" title="タスクスケジュール" loading="lazy"></iframe>
   </div>
-  <div id="manager-subview-learning" class="manager-subview">
-    <iframe id="learning-iframe" title="学習記録" loading="lazy"></iframe>
+  <div id="manager-subview-materials" class="manager-subview">
+    <iframe id="materials-iframe" title="学習資料" loading="lazy"></iframe>
+  </div>
+  <div id="manager-subview-records" class="manager-subview">
+    <iframe id="records-iframe" title="学習記録" loading="lazy"></iframe>
   </div>
   <div id="manager-subview-app" class="manager-subview">
   <div class="wrap">
@@ -2792,20 +2796,25 @@
     });
   })();
 
-  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ/学習記録、2026-08-16追加、
-  // 2026-08-16に学習記録を追加)。上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
+  // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ/学習資料/学習記録、
+  // 2026-08-16追加)。上部タブとは独立した、タブ内だけの表示切り替え。既定でタスクスケジュール
   // (Study-Schedule改めTask-WBSリポジトリのGitHub Pages)を表示するため、ページ読み込み時に即iframeへ
-  // srcをセットする。学習記録(App-Development-Info)は既定表示ではないため、他のiframeタブと同じく
-  // 初回クリック時にだけsrcをセットする(遅延読み込み)。
+  // srcをセットする。学習資料・学習記録(App-Development-Info、materials/records別ページ)は
+  // 既定表示ではないため、他のiframeタブと同じく初回クリック時にだけsrcをセットする(遅延読み込み)。
   (function setupManagerSubviewToggle() {
     const SCHEDULE_URL = "https://gurii-gabreh.github.io/Task-WBS/";
-    const LEARNING_URL = "https://gurii-gabreh.github.io/App-Development-Info/";
+    const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
+    const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
     const subviews = {
       schedule: { btn: document.getElementById("manager-subtab-schedule"), panel: document.getElementById("manager-subview-schedule") },
       app: { btn: document.getElementById("manager-subtab-app"), panel: document.getElementById("manager-subview-app") },
-      learning: {
-        btn: document.getElementById("manager-subtab-learning"), panel: document.getElementById("manager-subview-learning"),
-        iframeId: "learning-iframe", url: LEARNING_URL,
+      materials: {
+        btn: document.getElementById("manager-subtab-materials"), panel: document.getElementById("manager-subview-materials"),
+        iframeId: "materials-iframe", url: MATERIALS_URL,
+      },
+      records: {
+        btn: document.getElementById("manager-subtab-records"), panel: document.getElementById("manager-subview-records"),
+        iframeId: "records-iframe", url: RECORDS_URL,
       },
     };
     function activateSubview(key) {
