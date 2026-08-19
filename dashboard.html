@@ -191,6 +191,7 @@
   .credit-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .credit-table th, .credit-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
   .credit-table th { color: var(--text-muted); font-weight: 700; font-size: 11.5px; }
+  .credit-table tr.boundary-row td { background: var(--surface-2); font-weight: 700; color: var(--accent); }
 
   /* 📚 学習ログタブ(2026-08-11追加)。 */
   .concept-cat-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
@@ -977,7 +978,7 @@
     <div class="policy-scroll">
       <div class="policy-wrap">
         <div class="tab-page-title">💳 クレジット</div>
-        <p class="tab-page-overview">AIツールの利用量・クレジット消費状況を記録するタブです。usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定的な記録置き場として、わかった情報をdata/credit-log.jsonへ随時追記しています。</p>
+        <p class="tab-page-overview">Claude Codeの5時間の利用上限までにどれだけタスクをこなせたかを記録するタブです(他AIツールの料金情報を記録する場所ではありません、2026-08-19訂正)。usage-tracker(data/tasks.json UST-001〜006)の本格的な可視化サイトができるまでの暫定的な記録置き場として、タスクを完了するたびにdata/credit-log.jsonへ自動で1行ずつ追記します。5時間の区切り(利用上限到達・リセット)はAI側からは検知できないため、ユーザーから連絡があった時だけ区切りとして記録し、連絡が無くても記録自体は継続します。</p>
         <div class="policy-meta" id="credit-meta">読み込み中…</div>
         <div id="credit-table-wrap"></div>
       </div>
@@ -3107,7 +3108,10 @@
   });
 
   // data/credit-log.json(💳クレジットタブ)。usage-tracker本体(UST-001〜006)ができるまでの
-  // 暫定表示。分かった情報が入るたびにentries配列へ追記していく想定の、ごく単純な表(2026-08-11追加)。
+  // 暫定表示。Claude Codeの5時間の利用上限までにどれだけタスクをこなせたかを、タスク完了の
+  // たびに1行ずつ自動記録する表(2026-08-11追加、2026-08-19に用途を訂正: 他AIの料金情報では
+  // なくこちらが本来の記録対象)。ユーザーから「利用上限に達した/リセットされた」と連絡が
+  // あった時だけ、type: "boundary" の行を区切りとして挟む。連絡が無くても記録は継続する。
   function loadCreditLogData() {
     const metaEl = document.getElementById("credit-meta");
     const tableWrap = document.getElementById("credit-table-wrap");
@@ -3120,19 +3124,28 @@
         metaEl.textContent = `最終更新: ${data.updatedAt}`;
         const entries = Array.isArray(data.entries) ? data.entries : [];
         if (!entries.length) {
-          tableWrap.innerHTML = `<div class="empty">まだ記録はありません。分かった情報があればdata/credit-log.jsonのentriesへ追記していきます。</div>`;
+          tableWrap.innerHTML = `<div class="empty">まだ記録はありません。タスクを完了するたびにdata/credit-log.jsonのentriesへ自動追記していきます。</div>`;
           return;
         }
-        const rows = entries.map((e) => `
-          <tr>
-            <td>${escapeHtml(e.date || "")}</td>
-            <td>${escapeHtml(e.service || "")}</td>
-            <td>${escapeHtml(e.detail || "")}</td>
-            <td>${escapeHtml(e.note || "")}</td>
-          </tr>`).join("");
+        const rows = entries.map((e) => {
+          if (e.type === "boundary") {
+            return `
+              <tr class="boundary-row">
+                <td>${escapeHtml(e.date || "")}</td>
+                <td colspan="3">⏱ ${escapeHtml(e.note || "5時間区切り")}</td>
+              </tr>`;
+          }
+          return `
+            <tr>
+              <td>${escapeHtml(e.date || "")}</td>
+              <td>${escapeHtml(e.repo || "")}</td>
+              <td>${escapeHtml(e.task || "")}</td>
+              <td>${escapeHtml(e.note || "")}</td>
+            </tr>`;
+        }).join("");
         tableWrap.innerHTML = `
           <table class="credit-table">
-            <thead><tr><th>日付</th><th>サービス</th><th>内容</th><th>メモ</th></tr></thead>
+            <thead><tr><th>日付</th><th>リポジトリ</th><th>タスク内容</th><th>メモ</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>`;
       })

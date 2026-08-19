@@ -1,5 +1,42 @@
 {
-  "description": "【2026-08-19に用途を訂正】このページは他のAIツールの料金情報を記録する場所ではない。正しくは、Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。誤って他AI(DeepSeek/Kimi/Gemini/Cloudflare Workers)の料金情報を記録していたため、2026-08-19に全件削除した。記録方法(schemaの形)はユーザーと相談の上、決定次第このdescriptionとentriesの構造を更新する。",
+  "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/repo/task/noteを1行ずつ自動追記する。5時間の区切り(利用上限到達・リセット)はAI側からは検知できないため、ユーザーから連絡があった時だけtype:\"boundary\"の行を挟む。連絡が無くても通常のtask行の記録は継続する。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。",
   "updatedAt": "2026-08-19",
-  "entries": []
+  "entries": [
+    {
+      "date": "2026-08-19",
+      "repo": "progress-tracker-dashboard",
+      "task": "🎓学習タブのJS配線修正(タスクWBSタブから独立させた後の参照切れ解消)",
+      "note": ""
+    },
+    {
+      "date": "2026-08-19",
+      "repo": "App-Development-Info",
+      "task": "サーバー・インフラ分野の学習記録ページを新規作成(想起チェック1回目、13正解+3点訂正/補足)",
+      "note": ""
+    },
+    {
+      "date": "2026-08-19",
+      "repo": "task-wbs",
+      "task": "STU-001・004・005を完了に更新、深堀りラウンドの方針(一巡優先→IPA試験区分3段階)をWBSに記録",
+      "note": ""
+    },
+    {
+      "date": "2026-08-19",
+      "repo": "progress-tracker-dashboard",
+      "task": "🤖AI基本設定ページに「AIルーティング」セクションを追加",
+      "note": ""
+    },
+    {
+      "date": "2026-08-19",
+      "repo": "progress-tracker-dashboard",
+      "task": "PR #82作成・main へマージ",
+      "note": ""
+    },
+    {
+      "date": "2026-08-19",
+      "repo": "progress-tracker-dashboard",
+      "task": "クレジットログの誤記載(他AI料金情報)を訂正し、本来の用途(利用上限までのタスク記録)へ再設計",
+      "note": "このタブ自体の再設計作業"
+    }
+  ]
 }
