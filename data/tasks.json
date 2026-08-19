@@ -870,9 +870,9 @@
       "task": "Gemini調査実行",
       "priority": "高",
       "status": "対応中",
-      "updated": "2026-08-05",
-      "nextAction": "専用のClaude調査ルームの作成とgas/Code.gs再デプロイを行う(下の子タスク参照)",
-      "note": "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)の作成・依頼文の貼り付けはユーザー側の対応待ち。",
+      "updated": "2026-08-19",
+      "nextAction": "残るはgas/Code.gsの再デプロイ(AIR-009)のみ。専用のClaude調査ルームは既に稼働中",
+      "note": "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)も2026-08-02から稼働中であることを2026-08-19の棚卸しで確認(AIR-010参照)。残るはAIR-009(gas/Code.gs再デプロイ)のみ。",
       "detail": "",
       "output": "",
       "subtasks": [
@@ -1012,9 +1012,9 @@
           "task": "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
           "priority": "高",
           "status": "対応中",
-          "updated": "2026-08-05",
-          "nextAction": "gas/Code.gsの再デプロイと、専用のClaude調査ルームの作成を行う(下の子タスク参照)",
-          "note": "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
+          "updated": "2026-08-19",
+          "nextAction": "残るはAIR-009(gas/Code.gsの再デプロイ)のみ。専用のClaude調査ルームは既に稼働中(AIR-010参照)",
+          "note": "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)も2026-08-02から稼働中で、実際にdata/claude-fallback-results.jsonへ調査結果を追記できていることを2026-08-19の棚卸しで確認した(AIR-010参照)。あとはGAS側の最新gas/Code.gs再デプロイ(AIR-009)が残るのみ。",
           "completedItems": [
             {
               "item": "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにするGAS側の仕組み(syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備)",
@@ -1051,12 +1051,18 @@
               "id": "AIR-010",
               "task": "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
               "priority": "高",
-              "status": "未着手",
-              "updated": "-",
+              "status": "完了",
+              "updated": "2026-08-19",
               "category": "manual",
-              "note": "",
+              "note": "相談ルームでのルーティング設定棚卸し(2026-08-19)で、実は既にこの作業が完了していたことが判明。「ai-research-radar Gemini 調査実行」ルーム(session_013bHimgZ6jFeaA9v3btECb4)に、毎日JST9:00発火の自己バインドRoutine(trig_018gorFR7wjvJK5K9SZCE9Xi「ai-research-radar Geminiフォールバック調査」)が2026-08-02から設定済みで、直近も実際にdata/claude-fallback-results.jsonへ調査結果を追記できていることを確認した。tasks.json側の記録が古いままだったため更新した。",
               "detail": "",
-              "output": "",
+              "output": "trig_018gorFR7wjvJK5K9SZCE9Xi(Routine)、session_013bHimgZ6jFeaA9v3btECb4(「ai-research-radar Gemini 調査実行」ルーム)",
+              "checkHistory": [
+                {
+                  "date": "2026-08-19",
+                  "summary": "全ルームのRoutine設定を棚卸しした際、本タスクが求めていた専用Claude調査ルーム+自己バインドRoutineが既に2026-08-02から稼働中(毎日JST9:00)であり、data/claude-fallback-results.jsonへの追記実績もあることを確認。実際の作業自体は2026-08-02時点で完了していたと推定されるが、tasks.json側の記録が未着手のまま古くなっていたため、ここで完了に更新した。"
+                }
+              ],
               "steps": [
                 "Claude Codeで新しいセッション(ルーム)を作成する",
                 "このタスクの実装時にユーザーへ渡した依頼文(専用Claude調査ルーム向けの指示文)を、その新しいセッションの最初のメッセージとして貼り付ける",
