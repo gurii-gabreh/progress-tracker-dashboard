@@ -115,6 +115,114 @@
       "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
       "collectedAt": "2026-08-20 08:43",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・データ同期",
+      "title": "Automerge 3.0がCRDT文書サイズを40〜60%削減、ミリ秒未満マージを実現",
+      "summary": "CRDTライブラリAutomergeが2025年末に3.0へ到達し、列指向ストレージ形式で文書サイズを40〜60%削減、新しい同期プロトコルでミリ秒未満のマージ速度を達成した。オフラインファースト設計のアプリで採用が進んでいる。",
+      "sourceUrl": "https://appscale.blog/en/blog/local-first-architecture-crdts-sync-engines-offline-first-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・データ同期",
+      "title": "中央サーバー不要、WebRTC DataChannelsで直接同期するローカルファーストアプリが拡大",
+      "summary": "2026年、多くのコラボレーションアプリが中央サーバーを介さず、同室ユーザー間でWebRTC DataChannelsを使い直接データを同期する構成を採用し始めている。クラウドは「ゲートキーパー」から「中継役」へ役割を変えつつある。",
+      "sourceUrl": "https://www.calibraint.com/blog/offline-first-mobile-app-in-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "標準化・プロトコル",
+      "title": "A2A(Google)とMCP(Anthropic)の役割分担が定着、日本はガイドライン1.2版でHuman-in-the-Loopを明確化",
+      "summary": "MCP(Anthropic、2024年11月発表)はLLMと外部データ・ツールの接続、A2A(Google、2025年4月発表)はエージェント間通信を担う形で役割分担が定着。日本では総務省・経産省の「AI事業者ガイドライン」第1.2版(2026年3月31日付)がAIエージェントへの人による監視要件を明確化した。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "規制・ガバナンス",
+      "title": "米政府、先端AIモデルの発売前自主提出を求める新フレームワークを提示",
+      "summary": "2026年8月上旬、ホワイトハウスがOpenAI・Anthropic・Googleを招き、最先端モデルを一般公開前に政府へ自主的に共有するよう促す新フレームワークの詳細を共有した(詳細は未公開)。",
+      "sourceUrl": "https://aiconference.london/how-anthropic-openai-and-google-compare-in-2026-august-2026-20260813-12",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "業界動向・人事",
+      "title": "Anthropic、Mariano-Florentino Cuéllar氏をChief Global Affairs Officerに招聘",
+      "summary": "Anthropicは2026年8月4日、Mariano-Florentino(Tino)Cuéllar氏がChief Global Affairs Officerとして参画すると発表した。",
+      "sourceUrl": "https://aiconference.london/how-anthropic-openai-and-google-compare-in-2026-august-2026-20260813-12",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術動向・世界モデル",
+      "title": "Google DeepMind「Genie 3」、24FPS・720pのリアルタイム3D世界生成を実現",
+      "summary": "Google DeepMindの世界モデル「Genie 3」(2025年8月発表)は、リアルタイム(24FPS、720p)でインタラクティブな3D環境を生成する初の世界モデルとして注目され、2026年も産業応用が進んでいる。NVIDIAのCosmos-Predict2.5等、オープンウェイトの世界基盤モデルも拡充中。",
+      "sourceUrl": "https://xtech.nikkei.com/atcl/nxt/keyword/18/00002/012100303/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・金融",
+      "title": "メガバンク3行+SOMPOが全社3万人にGemini Enterpriseを展開、東京海上はコンタクトセンターAI本格導入",
+      "summary": "日本の金融業界でAIエージェント導入が加速。メガバンク3行とSOMPOが全社員3万人規模でGemini Enterpriseを展開し、東京海上はコンタクトセンター向けAIを本格導入した。2028年までに日本企業の60%がAIエージェントを業務活用すると予測されている。",
+      "sourceUrl": "https://www.ailead.app/blog/ai-agent-enterprise-case-collection-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・ソフトウェア開発",
+      "title": "AIエージェント導入でソフトウェア開発工数が月12.5人から月2.0人に削減された事例",
+      "summary": "システム開発企業が設計・コーディング・テスト・デプロイまでを自律的に行うAIエージェントを導入し、従来月12.5人分かかっていた開発工数を月2.0人分まで削減した事例が報告されている。",
+      "sourceUrl": "https://aismiley.co.jp/ai_news/ai-agent-example-business/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "TDKのInvenSense SmartMotion、AIグラス・スマートウォッチ向けセンシングを統一",
+      "summary": "CES 2026でTDKがInvenSense SmartMotionカスタムセンシングソリューションを発表。ワイヤレスイヤホン・AIグラス・ARアイウェア・スマートウォッチ・フィットネスバンド等、複数のIoTウェアラブルで共通のセンシング基盤として使えるようにした。",
+      "sourceUrl": "https://ajprotech.com/blog/events/ces-2026-preview-rising-trends-in-ai-robotics-iot-and-wearables.html",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "頭の傾き・まばたきで操作するAI耳栓「Naqi Neural Earbuds」がCES2026 Best of Innovation受賞",
+      "summary": "Naqi Logixのニューラルイヤホン「Naqi Neural Earbuds」が、頭を傾ける・まばたきするといった微細なジェスチャーへの応答を実現し、CES 2026のBest of Innovationを受賞した。AI×ウェアラブル×ジェスチャー認識の組み合わせ事例。",
+      "sourceUrl": "https://ajprotech.com/blog/events/ces-2026-preview-rising-trends-in-ai-robotics-iot-and-wearables.html",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "「Vibe Coding」がCollins Dictionary 2025年今年の単語に選出、2026年は自律エージェントへ進化",
+      "summary": "2025年2月にAndrej Karpathy氏が提唱した「Vibe Coding」(自然言語で意図を伝えAIに実装を任せる開発スタイル)がCollins Dictionaryの2025年「今年の単語」に選出。2026年にはコード補完ツールから、要件定義・仕様策定・テスト・デプロイ前チェックまで担う自律エージェントへと進化している。",
+      "sourceUrl": "https://zhuanlan.zhihu.com/p/2010879714030540578",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "市場動向",
+      "title": "2028年までに日本企業の60%がAIエージェントを業務活用すると予測",
+      "summary": "調査により、2028年までに日本企業の60%がAIエージェントを何らかの形で業務活用するようになると予測されている。金融・保険業界では問い合わせ対応の自動化など具体的な導入が先行している。",
+      "sourceUrl": "https://www.ailead.app/blog/ai-agent-enterprise-case-collection-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
     }
   ]
 }
