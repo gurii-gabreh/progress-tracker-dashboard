@@ -511,6 +511,14 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
+### AI一覧のJSON化について(2026-08-21追加)
+
+`data/ai-config.json`のaiDirectoryが参照する「AI一覧」スプレッドシート(手動管理、どのアプリからも
+自動書き込みはされていない)を、`gas/Code.gs`の`exportAiListToGithubOnce_()`で`data/ai-list.json`へ
+一度きりエクスポートできるようにした。定期的な自動同期ではなく、ユーザーが手動で1回実行する想定
+(実行方法は`gas/Code.gs`内の関数直前コメントを参照)。実行後は`data/ai-list.json`を直接編集して
+正本として扱っていく。
+
 **引き継ぎ事項(1〜4・6・8・9・10・11は対応済み、5・9・10はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
 7は根本原因は未解決だが8の対応で実害は解消、12はREADME・週次残タスクチェックへは反映済みだが
 共有Routine自身のプロンプトへの反映は次回そのセッション起動時待ち)**:

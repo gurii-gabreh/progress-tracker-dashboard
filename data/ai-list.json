@@ -1,0 +1,7 @@
+{
+  "description": "AIツール一覧(第二意見チェック等で使うAI候補を探す際に参照する参照資料)。元は「AI一覧」スプレッドシート(ユーザーが手動管理、どのアプリからも自動書き込みはされていない)。gas/Code.gsのexportAiListToGithubOnce_()で一度きりJSON化する想定。以後はこのファイルを直接編集して正本とする(継続的な自動同期は無い)。",
+  "exportedAt": null,
+  "source": "Google Sheets(AI一覧) via Apps Script (gas/Code.gs, exportAiListToGithubOnce_、一度きり実行)",
+  "items": [],
+  "note": "2026-08-21時点ではまだGAS側でGITHUB_TOKENの設定・exportAiListToGithubOnce_()の実行が行われていないため、プレースホルダ(空)の状態。ユーザーがApps Scriptエディタでスクリプト プロパティにGITHUB_TOKENを設定し、exportAiListToGithubOnce_()を一度実行すると、実際のAI一覧シートの内容で上書きされる。"
+}
