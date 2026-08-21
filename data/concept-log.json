@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-08-12",
+  "updatedAt": "2026-08-21",
   "categories": [
     {
       "key": "architecture",
@@ -29,7 +29,19 @@
       ]
     },
     { "key": "security", "label": "🔒 セキュリティ", "items": [] },
-    { "key": "ai-llm", "label": "🤖 AI/LLM", "items": [] },
+    {
+      "key": "ai-llm",
+      "label": "🤖 AI/LLM",
+      "items": [
+        {
+          "id": "CL-003",
+          "concept": "既存の手書きスプレッドシート資産を、RAGの前段としてJSON化する",
+          "context": "2026-08-21、AI・LLM分野の学習(RAG・チャンク分割・Embedding)を踏まえたユーザーとの相談で、実装進捗管理シート・AI技術情報収集ログ・AI一覧の3スプレッドシートを、将来のRAG(チャンク化・ベクトルDB化)の土台としてJSON化する方針を決定",
+          "note": "同期の向きを、データがどこで生まれるかで使い分けた。実装進捗管理シートは既にJSON(tasks.json)が正本でGAS(syncFromGithub)がJSON→シートへPullする構成。一方AI技術情報収集ログ・AI一覧はデータがシート側で生まれる(前者はai-research-radarのGASが書き込み、後者は手動入力)ため、逆方向のシート→JSON(GAS→GitHub Contents APIでcommit)を採用した。この逆方向のコミットパターンはKnowledge-Dashboardのupdate-spreadsheets.gsに既にあった実装をそのまま踏襲し、ゼロから設計しなかった。さらに、データの更新頻度に応じて同期方式も分けた: 収集ログは日々増え続けるため既存の日次トリガーに相乗り(継続的な自動ミラー)、AI一覧は自動更新元が無い手動管理データのため一度きりのエクスポート関数にとどめ、以後はJSON側を直接編集する運用に切り替えた。",
+          "date": "2026-08-21"
+        }
+      ]
+    },
     { "key": "db", "label": "🗄 データベース", "items": [] },
     { "key": "testing", "label": "🧪 テスト", "items": [] }
   ]
