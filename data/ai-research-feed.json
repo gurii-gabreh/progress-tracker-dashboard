@@ -223,6 +223,123 @@
       "sourceUrl": "https://www.ailead.app/blog/ai-agent-enterprise-case-collection-2026",
       "collectedAt": "2026-08-20 09:38",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "データベース・アーキテクチャ",
+      "title": "Amazon DynamoDB、2026年8月5日にリアルタイムベクトル検索を一般提供開始",
+      "summary": "AWSがDynamoDBに任意規模でのリアルタイムベクトル検索対応を発表(2026年8月5日)。別のベクトルストアへ複製することなく、運用データと共にベクトル埋め込みを保存し直接類似度検索が行えるようになった。",
+      "sourceUrl": "https://aws.amazon.com/jp/blogs/news/amazon-dynamodb-now-supports-real-time-vector-search-at-any-scale/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "データベース・アーキテクチャ",
+      "title": "ElectricSQL、PostgreSQL+高速リアルタイム同期でLocal-first/エッジAI向け分散アーキテクチャに対応",
+      "summary": "ElectricSQLはPostgreSQLをバックエンドに持ちながら高速なリアルタイムクライアント同期を両立するデータベースで、Local-first思想とエッジAI・IoTなど分散アーキテクチャのニーズに合致するとして注目されている。",
+      "sourceUrl": "https://www.issoh.co.jp/tech/details/7220/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "モデル性能・マルチモーダル",
+      "title": "NVIDIA、視覚・音声・言語統合の300億パラメータ「Nemotron 3 Nano Omni」を公開",
+      "summary": "NVIDIAがオープンなオムニモーダル推論モデル「Nemotron 3 Nano Omni」をリリース。視覚・音声・言語能力を単一の300億パラメータMixture-of-Expertsアーキテクチャへ統合し、同等のオープンマルチモーダルモデル比で最大9倍のスループットを実現した。",
+      "sourceUrl": "https://blog.mean.ceo/multimodal-ai-news-august-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "活用分野・ロボティクス",
+      "title": "COMPUTEX 2026、ロボットが「フィジカル」から「エージェント」へ進化する展示が相次ぐ",
+      "summary": "COMPUTEX 2026では、単なる物理動作を行うロボットから、状況を判断し自律的に行動する「エージェント型ロボット」への進化を示す展示が相次いだ。NVIDIA中心にフィジカルAIが2026年の中心テーマとなっている。",
+      "sourceUrl": "https://wired.jp/article/computex-2026-robots/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "活用分野・製造業",
+      "title": "生成AIが単発チャットボットから、設計〜エネルギー管理を横断する「マルチAIエージェント」へ進化",
+      "summary": "製造業において生成AIは単発アプリ・チャットボットの活用段階を超え、設計・生産計画・保全・品質・物流・エネルギー管理など業務領域を横断して実行を支援する「マルチAIエージェント」段階に入っていると報告されている。",
+      "sourceUrl": "https://www.deloitte.com/jp/ja/Industries/telecom-media-entertainment/perspectives/making-robots-ai-native.html",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "26億パラメータのSLMが、6710億パラメータのDeepSeek-R1をドメイン特化タスクで上回る",
+      "summary": "2026年、わずか26億パラメータの小型言語モデル(SLM)が、6710億パラメータのDeepSeek-R1をドメイン特化タスクで上回る事例が報告された。エッジ上のSLMは10ms未満のレイテンシとゼロのクラウドAPIコストを実現する。",
+      "sourceUrl": "https://renard-digital.fr/blog/en/small-language-models-edge-devices-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "AppleのA19 Pro「Neural Accelerators」搭載iPhoneが80億パラメータモデルを毎秒20トークン超で実行",
+      "summary": "Apple A19 ProはGPUコアに直接統合された「Neural Accelerators」により約75TOPSを実現し、iPhone 17 Proが80億パラメータのモデルを毎秒20トークン超で動作させられるようになった。",
+      "sourceUrl": "https://productpower.substack.com/p/small-language-models-slm-and-edge",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "Google AI Edge、Gemma 3n等12以上のモデルに対応、オンデバイスでマルチモーダル・RAG・関数呼び出しを実現",
+      "summary": "Google AI Edgeが対応モデルを12以上に拡大。Gemma初のマルチモーダルオンデバイスSLMである「Gemma 3n」はテキスト・画像・動画・音声入力に対応し、端末上でRAGや関数呼び出しも行えるようになった。",
+      "sourceUrl": "https://developers.googleblog.com/google-ai-edge-small-language-models-multimodality-rag-function-calling/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "Anthropic、Claudeのシステムプロンプトと複数エージェント協調時の失敗パターンを公開",
+      "summary": "2026年8月17日、AnthropicがClaudeのシステムプロンプトや、複数のAIエージェントが協調する際に生じる失敗パターンを公開。AIの「中身の見える化」を進める透明性の潮流が話題になった。",
+      "sourceUrl": "https://note.com/major_echium2954/n/n606e037ed16c",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "自律型コーディングAI「prime-agent」が2026年8月7日、GitHubトレンド1位に",
+      "summary": "長時間タスクを継続しながら自らの手順をレビュー・改善する自己改善機能を持つ自律型コーディングAI「prime-agent」が、2026年8月7日にGitHubトレンドで1位を獲得し話題となった。",
+      "sourceUrl": "https://note.com/major_echium2954/n/nf3016e38daa1",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "市場動向",
+      "title": "2026年の必須AIキーワード10選: エージェント、マルチモーダル、世界モデル、AI for Science等",
+      "summary": "2026年のAI必須キーワードとして、AIエージェント・マルチモーダルAI・世界モデル・AI for Science・オンデバイスAI・ハイパーパーソナライゼーション・XAI(説明可能AI)・合成データ・フィジカルAI・マルチエージェントAIシステムの10語が挙げられている。",
+      "sourceUrl": "https://www.udemy.com/course/ai-trend-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "製品・サービス",
+      "title": "Google I/O 2026、検索ボックスをマルチモーダル対話型UIへ刷新",
+      "summary": "Google I/O 2026で、テキスト・画像・PDF・動画・Chromeタブを入力として受け付ける動的でマルチモーダルなAI対話型検索ボックスへの刷新が発表された。",
+      "sourceUrl": "https://blog.mean.ceo/multimodal-ai-news-august-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "企業が年間6000万円のSalesforce契約をAI内製CRMに置き換える「AI内製化」の動き",
+      "summary": "外部の高額な業務システムをAIで内製した代替に置き換える企業が増加中。ある企業は年間60万ドル(約6000万円)のSalesforce契約を、AIで構築した独自CRMに置き換えた事例が報告されている。",
+      "sourceUrl": "https://note.com/major_echium2954/n/nf3016e38daa1",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
