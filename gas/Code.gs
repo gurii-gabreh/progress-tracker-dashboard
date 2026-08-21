@@ -10,6 +10,10 @@
 //   依頼タスク→完了タブの移動・コメント返信・完了予定タスクの確定がいずれ追いつく。
 // - ダッシュボードの「⏩ 今すぐ同期」ボタンはdoPostに{token, syncNow:true}をPOSTし、
 //   syncFromGithub()を即座に1回だけ手動実行する(上記の時間主導トリガーを待たずに済む)。
+// - 2026-08-21追加: exportAiListToGithubOnce_()は「AI一覧」スプレッドシートの内容をdata/ai-list.json
+//   として一度だけGitHubへエクスポートする関数(定期トリガー不要、手動で1回実行するだけでよい)。
+//   実行にはスクリプト プロパティにGITHUB_TOKEN(data/ai-list.jsonへの書き込み権限を持つGitHub
+//   Personal Access Token)の設定が必要。詳細は関数直前のコメントを参照。
 var SHEET_ID = "1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw";
 
 // 依頼タスクタブの列構成。8〜11列目は「✓ 完了にする」ボタン(ダッシュボード)による
@@ -572,4 +576,100 @@ function buildSheetIndex(sheet) {
     index[indexKey(data[i][0], data[i][1])] = i + 1;
   }
   return { index: index, nextRow: lastDataRow + 1 };
+}
+
+// ============================================================
+// 2026-08-21追加: 「AI一覧」スプレッドシート(POL-002・ai-config.jsonのaiDirectoryが参照する
+// 参照専用シート。どのアプリからも自動書き込みはされておらず、ユーザーが手動管理している)の
+// 内容を、data/ai-list.jsonとして一度だけGitHubへエクスポートするための関数。
+// 以後はこのJSONを正本として直接編集していく想定(継続的な定期取り込みは行わない、
+// ユーザー指示による一度きりのJSON化)。
+// このスプレッドシート自体には日々の自動更新が無いため、繰り返しトリガーは設定しない。
+// 手動で再実行すれば、その時点のシート内容で再エクスポートできる。
+//
+// 実行方法: Apps Scriptエディタの関数選択ドロップダウンでexportAiListToGithubOnce_を選び、
+// 手動実行する(スクリプト プロパティにGITHUB_TOKENの設定が必要、既存のGITHUB_TOKENが無い場合は
+// data/ai-list.jsonへの書き込み権限[Contents API、repoスコープ]を持つトークンを新規発行して設定する)。
+// ============================================================
+var AI_LIST_SHEET_ID = "1GrR8vUc5A_C2Lo6C4Yrt_qqoN_gk6-M_Qw1WAuhp0ZI";
+var AI_LIST_GITHUB_OWNER = "gurii-gabreh";
+var AI_LIST_GITHUB_REPO = "progress-tracker-dashboard";
+var AI_LIST_GITHUB_BRANCH = "main";
+var AI_LIST_GITHUB_PATH = "data/ai-list.json";
+
+function exportAiListToGithubOnce_() {
+  var sheet = SpreadsheetApp.openById(AI_LIST_SHEET_ID).getSheets()[0];
+  var values = sheet.getDataRange().getValues();
+  if (values.length === 0) throw new Error("AI一覧シートが空です");
+  var header = values[0];
+  var items = [];
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+    if (row.every(function (v) { return v === ""; })) continue; // 完全な空行はスキップ
+    var obj = {};
+    for (var c = 0; c < header.length; c++) {
+      if (header[c] === "") continue;
+      obj[header[c]] = row[c];
+    }
+    items.push(obj);
+  }
+
+  var payload = {
+    description: "AIツール一覧(第二意見チェック等で使うAI候補を探す際に参照する参照資料)。" +
+      "元は「AI一覧」スプレッドシート(手動管理)。2026-08-21にexportAiListToGithubOnce_で一度きりJSON化。" +
+      "以後はこのファイルを直接編集して正本とする想定(継続的な自動同期は無い)。",
+    exportedAt: new Date().toISOString(),
+    source: "Google Sheets(AI一覧) via Apps Script (gas/Code.gs, exportAiListToGithubOnce_、一度きり実行)",
+    items: items,
+  };
+
+  var existingSha = fetchAiListExistingSha_();
+  commitAiListToGithub_(payload, existingSha);
+  Logger.log("data/ai-list.jsonをエクスポートしました (items=%s件)", items.length);
+  return { ok: true, count: items.length };
+}
+
+function fetchAiListExistingSha_() {
+  var url = "https://api.github.com/repos/" + AI_LIST_GITHUB_OWNER + "/" + AI_LIST_GITHUB_REPO +
+    "/contents/" + AI_LIST_GITHUB_PATH + "?ref=" + AI_LIST_GITHUB_BRANCH;
+  var res = UrlFetchApp.fetch(url, { headers: aiListGithubHeaders_(), muteHttpExceptions: true });
+  if (res.getResponseCode() === 404) return null;
+  if (res.getResponseCode() !== 200) {
+    throw new Error("既存ai-list.jsonの取得に失敗しました: " + res.getResponseCode() + " " + res.getContentText());
+  }
+  return JSON.parse(res.getContentText()).sha;
+}
+
+function commitAiListToGithub_(payload, sha) {
+  var text = JSON.stringify(payload, null, 2) + "\n";
+  var url = "https://api.github.com/repos/" + AI_LIST_GITHUB_OWNER + "/" + AI_LIST_GITHUB_REPO +
+    "/contents/" + AI_LIST_GITHUB_PATH;
+  var body = {
+    message: "chore: export ai-list.json (" + payload.items.length + " items) via Apps Script (one-off)",
+    content: Utilities.base64Encode(Utilities.newBlob(text, "application/json").getBytes()),
+    branch: AI_LIST_GITHUB_BRANCH,
+  };
+  if (sha) body.sha = sha;
+
+  var res = UrlFetchApp.fetch(url, {
+    method: "put",
+    contentType: "application/json",
+    headers: aiListGithubHeaders_(),
+    payload: JSON.stringify(body),
+    muteHttpExceptions: true,
+  });
+  if (res.getResponseCode() >= 300) {
+    throw new Error("ai-list.jsonのGitHubコミットに失敗しました: " + res.getResponseCode() + " " + res.getContentText());
+  }
+}
+
+/** GitHub API用ヘッダー。トークンはコード内にハードコードせず、スクリプト プロパティのGITHUB_TOKENから読む */
+function aiListGithubHeaders_() {
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  if (!token) throw new Error("スクリプト プロパティ GITHUB_TOKEN が未設定です(data/ai-list.jsonへの書き込み権限を持つトークンを設定してください)");
+  return {
+    Authorization: "Bearer " + token,
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
 }
