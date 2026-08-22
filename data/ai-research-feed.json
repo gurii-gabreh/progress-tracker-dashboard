@@ -340,6 +340,87 @@
       "sourceUrl": "https://note.com/major_echium2954/n/nf3016e38daa1",
       "collectedAt": "2026-08-21 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェントのメモリ設計、ホット/コールドパスの2層構成が標準に",
+      "summary": "2026年の本番AIエージェントでは、直近メッセージ+要約グラフ状態をコンテキストウィンドウ内(ホットパス)に保持し、必要に応じて外部ストア(コールドパス)から過去情報を検索する2層構造が標準化。Mem0・Zep・Lettaがメモリフレームワークの3強とされる。",
+      "sourceUrl": "https://uravation.com/media/ai-agent-memory-complete-guide-2026/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "新星メモリフレームワーク「SimpleMem」、LOCOMOベンチでMem0を上回るF1スコア",
+      "summary": "2026年1月公開の「SimpleMem」は「Semantic Lossless Compression」という手法で効率を追求し、長期記憶ベンチマークLOCOMOにおいて既存の主要フレームワークMem0を上回るF1スコアを記録した。",
+      "sourceUrl": "https://zenn.dev/yasuhito/articles/ai-memory-projects-2026",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "モデル性能",
+      "title": "Google、Gemini 3.6 Flashを2026年7月21日発表、出力トークン消費を17%削減",
+      "summary": "Googleが2026年7月21日、AIエージェント向けの効率性を重視した新モデル群を発表。Gemini 3.6 Flashはコーディングや知識作業での性能を強化しつつ、前世代3.5 Flashと比べて出力トークンの消費量を17%削減した。",
+      "sourceUrl": "https://www.businessinsider.jp/article/2608-how-much-did-major-generative-ai-service-fees/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "市場動向・AIモデル選定",
+      "title": "AIモデル選びが「1つを選ぶ」から「用途ごとにルーティングする」時代へ",
+      "summary": "2026年8月時点で、Claude Fable 5・Claude Opus 5・GPT-5.6 Sol等のフロンティア級モデルが並立し、企業のAIモデル選定は単一モデルの採用ではなく、タスクの種類に応じて複数モデルへ動的にルーティングする方式が主流になりつつある。",
+      "sourceUrl": "https://note.com/bright_jacana710/n/nf45cca54c74b",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "技術の組み合わせ・量子コンピューティング",
+      "title": "IBM、2026年末までに「検証可能な量子優位性」達成を目標に掲げる",
+      "summary": "IBMは2026年末までに、古典コンピュータでは実質的に再現不可能な「検証可能な量子優位性(verified quantum advantage)」の達成を目指すと表明。AIと量子計算を組み合わせ、量子系の安定化にAIを活用する研究も進む。",
+      "sourceUrl": "https://www.analyticsinsight.net/artificial-intelligence/why-2026-could-be-the-breakthrough-year-for-ai-and-quantum-computing",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "技術の組み合わせ・量子コンピューティング",
+      "title": "Googleの量子プロセッサ「Willow」が実際に機能する誤り訂正を実証、Microsoftも誤り訂正済み量子機を顧客へ提供開始",
+      "summary": "2026年、量子コンピューティングは実験段階から実用段階へ移行。Googleの量子プロセッサ「Willow」は実際に機能する誤り訂正を実証し、Microsoftは誤り訂正済みの量子コンピュータの顧客への提供を開始した。量子処理は特定のボトルネックを担い古典計算と組み合わせる「ハイブリッド量子・古典モデル」が標準になっている。",
+      "sourceUrl": "https://www.analyticsinsight.net/artificial-intelligence/why-2026-could-be-the-breakthrough-year-for-ai-and-quantum-computing",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "活用分野・農業",
+      "title": "スマート農業技術活用促進法の認定申請書類作成に生成AIを活用する動きが拡大",
+      "summary": "農業法人向けのAI導入支援では、スマート農業技術活用促進法の認定申請実務そのものに生成AIを使うケースが拡大。要件と自経営の状況を入力し、事業計画の構成案を生成AIに作らせるといった活用が進んでいる。",
+      "sourceUrl": "https://metagri-labo.com/ai-guide/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "活用分野・小売",
+      "title": "AIによる収穫量・需要予測で「データドリブン経営」、産地廃棄・価格暴落の回避へ",
+      "summary": "小売・農業分野でAIによる収穫量予測・需要予測の活用が進み、データに基づく経営判断により豊作時の価格暴落や産地廃棄を回避し利益を最大化する「データドリブン経営」が実現しつつある。",
+      "sourceUrl": "https://ai-market.jp/purpose/retailing_aikatsuyo/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "流行・トレンド",
+      "title": "AI検索の利用率が8か月で3.5倍に急増(「AI検索白書2026」)",
+      "summary": "「AI検索白書2026」の調査により、AI検索(AI Overviews等)の利用率がわずか8か月で3.5倍に急増したことが明らかになった。ユーザーの情報収集行動そのものが大きく変化している。",
+      "sourceUrl": "https://webtan.impress.co.jp/e/2026/04/07/52273",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
     }
   ]
 }
