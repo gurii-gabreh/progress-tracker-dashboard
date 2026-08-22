@@ -6,7 +6,17 @@
       "Bash(git fetch *)",
       "mcp__Claude_Code_Remote__list_triggers",
       "mcp__github__actions_list",
-      "Bash(node --check *)"
+      "Bash(node --check *)",
+      "Bash(jobs)",
+      "mcp__github__pull_request_read",
+      "mcp__Claude_Code_Remote__get_session",
+      "mcp__github__get_file_contents",
+      "Bash(curl -s -o /dev/null -w *)",
+      "mcp__github__list_pull_requests",
+      "mcp__github__actions_get",
+      "mcp__github__get_job_logs",
+      "Bash(curl -sI *)",
+      "mcp__github__list_branches"
     ]
   }
 }
