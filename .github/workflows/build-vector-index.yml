@@ -1,0 +1,45 @@
+name: Build knowledge vector index
+
+on:
+  schedule:
+    # 毎日 18:00 UTC (03:00 JST)。tasks.json等の更新頻度に対して十分な間隔。
+    - cron: "0 18 * * *"
+  push:
+    branches: ["main"]
+    paths:
+      - "data/tasks.json"
+      - "data/concept-log.json"
+      - "data/ai-list.json"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build vector index
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 scripts/knowledge/build_vector_index.py
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- data/vector-index.json; then
+            echo "変化なし、コミットをスキップします"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/vector-index.json
+          git commit -m "chore: update vector-index.json via build-vector-index workflow"
+          git push
