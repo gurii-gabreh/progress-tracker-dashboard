@@ -519,25 +519,26 @@ https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 (実行方法は`gas/Code.gs`内の関数直前コメントを参照)。実行後は`data/ai-list.json`を直接編集して
 正本として扱っていく。
 
-### ナレッジのベクトル検索(RAG)について(2026-08-22追加)
+### ナレッジのベクトル検索(RAG)について(2026-08-22追加、2026-08-23埋め込み方式を変更)
 
 `data/tasks.json`・`data/concept-log.json`・`data/ai-list.json`・ai-research-radarの`data/research-log.json`
-を、Gemini Embedding API(`gemini-embedding-001`、無料枠あり)でベクトル化し、`data/vector-index.json`へ
-一方向で書き出す仕組みを追加した(CL-003、concept-log.json参照)。**正本側の4ファイルには一切書き込まない**、
-読み取り専用の派生データという位置づけ。
+を、ローカルの埋め込みモデル(fastembed、`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`)で
+ベクトル化し、`data/vector-index.json`へ一方向で書き出す仕組みを追加した(CL-003、concept-log.json参照)。
+**正本側の4ファイルには一切書き込まない**、読み取り専用の派生データという位置づけ。
 
 - `scripts/knowledge/build_vector_index.py`: 上記4ソースからチャンクを抽出し埋め込みを生成する。
-  内容が変わっていないチャンクは既存の埋め込みを再利用し(コンテンツハッシュで判定)、
-  無料枠の消費・実行時間を抑える
+  内容が変わっていないチャンクは既存の埋め込みを再利用する(コンテンツハッシュで判定)
 - `scripts/knowledge/search_knowledge.py`: `data/vector-index.json`に対して自然文で検索するCLI
-  (`GEMINI_API_KEY=xxx python3 scripts/knowledge/search_knowledge.py "検索したい内容"`)
+  (`python3 scripts/knowledge/search_knowledge.py "検索したい内容"`)
 - `.github/workflows/build-vector-index.yml`: 毎日1回(03:00 JST)、および`tasks.json`等の変更時に
   自動実行し、`data/vector-index.json`を更新してcommit・pushする
 
-**セットアップ(ユーザー側の作業)**: リポジトリの Settings → Secrets and variables → Actions で
-`GEMINI_API_KEY`シークレットを追加する必要がある(未設定の間はワークフローがエラーで終わるだけで、
-他の処理には影響しない)。専用のベクトルDB(Cloudflare Vectorize等)は使わず、JSONファイル+検索時の
-総当たりコサイン類似度計算で完結させている(データ量が現状の規模であれば無料で実用に耐える想定)。
+**セットアップ(ユーザー側の作業)**: 不要。当初はGemini Embedding APIを使う設計だったが、
+外部AI企業のAPIキー登録が必要になる点をユーザーに事前確認せず進めていたことが判明したため、
+2026-08-23、APIキー・アカウント登録が一切不要なローカル実行モデルへ切り替えた
+(`pip install fastembed`のみで動く。モデル本体はHugging Faceから初回実行時に自動ダウンロードされる)。
+専用のベクトルDB(Cloudflare Vectorize等)は使わず、JSONファイル+検索時の総当たりコサイン類似度計算で
+完結させている(データ量が現状の規模であれば無料で実用に耐える想定)。
 
 **引き継ぎ事項(1〜4・6・8・9・10・11は対応済み、5・9・10はコード・プロンプトとも反映済みだがGAS再デプロイのみ人手待ち、
 7は根本原因は未解決だが8の対応で実害は解消、12はREADME・週次残タスクチェックへは反映済みだが

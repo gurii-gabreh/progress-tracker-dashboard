@@ -3156,6 +3156,18 @@
       "note": "リポジトリはgurii-gabreh/App-Development-Infoとして本人が新規作成し、2026-08-16に共有を受けて実装した。",
       "detail": "2026-08-16、progress-tracker-dashboard側のアーキテクチャ学習(「設計の見取り図」Artifact)の振り返り会話から発足。ページに載せる内容: (1)「設計の見取り図」の内容(デザインパターン・SOLID・Clean Architecture・モノリスvsマイクロサービス)、(2) 本人が自分の言葉でまとめた理解、(3) それに対する正誤の記録(訂正した4点: データの持ち方の誤認識、SOLID=継承という誤認識、依存ゼロという誤認識、DBが中心という誤認識)。\n\n2026-08-16追記: 内容に(4) 別AI(DeepSeek/Kimi/Gemini Pro等)による確認結果も明記することが確定。第二意見チェック(POL-002)の結果を、その場限りで終わらせず記録として残す位置づけ。モデル比較の参考情報(2026年時点): Artificial Analysis Intelligence Indexでは Kimi K2.6=54、DeepSeek V4 Pro=52。コーディングはKimi K2.6がSWE-bench Pro優位、DeepSeek V4 ProがLiveCodeBench優位。専門的科学推論(GPQA Diamond)はGemini 3.1 Proが94.3%で最も高い。本人はGemini Proを契約済みのため、追加費用なくGemini Proも第二意見チェックの選択肢に加えられる。3モデルを内容に応じて使い分ける方針。\n\n2026-08-16実装: gurii-gabreh/App-Development-Infoにindex.htmlを新規実装し、push済み(GitHub Pages: https://gurii-gabreh.github.io/App-Development-Info/)。4部構成(PART1学んだ内容/PART2自分の理解/PART3正誤の記録/PART4他AIによる確認)で、アーキテクチャ分野を記録した。PART2は本人が想起チェックとして書いた原文をそのまま記録(誤字・表記ゆれも含む)。PART3は11項目中7項目が正しく、4項目(データの持ち方の誤認識、SOLID=継承という誤認識、依存ゼロという誤認識、DBが中心という誤認識)を訂正した記録。PART4(他AIによる確認)はまだ未実施のため「未実施」と明記し、架空の確認結果は書いていない(実施後にAIが追記する運用、README.mdにも記載)。GitHub Pages用ワークフロー(.github/workflows/deploy-pages.yml)も追加。ローカルでPlaywright表示確認済み。今後の学習分野(サーバー・インフラ/セキュリティ/AI・LLM/データベース/テスト/基本・詳細設計)も同じ4部構成でこのリポジトリに追加していく想定。\n\n2026-08-16追記(ページ分離): 「学習資料(学んだ内容そのもの)」と「学習記録(自分の理解・正誤の記録・他AIによる確認)」を別ページに分割。materials/architecture.html(学習資料)、records/architecture.html(学習記録)。index.htmlは分野一覧ページに変更し、各分野の学習資料・学習記録へのリンクを並べる形にした。今後追加する分野も同じ構成(materials/<分野>.html, records/<分野>.html)で追加していく。dashboard.html側のiframe参照(タスクWBSタブ内「📚 学習記録」)はhttps://gurii-gabreh.github.io/App-Development-Info/ のまま変更不要(ルートが一覧ページになったため導線が改善)。",
       "output": ""
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-044",
+      "task": "ナレッジ(tasks.json・concept-log.json・ai-list.json・research-log.json)をチャンク分割+ベクトル化してRAG検索できるようにする",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-08-23",
+      "note": "2026-08-21、ユーザーから「今のナレッジも、同じ様にチャンク分解し、ベクトルでのデータベース化できるよね？」と相談があり合意した方針(CL-003参照)の実装。既存の正本JSONは変更せず、別ファイル(data/vector-index.json)へチャンク+埋め込みベクトルを一方向で書き出す。",
+      "detail": "scripts/knowledge/build_vector_index.py(チャンク抽出+埋め込み生成)、scripts/knowledge/search_knowledge.py(検索CLI)、.github/workflows/build-vector-index.yml(自動実行)を実装した。埋め込みは当初Gemini Embedding APIを使う設計だったが、ユーザーへの事前確認なしに実装していたことが判明し(2026-08-23指摘)、外部AI企業のAPIを一切使わないローカル埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)へ切り替えた。実装中にtasks.json内のSSC-002タスクID重複を発見したが、これは別セッション(PTD-012週次チェック)で既に解消済み。",
+      "output": "scripts/knowledge/build_vector_index.py, scripts/knowledge/search_knowledge.py, .github/workflows/build-vector-index.yml, data/vector-index.json",
+      "checkHistory": []
     }
   ]
 }

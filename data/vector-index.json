@@ -1,8 +1,8 @@
 {
-  "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json)から抽出したチャンクを、Gemini Embedding API(gemini-embedding-001)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。",
-  "model": "gemini-embedding-001",
+  "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json)から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
+  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
   "generatedAt": null,
   "chunkCount": 0,
   "chunks": [],
-  "note": "2026-08-22時点ではまだGitHub ActionsのGEMINI_API_KEYシークレットが未設定・初回実行前のため、プレースホルダ(空)の状態。設定後、.github/workflows/build-vector-index.ymlの実行(スケジュール、またはworkflow_dispatchでの手動実行)でこのファイルが実データに更新される。ローカルでは `GEMINI_API_KEY=xxx python3 scripts/knowledge/build_vector_index.py` でも生成できる。"
+  "note": "2026-08-23時点では初回実行前のため、プレースホルダ(空)の状態。.github/workflows/build-vector-index.ymlの実行(スケジュール、またはworkflow_dispatchでの手動実行)でこのファイルが実データに更新される。APIキー等の登録は不要(pip install fastembedのみ)。ローカルでは `pip install fastembed && python3 scripts/knowledge/build_vector_index.py` でも生成できる。"
 }
