@@ -3162,12 +3162,17 @@
       "id": "PTD-044",
       "task": "ナレッジ(tasks.json・concept-log.json・ai-list.json・research-log.json)をチャンク分割+ベクトル化してRAG検索できるようにする",
       "priority": "中",
-      "status": "対応中",
+      "status": "完了",
       "updated": "2026-08-23",
       "note": "2026-08-21、ユーザーから「今のナレッジも、同じ様にチャンク分解し、ベクトルでのデータベース化できるよね？」と相談があり合意した方針(CL-003参照)の実装。既存の正本JSONは変更せず、別ファイル(data/vector-index.json)へチャンク+埋め込みベクトルを一方向で書き出す。",
-      "detail": "scripts/knowledge/build_vector_index.py(チャンク抽出+埋め込み生成)、scripts/knowledge/search_knowledge.py(検索CLI)、.github/workflows/build-vector-index.yml(自動実行)を実装した。埋め込みは当初Gemini Embedding APIを使う設計だったが、ユーザーへの事前確認なしに実装していたことが判明し(2026-08-23指摘)、外部AI企業のAPIを一切使わないローカル埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)へ切り替えた。実装中にtasks.json内のSSC-002タスクID重複を発見したが、これは別セッション(PTD-012週次チェック)で既に解消済み。",
+      "detail": "scripts/knowledge/build_vector_index.py(チャンク抽出+埋め込み生成)、scripts/knowledge/search_knowledge.py(検索CLI)、.github/workflows/build-vector-index.yml(自動実行)を実装した。埋め込みは当初Gemini Embedding APIを使う設計だったが、ユーザーへの事前確認なしに実装していたことが判明し(2026-08-23指摘)、外部AI企業のAPIを一切使わないローカル埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)へ切り替えた。実装中にtasks.json内のSSC-002タスクID重複を発見したが、これは別セッション(PTD-012週次チェック)で既に解消済み。 GitHub Actions上でworkflow_dispatchを実行し、fastembedモデルの実際のダウンロード・埋め込み生成(157チャンク、384次元)・data/vector-index.jsonへのcommit・pushまで実機で確認した(run https://github.com/gurii-gabreh/progress-tracker-dashboard/actions/runs/32615970410)。なお同時刻にpushトリガーでも1件実行され、mainへの同時push競合で片方は失敗したが、データ自体は正常に反映されている(コード側の不具合ではない)。",
       "output": "scripts/knowledge/build_vector_index.py, scripts/knowledge/search_knowledge.py, .github/workflows/build-vector-index.yml, data/vector-index.json",
-      "checkHistory": []
+      "checkHistory": [
+        {
+          "date": "2026-08-23",
+          "summary": "GitHub Actions実機でfastembed埋め込み生成(157チャンク)・vector-index.json更新まで確認、完了とした"
+        }
+      ]
     }
   ]
 }
