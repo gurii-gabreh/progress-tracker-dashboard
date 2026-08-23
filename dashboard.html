@@ -761,36 +761,47 @@
     <div class="hub-scroll">
       <div class="hub-wrap">
         <div class="tab-page-title">🏠 一覧</div>
-        <p class="tab-page-overview">タブが増えてきたため、各機能へのショートカットをまとめました。カードをクリックすると該当タブへ切り替わります。</p>
+        <p class="tab-page-overview">
+          このアプリ(progress-tracker-dashboard)は、複数リポジトリ(kizashi・supermarket-price-tracker・
+          gemini-monitor・ai-research-radar・usage-tracker・Knowledge-Dashboard・study-app等)の実装状況・
+          進捗・学習内容を一元管理する自立型トラッカーです。タブが増えてきたため、各機能へのショートカットを
+          ここにまとめました。カードをクリックすると該当タブへ切り替わります。
+        </p>
         <div class="hub-grid">
           <button type="button" class="hub-card" data-hub-nav="manager">
             <span class="hub-card-icon">🧭</span>
             <span class="hub-card-title">タスクWBS</span>
-            <span class="hub-card-desc">タスクスケジュール(WBS)とマネージャーアプリ(全リポジトリの実装タスク・進捗管理)を切り替えて使える、このアプリの中心機能です。</span>
+            <span class="hub-card-desc">このアプリの中心機能。2つのサブタブを切り替えて使います。「🗓 タスクスケジュール」は学習・各アプリ開発・毎日のルーティン作業をWBS(階層タスク)+カレンダーで管理するTask-WBS、「🧭 マネージャーアプリ」は全リポジトリの実装タスク一覧・進捗・GitHub同期をまとめた本体です。</span>
+            <span class="hub-card-cta">開く →</span>
+          </button>
+          <button type="button" class="hub-card" data-hub-nav="learning">
+            <span class="hub-card-icon">🎓</span>
+            <span class="hub-card-title">学習</span>
+            <span class="hub-card-desc">アーキテクチャ・セキュリティ・AI/LLM等8分野の学習を管理します。「📖 学習資料」(学んだ内容そのもの)・「📝 学習記録」(積極的想起チェックの正誤記録)・「🧭 学習方針」(学習法・深堀りレベル・目指す姿をまとめた、今後の学習判断の基準ページ)の3つのサブタブがあります。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
             <span class="hub-card-icon">🗂</span>
             <span class="hub-card-title">アプリ一覧</span>
-            <span class="hub-card-desc">価格トラッカー・試験対策アプリ等、個別アプリへのクイックアクセスページです。</span>
+            <span class="hub-card-desc">結(kizashi)・価格トラッカー・試験対策アプリ等、実際に作っている個別アプリへのクイックアクセスページです。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="knowledge">
             <span class="hub-card-icon">🧠</span>
             <span class="hub-card-title">ナレッジ</span>
-            <span class="hub-card-desc">複数リポジトリの実装知見・要件定義・ユーザー傾向を横断集約したビューです。</span>
+            <span class="hub-card-desc">複数リポジトリの実装知見・要件定義・ユーザー傾向を横断集約したビュー(Knowledge-Dashboard)です。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="ai-config">
             <span class="hub-card-icon">🤖</span>
             <span class="hub-card-title">AI基本設定</span>
-            <span class="hub-card-desc">複数のAIセッション・ツールの役割分担、検証方法の基本方針をまとめたタブです。</span>
+            <span class="hub-card-desc">複数のAIセッション・ツールの役割分担、検証方法の基本方針(オーケストレーション・AIディレクトリ・第二意見チェック・管理方針)と、全チャットルーム共通のCLAUDE.md核心ルールをまとめたタブです。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="credit">
             <span class="hub-card-icon">💳</span>
             <span class="hub-card-title">クレジット</span>
-            <span class="hub-card-desc">AIツールの利用量・クレジット消費状況を記録する暫定タブです。</span>
+            <span class="hub-card-desc">Claude Codeの5時間の利用上限までにどれだけタスクをこなせたかを記録するタブです(他AIツールの料金情報ではありません)。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
         </div>
