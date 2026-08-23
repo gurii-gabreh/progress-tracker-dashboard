@@ -7,42 +7,33 @@ RAGの「検索」部分の最小実装。専用のベクトルDBは使わず、
 だけで完結させている(チャンク数が数百〜数千件程度の規模であれば、総当たり計算
 でも実用上問題にならない想定。データ量が大きく増えた場合は見直しが必要)。
 
+埋め込みはローカルのオープンソースモデル(fastembed)で行う。外部AI企業の
+APIキーは不要(2026-08-23、build_vector_index.pyと同じ理由で切り替え)。
+
 使い方:
-  GEMINI_API_KEY=xxx python3 scripts/knowledge/search_knowledge.py "検索したい内容"
-  GEMINI_API_KEY=xxx python3 scripts/knowledge/search_knowledge.py "検索したい内容" --top 5
+  pip install fastembed
+  python3 scripts/knowledge/search_knowledge.py "検索したい内容"
+  python3 scripts/knowledge/search_knowledge.py "検索したい内容" --top 5
 """
 from __future__ import annotations
 
 import argparse
 import json
 import math
-import os
 import sys
-import urllib.request
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INDEX_JSON = REPO_ROOT / "data" / "vector-index.json"
 
-EMBED_MODEL = "gemini-embedding-001"
-EMBED_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{EMBED_MODEL}:embedContent"
+EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
-def embed_query(text: str, api_key: str) -> list[float]:
-    body = json.dumps({
-        "model": f"models/{EMBED_MODEL}",
-        "content": {"parts": [{"text": text}]},
-        "taskType": "RETRIEVAL_QUERY",  # 検索クエリ側は文書側(RETRIEVAL_DOCUMENT)と別のtaskTypeを使う
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        f"{EMBED_URL}?key={api_key}",
-        data=body,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=30) as res:
-        payload = json.loads(res.read().decode("utf-8"))
-    return payload["embedding"]["values"]
+def embed_query(text: str) -> list[float]:
+    from fastembed import TextEmbedding
+    model = TextEmbedding(model_name=EMBED_MODEL)
+    vec = next(model.query_embed([text]))
+    return vec.tolist()
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
@@ -60,11 +51,6 @@ def main() -> int:
     parser.add_argument("--top", type=int, default=5, help="上位何件を表示するか(既定5件)")
     args = parser.parse_args()
 
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("エラー: 環境変数 GEMINI_API_KEY が未設定です", file=sys.stderr)
-        return 1
-
     if not INDEX_JSON.exists():
         print(f"エラー: {INDEX_JSON} がありません。先に build_vector_index.py を実行してください", file=sys.stderr)
         return 1
@@ -76,7 +62,7 @@ def main() -> int:
         print("インデックスにチャンクがありません(まだ生成されていない可能性があります)")
         return 0
 
-    query_vec = embed_query(args.query, api_key)
+    query_vec = embed_query(args.query)
     scored = [
         (cosine_similarity(query_vec, c["embedding"]), c)
         for c in chunks if c.get("embedding")

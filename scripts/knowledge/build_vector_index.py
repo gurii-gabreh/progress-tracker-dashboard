@@ -5,26 +5,31 @@ data/vector-index.json を生成・更新するスクリプト。
 CL-003(data/concept-log.json)で合意した方針の実装:
   - 既存の正本JSON(tasks.json・concept-log.json・ai-list.json・
     ai-research-radarのresearch-log.json)には一切変更を加えない。
-  - そこからチャンク(検索単位のテキスト断片)を抽出し、Gemini Embedding API
-    (gemini-embedding-001、無料枠あり)でベクトル化し、data/vector-index.json
-    という別ファイルへ一方向で書き出す。
+  - そこからチャンク(検索単位のテキスト断片)を抽出し、ローカルのオープン
+    ソース埋め込みモデル(fastembed、sentence-transformers/paraphrase-
+    multilingual-MiniLM-L12-v2)でベクトル化し、data/vector-index.jsonという
+    別ファイルへ一方向で書き出す。
+  - 外部AI企業のAPIキー・アカウント登録は一切不要(モデルはHugging Faceから
+    一度だけダウンロードしてローカル実行するだけ)。2026-08-23、ユーザー指示
+    によりGemini Embedding APIから切り替えた(外部AIベンダーへの依存自体を
+    なくすため)。
   - 専用のベクトルDBは使わず、JSONファイル+検索時の総当たりコサイン類似度
     計算(scripts/knowledge/search_knowledge.py)で完結させる(無料で完結する
     ことを優先)。
 
 再実行時は、内容が変わっていないチャンクの埋め込みを再利用し(コンテンツ
-ハッシュで判定)、変化があった/新規のチャンクだけを埋め込み直す(無料枠の
-消費を抑えるため)。
+ハッシュで判定)、変化があった/新規のチャンクだけを埋め込み直す(モデル
+推論の計算コストを抑えるため)。
 
 実行方法:
-  GEMINI_API_KEY=xxx python3 scripts/knowledge/build_vector_index.py
+  pip install fastembed
+  python3 scripts/knowledge/build_vector_index.py
 GitHub Actions(.github/workflows/build-vector-index.yml)から定期実行される想定。
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 import sys
 import time
 import urllib.error
@@ -39,8 +44,7 @@ OUTPUT_JSON = REPO_ROOT / "data" / "vector-index.json"
 
 RESEARCH_LOG_URL = "https://raw.githubusercontent.com/gurii-gabreh/ai-research-radar/main/data/research-log.json"
 
-EMBED_MODEL = "gemini-embedding-001"
-EMBED_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{EMBED_MODEL}:embedContent"
+EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
 def load_json(path: Path) -> dict:
@@ -166,29 +170,25 @@ def chunks_from_research_log(data: dict) -> list[dict]:
     return chunks
 
 
-def embed_text(text: str, api_key: str, task_type: str = "RETRIEVAL_DOCUMENT") -> list[float]:
-    body = json.dumps({
-        "model": f"models/{EMBED_MODEL}",
-        "content": {"parts": [{"text": text[:8000]}]},  # 過大なチャンクを安全側に切り詰める
-        "taskType": task_type,
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        f"{EMBED_URL}?key={api_key}",
-        data=body,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=30) as res:
-        payload = json.loads(res.read().decode("utf-8"))
-    return payload["embedding"]["values"]
+_embed_model_instance = None
+
+
+def _get_embed_model():
+    """fastembedのモデルは初回呼び出し時に1回だけロードする(以降は使い回す)。"""
+    global _embed_model_instance
+    if _embed_model_instance is None:
+        from fastembed import TextEmbedding
+        _embed_model_instance = TextEmbedding(model_name=EMBED_MODEL)
+    return _embed_model_instance
+
+
+def embed_text(text: str) -> list[float]:
+    model = _get_embed_model()
+    vec = next(model.embed([text[:8000]]))  # 過大なチャンクを安全側に切り詰める
+    return vec.tolist()
 
 
 def main() -> int:
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("エラー: 環境変数 GEMINI_API_KEY が未設定です", file=sys.stderr)
-        return 1
-
     all_chunks = []
     all_chunks += chunks_from_tasks(load_json(TASKS_JSON))
     all_chunks += chunks_from_concept_log(load_json(CONCEPT_LOG_JSON))
@@ -210,16 +210,15 @@ def main() -> int:
             reused_count += 1
         else:
             try:
-                chunk["embedding"] = embed_text(chunk["text"], api_key)
+                chunk["embedding"] = embed_text(chunk["text"])
                 embedded_count += 1
-                time.sleep(0.2)  # 無料枠のレート制限に配慮した簡易スロットリング
             except Exception as e:  # noqa: BLE001 - 1件の失敗で全体を止めない
                 print(f"警告: チャンク {chunk['id']} の埋め込みに失敗: {e}", file=sys.stderr)
                 continue
         result_chunks.append(chunk)
 
     output = {
-        "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json)から抽出したチャンクを、Gemini Embedding API(gemini-embedding-001)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。",
+        "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json)から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
         "model": EMBED_MODEL,
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "chunkCount": len(result_chunks),
