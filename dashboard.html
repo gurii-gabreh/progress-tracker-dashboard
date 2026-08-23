@@ -100,7 +100,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe, #policy-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
      上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
@@ -936,12 +936,16 @@
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="learning-subtab-materials" data-subview="materials">📖 学習資料</button>
     <button type="button" class="manager-subview-btn" id="learning-subtab-records" data-subview="records">📝 学習記録</button>
+    <button type="button" class="manager-subview-btn" id="learning-subtab-policy" data-subview="policy">🧭 学習方針</button>
   </div>
   <div id="learning-subview-materials" class="manager-subview active">
     <iframe id="materials-iframe" title="学習資料" loading="lazy"></iframe>
   </div>
   <div id="learning-subview-records" class="manager-subview">
     <iframe id="records-iframe" title="学習記録" loading="lazy"></iframe>
+  </div>
+  <div id="learning-subview-policy" class="manager-subview">
+    <iframe id="policy-iframe" title="学習方針" loading="lazy"></iframe>
   </div>
   </div>
   <div id="applist-view" class="view-panel">
@@ -2836,6 +2840,7 @@
   (function setupLearningSubviewToggle() {
     const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
     const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
+    const POLICY_URL = "https://gurii-gabreh.github.io/App-Development-Info/policy.html";
     const subviews = {
       materials: {
         btn: document.getElementById("learning-subtab-materials"), panel: document.getElementById("learning-subview-materials"),
@@ -2844,6 +2849,10 @@
       records: {
         btn: document.getElementById("learning-subtab-records"), panel: document.getElementById("learning-subview-records"),
         iframeId: "records-iframe", url: RECORDS_URL,
+      },
+      policy: {
+        btn: document.getElementById("learning-subtab-policy"), panel: document.getElementById("learning-subview-policy"),
+        iframeId: "policy-iframe", url: POLICY_URL,
       },
     };
     function activateSubview(key) {
