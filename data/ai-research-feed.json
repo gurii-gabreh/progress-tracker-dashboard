@@ -421,6 +421,141 @@
       "sourceUrl": "https://webtan.impress.co.jp/e/2026/04/07/52273",
       "collectedAt": "2026-08-22 09:09",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・標準化",
+      "title": "MCP、2026-07-28版仕様でステートレスコア化・Extensions/Tasks/MCP Appsを追加、SDK累計10億DL突破",
+      "summary": "Model Context Protocolの次期仕様2026-07-28がリリースされ、プロトコル層がステートレス化。長時間タスク向けのTasks拡張やサーバー描画UIのMCP Appsが加わり、TypeScript・Python SDKはそれぞれ累計10億ダウンロードを突破した。",
+      "sourceUrl": "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・標準化",
+      "title": "MCPの「Enterprise-Managed Authorization」拡張が安定版に、IdP連携でゼロタッチOAuthを実現",
+      "summary": "MCPの新拡張Enterprise-Managed Authorizationが安定版となり、組織のIDプロバイダ経由でMCPサーバーへのアクセスを一元管理できるように。ユーザーは初回ログイン時点でアプリごとのOAuth手続きなしに接続済みサーバーを利用できる。",
+      "sourceUrl": "https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェント設計、「ReAct」「Plan-and-Execute」「Supervisor-Workers」「Graph」「Event-driven」の5パターンに整理",
+      "summary": "2026年のエージェントアーキテクチャは5つの型に集約されつつある。返金対応エージェントの事例ではReAct型が87%を1.4秒で処理する一方、Plan-and-Execute型に切り替えると95%が2.1秒で完了しエスカレーションもきれいになったと報告されている。",
+      "sourceUrl": "https://futureagi.com/blog/agent-architecture-patterns-2026/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "データベース・アーキテクチャ",
+      "title": "RAGパイプライン障害の大半はモデルでなくベクトルDB層が原因、インデックス選定・チャンク戦略が明暗を分ける",
+      "summary": "本番運用されるRAGシステムの失敗の大半はLLM本体ではなくベクトルデータベース層に起因するとの分析。インデックス方式の選択・チャンク分割戦略・可観測性など6つの設計判断が、正しいコンテキストを検索できるかどうかを左右するという。",
+      "sourceUrl": "https://www.landskill.com/blog/vector-databases-rag-pipeline-decisions/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "Google、Gemini 3.7 Flashを8月13日に投入、$0.75/$3.75の導入価格で提供開始",
+      "summary": "2026年8月は5社以上から11件の主要AIモデルが20日間で登場する記録的な月となった。GoogleはGemini 3.7 Flashを8月13日に$0.75/$3.75の導入価格で投入し、オープンウェイトモデルが価格性能面でクローズドモデルに直接対抗する状況が続いている。",
+      "sourceUrl": "https://www.gmicloud.ai/en/blog/ai-model-benchmarks-august-2026-open-weight-models-catch-the-frontier",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "中国Moonshot AI、2.8兆パラメータのオープンモデル「Kimi K3」を公開、\"Claudeを超えた\"と話題に",
+      "summary": "中国Moonshot AIが2026年夏に公開したオープンウェイトモデル「Kimi K3」(2.8兆パラメータ)を巡り、性能面でClaudeを上回ったとする見出しがネット上で拡散。中国発オープンモデルの急速な性能向上を象徴する事例として注目されている。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "LiquidAI「LFM2.5-2.6B」など軽量エッジ向けモデルが相次ぎ登場、8月だけで主要モデル11件が集中投入",
+      "summary": "LiquidAIは8月4日、エッジ・軽量エージェント向けの26億パラメータモデル「LFM2.5-2.6B」を公開。DeepSeek V4-Flash 0731($0.14/$0.28)など価格性能を重視した小型モデルの投入が相次ぎ、2026年8月は5社以上から11件の主要モデルが20日間で登場する記録的な月となった。",
+      "sourceUrl": "https://www.gmicloud.ai/en/blog/ai-model-benchmarks-august-2026-open-weight-models-catch-the-frontier",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "フィジカルAI企業ZEALS、コンパクトヒューマノイド「D1」投入、2026年度内100台・累計1万時間稼働目指す",
+      "summary": "国内のフィジカルAI領域では、ZEALSが500万円からのコンパクトヒューマノイド「D1」を投入し、2026年度内に100台導入・累計1万時間の現場稼働達成を目標に掲げている。フィジカルAIは技術競争から量産・現場稼働段階の産業競争へ移行しつつある。",
+      "sourceUrl": "https://sattu-ai-agent.com/2026/08/17/aug16-2wks-physicalai-news/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "エッジ向けマルチモーダルロボティクス、音声・センサー・GPUを統合しヒューマンロボット協調のリアルタイム音響空間認識を実現",
+      "summary": "車載音響ソリューションとセンサーブリッジ、GPUアクセラレーションを組み合わせたマルチモーダルエッジコンピューティング構成が登場。ロボットがローカルでセンサー・カメラ情報を処理しつつリアルタイムに音響的な空間認識を行い、人間とロボットの協調作業を支える。",
+      "sourceUrl": "https://www.edge-ai-vision.com/2026/08/advancing-multimodal-robotics-at-the-edge-from-vision-to-voice/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・業界動向",
+      "title": "令和8年版情報通信白書、生成AI利用企業が86.4%に急増(前年55.2%)も「組織的取組なし」27%",
+      "summary": "総務省の令和8年版情報通信白書によると、何らかの業務で生成AIを利用している日本企業の割合は86.4%に達し、前年度の55.2%から大幅上昇。個人の生成AI利用経験率58.8%を上回る一方、業務変革について「組織的な取組はない」と答えた企業も27.0%あり、導入と定着の差が課題として浮き彫りになった。",
+      "sourceUrl": "https://selectra.jp/telecom/news/ai-hakusho-2026-generative-ai-adoption",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・人材",
+      "title": "ヒューマンリソシア、月4,000件の求人広告文作成にAIエージェント「つなぎAI」導入、年4,800時間削減",
+      "summary": "ヒューマンホールディングス傘下のヒューマンリソシアは、月4,000件規模で発生する求人広告文の作成業務にAIエージェント基盤サービス「つなぎAI Powered by Dify」を導入。1件あたりの作業時間を約6分短縮し、年間約4,800時間の削減効果を見込んでいる。",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000001983.000005089.html",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・エンタープライズ",
+      "title": "NTTドコモビジネス+エクサウィザーズ、専用環境で使う「クローズドAIエージェント」提供開始(8/17)",
+      "summary": "NTTドコモビジネスとエクサウィザーズは8月17日、企業の設計図・技術文書・契約情報など機密性の高いデータを外部に出さずに扱える「クローズドAIエージェント」の提供を開始。エクサウィザーズのAIエージェント基盤「exaBase Studio」とNTTドコモビジネスの閉域網・データセンターを組み合わせ、プライベートクラウド版とオンプレミス版で提供する。",
+      "sourceUrl": "https://www.ntt.com/about-us/press-releases/news/article/2026/0817.html",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用分野・医療",
+      "title": "世界の医療AI導入率、2024年の38%から2026年67%へ急伸、病院の8割が何らかの機能でAI活用",
+      "summary": "医療分野はAI導入の加速が最も顕著な業界となっており、導入率は2024年の38%から2026年には67%へと29ポイント上昇。臨床医の63%がAIツールを利用し、病院の80%が少なくとも1つの機能でAIを導入済みとされる。創薬領域でもAI活用が新薬開発期間を5〜6年から約1年へ圧縮しているという。",
+      "sourceUrl": "https://presenc.ai/research/ai-adoption-by-industry",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "流行・トレンド",
+      "title": "Google/Ipsos調査、21カ国平均66%が過去1年でAIツールを利用(2024年から+18pt)",
+      "summary": "Google/Ipsosによる21カ国対象の調査で、過去12か月以内にAIツール・アプリケーションを利用したと答えた人が平均66%に達し、2024年調査から18ポイント上昇した。AI利用が一部の早期採用者から一般層へ広がりつつあることを示す結果となっている。",
+      "sourceUrl": "https://www.ipsos.com/en-us/google-ipsos-multi-country-ai-survey-2026",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "流行・トレンド",
+      "title": "バーチャルインフルエンサーを採用する企業が2026年に60%→73%に増加",
+      "summary": "2026年のグローバル調査によると、マーケティングにバーチャル(AI)インフルエンサーを採用する企業の割合は60%から73%へ上昇。回答企業の71%が「バーチャルインフルエンサーは人間クリエイターより高いROIをもたらす」と回答しており、AI合成人格の活用が実験段階から戦略的資産へと移行している。",
+      "sourceUrl": "https://playbella.org/blog/2026-ai-influencer-landscape-report",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
