@@ -556,6 +556,123 @@
       "sourceUrl": "https://playbella.org/blog/2026-ai-influencer-landscape-report",
       "collectedAt": "2026-08-23 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・APIゲートウェイ",
+      "title": "Google Cloud API Gateway、Gemini/Claude/OpenAI OSSへの動的モデルルーティングをパブリックプレビュー公開",
+      "summary": "Google CloudのAPI Gatewayに、1つのエンドポイントからGemini・Claude・OpenAI OSSモデルへリクエストを動的振り分けするモデルルーティング機能がパブリックプレビューで登場。OpenAPI 3.x仕様の拡張ブロックで設定でき、プロキシサーバー不要でOpenAI互換ペイロードを各社のVertex AIネイティブ形式へ自動変換する。料金は月200万コールまで無料、以降は100万コールあたり3ドル。",
+      "sourceUrl": "https://developers.googleblog.com/a-unified-api-for-ai-model-routing/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェントフレームワーク、型安全性を重視する「PydanticAI」等が金融・医療領域で普及",
+      "summary": "2026年のAIエージェントフレームワーク比較では、ノーコードで構築できるFlowiseに加え、エージェントが扱うデータを厳密に型管理できるPydanticAIが、データ品質が重要な金融・医療分野で採用が広がっていると報告されている。",
+      "sourceUrl": "https://www.brainpad.co.jp/doors/contents/best-ai-agent-frameworks-comparison/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "モデル性能",
+      "title": "Anthropic、Claude Opus 5を7月24日公開、タスクごとに思考量をlow/medium/highで切替可能に",
+      "summary": "Anthropicは2026年7月24日にClaude Opus 5を公開。タスクの難易度に応じて投入する思考量をlow/medium/highの3段階で切り替えられる仕組みを備え、コストと精度のバランスを利用者側で調整できるようにした。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "モデル性能",
+      "title": "xAI、Grok 4.6を8月12日投入、Intelligence Index 61でGPT-5.6 Solに並ぶ性能に",
+      "summary": "xAIは8月12日にGrok 4.6を投入。Artificial AnalysisのIntelligence Indexで61を記録しOpenAIのGPT-5.6 Solと並ぶ性能となり、前モデルGrok 4.5から5ポイント向上した。価格は入力$2/出力$6(100万トークンあたり)とGrok 4.5から据え置き、Claude Opus 5比で6割以上安い水準を維持している。",
+      "sourceUrl": "https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用事例・業界動向",
+      "title": "BCC Research、AIの業界横断導入加速をレポート化(医療・金融・小売・通信・行政・製造)",
+      "summary": "BCC Researchが2026年8月に発表した調査レポートは、医療・金融・小売・通信・行政・製造の各分野でAI導入が加速している実態をマッピング。生成AI・マルチモーダルAI・エージェントAIが企業の生産性・自動化・意思決定に測定可能な成果をもたらしていると分析している。",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/08/18/3347182/0/en/ai-use-case-analysis-signals-transformative-cross-industry-adoption-wave-as-investment-surges-past-billions.html",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・製造業",
+      "title": "製造業のAI視覚検査市場が急拡大、2024年24.11億ドルから年25.4%成長へ",
+      "summary": "AIによる視覚検査(外観検査)の市場規模は2024年時点で24.11億ドルとされ、年平均25.4%で成長中。製造業の約75%が何らかの形でAIを活用した検査工程を導入しているとの調査結果が示されている。",
+      "sourceUrl": "https://ventionteams.com/solutions/ai/adoption-statistics",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用事例・通信",
+      "title": "楽天モバイル「Rakuten Link」、通話内容をAIが自動要約する機能を8月5日提供開始",
+      "summary": "楽天モバイルは8月5日、通話アプリ「Rakuten Link」に通話内容をAIが自動で要約する「AI通話要約」機能の提供を開始。通話後に要点をテキストで確認できるようになり、ビジネス利用でのメモ取りの手間を削減する。",
+      "sourceUrl": "https://news.infoseek.co.jp/article/mynavi_3215028/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・教育",
+      "title": "阪南大学高等学校、生成AI研修で教員の約9割が前向きに、英語問題作成や部活動指導に現場活用が拡大",
+      "summary": "阪南大学高等学校では教員向けの生成AI研修を実施した結果、約9割の教員が活用に前向きな姿勢に転じた。英語の問題作成や部活動の指導計画など、現場主導での具体的な活用事例が次々と生まれているという。",
+      "sourceUrl": "https://www.edutechnology.co.jp/service/aikyouiku-support/ai-cases-2026",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・教育",
+      "title": "世界のAI教育市場、2026年に95.8億ドル規模へ、GIGAスクール構想第2期で個別最適化学習の基盤整備が加速",
+      "summary": "世界のAI教育市場は2026年に95.8億ドル(約1.4兆円)規模に達する見通し。日本ではGIGAスクール構想第2期による端末更新が2025〜2026年度に集中し、アダプティブラーニングや生成AIを活用した個別最適化学習の基盤整備が全国の小中学校で進んでいる。",
+      "sourceUrl": "https://shift-ai.co.jp/blog/4001/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "AIロボット、既存設備にAIユニット・センサーを後付けする「レトロフィット」戦略が2026年トレンドに",
+      "summary": "製造現場のAI・ロボット活用では、設備を全て新調するのではなく既存設備にAIユニットやセンサーを後付けする「レトロフィット」という考え方が2026年のトレンドとして注目されている。画像認識・音声対話・センサー解析・遠隔監視・Webサービス連携など複数技術領域の組み合わせが一般化しつつある。",
+      "sourceUrl": "https://products.kanaden.co.jp/blog/oyakudachi/article/169/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Figure AIの人型ロボット「Figure 02」、OpenAIのマルチモーダルAIを統合しBMW工場で部品搬送・棚補充を実運用",
+      "summary": "Figure AIの人型ロボット「Figure 02」は、OpenAIのマルチモーダルAIを統合した“会話できるロボット労働者”として、BMWサウスカロライナ工場で部品の搬送や棚への補充、単純作業の自動化に実際に稼働している。",
+      "sourceUrl": "https://www.mirait-one.com/miraiz/whatsnew/trend-data_0066.html",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "流行・トレンド",
+      "title": "AIが「答えるAI」から「行動するAI」へ、AIエージェント導入拡大が2026年8月時点の共通テーマに",
+      "summary": "2026年8月時点のAIニュースを俯瞰すると、MCPのステートレス化やクラウドのモデルルーティング機能など基盤技術の進化とともに、AIが「質問に答える」段階から「実際に行動しタスクをこなす」段階へ移行していることが共通テーマとして繰り返し指摘されている。",
+      "sourceUrl": "https://qiita.com/aakan/items/9b9a20f511625aa76044",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "流行・トレンド",
+      "title": "ICT総研調査、生成AI利用率が1年で29.0%→54.7%に急上昇、2026年末の利用者数は3,553万人と予測",
+      "summary": "ICT総研が2026年2月に発表した調査によると、インターネット利用者のうち過去1年以内に生成AIサービスを利用した人の割合は54.7%に達し、2024年6月調査の29.0%から25.7ポイント急上昇。2026年末の利用者数は3,553万人、2029年末には5,160万人に達すると予測されている。",
+      "sourceUrl": "https://www.commercepick.com/archives/86175",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
     }
   ]
 }
