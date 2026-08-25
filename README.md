@@ -62,6 +62,8 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
 
 **2026-08-13追記: Claude Code Remote(CCR)上の作業ルームセッションを新設**。マネージャールーム(`data/ai-config.json`の`commandCenter: "manager-room"`)自身が実装作業を直接行ってしまう違反が繰り返し発生した(2026-08-11に一度ルール化したにもかかわらず、2026-08-12〜13にgas/Code.gsの実装・別リポジトリ(Knowledge-Dashboard)へのGitHub Actionsワークフロー追加を直接行ってしまった)ことをユーザーから指摘され、実装依頼を委譲する先として`session_012kTdgM1PApMPsJC8N4ew95`(タイトル「progress-tracker-dashboard 作業ルーム」、CCRの`create_session`で作成)を新設した。以降、マネージャールーム(このセッションを含む)が実装が必要な作業を見つけた場合は、自分で実装せず、`send_message`でこのセッションへ依頼を送ること。上記表の`session_01XXX`系(claude.ai上のチャットルーム・共有Routine)とは別系統のCCRセッションであることに注意。
 
+**2026-08-25追記: claude-voice-bridgeもこの作業ルームの担当に追加**。claude.aiのブラウザ画面を音声で操作するChrome拡張機能(`gurii-gabreh/claude-voice-bridge`)を、このマネージャールームのセッション内で直接実装・デバッグしてしまう同種の違反が発生した(音声入出力の相談から着手し、送信タイミング・応答判定・マイク再開処理の不具合修正まで一通り直接手を動かしてしまった)ことをユーザーから指摘され、`session_012kTdgM1PApMPsJC8N4ew95`(既存の作業ルーム)へ担当リポジトリとして引き継いだ。以降、claude-voice-bridgeの実装・修正もマネージャールームが自分で行わず、このセッションへ依頼する。
+
 ## 現在の状態
 
 - GASウェブアプリ: デプロイ済み(`gas/Code.gs`。GitHubとは自動連携していないため、コード変更時は
