@@ -673,6 +673,96 @@
       "sourceUrl": "https://www.commercepick.com/archives/86175",
       "collectedAt": "2026-08-24 09:15",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "LayerX、AIエージェントに1年分のニュースを読ませ4,500件の長期記憶を構築するシミュレーションを実施",
+      "summary": "LayerXのエンジニアブログが、AIエージェントに1年分のニュース記事を読ませて4,500件規模の長期記憶を構築する実験を公開。「無限の記憶はノイズと同義であり、何を忘れさせるか・どう要約するかが長期的な性能維持の鍵になる」という知見と実装上の課題を報告している。",
+      "sourceUrl": "https://tech.layerx.co.jp/entry/ai-agent-long-term-memory-simulation",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "アーキテクチャ・インフラ",
+      "title": "NVIDIA、SB Energyと共同で米オハイオ州に4.25GW規模のAIデータセンター「PORTS-Pike」建設を8月17日発表",
+      "summary": "NVIDIAは8月17日、SB EnergyのPORTS-Pikeテクノロジーキャンパス(オハイオ州パイク郡)へ15億ドルを投資し、初期4.25IT-GW(オプションで追加3.75GW)のAI計算基盤を独占的にホストすると発表。OpenAIが顧客となり、SB Energyが20年契約で建設・運用する。稼働開始は2028年からの段階展開を予定。",
+      "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-guarantees-sb-energy-s-ports-pike-technology-campus-in-ohio-to-exclusively-host-nvidia-ai-compute",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "技術の組み合わせ・エンタープライズ",
+      "title": "ソフトバンク、法人向けAIプラットフォーム「AGENTIC STAR」にLLM Gateway機能を標準搭載",
+      "summary": "ソフトバンクは8月上旬、自律型AIエージェント基盤「AGENTIC STAR」のSaaS版に「LLM Gateway」機能を標準搭載。AIコーディングツールと契約LLMサービスの間にゲートウェイを配置し、追加契約なしで企業ごとのルールに沿った生成AIガバナンスを適用できるようにした。",
+      "sourceUrl": "https://ai.watch.impress.co.jp/docs/news/2131486.html",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "モデル性能",
+      "title": "Alibaba「Qwen3.8-Max」(2.4兆パラメータ)が8月2日公開、8月リリースモデル中で最高評価に",
+      "summary": "AlibabaはQwen3.8-Max(推定2.4兆パラメータ)を8月2日に公開。ベンチマーク集計サイトBenchLMの「2026年8月リリースモデル」ランキングでスコア60.9を記録し、同月投入されたモデルの中で最高評価となった。",
+      "sourceUrl": "https://benchlm.ai/model-updates/releases/august-2026",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "モデル性能",
+      "title": "ByteDance「Seed 2.1 Turbo」を8月10日投入、AIモデルの価格競争がさらに激化",
+      "summary": "ByteDanceは8月10日に「Seed 2.1 Turbo」を投入。2026年8月は7社以上から3週間で12件の主要モデルが登場する記録的な月となり、複数の性能帯で価格が5割低下するなど、フロンティアモデルの低価格化競争が続いている。",
+      "sourceUrl": "https://benchlm.ai/model-updates/releases/august-2026",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "技術の組み合わせ・音声AI",
+      "title": "xAI、音声対話AI「Grok Voice Think Fast 2.0」を7月29日公開、並列推論で応答速度を1.25秒→0.70秒に短縮",
+      "summary": "xAIは7月29日、音声認識・推論・音声応答を一体化した「Grok Voice Think Fast 2.0」を公開。「話しながら考える」並列推論方式により最初の音声応答までの時間を1.25秒から0.70秒へ短縮し、前モデル比で使用する推論トークンを約0.4倍に削減。Starlinkでの実運用A/Bテストでは営業成約率の向上も確認されたという。料金は1分あたり0.08ドル。",
+      "sourceUrl": "https://x.ai/news/grok-voice-think-fast-2",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "活用事例・物流",
+      "title": "ヤマト運輸、全国約6,500カ所の配送センターの荷物量予測にMLOpsを導入、機械学習モデルの運用を自動化",
+      "summary": "ヤマト運輸は、過去4年分の集荷・配達データを基に全国約6,500カ所の宅急便センターごとの数カ月先の業務量を予測する機械学習モデルを毎月作成・運用。従来手動だったモデル作成プロセスをMLOps環境の構築により自動化し、運用工数を大幅に削減した。",
+      "sourceUrl": "https://exawizards.com/works/20297/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "規制・ガバナンス",
+      "title": "OpenAI、13〜17歳向け安全機能を強化した「ChatGPT for Teens」を8月18日提供開始",
+      "summary": "OpenAIは8月18日、13〜17歳向けに保護機能を強化した「ChatGPT for Teens」の提供を開始。行動パターンやアカウント利用状況から年齢を推定する仕組みと、身元確認サービスPersonaによる年齢確認機能を導入し、自傷・自殺関連や性的な会話への制限、保護者向け管理機能(利用時間帯の制限等)を搭載した。",
+      "sourceUrl": "https://openai.com/index/chatgpt-for-teens/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "活用事例・製造業",
+      "title": "パナソニック コネクト、生成AIエージェントで年間78.8万時間を削減、社内50システムとの連携フェーズへ",
+      "summary": "パナソニック コネクトは2025年度に生成AI活用で年間78.8万時間(総労働時間の3.4%相当)を削減したと報告。現在は50の社内システムと連携したAIエージェント実装のフェーズに入っているという。",
+      "sourceUrl": "https://bizaidea.com/roundup/72360/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "流行・トレンド",
+      "title": "Gartner予測「AIエージェントプロジェクトの40%超が2027年末までに中止」が改めて話題に",
+      "summary": "コスト増大や不十分なリスク管理を理由に、現在進行中のAIエージェントプロジェクトの40%超が2027年末までに中止されるというGartnerの予測が2026年8月時点でも繰り返し引用されている。AIエージェント導入で成果を上げている企業には、あえてエージェント単独で完結できる範囲を制限しているという共通点があると報告されている。",
+      "sourceUrl": "https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
     }
   ]
 }
