@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-08-21",
+  "updatedAt": "2026-08-26",
   "categories": [
     {
       "key": "architecture",
@@ -28,7 +28,11 @@
         }
       ]
     },
-    { "key": "security", "label": "🔒 セキュリティ", "items": [] },
+    {
+      "key": "security",
+      "label": "🔒 セキュリティ",
+      "items": []
+    },
     {
       "key": "ai-llm",
       "label": "🤖 AI/LLM",
@@ -39,10 +43,25 @@
           "context": "2026-08-21、AI・LLM分野の学習(RAG・チャンク分割・Embedding)を踏まえたユーザーとの相談で、実装進捗管理シート・AI技術情報収集ログ・AI一覧の3スプレッドシートを、将来のRAG(チャンク化・ベクトルDB化)の土台としてJSON化する方針を決定",
           "note": "同期の向きを、データがどこで生まれるかで使い分けた。実装進捗管理シートは既にJSON(tasks.json)が正本でGAS(syncFromGithub)がJSON→シートへPullする構成。一方AI技術情報収集ログ・AI一覧はデータがシート側で生まれる(前者はai-research-radarのGASが書き込み、後者は手動入力)ため、逆方向のシート→JSON(GAS→GitHub Contents APIでcommit)を採用した。この逆方向のコミットパターンはKnowledge-Dashboardのupdate-spreadsheets.gsに既にあった実装をそのまま踏襲し、ゼロから設計しなかった。さらに、データの更新頻度に応じて同期方式も分けた: 収集ログは日々増え続けるため既存の日次トリガーに相乗り(継続的な自動ミラー)、AI一覧は自動更新元が無い手動管理データのため一度きりのエクスポート関数にとどめ、以後はJSON側を直接編集する運用に切り替えた。\n【2026-08-21追記】チャンク分割・ベクトルDB化(RAG本体)を実装する際のアーキテクチャ方針もユーザーと合意した: 既存の正本JSON(tasks.json・research-log.json・ai-list.json・concept-log.json等)には一切変更を加えず、そこからデータを読み取って(吸い出して)チャンク+ベクトルだけを持つ別のJSONを新規生成する一方向の変換とする。元JSONが人間可読な正本、新JSONが検索専用の派生インデックスという役割分担。データ量が現状の規模であれば、専用のベクトルDB(Cloudflare Vectorize等)を使わず、JSONファイル+総当たりのコサイン類似度計算でも実用に耐える可能性がある(無料枠内で完結しやすい利点)。この方針はまだ会話上の合意のみで、実装(チャンク分割・Embedding生成・検索処理)自体は未着手。\n【2026-08-22追記】上記方針を実装した。scripts/knowledge/build_vector_index.py(4ソースからチャンク抽出→Gemini Embedding API[gemini-embedding-001]で埋め込み→data/vector-index.jsonへ書き出し、内容が変わっていないチャンクはハッシュ照合で埋め込みを再利用)、scripts/knowledge/search_knowledge.py(コサイン類似度の総当たり検索CLI)、.github/workflows/build-vector-index.yml(毎日1回+関連ファイル変更時に自動実行)の3点セットを実装。実装中に、tasks.json内でタスクID「SSC-002」が2件重複していることを発見し(チャンクIDの衝突として顕在化)、dedupe_chunk_ids()で後発チャンクに#2を付けて一意化する形で吸収した(tasks.json側のID重複自体は別途要修正、本チャンク側の対応はあくまで回避策)。GEMINI_API_KEYのGitHub Secrets登録がまだのため、data/vector-index.jsonは実データ生成前のプレースホルダのまま。\n【2026-08-23追記】埋め込みAPIにGeminiを使う選択を、ユーザーへ事前確認せず実装していたことが判明した(ルール10違反)。ユーザーから明確に「Geminiは使うな」と指示があったため、外部AI企業のAPIを一切使わない構成へ変更した。scripts/knowledge/build_vector_index.py・search_knowledge.pyの埋め込み処理を、Gemini Embedding APIからローカル実行のオープンソースモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2、Hugging Face配布)へ差し替えた。APIキー・アカウント登録が不要になり、GitHub Secretsのセットアップ手順自体が丸ごと不要になった。ローカル環境ではHugging Faceへのネットワークアクセスがポリシーで遮断されており実機での最終確認はできていないため、チャンク抽出・重複排除・キャッシュ再利用のロジックはモック埋め込み関数で3回検証したが、実際のモデルでの埋め込み生成・検索精度の確認はGitHub Actions上での実行(workflow_dispatch)で行う想定。",
           "date": "2026-08-21"
+        },
+        {
+          "id": "CL-004",
+          "concept": "同一目的の調査ルーティンを、既存インフラを知らずに並行して新設してしまった(重複認識の欠如)",
+          "context": "2026-08-23〜26、相談ルームのセッションが「AI技術リサーチ 日次深掘り調査」というスケジュールRoutine(trig_01PaKZWB3NQ23SxPg1AVgswP)からの起動で、Claude自身がWebSearchで5テーマ(アーキテクチャ・最新技術動向・技術の組み合わせ・活用分野・流行)を深掘りし、新規に data/ai-research-feed.json(progress-tracker-dashboard)へ追記する運用を4日連続で実行した。ユーザーとの会話で「これってドライブに保存されているものと同じでは」と指摘され、既存の「AI技術情報・活用事例 収集ログ」スプレッドシート(CL-003参照、id: 1pMTIWgWfPFEUkOh4V7KkDsSSYEeSlBDVNr9_zFxBm_o)をGoogle Drive検索で直接確認したところ判明した。",
+          "note": "「AI技術情報・活用事例 収集ログ」シートには2026-08-04〜08-25の実データが既に大量に存在しており(空のプレースホルダではなかった)、しかも全行の「使うAI」列が例外なく\"Claude\"だった(\"Gemini\"の記載は0件)。ai-research-radarの設計は本来「Gemini APIが日次自動調査→シートに追記、レート制限時のみClaude調査ルームがフォールバック」のはずだが、実際には収集ログの中身が丸ごとClaudeフォールバック経由(またはそれに準ずる手動/別セッションでのClaude実行)で埋まっており、Geminiが実際に書き込んだ形跡が見当たらない。さらにシート内の項目タイトル(例:「A2A Protocol v1.0が正式発表」「Claude Fable 5がSWE-Bench Proで80.3%」)は、今回新設したdata/ai-research-feed.jsonの初期(2026-08-22時点で既存だった46件)の項目とほぼ一致しており、同じ調査内容を把握せずに別経路で重複収集していたことが確定した。\n\n根本原因: 新しいRoutineを作る前に、同じ目的(AI技術情報の日次収集)の既存インフラ(ai-research-radar一式、および収集ログシート)が既にあるかどうかをdata/tasks.json・concept-log.json・関連リポジトリのREADMEで確認しなかった。data/ai-research-feed.jsonのschemaフィールド自体に収集ログシートのURLが「参考フォーマット」として記載されていた(＝スキーマ設計時に一度は目にしていたはずの情報)にもかかわらず、それが「既に同じ役割のデータが動いている」ことのシグナルだと気づけなかった。\n\n教訓: 定期実行Routineや自動化の仕組みを新設する前に、(1)対象領域の既存タスク(tasks.json内の関連repo)、(2)concept-log.jsonの関連カテゴリ、(3)スキーマ・設定値に埋め込まれた外部URL、の3点を必ず確認し、「同じことをする仕組みが既にないか」を確認する一手間を、Routine設計の標準ステップに含めるべき。\n\n2026-08-26時点でこの重複は未解消(両系統とも稼働中のまま)。統合するか棲み分けを明確化するかはユーザーとの相談待ち。",
+          "date": "2026-08-26"
         }
       ]
     },
-    { "key": "db", "label": "🗄 データベース", "items": [] },
-    { "key": "testing", "label": "🧪 テスト", "items": [] }
+    {
+      "key": "db",
+      "label": "🗄 データベース",
+      "items": []
+    },
+    {
+      "key": "testing",
+      "label": "🧪 テスト",
+      "items": []
+    }
   ]
 }
