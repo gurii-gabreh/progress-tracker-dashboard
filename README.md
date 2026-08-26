@@ -513,6 +513,23 @@ Google Apps Scriptが1日1回自動で調査し、「AI技術情報・活用事�
 依頼タスクタブのステータスも直接「完了」に更新する。詳細は
 https://github.com/gurii-gabreh/ai-research-radar のREADME参照。
 
+### AI技術リサーチ 日次深掘り調査(Claude+WebSearch、2026-08-23開始)について
+
+上記`ai-research-radar`(Gemini APIによる別系統)とは**別物**の、Claude Code(このセッション)自身が
+WebSearchで調査するスケジュールRoutine。名前が紛らわしいので注意。
+
+- **データ**: `data/ai-research-feed.json`(schema/topics/entriesの3キー。entriesは
+  日付・カテゴリ・タイトル・概要・出典URL・収集日時・使用AIの7項目)
+- **調査テーマ**: 毎回5テーマ(アプリ設計に活かせる技術・最新AI技術動向・技術の組み合わせ・
+  活用分野/シチュエーション・AIの流行)を深掘りし、重複しない新規項目を追記
+- **生成物**: 蓄積データ全体から`scripts/build_ai_research_feed_xlsx.py`でExcel、
+  `scripts/build_ai_research_feed_html.py`でHTML一覧ページ(Signal Log)を都度生成
+- **Signal Log(Artifact)**: https://claude.ai/code/artifact/bb0bae6e-2509-47ac-bf57-f07168087cf6
+  (毎回同じURLを更新)
+- Routineのトリガーは`trig_01PaKZWB3NQ23SxPg1AVgswP`(「AI技術リサーチ 日次深掘り調査」)。
+  2026-08-23〜25分は`claude/manager-room-cross-repo-tasks-nlk5fa`ブランチで蓄積していたが、
+  2026-08-26にmainへマージし、以降はmainで一元管理する
+
 ### AI一覧のJSON化について(2026-08-21追加)
 
 `data/ai-config.json`のaiDirectoryが参照する「AI一覧」スプレッドシート(手動管理、どのアプリからも

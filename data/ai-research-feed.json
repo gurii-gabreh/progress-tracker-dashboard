@@ -1,0 +1,768 @@
+{
+  "schema": "日付,カテゴリ,タイトル,概要,ソースURL,収集日時,使うAI の7列。参考フォーマット: https://docs.google.com/spreadsheets/d/1pMTIWgWfPFEUkOh4V7KkDsSSYEeSlBDVNr9_zFxBm_o/edit?gid=905697318",
+  "topics": [
+    "アプリ作成時に活かせる技術・アーキテクチャ・データ構造・データのやり取り",
+    "最新のAI技術でできること・今後できると思われる技術の動向",
+    "今ある技術を組み合わせるとできる新しいこと",
+    "AIが使われている分野・使われやすいシチュエーション",
+    "AIの流行"
+  ],
+  "entries": [
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・標準化",
+      "title": "A2A Protocol v1.0が正式発表、150以上の組織が支持しLinux Foundation管理下に",
+      "summary": "AWS・Cisco・Google・IBM・Microsoft・Salesforce・SAP・ServiceNowが創設TSCメンバーとなるエージェント間通信の業界標準A2A(Agent2Agent)v1.0が2026年4月9日に発表された。MCPとは補完関係で、MCPはツール接続、A2Aはエージェント間の委任・調整を担う。",
+      "sourceUrl": "https://www.digitalapplied.com/blog/ai-agent-protocol-ecosystem-map-2026-mcp-a2a-acp-ucp",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・設計手法",
+      "title": "2026年のシステム設計、AIエージェント連携を前提としたイベント駆動・CQRSへ移行",
+      "summary": "同期処理のスケール課題に対応するためイベント駆動で疎結合化し、読み書き競合にはCQRSで最適化する設計が主流化。APIも「製品」として扱うAPI-as-a-productの考え方が広がっている。",
+      "sourceUrl": "https://qiita.com/yut-nagase/items/eb3b189d0c232f7c569e",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "モデル性能",
+      "title": "Llama 4 Scout、1000万トークンのコンテキストウィンドウを実現",
+      "summary": "MetaのLlama 4 Scoutが、interleaved iRoPE attentionという新方式により1000万トークンという破格のコンテキストウィンドウを達成。Llama 4 Maverickはネイティブなマルチモーダルmixture-of-expertsモデルとして提供される。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "モデル性能",
+      "title": "Claude Fable 5がSWE-Bench Proで80.3%、コーディングベンチマーク上位に",
+      "summary": "AnthropicのClaude Fable 5が主要コーディングベンチマークSWE-Bench Proで80.3%を記録し、今月報告された中でもトップクラスのスコアとなった。あわせて100万トークンのコンテキストウィンドウにも対応。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "製品・サービス",
+      "title": "Adobe・Johns Hopkins、静止画から歩き回れる3D世界を生成する「Wonder」を発表",
+      "summary": "2026年7月29日、Adobe ResearchとJohns Hopkins大学が、1枚の静止画や動画から6方向に移動可能な永続的3D空間を16fpsで生成するモデル「Wonder」を発表した。",
+      "sourceUrl": "https://www.aiapps.com/blog/august-2026-ai-mega-update-major-breakthroughs-launches/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術動向・予測",
+      "title": "小型言語モデル(SLM)が企業AI活用の主力になると予測",
+      "summary": "蒸留・量子化・省メモリ実行技術の進展により推論がエッジクラスタや組込み機器へ拡大。SLMが企業のAI施策の大半を担い、コストを抑えつつ高い精度を維持すると予測されている。",
+      "sourceUrl": "https://www.techinsights.com/outlook-summit-series-2026/ai-market",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "Gartner予測: 2026年末までに企業稼働の40%が産業用AIエージェントによる自律判断へ",
+      "summary": "IoT・エッジコンピューティングとAIエージェントの組み合わせにより、予知保全やスマートシティなど即時判断が必要な現場でエッジAIが実用化。Gartnerは2026年末までに企業の運用ワークロードの40%が自律判断を行う産業用AIエージェントを組み込むと予測。",
+      "sourceUrl": "https://flolive.net/blog/glossary/edge-computing-in-2026/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "AIエージェントがウォレットを保有し自律的にDeFi取引・API課金を実行",
+      "summary": "AIエージェントが自身のウォレットを持ち、トレジャリーのリバランス・API/計算資源の支払い・サブスク管理・DeFi取引などを自律実行する事例が拡大。ブロックチェーンベースのIoTセキュリティ市場は2026年に24億ドル規模に達する見込み。",
+      "sourceUrl": "https://devtechnosys.com/insights/autonomous-ai-agents-in-blockchain/",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・業界動向",
+      "title": "医療(+15.1pt)・製造業(+14.2pt)でAI導入が急加速、中小企業の成功率は業界で差",
+      "summary": "2026年は医療・ヘルスケアと製造業でAI導入ポイントが特に伸長。中小企業のAI導入成功率はテクノロジー系88%、金融系83%、製造業75%。失敗パターンは製造業「データ品質」、医療「規制対応」、金融「監査要件」が壁になっている。",
+      "sourceUrl": "https://note.com/tasty_quail2338/n/n6d72ba793f0b",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "「Agentic AI」が2026年を象徴するキーワードに",
+      "summary": "ゴールを与えると計画・ツール実行・結果確認・再試行まで自律的に行う「Agentic AI」が2026年の中心的トレンドとして定着。単なる質問応答から、人と協働する「デジタル同僚」へと位置づけが変化している。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "Physical AI・ヒューマノイドロボットが研究段階から実配備へ",
+      "summary": "マルチモーダル技術の次のフェーズとしてPhysical AIとワールドモデルが台頭。研究段階だったヒューマノイドロボットが実際の職場への配備段階に入りつつある。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "学習用データの枯渇懸念で独自データの価値が上昇",
+      "summary": "研究者らは2026年後半までに大規模モデル学習に使える公開データが枯渇する可能性を警告。企業独自の非公開データの価値が相対的に高まっている。",
+      "sourceUrl": "https://blog.bytebytego.com/p/whats-next-in-ai-five-trends-to-watch",
+      "collectedAt": "2026-08-20 08:43",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・データ同期",
+      "title": "Automerge 3.0がCRDT文書サイズを40〜60%削減、ミリ秒未満マージを実現",
+      "summary": "CRDTライブラリAutomergeが2025年末に3.0へ到達し、列指向ストレージ形式で文書サイズを40〜60%削減、新しい同期プロトコルでミリ秒未満のマージ速度を達成した。オフラインファースト設計のアプリで採用が進んでいる。",
+      "sourceUrl": "https://appscale.blog/en/blog/local-first-architecture-crdts-sync-engines-offline-first-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "アーキテクチャ・データ同期",
+      "title": "中央サーバー不要、WebRTC DataChannelsで直接同期するローカルファーストアプリが拡大",
+      "summary": "2026年、多くのコラボレーションアプリが中央サーバーを介さず、同室ユーザー間でWebRTC DataChannelsを使い直接データを同期する構成を採用し始めている。クラウドは「ゲートキーパー」から「中継役」へ役割を変えつつある。",
+      "sourceUrl": "https://www.calibraint.com/blog/offline-first-mobile-app-in-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "標準化・プロトコル",
+      "title": "A2A(Google)とMCP(Anthropic)の役割分担が定着、日本はガイドライン1.2版でHuman-in-the-Loopを明確化",
+      "summary": "MCP(Anthropic、2024年11月発表)はLLMと外部データ・ツールの接続、A2A(Google、2025年4月発表)はエージェント間通信を担う形で役割分担が定着。日本では総務省・経産省の「AI事業者ガイドライン」第1.2版(2026年3月31日付)がAIエージェントへの人による監視要件を明確化した。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "規制・ガバナンス",
+      "title": "米政府、先端AIモデルの発売前自主提出を求める新フレームワークを提示",
+      "summary": "2026年8月上旬、ホワイトハウスがOpenAI・Anthropic・Googleを招き、最先端モデルを一般公開前に政府へ自主的に共有するよう促す新フレームワークの詳細を共有した(詳細は未公開)。",
+      "sourceUrl": "https://aiconference.london/how-anthropic-openai-and-google-compare-in-2026-august-2026-20260813-12",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "業界動向・人事",
+      "title": "Anthropic、Mariano-Florentino Cuéllar氏をChief Global Affairs Officerに招聘",
+      "summary": "Anthropicは2026年8月4日、Mariano-Florentino(Tino)Cuéllar氏がChief Global Affairs Officerとして参画すると発表した。",
+      "sourceUrl": "https://aiconference.london/how-anthropic-openai-and-google-compare-in-2026-august-2026-20260813-12",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術動向・世界モデル",
+      "title": "Google DeepMind「Genie 3」、24FPS・720pのリアルタイム3D世界生成を実現",
+      "summary": "Google DeepMindの世界モデル「Genie 3」(2025年8月発表)は、リアルタイム(24FPS、720p)でインタラクティブな3D環境を生成する初の世界モデルとして注目され、2026年も産業応用が進んでいる。NVIDIAのCosmos-Predict2.5等、オープンウェイトの世界基盤モデルも拡充中。",
+      "sourceUrl": "https://xtech.nikkei.com/atcl/nxt/keyword/18/00002/012100303/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・金融",
+      "title": "メガバンク3行+SOMPOが全社3万人にGemini Enterpriseを展開、東京海上はコンタクトセンターAI本格導入",
+      "summary": "日本の金融業界でAIエージェント導入が加速。メガバンク3行とSOMPOが全社員3万人規模でGemini Enterpriseを展開し、東京海上はコンタクトセンター向けAIを本格導入した。2028年までに日本企業の60%がAIエージェントを業務活用すると予測されている。",
+      "sourceUrl": "https://www.ailead.app/blog/ai-agent-enterprise-case-collection-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "活用事例・ソフトウェア開発",
+      "title": "AIエージェント導入でソフトウェア開発工数が月12.5人から月2.0人に削減された事例",
+      "summary": "システム開発企業が設計・コーディング・テスト・デプロイまでを自律的に行うAIエージェントを導入し、従来月12.5人分かかっていた開発工数を月2.0人分まで削減した事例が報告されている。",
+      "sourceUrl": "https://aismiley.co.jp/ai_news/ai-agent-example-business/",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "TDKのInvenSense SmartMotion、AIグラス・スマートウォッチ向けセンシングを統一",
+      "summary": "CES 2026でTDKがInvenSense SmartMotionカスタムセンシングソリューションを発表。ワイヤレスイヤホン・AIグラス・ARアイウェア・スマートウォッチ・フィットネスバンド等、複数のIoTウェアラブルで共通のセンシング基盤として使えるようにした。",
+      "sourceUrl": "https://ajprotech.com/blog/events/ces-2026-preview-rising-trends-in-ai-robotics-iot-and-wearables.html",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "技術の組み合わせ",
+      "title": "頭の傾き・まばたきで操作するAI耳栓「Naqi Neural Earbuds」がCES2026 Best of Innovation受賞",
+      "summary": "Naqi Logixのニューラルイヤホン「Naqi Neural Earbuds」が、頭を傾ける・まばたきするといった微細なジェスチャーへの応答を実現し、CES 2026のBest of Innovationを受賞した。AI×ウェアラブル×ジェスチャー認識の組み合わせ事例。",
+      "sourceUrl": "https://ajprotech.com/blog/events/ces-2026-preview-rising-trends-in-ai-robotics-iot-and-wearables.html",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "流行・トレンド",
+      "title": "「Vibe Coding」がCollins Dictionary 2025年今年の単語に選出、2026年は自律エージェントへ進化",
+      "summary": "2025年2月にAndrej Karpathy氏が提唱した「Vibe Coding」(自然言語で意図を伝えAIに実装を任せる開発スタイル)がCollins Dictionaryの2025年「今年の単語」に選出。2026年にはコード補完ツールから、要件定義・仕様策定・テスト・デプロイ前チェックまで担う自律エージェントへと進化している。",
+      "sourceUrl": "https://zhuanlan.zhihu.com/p/2010879714030540578",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-20",
+      "category": "市場動向",
+      "title": "2028年までに日本企業の60%がAIエージェントを業務活用すると予測",
+      "summary": "調査により、2028年までに日本企業の60%がAIエージェントを何らかの形で業務活用するようになると予測されている。金融・保険業界では問い合わせ対応の自動化など具体的な導入が先行している。",
+      "sourceUrl": "https://www.ailead.app/blog/ai-agent-enterprise-case-collection-2026",
+      "collectedAt": "2026-08-20 09:38",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "データベース・アーキテクチャ",
+      "title": "Amazon DynamoDB、2026年8月5日にリアルタイムベクトル検索を一般提供開始",
+      "summary": "AWSがDynamoDBに任意規模でのリアルタイムベクトル検索対応を発表(2026年8月5日)。別のベクトルストアへ複製することなく、運用データと共にベクトル埋め込みを保存し直接類似度検索が行えるようになった。",
+      "sourceUrl": "https://aws.amazon.com/jp/blogs/news/amazon-dynamodb-now-supports-real-time-vector-search-at-any-scale/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "データベース・アーキテクチャ",
+      "title": "ElectricSQL、PostgreSQL+高速リアルタイム同期でLocal-first/エッジAI向け分散アーキテクチャに対応",
+      "summary": "ElectricSQLはPostgreSQLをバックエンドに持ちながら高速なリアルタイムクライアント同期を両立するデータベースで、Local-first思想とエッジAI・IoTなど分散アーキテクチャのニーズに合致するとして注目されている。",
+      "sourceUrl": "https://www.issoh.co.jp/tech/details/7220/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "モデル性能・マルチモーダル",
+      "title": "NVIDIA、視覚・音声・言語統合の300億パラメータ「Nemotron 3 Nano Omni」を公開",
+      "summary": "NVIDIAがオープンなオムニモーダル推論モデル「Nemotron 3 Nano Omni」をリリース。視覚・音声・言語能力を単一の300億パラメータMixture-of-Expertsアーキテクチャへ統合し、同等のオープンマルチモーダルモデル比で最大9倍のスループットを実現した。",
+      "sourceUrl": "https://blog.mean.ceo/multimodal-ai-news-august-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "活用分野・ロボティクス",
+      "title": "COMPUTEX 2026、ロボットが「フィジカル」から「エージェント」へ進化する展示が相次ぐ",
+      "summary": "COMPUTEX 2026では、単なる物理動作を行うロボットから、状況を判断し自律的に行動する「エージェント型ロボット」への進化を示す展示が相次いだ。NVIDIA中心にフィジカルAIが2026年の中心テーマとなっている。",
+      "sourceUrl": "https://wired.jp/article/computex-2026-robots/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "活用分野・製造業",
+      "title": "生成AIが単発チャットボットから、設計〜エネルギー管理を横断する「マルチAIエージェント」へ進化",
+      "summary": "製造業において生成AIは単発アプリ・チャットボットの活用段階を超え、設計・生産計画・保全・品質・物流・エネルギー管理など業務領域を横断して実行を支援する「マルチAIエージェント」段階に入っていると報告されている。",
+      "sourceUrl": "https://www.deloitte.com/jp/ja/Industries/telecom-media-entertainment/perspectives/making-robots-ai-native.html",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "26億パラメータのSLMが、6710億パラメータのDeepSeek-R1をドメイン特化タスクで上回る",
+      "summary": "2026年、わずか26億パラメータの小型言語モデル(SLM)が、6710億パラメータのDeepSeek-R1をドメイン特化タスクで上回る事例が報告された。エッジ上のSLMは10ms未満のレイテンシとゼロのクラウドAPIコストを実現する。",
+      "sourceUrl": "https://renard-digital.fr/blog/en/small-language-models-edge-devices-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "AppleのA19 Pro「Neural Accelerators」搭載iPhoneが80億パラメータモデルを毎秒20トークン超で実行",
+      "summary": "Apple A19 ProはGPUコアに直接統合された「Neural Accelerators」により約75TOPSを実現し、iPhone 17 Proが80億パラメータのモデルを毎秒20トークン超で動作させられるようになった。",
+      "sourceUrl": "https://productpower.substack.com/p/small-language-models-slm-and-edge",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "Google AI Edge、Gemma 3n等12以上のモデルに対応、オンデバイスでマルチモーダル・RAG・関数呼び出しを実現",
+      "summary": "Google AI Edgeが対応モデルを12以上に拡大。Gemma初のマルチモーダルオンデバイスSLMである「Gemma 3n」はテキスト・画像・動画・音声入力に対応し、端末上でRAGや関数呼び出しも行えるようになった。",
+      "sourceUrl": "https://developers.googleblog.com/google-ai-edge-small-language-models-multimodality-rag-function-calling/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "Anthropic、Claudeのシステムプロンプトと複数エージェント協調時の失敗パターンを公開",
+      "summary": "2026年8月17日、AnthropicがClaudeのシステムプロンプトや、複数のAIエージェントが協調する際に生じる失敗パターンを公開。AIの「中身の見える化」を進める透明性の潮流が話題になった。",
+      "sourceUrl": "https://note.com/major_echium2954/n/n606e037ed16c",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "自律型コーディングAI「prime-agent」が2026年8月7日、GitHubトレンド1位に",
+      "summary": "長時間タスクを継続しながら自らの手順をレビュー・改善する自己改善機能を持つ自律型コーディングAI「prime-agent」が、2026年8月7日にGitHubトレンドで1位を獲得し話題となった。",
+      "sourceUrl": "https://note.com/major_echium2954/n/nf3016e38daa1",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "市場動向",
+      "title": "2026年の必須AIキーワード10選: エージェント、マルチモーダル、世界モデル、AI for Science等",
+      "summary": "2026年のAI必須キーワードとして、AIエージェント・マルチモーダルAI・世界モデル・AI for Science・オンデバイスAI・ハイパーパーソナライゼーション・XAI(説明可能AI)・合成データ・フィジカルAI・マルチエージェントAIシステムの10語が挙げられている。",
+      "sourceUrl": "https://www.udemy.com/course/ai-trend-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "製品・サービス",
+      "title": "Google I/O 2026、検索ボックスをマルチモーダル対話型UIへ刷新",
+      "summary": "Google I/O 2026で、テキスト・画像・PDF・動画・Chromeタブを入力として受け付ける動的でマルチモーダルなAI対話型検索ボックスへの刷新が発表された。",
+      "sourceUrl": "https://blog.mean.ceo/multimodal-ai-news-august-2026/",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-21",
+      "category": "流行・トレンド",
+      "title": "企業が年間6000万円のSalesforce契約をAI内製CRMに置き換える「AI内製化」の動き",
+      "summary": "外部の高額な業務システムをAIで内製した代替に置き換える企業が増加中。ある企業は年間60万ドル(約6000万円)のSalesforce契約を、AIで構築した独自CRMに置き換えた事例が報告されている。",
+      "sourceUrl": "https://note.com/major_echium2954/n/nf3016e38daa1",
+      "collectedAt": "2026-08-21 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェントのメモリ設計、ホット/コールドパスの2層構成が標準に",
+      "summary": "2026年の本番AIエージェントでは、直近メッセージ+要約グラフ状態をコンテキストウィンドウ内(ホットパス)に保持し、必要に応じて外部ストア(コールドパス)から過去情報を検索する2層構造が標準化。Mem0・Zep・Lettaがメモリフレームワークの3強とされる。",
+      "sourceUrl": "https://uravation.com/media/ai-agent-memory-complete-guide-2026/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "新星メモリフレームワーク「SimpleMem」、LOCOMOベンチでMem0を上回るF1スコア",
+      "summary": "2026年1月公開の「SimpleMem」は「Semantic Lossless Compression」という手法で効率を追求し、長期記憶ベンチマークLOCOMOにおいて既存の主要フレームワークMem0を上回るF1スコアを記録した。",
+      "sourceUrl": "https://zenn.dev/yasuhito/articles/ai-memory-projects-2026",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "モデル性能",
+      "title": "Google、Gemini 3.6 Flashを2026年7月21日発表、出力トークン消費を17%削減",
+      "summary": "Googleが2026年7月21日、AIエージェント向けの効率性を重視した新モデル群を発表。Gemini 3.6 Flashはコーディングや知識作業での性能を強化しつつ、前世代3.5 Flashと比べて出力トークンの消費量を17%削減した。",
+      "sourceUrl": "https://www.businessinsider.jp/article/2608-how-much-did-major-generative-ai-service-fees/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "市場動向・AIモデル選定",
+      "title": "AIモデル選びが「1つを選ぶ」から「用途ごとにルーティングする」時代へ",
+      "summary": "2026年8月時点で、Claude Fable 5・Claude Opus 5・GPT-5.6 Sol等のフロンティア級モデルが並立し、企業のAIモデル選定は単一モデルの採用ではなく、タスクの種類に応じて複数モデルへ動的にルーティングする方式が主流になりつつある。",
+      "sourceUrl": "https://note.com/bright_jacana710/n/nf45cca54c74b",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "技術の組み合わせ・量子コンピューティング",
+      "title": "IBM、2026年末までに「検証可能な量子優位性」達成を目標に掲げる",
+      "summary": "IBMは2026年末までに、古典コンピュータでは実質的に再現不可能な「検証可能な量子優位性(verified quantum advantage)」の達成を目指すと表明。AIと量子計算を組み合わせ、量子系の安定化にAIを活用する研究も進む。",
+      "sourceUrl": "https://www.analyticsinsight.net/artificial-intelligence/why-2026-could-be-the-breakthrough-year-for-ai-and-quantum-computing",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "技術の組み合わせ・量子コンピューティング",
+      "title": "Googleの量子プロセッサ「Willow」が実際に機能する誤り訂正を実証、Microsoftも誤り訂正済み量子機を顧客へ提供開始",
+      "summary": "2026年、量子コンピューティングは実験段階から実用段階へ移行。Googleの量子プロセッサ「Willow」は実際に機能する誤り訂正を実証し、Microsoftは誤り訂正済みの量子コンピュータの顧客への提供を開始した。量子処理は特定のボトルネックを担い古典計算と組み合わせる「ハイブリッド量子・古典モデル」が標準になっている。",
+      "sourceUrl": "https://www.analyticsinsight.net/artificial-intelligence/why-2026-could-be-the-breakthrough-year-for-ai-and-quantum-computing",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "活用分野・農業",
+      "title": "スマート農業技術活用促進法の認定申請書類作成に生成AIを活用する動きが拡大",
+      "summary": "農業法人向けのAI導入支援では、スマート農業技術活用促進法の認定申請実務そのものに生成AIを使うケースが拡大。要件と自経営の状況を入力し、事業計画の構成案を生成AIに作らせるといった活用が進んでいる。",
+      "sourceUrl": "https://metagri-labo.com/ai-guide/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "活用分野・小売",
+      "title": "AIによる収穫量・需要予測で「データドリブン経営」、産地廃棄・価格暴落の回避へ",
+      "summary": "小売・農業分野でAIによる収穫量予測・需要予測の活用が進み、データに基づく経営判断により豊作時の価格暴落や産地廃棄を回避し利益を最大化する「データドリブン経営」が実現しつつある。",
+      "sourceUrl": "https://ai-market.jp/purpose/retailing_aikatsuyo/",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-22",
+      "category": "流行・トレンド",
+      "title": "AI検索の利用率が8か月で3.5倍に急増(「AI検索白書2026」)",
+      "summary": "「AI検索白書2026」の調査により、AI検索(AI Overviews等)の利用率がわずか8か月で3.5倍に急増したことが明らかになった。ユーザーの情報収集行動そのものが大きく変化している。",
+      "sourceUrl": "https://webtan.impress.co.jp/e/2026/04/07/52273",
+      "collectedAt": "2026-08-22 09:09",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・標準化",
+      "title": "MCP、2026-07-28版仕様でステートレスコア化・Extensions/Tasks/MCP Appsを追加、SDK累計10億DL突破",
+      "summary": "Model Context Protocolの次期仕様2026-07-28がリリースされ、プロトコル層がステートレス化。長時間タスク向けのTasks拡張やサーバー描画UIのMCP Appsが加わり、TypeScript・Python SDKはそれぞれ累計10億ダウンロードを突破した。",
+      "sourceUrl": "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・標準化",
+      "title": "MCPの「Enterprise-Managed Authorization」拡張が安定版に、IdP連携でゼロタッチOAuthを実現",
+      "summary": "MCPの新拡張Enterprise-Managed Authorizationが安定版となり、組織のIDプロバイダ経由でMCPサーバーへのアクセスを一元管理できるように。ユーザーは初回ログイン時点でアプリごとのOAuth手続きなしに接続済みサーバーを利用できる。",
+      "sourceUrl": "https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェント設計、「ReAct」「Plan-and-Execute」「Supervisor-Workers」「Graph」「Event-driven」の5パターンに整理",
+      "summary": "2026年のエージェントアーキテクチャは5つの型に集約されつつある。返金対応エージェントの事例ではReAct型が87%を1.4秒で処理する一方、Plan-and-Execute型に切り替えると95%が2.1秒で完了しエスカレーションもきれいになったと報告されている。",
+      "sourceUrl": "https://futureagi.com/blog/agent-architecture-patterns-2026/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "データベース・アーキテクチャ",
+      "title": "RAGパイプライン障害の大半はモデルでなくベクトルDB層が原因、インデックス選定・チャンク戦略が明暗を分ける",
+      "summary": "本番運用されるRAGシステムの失敗の大半はLLM本体ではなくベクトルデータベース層に起因するとの分析。インデックス方式の選択・チャンク分割戦略・可観測性など6つの設計判断が、正しいコンテキストを検索できるかどうかを左右するという。",
+      "sourceUrl": "https://www.landskill.com/blog/vector-databases-rag-pipeline-decisions/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "Google、Gemini 3.7 Flashを8月13日に投入、$0.75/$3.75の導入価格で提供開始",
+      "summary": "2026年8月は5社以上から11件の主要AIモデルが20日間で登場する記録的な月となった。GoogleはGemini 3.7 Flashを8月13日に$0.75/$3.75の導入価格で投入し、オープンウェイトモデルが価格性能面でクローズドモデルに直接対抗する状況が続いている。",
+      "sourceUrl": "https://www.gmicloud.ai/en/blog/ai-model-benchmarks-august-2026-open-weight-models-catch-the-frontier",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "中国Moonshot AI、2.8兆パラメータのオープンモデル「Kimi K3」を公開、\"Claudeを超えた\"と話題に",
+      "summary": "中国Moonshot AIが2026年夏に公開したオープンウェイトモデル「Kimi K3」(2.8兆パラメータ)を巡り、性能面でClaudeを上回ったとする見出しがネット上で拡散。中国発オープンモデルの急速な性能向上を象徴する事例として注目されている。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "モデル性能",
+      "title": "LiquidAI「LFM2.5-2.6B」など軽量エッジ向けモデルが相次ぎ登場、8月だけで主要モデル11件が集中投入",
+      "summary": "LiquidAIは8月4日、エッジ・軽量エージェント向けの26億パラメータモデル「LFM2.5-2.6B」を公開。DeepSeek V4-Flash 0731($0.14/$0.28)など価格性能を重視した小型モデルの投入が相次ぎ、2026年8月は5社以上から11件の主要モデルが20日間で登場する記録的な月となった。",
+      "sourceUrl": "https://www.gmicloud.ai/en/blog/ai-model-benchmarks-august-2026-open-weight-models-catch-the-frontier",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "フィジカルAI企業ZEALS、コンパクトヒューマノイド「D1」投入、2026年度内100台・累計1万時間稼働目指す",
+      "summary": "国内のフィジカルAI領域では、ZEALSが500万円からのコンパクトヒューマノイド「D1」を投入し、2026年度内に100台導入・累計1万時間の現場稼働達成を目標に掲げている。フィジカルAIは技術競争から量産・現場稼働段階の産業競争へ移行しつつある。",
+      "sourceUrl": "https://sattu-ai-agent.com/2026/08/17/aug16-2wks-physicalai-news/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "エッジ向けマルチモーダルロボティクス、音声・センサー・GPUを統合しヒューマンロボット協調のリアルタイム音響空間認識を実現",
+      "summary": "車載音響ソリューションとセンサーブリッジ、GPUアクセラレーションを組み合わせたマルチモーダルエッジコンピューティング構成が登場。ロボットがローカルでセンサー・カメラ情報を処理しつつリアルタイムに音響的な空間認識を行い、人間とロボットの協調作業を支える。",
+      "sourceUrl": "https://www.edge-ai-vision.com/2026/08/advancing-multimodal-robotics-at-the-edge-from-vision-to-voice/",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・業界動向",
+      "title": "令和8年版情報通信白書、生成AI利用企業が86.4%に急増(前年55.2%)も「組織的取組なし」27%",
+      "summary": "総務省の令和8年版情報通信白書によると、何らかの業務で生成AIを利用している日本企業の割合は86.4%に達し、前年度の55.2%から大幅上昇。個人の生成AI利用経験率58.8%を上回る一方、業務変革について「組織的な取組はない」と答えた企業も27.0%あり、導入と定着の差が課題として浮き彫りになった。",
+      "sourceUrl": "https://selectra.jp/telecom/news/ai-hakusho-2026-generative-ai-adoption",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・人材",
+      "title": "ヒューマンリソシア、月4,000件の求人広告文作成にAIエージェント「つなぎAI」導入、年4,800時間削減",
+      "summary": "ヒューマンホールディングス傘下のヒューマンリソシアは、月4,000件規模で発生する求人広告文の作成業務にAIエージェント基盤サービス「つなぎAI Powered by Dify」を導入。1件あたりの作業時間を約6分短縮し、年間約4,800時間の削減効果を見込んでいる。",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000001983.000005089.html",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用事例・エンタープライズ",
+      "title": "NTTドコモビジネス+エクサウィザーズ、専用環境で使う「クローズドAIエージェント」提供開始(8/17)",
+      "summary": "NTTドコモビジネスとエクサウィザーズは8月17日、企業の設計図・技術文書・契約情報など機密性の高いデータを外部に出さずに扱える「クローズドAIエージェント」の提供を開始。エクサウィザーズのAIエージェント基盤「exaBase Studio」とNTTドコモビジネスの閉域網・データセンターを組み合わせ、プライベートクラウド版とオンプレミス版で提供する。",
+      "sourceUrl": "https://www.ntt.com/about-us/press-releases/news/article/2026/0817.html",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "活用分野・医療",
+      "title": "世界の医療AI導入率、2024年の38%から2026年67%へ急伸、病院の8割が何らかの機能でAI活用",
+      "summary": "医療分野はAI導入の加速が最も顕著な業界となっており、導入率は2024年の38%から2026年には67%へと29ポイント上昇。臨床医の63%がAIツールを利用し、病院の80%が少なくとも1つの機能でAIを導入済みとされる。創薬領域でもAI活用が新薬開発期間を5〜6年から約1年へ圧縮しているという。",
+      "sourceUrl": "https://presenc.ai/research/ai-adoption-by-industry",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "流行・トレンド",
+      "title": "Google/Ipsos調査、21カ国平均66%が過去1年でAIツールを利用(2024年から+18pt)",
+      "summary": "Google/Ipsosによる21カ国対象の調査で、過去12か月以内にAIツール・アプリケーションを利用したと答えた人が平均66%に達し、2024年調査から18ポイント上昇した。AI利用が一部の早期採用者から一般層へ広がりつつあることを示す結果となっている。",
+      "sourceUrl": "https://www.ipsos.com/en-us/google-ipsos-multi-country-ai-survey-2026",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-23",
+      "category": "流行・トレンド",
+      "title": "バーチャルインフルエンサーを採用する企業が2026年に60%→73%に増加",
+      "summary": "2026年のグローバル調査によると、マーケティングにバーチャル(AI)インフルエンサーを採用する企業の割合は60%から73%へ上昇。回答企業の71%が「バーチャルインフルエンサーは人間クリエイターより高いROIをもたらす」と回答しており、AI合成人格の活用が実験段階から戦略的資産へと移行している。",
+      "sourceUrl": "https://playbella.org/blog/2026-ai-influencer-landscape-report",
+      "collectedAt": "2026-08-23 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・APIゲートウェイ",
+      "title": "Google Cloud API Gateway、Gemini/Claude/OpenAI OSSへの動的モデルルーティングをパブリックプレビュー公開",
+      "summary": "Google CloudのAPI Gatewayに、1つのエンドポイントからGemini・Claude・OpenAI OSSモデルへリクエストを動的振り分けするモデルルーティング機能がパブリックプレビューで登場。OpenAPI 3.x仕様の拡張ブロックで設定でき、プロキシサーバー不要でOpenAI互換ペイロードを各社のVertex AIネイティブ形式へ自動変換する。料金は月200万コールまで無料、以降は100万コールあたり3ドル。",
+      "sourceUrl": "https://developers.googleblog.com/a-unified-api-for-ai-model-routing/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "AIエージェントフレームワーク、型安全性を重視する「PydanticAI」等が金融・医療領域で普及",
+      "summary": "2026年のAIエージェントフレームワーク比較では、ノーコードで構築できるFlowiseに加え、エージェントが扱うデータを厳密に型管理できるPydanticAIが、データ品質が重要な金融・医療分野で採用が広がっていると報告されている。",
+      "sourceUrl": "https://www.brainpad.co.jp/doors/contents/best-ai-agent-frameworks-comparison/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "モデル性能",
+      "title": "Anthropic、Claude Opus 5を7月24日公開、タスクごとに思考量をlow/medium/highで切替可能に",
+      "summary": "Anthropicは2026年7月24日にClaude Opus 5を公開。タスクの難易度に応じて投入する思考量をlow/medium/highの3段階で切り替えられる仕組みを備え、コストと精度のバランスを利用者側で調整できるようにした。",
+      "sourceUrl": "https://eguweb.jp/ai/81355/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "モデル性能",
+      "title": "xAI、Grok 4.6を8月12日投入、Intelligence Index 61でGPT-5.6 Solに並ぶ性能に",
+      "summary": "xAIは8月12日にGrok 4.6を投入。Artificial AnalysisのIntelligence Indexで61を記録しOpenAIのGPT-5.6 Solと並ぶ性能となり、前モデルGrok 4.5から5ポイント向上した。価格は入力$2/出力$6(100万トークンあたり)とGrok 4.5から据え置き、Claude Opus 5比で6割以上安い水準を維持している。",
+      "sourceUrl": "https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用事例・業界動向",
+      "title": "BCC Research、AIの業界横断導入加速をレポート化(医療・金融・小売・通信・行政・製造)",
+      "summary": "BCC Researchが2026年8月に発表した調査レポートは、医療・金融・小売・通信・行政・製造の各分野でAI導入が加速している実態をマッピング。生成AI・マルチモーダルAI・エージェントAIが企業の生産性・自動化・意思決定に測定可能な成果をもたらしていると分析している。",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/08/18/3347182/0/en/ai-use-case-analysis-signals-transformative-cross-industry-adoption-wave-as-investment-surges-past-billions.html",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・製造業",
+      "title": "製造業のAI視覚検査市場が急拡大、2024年24.11億ドルから年25.4%成長へ",
+      "summary": "AIによる視覚検査(外観検査)の市場規模は2024年時点で24.11億ドルとされ、年平均25.4%で成長中。製造業の約75%が何らかの形でAIを活用した検査工程を導入しているとの調査結果が示されている。",
+      "sourceUrl": "https://ventionteams.com/solutions/ai/adoption-statistics",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用事例・通信",
+      "title": "楽天モバイル「Rakuten Link」、通話内容をAIが自動要約する機能を8月5日提供開始",
+      "summary": "楽天モバイルは8月5日、通話アプリ「Rakuten Link」に通話内容をAIが自動で要約する「AI通話要約」機能の提供を開始。通話後に要点をテキストで確認できるようになり、ビジネス利用でのメモ取りの手間を削減する。",
+      "sourceUrl": "https://news.infoseek.co.jp/article/mynavi_3215028/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・教育",
+      "title": "阪南大学高等学校、生成AI研修で教員の約9割が前向きに、英語問題作成や部活動指導に現場活用が拡大",
+      "summary": "阪南大学高等学校では教員向けの生成AI研修を実施した結果、約9割の教員が活用に前向きな姿勢に転じた。英語の問題作成や部活動の指導計画など、現場主導での具体的な活用事例が次々と生まれているという。",
+      "sourceUrl": "https://www.edutechnology.co.jp/service/aikyouiku-support/ai-cases-2026",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "活用分野・教育",
+      "title": "世界のAI教育市場、2026年に95.8億ドル規模へ、GIGAスクール構想第2期で個別最適化学習の基盤整備が加速",
+      "summary": "世界のAI教育市場は2026年に95.8億ドル(約1.4兆円)規模に達する見通し。日本ではGIGAスクール構想第2期による端末更新が2025〜2026年度に集中し、アダプティブラーニングや生成AIを活用した個別最適化学習の基盤整備が全国の小中学校で進んでいる。",
+      "sourceUrl": "https://shift-ai.co.jp/blog/4001/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "AIロボット、既存設備にAIユニット・センサーを後付けする「レトロフィット」戦略が2026年トレンドに",
+      "summary": "製造現場のAI・ロボット活用では、設備を全て新調するのではなく既存設備にAIユニットやセンサーを後付けする「レトロフィット」という考え方が2026年のトレンドとして注目されている。画像認識・音声対話・センサー解析・遠隔監視・Webサービス連携など複数技術領域の組み合わせが一般化しつつある。",
+      "sourceUrl": "https://products.kanaden.co.jp/blog/oyakudachi/article/169/",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Figure AIの人型ロボット「Figure 02」、OpenAIのマルチモーダルAIを統合しBMW工場で部品搬送・棚補充を実運用",
+      "summary": "Figure AIの人型ロボット「Figure 02」は、OpenAIのマルチモーダルAIを統合した“会話できるロボット労働者”として、BMWサウスカロライナ工場で部品の搬送や棚への補充、単純作業の自動化に実際に稼働している。",
+      "sourceUrl": "https://www.mirait-one.com/miraiz/whatsnew/trend-data_0066.html",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "流行・トレンド",
+      "title": "AIが「答えるAI」から「行動するAI」へ、AIエージェント導入拡大が2026年8月時点の共通テーマに",
+      "summary": "2026年8月時点のAIニュースを俯瞰すると、MCPのステートレス化やクラウドのモデルルーティング機能など基盤技術の進化とともに、AIが「質問に答える」段階から「実際に行動しタスクをこなす」段階へ移行していることが共通テーマとして繰り返し指摘されている。",
+      "sourceUrl": "https://qiita.com/aakan/items/9b9a20f511625aa76044",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-24",
+      "category": "流行・トレンド",
+      "title": "ICT総研調査、生成AI利用率が1年で29.0%→54.7%に急上昇、2026年末の利用者数は3,553万人と予測",
+      "summary": "ICT総研が2026年2月に発表した調査によると、インターネット利用者のうち過去1年以内に生成AIサービスを利用した人の割合は54.7%に達し、2024年6月調査の29.0%から25.7ポイント急上昇。2026年末の利用者数は3,553万人、2029年末には5,160万人に達すると予測されている。",
+      "sourceUrl": "https://www.commercepick.com/archives/86175",
+      "collectedAt": "2026-08-24 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "LayerX、AIエージェントに1年分のニュースを読ませ4,500件の長期記憶を構築するシミュレーションを実施",
+      "summary": "LayerXのエンジニアブログが、AIエージェントに1年分のニュース記事を読ませて4,500件規模の長期記憶を構築する実験を公開。「無限の記憶はノイズと同義であり、何を忘れさせるか・どう要約するかが長期的な性能維持の鍵になる」という知見と実装上の課題を報告している。",
+      "sourceUrl": "https://tech.layerx.co.jp/entry/ai-agent-long-term-memory-simulation",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "アーキテクチャ・インフラ",
+      "title": "NVIDIA、SB Energyと共同で米オハイオ州に4.25GW規模のAIデータセンター「PORTS-Pike」建設を8月17日発表",
+      "summary": "NVIDIAは8月17日、SB EnergyのPORTS-Pikeテクノロジーキャンパス(オハイオ州パイク郡)へ15億ドルを投資し、初期4.25IT-GW(オプションで追加3.75GW)のAI計算基盤を独占的にホストすると発表。OpenAIが顧客となり、SB Energyが20年契約で建設・運用する。稼働開始は2028年からの段階展開を予定。",
+      "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-guarantees-sb-energy-s-ports-pike-technology-campus-in-ohio-to-exclusively-host-nvidia-ai-compute",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "技術の組み合わせ・エンタープライズ",
+      "title": "ソフトバンク、法人向けAIプラットフォーム「AGENTIC STAR」にLLM Gateway機能を標準搭載",
+      "summary": "ソフトバンクは8月上旬、自律型AIエージェント基盤「AGENTIC STAR」のSaaS版に「LLM Gateway」機能を標準搭載。AIコーディングツールと契約LLMサービスの間にゲートウェイを配置し、追加契約なしで企業ごとのルールに沿った生成AIガバナンスを適用できるようにした。",
+      "sourceUrl": "https://ai.watch.impress.co.jp/docs/news/2131486.html",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "モデル性能",
+      "title": "Alibaba「Qwen3.8-Max」(2.4兆パラメータ)が8月2日公開、8月リリースモデル中で最高評価に",
+      "summary": "AlibabaはQwen3.8-Max(推定2.4兆パラメータ)を8月2日に公開。ベンチマーク集計サイトBenchLMの「2026年8月リリースモデル」ランキングでスコア60.9を記録し、同月投入されたモデルの中で最高評価となった。",
+      "sourceUrl": "https://benchlm.ai/model-updates/releases/august-2026",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "モデル性能",
+      "title": "ByteDance「Seed 2.1 Turbo」を8月10日投入、AIモデルの価格競争がさらに激化",
+      "summary": "ByteDanceは8月10日に「Seed 2.1 Turbo」を投入。2026年8月は7社以上から3週間で12件の主要モデルが登場する記録的な月となり、複数の性能帯で価格が5割低下するなど、フロンティアモデルの低価格化競争が続いている。",
+      "sourceUrl": "https://benchlm.ai/model-updates/releases/august-2026",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "技術の組み合わせ・音声AI",
+      "title": "xAI、音声対話AI「Grok Voice Think Fast 2.0」を7月29日公開、並列推論で応答速度を1.25秒→0.70秒に短縮",
+      "summary": "xAIは7月29日、音声認識・推論・音声応答を一体化した「Grok Voice Think Fast 2.0」を公開。「話しながら考える」並列推論方式により最初の音声応答までの時間を1.25秒から0.70秒へ短縮し、前モデル比で使用する推論トークンを約0.4倍に削減。Starlinkでの実運用A/Bテストでは営業成約率の向上も確認されたという。料金は1分あたり0.08ドル。",
+      "sourceUrl": "https://x.ai/news/grok-voice-think-fast-2",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "活用事例・物流",
+      "title": "ヤマト運輸、全国約6,500カ所の配送センターの荷物量予測にMLOpsを導入、機械学習モデルの運用を自動化",
+      "summary": "ヤマト運輸は、過去4年分の集荷・配達データを基に全国約6,500カ所の宅急便センターごとの数カ月先の業務量を予測する機械学習モデルを毎月作成・運用。従来手動だったモデル作成プロセスをMLOps環境の構築により自動化し、運用工数を大幅に削減した。",
+      "sourceUrl": "https://exawizards.com/works/20297/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "規制・ガバナンス",
+      "title": "OpenAI、13〜17歳向け安全機能を強化した「ChatGPT for Teens」を8月18日提供開始",
+      "summary": "OpenAIは8月18日、13〜17歳向けに保護機能を強化した「ChatGPT for Teens」の提供を開始。行動パターンやアカウント利用状況から年齢を推定する仕組みと、身元確認サービスPersonaによる年齢確認機能を導入し、自傷・自殺関連や性的な会話への制限、保護者向け管理機能(利用時間帯の制限等)を搭載した。",
+      "sourceUrl": "https://openai.com/index/chatgpt-for-teens/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "活用事例・製造業",
+      "title": "パナソニック コネクト、生成AIエージェントで年間78.8万時間を削減、社内50システムとの連携フェーズへ",
+      "summary": "パナソニック コネクトは2025年度に生成AI活用で年間78.8万時間(総労働時間の3.4%相当)を削減したと報告。現在は50の社内システムと連携したAIエージェント実装のフェーズに入っているという。",
+      "sourceUrl": "https://bizaidea.com/roundup/72360/",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-25",
+      "category": "流行・トレンド",
+      "title": "Gartner予測「AIエージェントプロジェクトの40%超が2027年末までに中止」が改めて話題に",
+      "summary": "コスト増大や不十分なリスク管理を理由に、現在進行中のAIエージェントプロジェクトの40%超が2027年末までに中止されるというGartnerの予測が2026年8月時点でも繰り返し引用されている。AIエージェント導入で成果を上げている企業には、あえてエージェント単独で完結できる範囲を制限しているという共通点があると報告されている。",
+      "sourceUrl": "https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027",
+      "collectedAt": "2026-08-25 09:15",
+      "usedAI": "Claude"
+    }
+  ]
+}
