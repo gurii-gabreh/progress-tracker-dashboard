@@ -3214,14 +3214,20 @@
           "task": "ServiceNow PDIにu_ai_research_itemテーブルを作成する",
           "title": "テーブル作成",
           "priority": "中",
-          "status": "未着手",
+          "status": "完了",
           "category": "manual",
           "updated": "2026-08-29",
           "content": [
             "servicenow-sub-agentリポジトリのREADME.md「セットアップ手順 1.」記載のフィールド定義通りに、Studioまたは「システム定義 > テーブル」からu_ai_research_itemテーブルを作成する"
           ],
           "manualSetup": "ServiceNow PDI(dev395932.service-now.com)のStudioで、README.mdのフィールド一覧(u_category/u_title/u_summary/u_source_url/u_source_name/u_published_at/u_fetched_at/u_dedup_key)通りにテーブルを作成し、u_dedup_keyにUnique制約を付ける",
-          "note": "詳細なフィールド型・長さはservicenow-sub-agent/README.md参照"
+          "note": "詳細なフィールド型・長さはservicenow-sub-agent/README.md参照",
+          "checkHistory": [
+            {
+              "date": "2026-08-29",
+              "summary": "ユーザーがServiceNow PDI上でu_ai_research_itemテーブルを作成完了(u_dedup_keyへのUnique制約を含む)。「Unique」チェックボックスが標準フォームに表示されない問題は、manager-roomがWeb検索で現行のServiceNow UI仕様を確認し、Form Layoutのパーソナライズ手順を追加提示して解決した。"
+            }
+          ]
         },
         {
           "repo": "servicenow-sub-agent",
