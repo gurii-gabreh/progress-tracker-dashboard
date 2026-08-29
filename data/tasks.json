@@ -3197,11 +3197,86 @@
       "id": "PTD-046",
       "task": "ServiceNow PDIを使った5観点自動リサーチパイプラインの新規構築",
       "priority": "中",
-      "status": "依頼中",
+      "status": "対応中",
       "updated": "2026-08-29",
       "note": "2026-08-29、ユーザーが無料のServiceNow PDI(Personal Developer Instance)を作成完了。新規リポジトリ名は「servicenow-sub-agent」に確定。既存のai-research-radarには組み込まず、独立した新規リポジトリとして構築する方針。",
-      "detail": "【対象の5観点(ユーザーが継続的に調査していた内容)】\n1. アプリ作成時に活かせる技術、アーキテクチャ的要素やデータ構造、データのやり取り\n2. 最新のAI技術でできること、今後できると思われる技術の動向\n3. 今ある技術を組み合わせるとできる新しいこと\n4. AIが使われている分野や、使われやすいシチュエーション\n5. AIの流行\n\n【依頼内容(worker-room宛)】\n  a. GitHub上に新規リポジトリ「servicenow-sub-agent」(gurii-gabreh配下)を作成する\n  b. ServiceNow PDI側に、上記5観点の調査結果を蓄積する単一テーブルを設計する(列構成: 観点分類, タイトル, 要約, 出典URL, 取得日時 等)\n  c. 無料の情報源(arXiv API/RSS、Hacker News Algolia API、Anthropic/OpenAI/Hugging Face公式ブログRSS等、既にmanager-room側で調査済みの無料APIリスト)からScheduled Job + REST Messageで定期取得する仕組みをServiceNow側に構築する\n  d. 費用は完全無料であること(CLAUDE.mdルール9)。ServiceNow PDI自体は無料だが、開発・テスト目的限定というServiceNowのToS制約、および90日以上インスタンスが古い状態+10日ログインなしで自動回収される制約がある点に注意して設計する\n  e. 実装内容・設計判断はservicenow-sub-agentリポジトリのREADME等に記録し、意味のある実装判断(DB設計・AI/LLM関連等)はprogress-tracker-dashboardのdata/concept-log.jsonにも記録する(CLAUDE.mdコア規則の指示通り)\nmanager-room(session_011TMAanapvZ8wAn5kTPyR3w)側では進捗をtasks.json経由で把握する。",
-      "output": ""
+      "detail": "【worker-room実施結果(2026-08-29)】servicenow-sub-agentリポジトリに以下を実装しコミット・push済み(commit 28da0f9)。(1) CLAUDE.mdへCORE-RULESマーカーを設置(sync_claude_md.pyのTARGETSには既に登録済みのため、次回data/claude-core-rules.md更新時から自動同期される)。(2) 単一テーブル(u_ai_research_item)+category列という設計(正規化分割ではなく横断的な分類軸として1テーブルにまとめた。判断根拠はdata/concept-log.jsonのCL-005参照)。(3) arXiv/Hacker News/3ブログ向けのREST Message構成案と、実際にScheduled Jobへ貼り付けるスクリプト本体(servicenow/scheduled_job_ai_research_fetch.js)。ServiceNow側の認証情報は一切含めていない。\n\n【重要な制約】このworker-roomセッションはネットワークegressポリシーによりexport.arxiv.org・hn.algolia.com・www.anthropic.com等へ実地アクセスできず(PTD-045で判明した制約と同根)、情報源のAPI/RSS URL・レスポンス形式を実機検証できていない。arXiv APIとHacker News Algolia APIは長年安定した既知の公開APIのため形式には比較的自信があるが、3つのブログRSSのURLは変更されている可能性がある。またXML解析はServiceNowのXMLDocument2 APIの挙動を確認できなかったため、あえて正規表現ベースの単純な抽出方式にした(README「既知の制約」に詳細)。\n\n【ServiceNow側の実機セットアップ・検証(人の手作業が必要)】テーブル作成・REST Message作成・Scheduled Job作成・RSS URL検証の4点は、いずれもServiceNowのUI操作が必要で自動化できないため、PTD-047〜050としてsubtask化した(運用ルール7: 手動設定が2件以上あるためmanualSetupへ1文で詰め込まず分割)。",
+      "output": "",
+      "content": [
+        "ServiceNow PDI(dev395932.service-now.com)上に、AI研究5観点を無料の公開API/RSSから日次収集するパイプラインを構築する",
+        "リポジトリ(servicenow-sub-agent)側の設計・コードは完了。ServiceNow側の実機セットアップ(テーブル/REST Message/Scheduled Job作成、RSS URL検証)は人が行う必要がある(下記subtasks参照)"
+      ],
+      "nextAction": "下のsubtasks(PTD-047〜050)を、ServiceNow PDI(dev395932.service-now.com)側で1件ずつ手動セットアップする",
+      "subtasks": [
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-047",
+          "task": "ServiceNow PDIにu_ai_research_itemテーブルを作成する",
+          "title": "テーブル作成",
+          "priority": "中",
+          "status": "未着手",
+          "category": "manual",
+          "updated": "2026-08-29",
+          "content": [
+            "servicenow-sub-agentリポジトリのREADME.md「セットアップ手順 1.」記載のフィールド定義通りに、Studioまたは「システム定義 > テーブル」からu_ai_research_itemテーブルを作成する"
+          ],
+          "manualSetup": "ServiceNow PDI(dev395932.service-now.com)のStudioで、README.mdのフィールド一覧(u_category/u_title/u_summary/u_source_url/u_source_name/u_published_at/u_fetched_at/u_dedup_key)通りにテーブルを作成し、u_dedup_keyにUnique制約を付ける",
+          "note": "詳細なフィールド型・長さはservicenow-sub-agent/README.md参照"
+        },
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-048",
+          "task": "ServiceNow PDIに3件のREST Messageを作成する(arXiv/Hacker News/Blog RSS)",
+          "title": "REST Message作成",
+          "priority": "中",
+          "status": "未着手",
+          "category": "manual",
+          "updated": "2026-08-29",
+          "content": [
+            "README.md「セットアップ手順 2.」記載の通り、System Web Services > REST Messageから3レコード(いずれも認証不要・GET)を作成する"
+          ],
+          "manualSetup": "「AI Research - arXiv」(HTTPメソッドsearch)、「AI Research - Hacker News」(HTTPメソッドsearch)、「AI Research - Blog RSS」(HTTPメソッドanthropic/openai/huggingfaceの3つ)をREADME.md記載のエンドポイントで作成する",
+          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。特にブログ3件のURLはPTD-050での実地検証が済んでから確定させることを推奨"
+        },
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-049",
+          "task": "ServiceNow PDIにScheduled Jobを作成しスクリプトを貼り付ける",
+          "title": "Scheduled Job作成",
+          "priority": "中",
+          "status": "未着手",
+          "category": "manual",
+          "updated": "2026-08-29",
+          "content": [
+            "System Definition > Scheduled Jobsで「Automatically run a script of your choosing」を選び、servicenow-sub-agent/servicenow/scheduled_job_ai_research_fetch.jsの内容をそのまま貼り付けて保存する。実行頻度は日次を推奨"
+          ],
+          "manualSetup": "PTD-047・PTD-048が完了してから実施する(テーブル・REST Messageが無いとスクリプトがエラーになる)。servicenow/scheduled_job_ai_research_fetch.jsをそのままコピーしてScheduled Jobへ貼り付ける",
+          "note": ""
+        },
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-050",
+          "task": "情報源URL・レスポンス形式の実機検証(worker-room環境ではネットワーク制約で未検証)",
+          "title": "実機検証",
+          "priority": "高",
+          "status": "未着手",
+          "category": "manual",
+          "updated": "2026-08-29",
+          "content": [
+            "System Definition > Scripts - Backgroundでservicenow/scheduled_job_ai_research_fetch.jsを1回手動実行し、u_ai_research_itemに行が増えるか・gs.error()のエラーログが出ていないかを確認する",
+            "特にAnthropic/OpenAI/Hugging Faceの3ブログRSSのURL(README.md記載)が404等になっていないか確認し、実際のURLと異なる場合はブラウザで正しいRSS URLを調べてREST Messageのエンドポイントを修正する",
+            "arXivのAtom XML・Hacker NewsのJSONが想定通りパースされ、title/summaryが妥当な内容で入っているか確認する"
+          ],
+          "manualSetup": "PTD-049(Scheduled Job作成)の後に、Background Scriptsで1回手動実行して結果を確認する。ServiceNow PDI自体は外部への通常のHTTPSアクセスが可能なはずだが、worker-room側では実地確認できていないため、この検証をもって初めてパイプライン全体の動作が確定する",
+          "note": "この検証結果(成功/失敗、修正したURL等)は、後日このタスクのcommentsまたはPTD-046のchecklistへ記録してもらえると、tasks.json側にもナレッジとして反映できる"
+        }
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-08-29",
+          "summary": "worker-roomにてservicenow-sub-agentリポジトリの初期スキャフォールドを実装・commit・push(CLAUDE.mdのcore-rulesマーカー設置、README.mdでのテーブル/REST Message/Scheduled Job設計とセットアップ手順、servicenow/scheduled_job_ai_research_fetch.jsの実装)。DB設計判断はconcept-log.jsonのCL-005に記録。ネットワークegress制約(PTD-045と同根)により情報源URL・レスポンス形式を実機検証できなかったため、ServiceNow側の実際のセットアップ・検証をPTD-047〜050として切り出した。"
+        }
+      ]
     }
   ]
 }
