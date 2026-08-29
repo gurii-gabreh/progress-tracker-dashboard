@@ -1051,6 +1051,60 @@
       "sourceUrl": "https://www.newsx.com/business-2/kredily-3-0-launches-kai-agentic-ai-for-payroll-and-hr-and-expands-into-ai-powered-managed-payroll-services-260743/",
       "collectedAt": "2026-08-25 07:21",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "アーキテクチャ・データベース",
+      "title": "Google Cloud、Next'26で「Agentic Data Cloud」を発表、モデル・分析・運用DBを単一AIネイティブ基盤に統合",
+      "summary": "Google CloudがNext'26で、クロスクラウドのLakehouseとKnowledge Catalog、Gemini搭載のData Agent Kitからなる統合データ基盤「Agentic Data Cloud」を発表。AlloyDB・Spanner・Cloud SQL向けのText-to-SQL機能はほぼ100%の精度を達成し、AIによるDatabase Observability Agentも追加された。",
+      "sourceUrl": "https://cloud.google.com/blog/products/databases/whats-new-for-google-cloud-databases-at-next26",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "アーキテクチャ・インフラ",
+      "title": "OpenAI、Broadcomと共同開発の推論特化カスタムチップ「Jalapeño」を発表",
+      "summary": "OpenAIが自社初のカスタム推論ASIC「Jalapeño」をBroadcomと共同開発し発表。競合比で消費電力あたりの処理性能が約1.9倍、レイテンシが約1.7倍低く、設計からテープアウトまでわずか9か月という異例の短期間で開発された(開発プロセス自体にOpenAIのAIモデルも活用)。2026年内に出荷開始、2027年に量産予定。",
+      "sourceUrl": "https://openai.com/index/openai-broadcom-jalapeno-inference-chip/",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "活用事例・インフラ投資",
+      "title": "秋田市に日本最大級のAIデータセンター計画、整備費2兆円・UAEが最大1兆円投資",
+      "summary": "米AIスタートアップBITGRITと秋田市のIT企業エスツーが中心となり、秋田市に日本最大級のAI向けデータセンターを建設する計画が判明。整備費は総額2兆円規模で、UAE政府系ファンドが最大1兆円を投資する見通し。完成時の総受電容量は最大500MWで、秋田県の豊富な風力発電を活用し2030年代早期の稼働を目指す。",
+      "sourceUrl": "https://www.nikkei.com/article/DGXZQOCC138LW0T10C26A7000000/",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "モデル性能・流行",
+      "title": "覆面AIモデル「Ox Alpha」がコーディングベンチマークでClaude・GPTを上回り話題に、正体はZ.aiの「GLM-5.3-Flash」",
+      "summary": "8月20日にOpenRouterへ企業名非公開のstealthモデル「Ox Alpha」(stealth/ox-alpha)が登場。DeepSWEコーディングベンチマークでClaude Fable 5(65%)・GPT-5.6 Sol(52%)を上回る80%を記録し正体探しが過熱、トークナイザーやAPIエラー形式の指紋分析からZ.aiのモデルと推定された。8月26日、正体は同社の新モデル「GLM-5.3-Flash」の覆面テストだったと判明した。",
+      "sourceUrl": "https://pandaily.com/anonymous-ai-model-ox-alpha-crushes-coding-benchmarks-aug2026",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "技術の組み合わせ・鉄道",
+      "title": "JR東日本、AIが支障物検知を補助する線路内自律走行ロボットの実用化を推進",
+      "summary": "JR東日本がPreferred Roboticsと共同で、LiDAR・GNSSによる自律走行と車載カメラ・センサーのリアルタイム映像解析を組み合わせた線路点検ロボットを開発。AIが線路内の支障物検知を補助し、2026年10月末までに機体製作を完了、11月から在来線各線で走行試験を開始する計画。",
+      "sourceUrl": "https://ai.watch.impress.co.jp/docs/news/2107199.html",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-29",
+      "category": "活用事例・コンサルティング",
+      "title": "Bain & Company、Anthropicの最上位パートナー「Global Premier」に、全社員1.9万人にClaude展開済み",
+      "summary": "Bain & CompanyとAnthropicは8月25日、AI戦略・技術モダナイゼーション・AI活用型オペレーションで協業するグローバルパートナーシップを発表。Bainは全世界1.9万人の全社員にClaudeを展開済みで、Claude.ai・Claude Cowork・Claude Code・Claude for Excel・Claude for Microsoft 365をクライアントワークと社内業務の両方で活用しているという。",
+      "sourceUrl": "https://www.bain.com/about/media-center/press-releases/2026/bain-company-announces-partnership-with-anthropic-to-accelerate-clients-enterprise-ai-transformations/",
+      "collectedAt": "2026-08-29 09:20",
+      "usedAI": "Claude"
     }
   ]
 }
