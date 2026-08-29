@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-08-29",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -9,7 +9,8 @@
       "points": [
         "司令塔: マネージャールーム(全リポジトリ横断の状況把握・優先度判断・振り分け)",
         "実装: 作業ルーム(共有Routineの定期実行、またはタスクごとの相談ルーム)が担当",
-        "ルームの具体的な対応表はREADME.mdの「ルームマッピング」を参照(二重管理しない)"
+        "ルームの具体的な対応表はREADME.mdの「ルームマッピング」を参照(二重管理しない)",
+        "休止中(IDLE)の既存作業ルームへ追加の指示を出すときは、通常のセッション間メッセージ送信では届かないことがあるため、create_trigger+fire_triggerでセッションを起こしてから届ける(2026-08-29追加。詳細はaiのorchestration.dormantWorkerRoomWakeup参照)"
       ]
     },
     "aiDirectory": {
@@ -66,6 +67,11 @@
           "responsibility": "個別リポジトリ/タスクの実装。実行の最初にdata/policy.json・data/ai-config.jsonを読み、その内容に従う(README運用ルール32・33)。"
         }
       ]
+    },
+    "dormantWorkerRoomWakeup": {
+      "problem": "CCR(Claude Code Remote)の既存作業ルームセッションがIDLE(休止)状態になると、セッション間メッセージ送信(SendMessage等)では宛先として認識されず、追加の指示が届かないことがある(2026-08-29確認)。これはPTD-045(ネットワークegressポリシーによるブロック)とは別原因の、セッション到達性の問題。",
+      "procedure": "1. create_triggerで、対象セッションIDをpersistent_session_idに指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成する。2. fire_triggerでそのtrigger_idを即時発火し、メッセージを配信する。3. 配信後はdelete_triggerでそのtriggerを片付ける(使い捨てのため放置しない)。",
+      "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。"
     },
     "aiDirectory": {
       "sourceOfTruth": {
