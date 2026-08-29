@@ -3273,14 +3273,14 @@
           "task": "ServiceNow PDIに3件のREST Messageを作成する(arXiv/Hacker News/Blog RSS)",
           "title": "REST Message作成",
           "priority": "中",
-          "status": "対応中",
+          "status": "完了",
           "category": "manual",
           "updated": "2026-08-29",
           "content": [
-            "README.md「セットアップ手順 2.」記載の通り、System Web Services > REST Messageから3レコード(いずれも認証不要・GET)を作成する。2026-08-29以降は手作業に加え、GitHub Actionsワークフローによる自動作成も選べる。"
+            "System Web Services > REST Messageに3レコード(AI Research - arXiv/Hacker News/Blog RSS、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。"
           ],
-          "manualSetup": "2026-08-29時点でOAuthアプリ作成・GitHub Secrets登録はユーザーが完了済み(manager-room経由)。残っているのはActionsタブから「ServiceNow REST Messageセットアップ(PTD-048)」をworkflow_dispatchで実行するのみ: まずdry_run=true(初期値)で実行しログを確認、問題なければdry_run=falseで再実行して実作成する。",
-          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。特にブログ3件のURLは、同ワークフローのverify-source-urlsジョブが自動検証する(PTD-050参照)。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede→2e80131で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。実際のServiceNow環境に対する実行はまだ行われていない(ワークフロー未実行)。",
+          "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。",
+          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。",
           "checkHistory": [
             {
               "date": "2026-08-29",
@@ -3297,6 +3297,10 @@
             {
               "date": "2026-08-29",
               "summary": "ユーザーが実際にワークフローを実行。「REST Message自動作成(PTD-048)」ジョブは成功。並行実行の「情報源URLの実地検証(PTD-050関連)」ジョブは失敗し、ログでhttps://www.anthropic.com/rss.xmlがHTTP 404(Next.jsのエラーページ)であることが判明。Web検索で調査した結果、Anthropicは現在公式RSSフィードを提供していないと確認できたため、ユーザーに選択肢(除外/非公式ミラー使用/放置)を提示し「情報源から外す」を選択。setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEからanthropicを削除し、過去の実行で既に作成されてしまっていた場合に備えREMOVED_METHODSによる自動削除(冪等)ロジックも追加、モックテストで削除動作を確認した上でcommit c25fc8fでpush済み。arXiv/Hacker News/OpenAI Blog/Hugging Face Blogの4情報源はこの実行で実際にHTTP 200・期待形式であることを確認済み(PTD-050参照)。なお最初の実行がdry_run=true/falseどちらだったかは未確認のまま(ユーザーへの確認待ち)だが、次回workflow再実行時にREMOVED_METHODSのクリーンアップが冪等に働くため、どちらであっても収束する設計にしてある。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "修正版(Anthropic除外済み)でdry_run=true再実行し、ログで[dry-run]プレフィックスにより未作成であることを確認(この時点でarXiv用REST Messageもまだ存在しないことが判明、以前の『arXivはユーザーが手作業で作成済み』という未確認情報は誤りだったと訂正)。続けてdry_run=falseで実行し、実際にServiceNow PDI上へ3レコード(AI Research - arXiv/Hacker News/Blog RSS)が作成されたことをServiceNowのUI(System Web Services > REST Message一覧、および「AI Research - Blog RSS」のHTTP Methods一覧でopenai/huggingfaceのみ・anthropic無しを目視)で確認した。PTD-048はこれで完了。あわせてGitHub Actions側の非推奨警告(Node.js 20)にも対応し、actions/checkout・actions/setup-nodeをv5・Node.js 22に更新(commit 6cac6e7)。"
             }
           ]
         },
