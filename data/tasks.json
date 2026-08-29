@@ -3189,6 +3189,10 @@
         {
           "date": "2026-08-29",
           "summary": "worker-roomでの実機検証では『Drive閲覧での承認待ち停止』自体が再現せず、GAS化案の効果も検証できなかった(既存Drive MCP読み取りは無条件成功)。調査の過程で見つかった別原因(GAS Web Appへのアクセスがegressポリシーでブロックされる問題)はPTD-051として分離した。本タスクの真因(ユーザーが実際に遭遇した停止の再現条件)は依然未特定のまま、ユーザーからの情報提供待ち。"
+        },
+        {
+          "date": "2026-08-29",
+          "summary": "PTD-046作業中に新しい再現条件をユーザーから報告された: manager-roomがservicenow-sub-agent worker-roomへ指示を中継しようとcreate_trigger(およびget_session)を呼ぶたびに、実行される代わりに『MCP tool call requires approval』というエラーが即時返る。ユーザー画面には対応する承認ポップアップ/確認画面は出ておらず(ユーザー自身が確認済み)、そのため人間が承認ボタンを押すことでも解消できない=再試行では直せない種類の詰まりだと判明した。CL-006(dormant worker-roomへのcreate_trigger転用パターン)の手順自体が、少なくともこの発生条件下では機能しないケースがあることになる。今回はユーザーがmanager-roomのメッセージ内容を直接worker-room側のチャットに手動で貼り付けて中継することで回避したが、これは人手を介する分だけCL-006の狙い(自動化された配信)を損なう回避策であり、根本原因(権限モードの設定なのか、ツール呼び出し経路の不具合なのか)は未特定のまま。次に同様の中継が必要になった際に再現するか、get_session等の他のMCPツールでも同様の即時approval要求が起きるかを含めて、引き続きユーザーからの追加情報提供待ち。"
         }
       ]
     },
@@ -3275,8 +3279,8 @@
           "content": [
             "README.md「セットアップ手順 2.」記載の通り、System Web Services > REST Messageから3レコード(いずれも認証不要・GET)を作成する。2026-08-29以降は手作業に加え、GitHub Actionsワークフローによる自動作成も選べる。"
           ],
-          "manualSetup": "残っている手作業は3点のみ: (1) ServiceNow PDIのSystem OAuth > Application RegistryでOAuth 2.0(Client Credentials grant)アプリケーションを作成しClient ID/Secretを発行、Client Credentials grant typeの有効化と統合用ユーザーの割り当てを行う、(2) servicenow-sub-agentリポジトリのGitHub Secretsに SN_CLIENT_ID / SN_CLIENT_SECRET を登録する、(3) Actionsタブから「ServiceNow REST Messageセットアップ(PTD-048)」をworkflow_dispatchで実行する(dry_run=trueでログ確認→dry_run=falseで実作成)。この3点はいずれもユーザー自身の認証情報操作が必要なため自動化していない(認証情報をチャットやコードに残さない方針のため)。",
-          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。特にブログ3件のURLは、同ワークフローのverify-source-urlsジョブが自動検証する(PTD-050参照)。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0edeで実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。実際のServiceNow環境に対する実行はまだ行われていない(OAuth認証情報の登録待ち)。",
+          "manualSetup": "2026-08-29時点でOAuthアプリ作成・GitHub Secrets登録はユーザーが完了済み(manager-room経由)。残っているのはActionsタブから「ServiceNow REST Messageセットアップ(PTD-048)」をworkflow_dispatchで実行するのみ: まずdry_run=true(初期値)で実行しログを確認、問題なければdry_run=falseで再実行して実作成する。",
+          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。特にブログ3件のURLは、同ワークフローのverify-source-urlsジョブが自動検証する(PTD-050参照)。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede→2e80131で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。実際のServiceNow環境に対する実行はまだ行われていない(ワークフロー未実行)。",
           "checkHistory": [
             {
               "date": "2026-08-29",
@@ -3285,6 +3289,10 @@
             {
               "date": "2026-08-29",
               "summary": "ユーザーが案A(GitHub Actionsワークフロー内でServiceNow API呼び出しを完結)を選択したことを受け、servicenow/scripts/setup_rest_messages.mjs・verify_source_urls.mjs・.github/workflows/servicenow-setup.ymlを実装。モックHTTPサーバーでOAuthトークン取得・冪等な新規作成・再実行時のスキップ・DRY_RUNモード・認証情報未設定時のエラー終了の5パターンをローカル検証済み(実際のServiceNow PDIに対する疎通・作成はOAuthアプリ未登録のため未実施)。commit c1c0edeでpush済み。残作業はユーザーによるOAuthアプリ作成とGitHub Secrets登録のみ。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "worker-roomへのメッセージ配信でMCPツール(create_trigger等)が承認待ちのまま進まない問題が発生し、manager-roomからの追加指示をユーザーが手動でチャットに貼り付けて中継する形で伝達された(この到達性問題自体は別途調査が必要、concept-log.jsonのCL-006と類似する可能性があるが未確認)。中継内容は2点: (1)OAuthアプリは既にNew Inbound Integration Experience経由で作成済み(Client ID: 012c7050...)のため新規作成不要と確認、/oauth_token.doはどちらのUIで作成したアプリでも共通のトークン取得エンドポイントであることをWeb検索で裏取りし問題ないと回答。(2)GitHub Actions Secretsが SERVICENOW_INSTANCE_URL/SERVICENOW_CLIENT_ID/SERVICENOW_CLIENT_SECRET という名前で既に登録済みだったため、実装側(ワークフローYAML)をその名前に合わせて修正(SN_CLIENT_ID/SN_CLIENT_SECRETという別名を追加登録させることはしなかった)。インスタンスURLがホスト名/完全URLどちらの形式で登録されていても動くよう正規化処理も追加。commit 2e80131でpush済み。これで残作業はワークフローの実行のみになった。"
             }
           ]
         },
