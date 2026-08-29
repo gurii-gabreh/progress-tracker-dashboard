@@ -9,7 +9,8 @@
     "usage-tracker",
     "Knowledge-Dashboard",
     "study-app",
-    "Study-Schedule"
+    "Study-Schedule",
+    "servicenow-sub-agent"
   ],
   "tasks": [
     {
@@ -3183,6 +3184,17 @@
       "updated": "2026-08-29",
       "note": "2026-08-29、ユーザーから「別の作業ルームに依頼すると承認を求められて止まる。Driveを見る等の部分で止まる認識でよいか。処理作成は止まらない認識。Driveを見るときだけ事前にGASで処理を作り自動で動かせるようにすれば、承認を求められず止まらずに動くのではないか」と相談・タスク化依頼あり。\n\n2026-08-29追記: 議論の中で「承認待ち停止はサブエージェント化しても解決しない(呼び出し元と同じ許可モードを引き継ぐため)」ことを確認し、CLAUDE.mdコア規則ルール18として明文化(サブエージェントは並列可能な軽微作業向け、大きな実装は従来通りworker-room)。また「worker-room側の状況を把握できないのでは」という懸念に対し、manager-room側からget_sessionでいつでも状態確認できることを説明し、これを定期的に行う運用も承認を得た。実際の調査・実装をworker-room(session_012kTdgM1PApMPsJC8N4ew95)へ依頼することも承認を得たため、依頼済み。",
       "detail": "【回答(暫定)】Claude Codeは許可モードに応じて、まだ許可されていないツール呼び出し(新規の外部ドメインへのWebFetch等)のたびに人間の承認を求めて処理を一時停止する仕組みがある。Google Drive/スプレッドシートの中身をURL経由で読みに行く操作はこれに該当しやすく、逆にリポジトリ内でのファイル作成・編集は多くの許可モードで事前許可済みのため止まりにくい、というユーザーの理解は仕組み上妥当と考えられる。\n\nGASでDrive/シートの読み取りをWebアプリ化し、作業ルームはそのWebアプリのURLをWebFetchで叩くだけにする、という案は方向性として有効な可能性が高い(GAS側でのGoogleアカウント認可はデプロイ時に一度行うだけで済み、Claude Code側からは単なるHTTPS呼び出しに変わるため)。ただし以下は未検証・不明点として残っている。\n  1. Claude Codeの権限キャッチ(一度許可したら次回以降聞かれない設定)が、URL単位/ドメイン単位のどちらでどう効くのか未確認。GASのWebアプリURL(script.google.com/macros/...)を「常に許可」にできれば有効かは実機で試すまで確定できない。\n  2. 承認待ちのまま長時間放置された場合にworker-room側のコンテナが回収されるかどうかも未確認。回収された場合に途中状態を引き継いで再開できるかも不明。\n  3. 費用はGAS自体は無料(ルール9の制約に適合)。\n\n【依頼内容(worker-room宛)】\n  a. 実際にどのツール呼び出しで承認が求められているか実ログで確認する\n  b. GAS Web App化を試験実装し、承認プロンプトが本当に出なくなるか検証する\n  c. 上記2の「コンテナ回収」疑問点も分かる範囲で調査する\nmanager-room側は、依頼後にget_sessionで定期的にworker-roomの状態(session_status/connection_status/post_turn_summaryのneeds_action欄)を確認し、承認待ちのまま放置されていないかをチェックする運用とする。",
+      "output": ""
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-046",
+      "task": "ServiceNow PDIを使った5観点自動リサーチパイプラインの新規構築",
+      "priority": "中",
+      "status": "依頼中",
+      "updated": "2026-08-29",
+      "note": "2026-08-29、ユーザーが無料のServiceNow PDI(Personal Developer Instance)を作成完了。新規リポジトリ名は「servicenow-sub-agent」に確定。既存のai-research-radarには組み込まず、独立した新規リポジトリとして構築する方針。",
+      "detail": "【対象の5観点(ユーザーが継続的に調査していた内容)】\n1. アプリ作成時に活かせる技術、アーキテクチャ的要素やデータ構造、データのやり取り\n2. 最新のAI技術でできること、今後できると思われる技術の動向\n3. 今ある技術を組み合わせるとできる新しいこと\n4. AIが使われている分野や、使われやすいシチュエーション\n5. AIの流行\n\n【依頼内容(worker-room宛)】\n  a. GitHub上に新規リポジトリ「servicenow-sub-agent」(gurii-gabreh配下)を作成する\n  b. ServiceNow PDI側に、上記5観点の調査結果を蓄積する単一テーブルを設計する(列構成: 観点分類, タイトル, 要約, 出典URL, 取得日時 等)\n  c. 無料の情報源(arXiv API/RSS、Hacker News Algolia API、Anthropic/OpenAI/Hugging Face公式ブログRSS等、既にmanager-room側で調査済みの無料APIリスト)からScheduled Job + REST Messageで定期取得する仕組みをServiceNow側に構築する\n  d. 費用は完全無料であること(CLAUDE.mdルール9)。ServiceNow PDI自体は無料だが、開発・テスト目的限定というServiceNowのToS制約、および90日以上インスタンスが古い状態+10日ログインなしで自動回収される制約がある点に注意して設計する\n  e. 実装内容・設計判断はservicenow-sub-agentリポジトリのREADME等に記録し、意味のある実装判断(DB設計・AI/LLM関連等)はprogress-tracker-dashboardのdata/concept-log.jsonにも記録する(CLAUDE.mdコア規則の指示通り)\nmanager-room(session_011TMAanapvZ8wAn5kTPyR3w)側では進捗をtasks.json経由で把握する。",
       "output": ""
     }
   ]

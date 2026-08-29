@@ -31,6 +31,7 @@ TARGETS = {
     "gurii-gabreh/ai-research-radar": "CROSS_REPO_PAT",
     "gurii-gabreh/Knowledge-Dashboard": "CROSS_REPO_PAT",
     "gurii-gabreh/study-app": "CROSS_REPO_PAT",
+    "gurii-gabreh/servicenow-sub-agent": "CROSS_REPO_PAT",
 }
 
 
