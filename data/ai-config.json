@@ -13,6 +13,14 @@
         "休止中(IDLE)の既存作業ルームへ追加の指示を出すときは、通常のセッション間メッセージ送信では届かないことがあるため、create_trigger+fire_triggerでセッションを起こしてから届ける(2026-08-29追加。詳細はaiのorchestration.dormantWorkerRoomWakeup参照)"
       ]
     },
+    "consultationFormat": {
+      "title": "🗣 相談の出し方",
+      "overview": "ユーザーへ相談(【相談〇〇〇】)を持ちかけるときの型についてのルールです。",
+      "points": [
+        "必ず経緯(過去はどうだったか→今どうなっているか→これからどうしたいか)を明記した上で、何をしたいかを相談する",
+        "その時点で認識している懸念点も必ず添える(2026-08-29追加、ユーザー指摘)"
+      ]
+    },
     "aiDirectory": {
       "title": "🔍 AIディレクトリ",
       "overview": "新しいタスクにどのAIツールを使うか迷ったときに参照する情報です。外部のAIツール一覧スプレッドシートを基準に候補を探し、その中でも特に信頼して使う候補(第二意見チェック用など)をここに記録しています。",
@@ -66,12 +74,16 @@
           "role": "worker-room",
           "responsibility": "個別リポジトリ/タスクの実装。実行の最初にdata/policy.json・data/ai-config.jsonを読み、その内容に従う(README運用ルール32・33)。"
         }
-      ]
+      ],
+      "dormantWorkerRoomWakeup": {
+        "problem": "CCR(Claude Code Remote)の既存作業ルームセッションがIDLE(休止)状態になると、セッション間メッセージ送信(SendMessage等)では宛先として認識されず、追加の指示が届かないことがある(2026-08-29確認)。これはPTD-045(ネットワークegressポリシーによるブロック)とは別原因の、セッション到達性の問題。",
+        "procedure": "1. create_triggerで、対象セッションIDをpersistent_session_idに指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成する。2. fire_triggerでそのtrigger_idを即時発火し、メッセージを配信する。3. 配信後はdelete_triggerでそのtriggerを片付ける(使い捨てのため放置しない)。",
+        "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。"
+      }
     },
-    "dormantWorkerRoomWakeup": {
-      "problem": "CCR(Claude Code Remote)の既存作業ルームセッションがIDLE(休止)状態になると、セッション間メッセージ送信(SendMessage等)では宛先として認識されず、追加の指示が届かないことがある(2026-08-29確認)。これはPTD-045(ネットワークegressポリシーによるブロック)とは別原因の、セッション到達性の問題。",
-      "procedure": "1. create_triggerで、対象セッションIDをpersistent_session_idに指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成する。2. fire_triggerでそのtrigger_idを即時発火し、メッセージを配信する。3. 配信後はdelete_triggerでそのtriggerを片付ける(使い捨てのため放置しない)。",
-      "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。"
+    "consultationFormat": {
+      "rule": "manager-room・作業ルーム問わず、ユーザーへ【相談】を持ちかける際は、経緯(過去にどうだったか→現在どうなっているか→これからどうしたいか)を明記した上で、何をしたいかを相談し、その時点で認識している懸念点も必ず添えること。",
+      "reason": "経緯の共有がないまま結論や選択肢だけを提示すると、ユーザーが過去の文脈を思い出せず判断できないため(2026-08-29、ユーザー指摘により追加)。"
     },
     "aiDirectory": {
       "sourceOfTruth": {

@@ -3178,17 +3178,51 @@
     {
       "repo": "progress-tracker-dashboard",
       "id": "PTD-045",
-      "task": "作業ルームへの依頼時にGoogle Drive等の閲覧で承認待ち停止が起きる問題への対策検討(GAS Web App化案)",
+      "task": "作業ルームへの依頼時にGoogle Drive等の閲覧で承認待ち停止が起きる問題の原因特定(未解決)",
       "priority": "中",
       "status": "対応中",
       "updated": "2026-08-29",
-      "note": "2026-08-29、ユーザーから「別の作業ルームに依頼すると承認を求められて止まる。Driveを見る等の部分で止まる認識でよいか。処理作成は止まらない認識。Driveを見るときだけ事前にGASで処理を作り自動で動かせるようにすれば、承認を求められず止まらずに動くのではないか」と相談・タスク化依頼あり。\n\n2026-08-29追記: 議論の中で「承認待ち停止はサブエージェント化しても解決しない(呼び出し元と同じ許可モードを引き継ぐため)」ことを確認し、CLAUDE.mdコア規則ルール18として明文化(サブエージェントは並列可能な軽微作業向け、大きな実装は従来通りworker-room)。また「worker-room側の状況を把握できないのでは」という懸念に対し、manager-room側からget_sessionでいつでも状態確認できることを説明し、これを定期的に行う運用も承認を得た。実際の調査・実装をworker-room(session_012kTdgM1PApMPsJC8N4ew95)へ依頼することも承認を得たため、依頼済み。\n\n2026-08-29 worker-room報告: 実機検証の結果、当セッション環境では「承認待ちでの停止」自体を再現できず(Drive MCP読み取りは無条件成功、GAS Web AppはWebFetchのegressブロックで別の理由により失敗)、『GAS化で承認プロンプトを回避する』という対策仮説の有効性は未確認のまま。ユーザーが実際に遭遇した停止の原因(どの環境・どの操作か)を具体的に教えてもらえると、再現・切り分けを進められる。詳細はdetail/checkHistory参照。",
-      "detail": "【worker-room実施結果(2026-08-29)】実機で2つの読み取り経路を試した。(1) 既存のGAS Web App(gas/Code.gsのdoGet, action=list。dashboard.htmlが既に使っているscript.google.com/macros/.../exec)へWebFetchでアクセス→EGRESS_BLOCKED(このworker-room環境のネットワークegressプロキシがscript.google.comドメイン自体を遮断)で即座に失敗。これは人間の承認待ちで止まる挙動とは別物で、環境のネットワークポリシー(環境作成時にユーザーが選ぶ設定)によるハード遮断であり、承認さえあれば通る類のものではない。つまりGAS Web App化しても、egress許可ドメインにscript.google.comが含まれない環境では同じく失敗する可能性が高い。(2) 既存のGoogle Drive MCPコネクタ(read_file_content、README記載の現行の読み取り経路そのもの)で実装進捗管理シート(SHEET_ID=1679CPPuW...)を直接読み取り→承認待ち・エラーとも発生せず即座に成功(出力が大きすぎるという別の制約はあったが、権限まわりの問題ではない)。→ このworker-roomセッションの環境では、そもそも「Drive閲覧で承認待ちに止まる」現象が再現しなかった(MCP経由の読み取りは無条件に通り、WebFetch経由はGAS化しても環境次第でegressブロックされ得る)。したがって『GAS Web App化すれば承認プロンプトを回避できる』という仮説は、少なくともこの環境では検証不能(そもそも承認待ちが発生していない)。ユーザーが実際に体験した停止が、別のwork-room環境の権限モード設定によるものなのか、egressポリシー設定によるものなのか、別の原因なのかは未特定。また項目3(承認待ち放置時のコンテナ回収挙動)は、このセッションから内省的に確認する手段が無く未検証。詳細はcheckHistory参照。",
+      "note": "2026-08-29、ユーザーから「別の作業ルームに依頼すると承認を求められて止まる。Driveを見る等の部分で止まる認識でよいか。処理作成は止まらない認識。Driveを見るときだけ事前にGASで処理を作り自動で動かせるようにすれば、承認を求められず止まらずに動くのではないか」と相談・タスク化依頼あり。\n\n2026-08-29追記: 議論の中で「承認待ち停止はサブエージェント化しても解決しない(呼び出し元と同じ許可モードを引き継ぐため)」ことを確認し、CLAUDE.mdコア規則ルール18として明文化(サブエージェントは並列可能な軽微作業向け、大きな実装は従来通りworker-room)。また「worker-room側の状況を把握できないのでは」という懸念に対し、manager-room側からget_sessionでいつでも状態確認できることを説明し、これを定期的に行う運用も承認を得た。実際の調査・実装をworker-room(session_012kTdgM1PApMPsJC8N4ew95)へ依頼することも承認を得たため、依頼済み。\n\n2026-08-29 worker-room報告: 実機検証の結果、当セッション環境では「承認待ちでの停止」自体を再現できなかった(Drive MCP読み取りは無条件成功)。調査の過程で見つかった別原因の問題(GAS Web App=script.google.comへのWebFetchがegressポリシーでブロックされる問題)はPTD-051として分離・独立起票した。本タスクは「ユーザーが実際に遭遇した承認待ち停止」そのものの真因特定に絞り、依然未解決のまま残す(2026-08-29、混在していた記録を整理・分割)。",
+      "detail": "ユーザーが実際に体験した「承認待ちでの停止」がどの環境・どの操作で発生したのか、具体的な再現条件がまだ判明していない。worker-room(session_012kTdgM1PApMPsJC8N4ew95)の環境では、既存のGoogle Drive MCPコネクタ(read_file_content、README記載の現行の読み取り経路)での読み取りは承認待ち・エラーとも発生せず即座に成功しており、少なくともその環境ではこの現象は再現しなかった(出力が大きすぎるという別の制約はあったが、権限・承認まわりの問題ではない)。ユーザーが実際に遭遇した停止が、どの作業ルーム・どの操作(Drive閲覧以外の可能性も含む)で発生したのか、具体的な情報提供を待っている。",
       "output": "",
       "checkHistory": [
         {
           "date": "2026-08-29",
-          "summary": "worker-roomにて実機検証。(a) 既存GAS Web App(script.google.com)へのWebFetchはこの環境のegressプロキシにより即時ブロック(EGRESS_BLOCKED)。人間承認待ちではなくネットワークポリシーによるハード遮断であり、承認プロンプトの回避策(GAS化)では解決しない種類の問題だと判明。(b) 既存のGoogle Drive MCPコネクタ(read_file_content)での同スプレッドシートの直接読み取りは承認待ち・エラーなく即座に成功。このセッションでは『Drive閲覧で承認待ちに止まる』現象自体が再現せず、GAS化の効果を実地検証できなかった。項目3(コンテナ回収)は内省手段が無く未検証のまま。『承認プロンプトを発生させない設計にする』というアプローチ自体は、目的(人が不在でも自動実行を止めない)は理解できるが、この環境で実際に確認できた失敗はむしろネットワークegressポリシー起因であり、対策の方向性が変わる可能性がある旨をmanager-room/ユーザーへ報告する。"
+          "summary": "worker-roomでの実機検証では『Drive閲覧での承認待ち停止』自体が再現せず、GAS化案の効果も検証できなかった(既存Drive MCP読み取りは無条件成功)。調査の過程で見つかった別原因(GAS Web Appへのアクセスがegressポリシーでブロックされる問題)はPTD-051として分離した。本タスクの真因(ユーザーが実際に遭遇した停止の再現条件)は依然未特定のまま、ユーザーからの情報提供待ち。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-051",
+      "task": "作業ルーム環境のネットワークegressポリシーによる特定ドメインブロック問題への対応",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-29",
+      "note": "PTD-045(承認待ち停止問題)の調査中に判明した、別原因の問題として2026-08-29に分離・独立起票。worker-room(session_012kTdgM1PApMPsJC8N4ew95)が既存GAS Web App(gas/Code.gsのdoGet、script.google.com/macros/.../exec)へWebFetchでアクセスした際、EGRESS_BLOCKEDで即座に失敗した。これは人間の承認待ちではなく、Claude Codeクラウド環境自体のネットワークegressポリシー(許可リストにないドメインへの通信のハードブロック)が原因と判明した。",
+      "detail": "manager-room自身が`https://dev395932.service-now.com`へのWebFetchで同様のEGRESS_BLOCKEDを実測確認した。対応として、claude.ai/codeの環境設定(環境ID: env_018RUEaP8exW47iEZ2fvHrTx、名前「Default」)でネットワークアクセスを「カスタム」に変更し、`dev395932.service-now.com`を許可ドメインに追加した(ユーザーがスクリーンショットで設定内容を確認済み)。ただしこの変更は新しいセッションにのみ反映されるため、新規worker-room(session_01TLDaksWuu1pJC5P2groimM)を作成し、実際に`dev395932.service-now.com`への接続に成功したことを確認済み(2026-08-29)。今後、別のドメインへアクセスする必要が生じた場合も、同様に環境設定のカスタム許可リストへ追加が必要になる。",
+      "output": "",
+      "checkHistory": [
+        {
+          "date": "2026-08-29",
+          "summary": "PTD-045の調査中に発見。環境のネットワークアクセス設定をカスタムにしdev395932.service-now.comを許可リストに追加、新規worker-roomで接続確認まで完了したため解決済みとした。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-052",
+      "task": "休止中(IDLE)の既存worker-roomセッションへ追加指示が届かない問題への対応",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-29",
+      "note": "2026-08-29、PTD-051(egress問題)対応後に作成した新規worker-room(session_01TLDaksWuu1pJC5P2groimM)へ、認証方式(OAuth 2.0)決定後の追加指示を送ろうとしたところ、セッション間メッセージ送信(SendMessage)が『セッションが到達不可』を返し続け、指示が届かなかった。PTD-045・PTD-051とは別原因(セッション間メッセージ到達性の問題)として分離・独立起票。",
+      "detail": "原因はネットワークegressでも人の承認待ちでもなく、CCR(Claude Code Remote)の既存セッションがIDLE(休止)状態になると、通常のセッション間メッセージ送信(SendMessage)では宛先として認識されないという到達性の問題だった。対応策として、`create_trigger`(`persistent_session_id`にそのセッションIDを指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成)でメッセージを積み、`fire_trigger`でそのtrigger_idを即時発火して配信し、配信後は`delete_trigger`で片付ける、という手順で解決した。実際にこの手順で指示メッセージがworker-room(session_01TLDaksWuu1pJC5P2groimM)へ届き、動作(セッションの再開)を確認済み。この手順はCLAUDE.mdコア規則ルール19、およびdata/ai-config.jsonの`ai.orchestration.dormantWorkerRoomWakeup`に標準手順として記録済み。新規に`create_session`で作るセッションへの初回プロンプトはこの問題の対象外。",
+      "output": "",
+      "checkHistory": [
+        {
+          "date": "2026-08-29",
+          "summary": "create_trigger(persistent_session_id指定)+fire_trigger+delete_triggerの手順で、休止中worker-roomへの指示配信に成功。今後の標準手順としてclaude-core-rules.md(ルール19)・ai-config.jsonに記録した。"
         }
       ]
     },
@@ -3200,7 +3234,7 @@
       "status": "対応中",
       "updated": "2026-08-29",
       "note": "2026-08-29、ユーザーが無料のServiceNow PDI(Personal Developer Instance)を作成完了。新規リポジトリ名は「servicenow-sub-agent」に確定。既存のai-research-radarには組み込まず、独立した新規リポジトリとして構築する方針。",
-      "detail": "【worker-room実施結果(2026-08-29)】servicenow-sub-agentリポジトリに以下を実装しコミット・push済み(commit 28da0f9)。(1) CLAUDE.mdへCORE-RULESマーカーを設置(sync_claude_md.pyのTARGETSには既に登録済みのため、次回data/claude-core-rules.md更新時から自動同期される)。(2) 単一テーブル(u_ai_research_item)+category列という設計(正規化分割ではなく横断的な分類軸として1テーブルにまとめた。判断根拠はdata/concept-log.jsonのCL-005参照)。(3) arXiv/Hacker News/3ブログ向けのREST Message構成案と、実際にScheduled Jobへ貼り付けるスクリプト本体(servicenow/scheduled_job_ai_research_fetch.js)。ServiceNow側の認証情報は一切含めていない。\n\n【重要な制約】このworker-roomセッションはネットワークegressポリシーによりexport.arxiv.org・hn.algolia.com・www.anthropic.com等へ実地アクセスできず(PTD-045で判明した制約と同根)、情報源のAPI/RSS URL・レスポンス形式を実機検証できていない。arXiv APIとHacker News Algolia APIは長年安定した既知の公開APIのため形式には比較的自信があるが、3つのブログRSSのURLは変更されている可能性がある。またXML解析はServiceNowのXMLDocument2 APIの挙動を確認できなかったため、あえて正規表現ベースの単純な抽出方式にした(README「既知の制約」に詳細)。\n\n【ServiceNow側の実機セットアップ・検証(人の手作業が必要)】テーブル作成・REST Message作成・Scheduled Job作成・RSS URL検証の4点は、いずれもServiceNowのUI操作が必要で自動化できないため、PTD-047〜050としてsubtask化した(運用ルール7: 手動設定が2件以上あるためmanualSetupへ1文で詰め込まず分割)。",
+      "detail": "【worker-room実施結果(2026-08-29)】servicenow-sub-agentリポジトリに以下を実装しコミット・push済み(commit 28da0f9)。(1) CLAUDE.mdへCORE-RULESマーカーを設置(sync_claude_md.pyのTARGETSには既に登録済みのため、次回data/claude-core-rules.md更新時から自動同期される)。(2) 単一テーブル(u_ai_research_item)+category列という設計(正規化分割ではなく横断的な分類軸として1テーブルにまとめた。判断根拠はdata/concept-log.jsonのCL-005参照)。(3) arXiv/Hacker News/3ブログ向けのREST Message構成案と、実際にScheduled Jobへ貼り付けるスクリプト本体(servicenow/scheduled_job_ai_research_fetch.js)。ServiceNow側の認証情報は一切含めていない。\n\n【重要な制約】このworker-roomセッションはネットワークegressポリシーによりexport.arxiv.org・hn.algolia.com・www.anthropic.com等へ実地アクセスできず(PTD-051で判明した制約と同根)、情報源のAPI/RSS URL・レスポンス形式を実機検証できていない。arXiv APIとHacker News Algolia APIは長年安定した既知の公開APIのため形式には比較的自信があるが、3つのブログRSSのURLは変更されている可能性がある。またXML解析はServiceNowのXMLDocument2 APIの挙動を確認できなかったため、あえて正規表現ベースの単純な抽出方式にした(README「既知の制約」に詳細)。\n\n【ServiceNow側の実機セットアップ・検証(人の手作業が必要)】テーブル作成・REST Message作成・Scheduled Job作成・RSS URL検証の4点は、いずれもServiceNowのUI操作が必要で自動化できないため、PTD-047〜050としてsubtask化した(運用ルール7: 手動設定が2件以上あるためmanualSetupへ1文で詰め込まず分割)。",
       "output": "",
       "content": [
         "ServiceNow PDI(dev395932.service-now.com)上に、AI研究5観点を無料の公開API/RSSから日次収集するパイプラインを構築する",
@@ -3280,7 +3314,7 @@
       "checkHistory": [
         {
           "date": "2026-08-29",
-          "summary": "worker-roomにてservicenow-sub-agentリポジトリの初期スキャフォールドを実装・commit・push(CLAUDE.mdのcore-rulesマーカー設置、README.mdでのテーブル/REST Message/Scheduled Job設計とセットアップ手順、servicenow/scheduled_job_ai_research_fetch.jsの実装)。DB設計判断はconcept-log.jsonのCL-005に記録。ネットワークegress制約(PTD-045と同根)により情報源URL・レスポンス形式を実機検証できなかったため、ServiceNow側の実際のセットアップ・検証をPTD-047〜050として切り出した。"
+          "summary": "worker-roomにてservicenow-sub-agentリポジトリの初期スキャフォールドを実装・commit・push(CLAUDE.mdのcore-rulesマーカー設置、README.mdでのテーブル/REST Message/Scheduled Job設計とセットアップ手順、servicenow/scheduled_job_ai_research_fetch.jsの実装)。DB設計判断はconcept-log.jsonのCL-005に記録。ネットワークegress制約(PTD-051と同根)により情報源URL・レスポンス形式を実機検証できなかったため、ServiceNow側の実際のセットアップ・検証をPTD-047〜050として切り出した。"
         }
       ]
     }
