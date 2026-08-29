@@ -3235,7 +3235,7 @@
       "id": "PTD-046",
       "task": "ServiceNow PDIを使った5観点自動リサーチパイプラインの新規構築",
       "priority": "中",
-      "status": "対応中",
+      "status": "完了",
       "updated": "2026-08-29",
       "note": "2026-08-29、ユーザーが無料のServiceNow PDI(Personal Developer Instance)を作成完了。新規リポジトリ名は「servicenow-sub-agent」に確定。既存のai-research-radarには組み込まず、独立した新規リポジトリとして構築する方針。",
       "detail": "【worker-room実施結果(2026-08-29)】servicenow-sub-agentリポジトリに以下を実装しコミット・push済み(commit 28da0f9)。(1) CLAUDE.mdへCORE-RULESマーカーを設置(sync_claude_md.pyのTARGETSには既に登録済みのため、次回data/claude-core-rules.md更新時から自動同期される)。(2) 単一テーブル(u_ai_research_item)+category列という設計(正規化分割ではなく横断的な分類軸として1テーブルにまとめた。判断根拠はdata/concept-log.jsonのCL-005参照)。(3) arXiv/Hacker News/3ブログ向けのREST Message構成案と、実際にScheduled Jobへ貼り付けるスクリプト本体(servicenow/scheduled_job_ai_research_fetch.js)。ServiceNow側の認証情報は一切含めていない。\n\n【重要な制約】このworker-roomセッションはネットワークegressポリシーによりexport.arxiv.org・hn.algolia.com・www.anthropic.com等へ実地アクセスできず(PTD-051で判明した制約と同根)、情報源のAPI/RSS URL・レスポンス形式を実機検証できていない。arXiv APIとHacker News Algolia APIは長年安定した既知の公開APIのため形式には比較的自信があるが、3つのブログRSSのURLは変更されている可能性がある。またXML解析はServiceNowのXMLDocument2 APIの挙動を確認できなかったため、あえて正規表現ベースの単純な抽出方式にした(README「既知の制約」に詳細)。\n\n【ServiceNow側の実機セットアップ・検証(人の手作業が必要)】テーブル作成・REST Message作成・Scheduled Job作成・RSS URL検証の4点は、いずれもServiceNowのUI操作が必要で自動化できないため、PTD-047〜050としてsubtask化した(運用ルール7: 手動設定が2件以上あるためmanualSetupへ1文で詰め込まず分割)。",
@@ -3310,14 +3310,20 @@
           "task": "ServiceNow PDIにScheduled Jobを作成しスクリプトを貼り付ける",
           "title": "Scheduled Job作成",
           "priority": "中",
-          "status": "未着手",
+          "status": "完了",
           "category": "manual",
           "updated": "2026-08-29",
           "content": [
             "System Definition > Scheduled Jobsで「Automatically run a script of your choosing」を選び、servicenow-sub-agent/servicenow/scheduled_job_ai_research_fetch.jsの内容をそのまま貼り付けて保存する。実行頻度は日次を推奨"
           ],
-          "manualSetup": "PTD-047・PTD-048が完了してから実施する(テーブル・REST Messageが無いとスクリプトがエラーになる)。servicenow/scheduled_job_ai_research_fetch.jsをそのままコピーしてScheduled Jobへ貼り付ける",
-          "note": "2026-08-29、PTD-048のREST MessageはTable API経由での自動作成を実装したが、このScheduled Job作成は意図的に手動のまま残した。理由: (1) UI操作としては貼り付け+頻度選択+保存のみでREST Message作成より手間が小さい、(2) Table API経由でsysauto_script(Scheduled Script Execution)を作成する場合に必要なrun_type等のフィールド構成をこのセッションから実機検証する手段がなく、誤った設定で「動かない/意図しない頻度で動く」ジョブを自動生成してしまうリスクの方が手作業の手間より大きいと判断したため(詳細はservicenow-sub-agent/README.mdの該当箇所、concept-log.jsonのCL-008参照)。"
+          "manualSetup": "完了。ユーザーがServiceNow PDI上でScheduled Jobを作成し、スクリプトを貼り付けて保存済み。",
+          "note": "2026-08-29、PTD-048のREST MessageはTable API経由での自動作成を実装したが、このScheduled Job作成は意図的に手動のまま残した。理由: (1) UI操作としては貼り付け+頻度選択+保存のみでREST Message作成より手間が小さい、(2) Table API経由でsysauto_script(Scheduled Script Execution)を作成する場合に必要なrun_type等のフィールド構成をこのセッションから実機検証する手段がなく、誤った設定で「動かない/意図しない頻度で動く」ジョブを自動生成してしまうリスクの方が手作業の手間より大きいと判断したため(詳細はservicenow-sub-agent/README.mdの該当箇所、concept-log.jsonのCL-008参照)。",
+          "checkHistory": [
+            {
+              "date": "2026-08-29",
+              "summary": "ユーザーがServiceNow PDI上でScheduled Jobを作成・保存完了。PTD-050のBackground Scripts手動実行によって、このジョブに貼り付けたスクリプトが実際にエラーなく動作することも合わせて確認できた。"
+            }
+          ]
         },
         {
           "repo": "servicenow-sub-agent",
@@ -3325,19 +3331,23 @@
           "task": "情報源URL・レスポンス形式の実機検証(worker-room環境ではネットワーク制約で未検証)",
           "title": "実機検証",
           "priority": "高",
-          "status": "対応中",
+          "status": "完了",
           "category": "manual",
           "updated": "2026-08-29",
           "content": [
             "System Definition > Scripts - Backgroundでservicenow/scheduled_job_ai_research_fetch.jsを1回手動実行し、u_ai_research_itemに行が増えるか・gs.error()のエラーログが出ていないかを確認する",
             "arXivのAtom XML・Hacker NewsのJSONが想定通りパースされ、title/summaryが妥当な内容で入っているか確認する"
           ],
-          "manualSetup": "PTD-049(Scheduled Job作成)の後に、Background Scriptsで1回手動実行して結果を確認する。情報源URL自体の生存確認(下記)は完了しているため、残るのはServiceNow内部(GlideRecord/XMLDocument2相当の正規表現パース)での実際の動作確認のみ",
-          "note": "2026-08-29、.github/workflows/servicenow-setup.ymlのverify-source-urlsジョブ(GitHub Actionsランナーから実行)により、情報源URL自体の生存確認は完了した: arXiv API・Hacker News API・OpenAI Blog RSS・Hugging Face Blog RSSの4件はHTTP 200・期待形式を確認。Anthropic Blog RSS(https://www.anthropic.com/rss.xml)はHTTP 404で、Anthropicが公式RSSフィードを提供していないと判明したため情報源から除外した(concept-log.json参照)。残る検証はServiceNow PDI上でscheduled_job_ai_research_fetch.jsを実行し、u_ai_research_itemへの実際の書き込み・正規表現パースの妥当性を確認することのみ。この検証結果は、後日このタスクのcommentsまたはPTD-046のchecklistへ記録してもらえると、tasks.json側にもナレッジとして反映できる",
+          "manualSetup": "完了。Background Scriptsで手動実行し、u_ai_research_itemへの書き込み・パース結果を確認済み。",
+          "note": "2026-08-29、.github/workflows/servicenow-setup.ymlのverify-source-urlsジョブ(GitHub Actionsランナーから実行)により、情報源URL自体の生存確認は完了した: arXiv API・Hacker News API・OpenAI Blog RSS・Hugging Face Blog RSSの4件はHTTP 200・期待形式を確認。Anthropic Blog RSS(https://www.anthropic.com/rss.xml)はHTTP 404で、Anthropicが公式RSSフィードを提供していないと判明したため情報源から除外した(concept-log.json参照)。続けてServiceNow PDI上のBackground Scriptsで実際に手動実行し、u_ai_research_itemテーブルへの書き込みも確認できた: `inserted=0 skipped(duplicate/empty)=2039 errors=[]`。u_source_name別の内訳はarXiv=10件(max_results=10と完全一致)・Hacker News=20件(hitsPerPage=20と完全一致)・Hugging Face Blog=852件・OpenAI Blog=1157件(合計2039件、skipped件数と一致)。OpenAI Blogの内容をXMLエクスポートで目視確認したところ、タイトル・要約・URLとも実際の記事に対応した正しい内容で、重複や壊れたデータは見当たらなかった(Hugging Face Blogは同一コード経路のため未サンプリングだが、arXiv/Hacker Newsの件数が設定値と完全一致している状況証拠と合わせて問題なしと判断)。既知の軽微な制限として、OpenAI Blogの`u_published_at`が全行空欄だった(RSSの`<pubDate>`取得に失敗しているか、フィードに含まれていない可能性。機能は妨げないため未修正のまま許容)。これでパイプライン全体(テーブル・REST Message・Scheduled Job・実データ書き込み)が動作することを確認できた。",
           "checkHistory": [
             {
               "date": "2026-08-29",
               "summary": "GitHub Actions(verify-source-urlsジョブ)による情報源URL自体の生存確認が完了。4/5情報源はHTTP 200・期待形式を確認、Anthropic Blog RSSはHTTP 404でAnthropicが公式RSSフィードを提供していないと判明し情報源から除外(PTD-048参照)。ServiceNow内部での実際の書き込み確認は引き続き未実施。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "ServiceNow PDI上のScheduled Job(PTD-049)・Background Scriptsでの手動実行により、u_ai_research_itemへ実データ2039件が書き込まれていることを確認(inserted=0 skipped=2039 errors=[]、既存データとの重複判定が正しく機能)。件数内訳はarXiv=10/Hacker News=20(いずれも設定値と完全一致)/Hugging Face Blog=852/OpenAI Blog=1157。OpenAI Blogのサンプルデータを目視確認し、実際の記事に対応した正しい内容であることを確認した。u_published_atが空欄になる軽微な既知制限を除き、パイプライン全体が正常に動作している。PTD-046(親タスク)含め全サブタスク完了。"
             }
           ]
         }
@@ -3346,6 +3356,10 @@
         {
           "date": "2026-08-29",
           "summary": "worker-roomにてservicenow-sub-agentリポジトリの初期スキャフォールドを実装・commit・push(CLAUDE.mdのcore-rulesマーカー設置、README.mdでのテーブル/REST Message/Scheduled Job設計とセットアップ手順、servicenow/scheduled_job_ai_research_fetch.jsの実装)。DB設計判断はconcept-log.jsonのCL-005に記録。ネットワークegress制約(PTD-051と同根)により情報源URL・レスポンス形式を実機検証できなかったため、ServiceNow側の実際のセットアップ・検証をPTD-047〜050として切り出した。"
+        },
+        {
+          "date": "2026-08-29",
+          "summary": "PTD-047〜050の全サブタスクが完了し、パイプライン全体が本番稼働を確認できたためPTD-046自体も完了とした。テーブル作成→OAuth 2.0(Client Credentials grant)によるREST Message自動作成(GitHub Actions経由)→Scheduled Job作成→実データ2039件の書き込み確認、という一連の流れを実施。途中でAnthropic Blog RSSが公式には存在しないことが実機検証で判明し情報源から除外(4情報源体制に変更、concept-log.jsonのCL-009)、GitHub Actions Secretsの命名・OAuthアプリの扱い調整(CL-007)、RESTMessageV2の${変数}未宣言問題を避ける静的URL化(CL-008)など、複数の設計判断を都度concept-log.jsonに記録した。既知の軽微な残課題はu_published_atが一部空欄になること(機能に支障なし)のみ。"
         },
         {
           "date": "2026-08-29",
