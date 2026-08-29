@@ -978,7 +978,9 @@
         </div>
         <div id="ai-config-body"></div>
 
-        <div class="ai-config-section-title" style="margin-top: 18px;">📄 CLAUDE.md 核心ルール(全リポジトリ共通)</div>
+        <div class="ai-config-section-title" style="margin-top: 18px;">🤖 Claudeの基本設定</div>
+
+        <div class="ai-config-section-title" style="margin-top: 12px; font-size: 14px;">📄 CLAUDE.md</div>
         <div class="policy-card">
           <div class="ai-config-toolbar">
             <div class="policy-meta" id="core-rules-meta">読み込み中…</div>
@@ -987,8 +989,23 @@
           </div>
           <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
             全管理対象リポジトリのCLAUDE.mdへGitHub Actionsで自動同期される正本です(data/claude-core-rules.md)。
+            特に重要な指示は、下記のSkills/Superpower側にも重複して明記しておくことで、AIへの指示がより強く(読み飛ばされにくく)なる。
           </div>
           <div id="core-rules-body"></div>
+        </div>
+
+        <div class="ai-config-section-title" style="margin-top: 18px; font-size: 14px;">🛠 Skills / Superpower</div>
+        <div class="policy-card">
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            Claude Codeのプラグイン機能。汎用的なソフトウェア開発の型(計画してから実装する・TDDで進める・完了前に2段階のセルフレビューを行う等)を、
+            セッション開始のたびに強い言葉で確実にリマインドする仕組み(2026-08-28導入、無料・オープンソース)。
+            CLAUDE.mdが「このプロジェクト固有のルール」を担うのに対し、Skills/Superpowerは「どのプロジェクトにも通用する開発の作法」を担う、という役割分担。
+            CLAUDE.md等ユーザー指示の内容がSkills/Superpowerの既定動作より優先される。
+          </div>
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            <strong>運用ルール</strong>: 新しくルーム(セッション)を作成した際は、そのルームでも<code>claude plugin marketplace add obra/superpowers-marketplace</code>
+            → <code>claude plugin install superpowers@superpowers-marketplace -s user -y</code> を実行し、自動でインストールする。
+          </div>
         </div>
       </div>
     </div>
