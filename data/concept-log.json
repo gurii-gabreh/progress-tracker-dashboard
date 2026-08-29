@@ -12,6 +12,13 @@
           "context": "2026-08-12、マネージャールームでdetail欠落のバックフィル作業中にgas/Code.gsのsyncFromGithub()を読んで確認",
           "note": "Routine実行環境からscript.google.comへの直接POST(Push型)がネットワークポリシーでブロックされる制約があるため、逆方向にGAS側(制約を受けない)が時間主導トリガーで定期的にGitHubのdata/tasks.jsonを取得しに行くPull型へ設計を反転して回避している。Push型が塞がれた通信をPull型に反転する、というネットワーク制約への対処パターン。",
           "date": "2026-08-12"
+        },
+        {
+          "id": "CL-006",
+          "concept": "休止中(IDLE)セッションへの到達性問題と、スケジュール実行の仕組みをメッセージ配信に転用する回避パターン",
+          "context": "2026-08-29、manager-roomがCCR(Claude Code Remote)上のservicenow-sub-agent作業ルーム(session_01TLDaksWuu1pJC5P2groimM)へ追加指示を送ろうとした際に発見(PTD-052参照)。",
+          "note": "CCRの既存セッションがIDLE(休止)状態になると、セッション間メッセージ送信(SendMessageツール)では宛先として認識されず、追加の指示が届かないことがある。これはネットワークegressポリシーによる通信ブロック(PTD-051、CL-001と同種の『通信経路が塞がれる』問題)とは別種の制約で、そもそもセッション間の直接メッセージング自体が休止中セッションには届かないというもの。回避策として、`create_trigger`(`persistent_session_id`にそのセッションIDを指定し、cron_expression/run_once_atを指定しない一回限りのRoutineとして指示内容をpromptに積んで作成)でメッセージを予約し、`fire_trigger`でスケジュールを待たず即時発火して配信する、というスケジュール実行の仕組みを『メッセージ配信の代替経路』として転用して解決した。配信後は使い捨てのtriggerを`delete_trigger`で片付ける。CL-001(Push型→Pull型への設計反転)と同様、『本来の用途とは別の既存の仕組みを、通信経路の制約を回避するために転用する』という設計パターンの一種と言える。標準手順としてCLAUDE.mdコア規則ルール19、data/ai-config.jsonの`ai.orchestration.dormantWorkerRoomWakeup`にも記録済み。",
+          "date": "2026-08-29"
         }
       ]
     },
