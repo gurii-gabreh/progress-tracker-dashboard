@@ -38,7 +38,15 @@
     {
       "key": "security",
       "label": "🔒 セキュリティ",
-      "items": []
+      "items": [
+        {
+          "id": "CL-007",
+          "concept": "ServiceNow Table API連携はOAuth 2.0(Client Credentials grant)を採用し、認証情報はGitHub Actions Secretsに保管する方針。ただしSecretsはActionsワークフロー実行中にしか読めないため、利用方式(ワークフロー内でAPI呼出しするか、セッションへ一時提供するか)は別途要確定",
+          "context": "2026-08-29、PTD-046のうちPTD-048(REST Message作成)・PTD-049(Scheduled Job作成)をServiceNowのUI手作業ではなくTable API経由で自動化できないか検討する中、manager-room経由でユーザーから「OAuth 2.0で進める、認証情報はチャット・環境変数ではなくservicenow-sub-agentリポジトリのGitHub Actions Secretsに保管する」との指示を受けた(このセッションが自発的に決めた設計ではない)。",
+          "note": "判断根拠として、Basic認証(生パスワードを都度送る)よりOAuth 2.0の方がトークンの有効期限設定・失効・スコープ制御ができ安全という点は妥当。また認証情報をチャット本文や(コミットされ得る)環境変数ファイルに残さずGitHub Actions Secretsに置くのも、平文が会話ログやリポジトリに残らないという意味で妥当な方針。\n\n一方で実装上の重要な制約に気づいた: GitHub Actions Secretsは「GitHub Actionsのワークフロー実行中にのみ」環境変数として展開される仕組みであり、対話型のClaude Codeセッション(worker-room)がその値を直接読み取ることはできない。そのため、(A)ServiceNow Table APIを呼ぶ処理自体をGitHub Actionsワークフローとして新規に組み、Secretsはそのワークフロー内でのみ使う、(B)このセッションが一度きりの初期セットアップのためにAPIを直接呼ぶ場合は、Secretsとは別の経路(このセッションの環境変数として一時的に提供する等)で認証情報を受け取る必要があり「チャット・環境変数に置かない」という要望と衝突する、という二択が生じる。この選択は設計・運用に直結するため実装を進めず、ユーザーへ確認を出し2026-08-29時点で回答待ち。\n\nあわせて、ServiceNow公式ドキュメント(www.servicenow.com)はこのworker-roomのネットワークegress許可リストに入っておらず(PTD-051で許可されたのはdev395932.service-now.comのみ)EGRESS_BLOCKEDで直接参照できなかったため、Web検索経由でServiceNowコミュニティ/サポートKBの内容を確認して手順を裏取りした(推測や学習時点の記憶だけに頼らない、というCLAUDE.mdルール1の遵守)。OAuth API Endpoint作成はSystem OAuth > Application Registry > New(Zurich以降はNew Inbound Integration Experience > OAuth - Client credentials grant)、Client Credentials grantを使う場合はシステム全体での有効化と統合用ユーザーの明示的な割り当てが必要(未設定だと401 User Not Authenticatedになるケースが報告されている)。",
+          "date": "2026-08-29"
+        }
+      ]
     },
     {
       "key": "ai-llm",
