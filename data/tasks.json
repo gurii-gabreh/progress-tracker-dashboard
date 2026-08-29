@@ -3293,6 +3293,10 @@
             {
               "date": "2026-08-29",
               "summary": "worker-roomへのメッセージ配信でMCPツール(create_trigger等)が承認待ちのまま進まない問題が発生し、manager-roomからの追加指示をユーザーが手動でチャットに貼り付けて中継する形で伝達された(この到達性問題自体は別途調査が必要、concept-log.jsonのCL-006と類似する可能性があるが未確認)。中継内容は2点: (1)OAuthアプリは既にNew Inbound Integration Experience経由で作成済み(Client ID: 012c7050...)のため新規作成不要と確認、/oauth_token.doはどちらのUIで作成したアプリでも共通のトークン取得エンドポイントであることをWeb検索で裏取りし問題ないと回答。(2)GitHub Actions Secretsが SERVICENOW_INSTANCE_URL/SERVICENOW_CLIENT_ID/SERVICENOW_CLIENT_SECRET という名前で既に登録済みだったため、実装側(ワークフローYAML)をその名前に合わせて修正(SN_CLIENT_ID/SN_CLIENT_SECRETという別名を追加登録させることはしなかった)。インスタンスURLがホスト名/完全URLどちらの形式で登録されていても動くよう正規化処理も追加。commit 2e80131でpush済み。これで残作業はワークフローの実行のみになった。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "ユーザーが実際にワークフローを実行。「REST Message自動作成(PTD-048)」ジョブは成功。並行実行の「情報源URLの実地検証(PTD-050関連)」ジョブは失敗し、ログでhttps://www.anthropic.com/rss.xmlがHTTP 404(Next.jsのエラーページ)であることが判明。Web検索で調査した結果、Anthropicは現在公式RSSフィードを提供していないと確認できたため、ユーザーに選択肢(除外/非公式ミラー使用/放置)を提示し「情報源から外す」を選択。setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEからanthropicを削除し、過去の実行で既に作成されてしまっていた場合に備えREMOVED_METHODSによる自動削除(冪等)ロジックも追加、モックテストで削除動作を確認した上でcommit c25fc8fでpush済み。arXiv/Hacker News/OpenAI Blog/Hugging Face Blogの4情報源はこの実行で実際にHTTP 200・期待形式であることを確認済み(PTD-050参照)。なお最初の実行がdry_run=true/falseどちらだったかは未確認のまま(ユーザーへの確認待ち)だが、次回workflow再実行時にREMOVED_METHODSのクリーンアップが冪等に働くため、どちらであっても収束する設計にしてある。"
             }
           ]
         },
@@ -3317,16 +3321,21 @@
           "task": "情報源URL・レスポンス形式の実機検証(worker-room環境ではネットワーク制約で未検証)",
           "title": "実機検証",
           "priority": "高",
-          "status": "未着手",
+          "status": "対応中",
           "category": "manual",
           "updated": "2026-08-29",
           "content": [
             "System Definition > Scripts - Backgroundでservicenow/scheduled_job_ai_research_fetch.jsを1回手動実行し、u_ai_research_itemに行が増えるか・gs.error()のエラーログが出ていないかを確認する",
-            "特にAnthropic/OpenAI/Hugging Faceの3ブログRSSのURL(README.md記載)が404等になっていないか確認し、実際のURLと異なる場合はブラウザで正しいRSS URLを調べてREST Messageのエンドポイントを修正する",
             "arXivのAtom XML・Hacker NewsのJSONが想定通りパースされ、title/summaryが妥当な内容で入っているか確認する"
           ],
-          "manualSetup": "PTD-049(Scheduled Job作成)の後に、Background Scriptsで1回手動実行して結果を確認する。ServiceNow PDI自体は外部への通常のHTTPSアクセスが可能なはずだが、worker-room側では実地確認できていないため、この検証をもって初めてパイプライン全体の動作が確定する",
-          "note": "この検証結果(成功/失敗、修正したURL等)は、後日このタスクのcommentsまたはPTD-046のchecklistへ記録してもらえると、tasks.json側にもナレッジとして反映できる"
+          "manualSetup": "PTD-049(Scheduled Job作成)の後に、Background Scriptsで1回手動実行して結果を確認する。情報源URL自体の生存確認(下記)は完了しているため、残るのはServiceNow内部(GlideRecord/XMLDocument2相当の正規表現パース)での実際の動作確認のみ",
+          "note": "2026-08-29、.github/workflows/servicenow-setup.ymlのverify-source-urlsジョブ(GitHub Actionsランナーから実行)により、情報源URL自体の生存確認は完了した: arXiv API・Hacker News API・OpenAI Blog RSS・Hugging Face Blog RSSの4件はHTTP 200・期待形式を確認。Anthropic Blog RSS(https://www.anthropic.com/rss.xml)はHTTP 404で、Anthropicが公式RSSフィードを提供していないと判明したため情報源から除外した(concept-log.json参照)。残る検証はServiceNow PDI上でscheduled_job_ai_research_fetch.jsを実行し、u_ai_research_itemへの実際の書き込み・正規表現パースの妥当性を確認することのみ。この検証結果は、後日このタスクのcommentsまたはPTD-046のchecklistへ記録してもらえると、tasks.json側にもナレッジとして反映できる",
+          "checkHistory": [
+            {
+              "date": "2026-08-29",
+              "summary": "GitHub Actions(verify-source-urlsジョブ)による情報源URL自体の生存確認が完了。4/5情報源はHTTP 200・期待形式を確認、Anthropic Blog RSSはHTTP 404でAnthropicが公式RSSフィードを提供していないと判明し情報源から除外(PTD-048参照)。ServiceNow内部での実際の書き込み確認は引き続き未実施。"
+            }
+          ]
         }
       ],
       "checkHistory": [
