@@ -3382,6 +3382,27 @@
           "summary": "PTD-051の対応によりこのworker-roomからdev395932.service-now.comへの疎通を実機確認(ログイン画面が正常に返る)。ただし認証情報は未提供のため先へは進めず、manager-room経由でユーザーへ認証方式を確認したところ、OAuth 2.0(Client Credentials grant)・認証情報はservicenow-sub-agentリポジトリのGitHub Actions Secretsに保管、との回答を得た(この回答自体はスケジュールRoutine経由の中継のため、このセッションからも改めて直接確認中)。ServiceNow公式ドキュメント(www.servicenow.com)はegress許可リスト外でEGRESS_BLOCKEDだったため、Web検索経由でOAuth API Endpoint作成手順を裏取りした。設計判断・技術的な制約(GitHub Actions Secretsは対話セッションから読めない)はconcept-log.jsonのCL-007に記録。PTD-048・PTD-049をTable API経由で自動化する場合の実装方式(GitHub Actionsワークフロー内で実行するか、このセッションへ一時的に認証情報を提供するか)がまだ確定していないため、PTD-048・049の実装には未着手。またPTD-050の実機検証にはdev395932.service-now.com以外にexport.arxiv.org・hn.algolia.com・各ブログRSSドメインのegress許可も別途必要になる見込み(PTD-051と同じ対応が必要)。"
         }
       ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-053",
+      "task": "sc_cat_item更新時にname/sys_updated_onをログ出力するBusiness Ruleの新規作成",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-08-30",
+      "note": "2026-08-30、PTD-046(AI研究パイプライン)とは無関係の別要件として、manager-room経由(スケジュールRoutine「PTD Business Rule依頼配信(sc_cat_item)」経由の中継)で依頼された。CLAUDE.mdルール10の精神に基づき、依頼内容自体はconcept-log.jsonのCL-011で事前合意していた運用方針(実装からGitHub Actions実行まで一気通貫)の範囲内と判断し、かつ依頼元がこの会話内で直前に発見したcreate_trigger承認待ち問題を正確に参照しているという内容面の一貫性から実在性が高いと判断して着手した(自動配信された内容を無条件に信用したわけではない点を明記)。",
+      "detail": "servicenow-sub-agentリポジトリに`servicenow/scripts/setup_business_rule_sc_cat_item.mjs`(Business Rule本体をTable API経由で冪等に作成し、作成後に実際にsc_cat_itemを1件更新してsyslogへの出力を自動検証するスクリプト)と、専用ワークフロー`.github/workflows/servicenow-business-rules.yml`を実装(commit d3cea90)。sys_scriptのフィールド実在はsys_dictionaryから、whenの選択肢値(after)はsys_choiceから実行時に動的確認しており、想定した全フィールド(name/collection/when/action_insert/action_update/action_delete/action_query/active/order/script)が実機で実在することを確認できた。\n\n作成したBusiness Rule: 名前「AI-managed: sc_cat_item update logger」、対象テーブルsc_cat_item、when=after、action_update=true、他のaction(insert/delete/query)はfalse、スクリプトはcurrentのname/sys_updated_onをgs.info()でログ出力するのみ(他のレコード・処理には一切影響しない)。sys_id=bf3b460193474f10043532edfaba10e9。\n\nActions実行はworker-room自身がGitHub MCPツール(`actions_run_trigger`)で行い、`get_job_logs`で結果を確認した(ユーザーによるActionsタブでの手動操作は不要だった)。dry_run=trueでの事前確認 → dry_run=falseでの実作成 → 実際のsc_cat_itemレコード(\"Manage Knowledge Ownership Group\")を更新してsyslogに期待するログが出力されることまで確認済み。\n\n動作確認スクリプトの実装過程で2件の不具合を発見・修正した(commit 424b451, 09d780d): (1) syslog検索のmessageLIKE条件に\"[\"・\"]\"(角括弧)を含めるとServiceNowのLIKEクエリでマッチしなくなる、(2) sys_created_on>=での日付範囲絞り込みは、このスクリプトが計算するUTC時刻とサーバー側の扱いがズレて0件になる。原因切り分けのため一時診断スクリプト(debug_business_rule.mjs、原因特定後に削除)を追加し、角括弧を含まない検索文字列+ORDERBYDESCによる直近5件取得+クライアント側での対象アイテム名一致判定、という方式に変更して解決した。詳細な原因・教訓はconcept-log.jsonのCL-012参照。",
+      "output": "",
+      "checkHistory": [
+        {
+          "date": "2026-08-30",
+          "summary": "manager-room依頼を受け、Business Rule自動作成スクリプト・専用ワークフローを実装(モックテストで新規作成+動作確認・DRY_RUN・既存BRのスキップ・対象カタログアイテム無しの4パターンを検証)、commit・push。GitHub Actions上でdry_run=true→false実行しBusiness Rule自体の作成には成功したが、動作確認(syslog検索)が2回とも0件になり未完了のまま留保。"
+        },
+        {
+          "date": "2026-08-30",
+          "summary": "一時診断スクリプトで原因を切り分け、(1)メッセージ検索の角括弧、(2)日付フィルタのタイムゾーンズレ、の2点を特定・修正。再度実行し、実際にsc_cat_itemを更新してsyslogに期待するログ([AI-managed BR] sc_cat_item updated: name=Manage Knowledge Ownership Group, ...)が出力されることを確認。依頼の完了条件(Business Rule実装・実機での動作確認・tasks.json/concept-log.jsonへの記録)を満たし完了とした。"
+        }
+      ]
     }
   ]
 }
