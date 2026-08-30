@@ -3451,7 +3451,7 @@
     {
       "repo": "claude-codex-integration",
       "id": "CCX-001",
-      "task": "Claude CodeとCodexの連携",
+      "task": "Claude CodeとCodexの連携: 9月上旬にCodex(ChatGPT Plus)を契約し、Claudeの指示のもとCodexに実装作業をさせ、レビューはClaude Code側で行う運用フローを設定・実装する",
       "priority": "中",
       "status": "未着手",
       "updated": "2026-08-30",
@@ -3459,32 +3459,19 @@
       "note": "【作業タスク】特定のアプリ開発ではなく、開発環境そのものの整備(Claude Code側の作業ルームで使うツール構成の変更)のためoperation扱い。共有Routineの実装対象ではない。",
       "detail": "現在ユーザーはClaudeアカウントを2つ保有しているが、うち1つが宙ぶらりん(未活用)の状態。相談ルームでの検討の結果、この枠をChatGPT Plus(Codex)契約に置き換え、公式プラグイン`openai/codex-plugin-cc`でClaude CodeからCodexを呼び出せるようにする方針とした。\n\n検討過程で判明した主なポイント:\n・`openai/codex-plugin-cc`はOpenAI公式のClaude Codeプラグイン(GitHub上で存在・仕様を確認済み)で、Codexへのレビュー依頼・タスク委任をClaude Code内から行える\n・ローカルのCodex CLI・アプリサーバーを呼び出す構成のため、既存のChatGPTログイン・Codex設定をそのまま利用でき、追加の認証情報は不要\n・バックグラウンドジョブとして実装を委任できるため、Codexが作業している間もClaude側で別の依頼を進められる(並行処理による時短効果)\n・コード品質のブラインド評価ではClaude Codeの出力の方がきれいと評価される傾向がある一方、独立した視点でのレビューにより「Claudeは大局観・センス面、Codexは正確性・コード品質面」の指摘をそれぞれ拾いやすいという報告があり、相互補完の効果が期待できる\n・Codex側にもClaude同様、5時間ローリングウィンドウ+週次上限という利用制限があるため、「上限からの逃避」自体を目的にするなら効果は薄い。合計作業量の増加・並行処理・相互レビューによる品質向上が主な狙い\n・自動レビューゲート(`--enable-review-gate`)は編集のたびにClaude側の呼び出しもトリガーするため、常時ONにすると「Codex側の枠だけ消費する」という前提が崩れる点に注意",
       "output": "",
+      "steps": [
+        "9月上旬、ChatGPT Plus(月20ドル)を契約する(現在保有する2つのClaudeアカウントのうち、宙ぶらりんになっている1つの代替として)",
+        "ターミナル版のClaude Codeで「/plugin marketplace add openai/codex-plugin-cc」→「/plugin install codex@openai-codex」を1行ずつ実行する",
+        "「/codex:setup」を実行し、ChatGPTアカウントでログインして連携を完了させる(入力欄に「/codex」と打ってコマンド候補が出れば連携完了)",
+        "役割分担ルール(依頼を受けたらまずプランを考える→実装作業はCodexに渡す→Codexの成果物はレビューして問題があれば直させる→完成したものだけを報告する)をCLAUDE.mdに保存する",
+        "小さめのタスクで実際に委任・レビューのフローが機能するか動作確認する",
+        "自動レビューゲート(--enable-review-gate)は利用枠を早く消費するため、常時ONにはせず、大事な仕上げの時だけ使う運用にする"
+      ],
+      "nextAction": "9月上旬のChatGPT Plus契約を待って着手する",
       "checkHistory": [
         {
           "date": "2026-08-30",
           "summary": "相談ルームでCodexとClaude Sonnet 5の精度比較・連携方法(openai/codex-plugin-cc)・利用制限・費用面を調査し、ユーザーとの相談の結果、宙ぶらりんの2つ目のClaudeアカウントをChatGPT Plus(Codex)契約へ切り替える方針で合意。タスク化した。"
-        }
-      ],
-      "subtasks": [
-        {
-          "id": "CCX-002",
-          "task": "9月上旬にCodex(ChatGPT Plus)を契約し、Claudeの指示のもとCodexに実装作業をさせ、レビューはClaude Code側で行う運用フローを設定・実装する",
-          "priority": "中",
-          "status": "未着手",
-          "updated": "-",
-          "category": "operation",
-          "note": "",
-          "detail": "公式プラグイン`openai/codex-plugin-cc`をClaude Codeに導入し、Claudeが設計・Codexが実装・Claudeがレビューする役割分担をCLAUDE.mdに保存して、以降の依頼で自動的に機能する状態にする。",
-          "output": "",
-          "steps": [
-            "9月上旬、ChatGPT Plus(月20ドル)を契約する(現在保有する2つのClaudeアカウントのうち、宙ぶらりんになっている1つの代替として)",
-            "ターミナル版のClaude Codeで「/plugin marketplace add openai/codex-plugin-cc」→「/plugin install codex@openai-codex」を1行ずつ実行する",
-            "「/codex:setup」を実行し、ChatGPTアカウントでログインして連携を完了させる(入力欄に「/codex」と打ってコマンド候補が出れば連携完了)",
-            "役割分担ルール(依頼を受けたらまずプランを考える→実装作業はCodexに渡す→Codexの成果物はレビューして問題があれば直させる→完成したものだけを報告する)をCLAUDE.mdに保存する",
-            "小さめのタスクで実際に委任・レビューのフローが機能するか動作確認する",
-            "自動レビューゲート(--enable-review-gate)は利用枠を早く消費するため、常時ONにはせず、大事な仕上げの時だけ使う運用にする"
-          ],
-          "nextAction": "9月上旬のChatGPT Plus契約を待って着手する"
         }
       ]
     }
