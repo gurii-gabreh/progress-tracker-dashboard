@@ -1105,6 +1105,51 @@
       "sourceUrl": "https://www.bain.com/about/media-center/press-releases/2026/bain-company-announces-partnership-with-anthropic-to-accelerate-clients-enterprise-ai-transformations/",
       "collectedAt": "2026-08-29 09:20",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-30",
+      "category": "アーキテクチャ・RAG",
+      "title": "RAGのチャンク分割手法「Late Chunking」、Elasticが商用ライセンス「Jina On-Prem」を8月10日開始",
+      "summary": "長文をチャンクごとに個別埋め込みする従来手法と異なり、文書全体を長文脈埋め込みモデルで先に処理してからチャンク単位でプーリングする「Late Chunking」(Jina AI考案)が、チャンク間の文脈欠落を防ぐRAG設計として定着しつつある。ElasticはJinaのモデルを自社SKU「Jina On-Prem」として商用ライセンス提供する取り組みを8月10日から開始した。",
+      "sourceUrl": "https://www.elastic.co/search-labs/blog/late-chunking-elasticsearch-jina-embeddings",
+      "collectedAt": "2026-08-30 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-30",
+      "category": "モデル性能",
+      "title": "Artificial Analysis Intelligence Index、2026年8月29日時点でClaude Opus 5が63.0%で首位",
+      "summary": "AIモデルの複合性能を測るArtificial Analysis Intelligence Indexの8月29日時点データによると、183モデル中Claude Opus 5が63.0%で首位、Claude Fable 5(62.1%)、Grok 4.6(60.9%)が続く。GoogleのGemini 3.7 Flash(8月13日投入)はコーディング系ベンチマークで大幅改善し、DeepSWEは49.0%→65.3%、AutomationBenchは17.0%→30.4%とほぼ倍増した。",
+      "sourceUrl": "https://benchlm.ai/benchmarks/artificialanalysis",
+      "collectedAt": "2026-08-30 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-30",
+      "category": "技術の組み合わせ・畜産",
+      "title": "総務省、鹿児島の牛舎でローカル5G+AIカメラ+見回りロボットの実証、年間3,600万円のコスト削減効果",
+      "summary": "総務省の「令和4年度課題解決型ローカル5G等の実現に向けた開発実証」で、半屋外の牛舎にローカル5G環境を構築し、多数の4KカメラによるAI画像解析と見回りロボットのリアルタイム遠隔巡回を組み合わせたシステムを実証。見回り労力の軽減と起立困難による事故死防止により、年間3,600万円のコスト削減が見込まれるとした。",
+      "sourceUrl": "https://www.soumu.go.jp/main_content/000962921.pdf",
+      "collectedAt": "2026-08-30 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-30",
+      "category": "活用事例・金融",
+      "title": "住信SBIネット銀行、邦銀初の対話型AIエージェント「NEOBANK ai」ベータテストを2月27日開始",
+      "summary": "住信SBIネット銀行(現ドコモSMTBネット銀行)は2026年2月27日、生成AIが対話から利用者の目的を汲み取り、振込などの手続き画面をその場で自動生成する「NEOBANK ai」エージェント機能のベータテストを邦銀として初めて開始。「田中さんに1万円送りたい」といった自然な言葉での振込サポートや音声操作にも対応する。",
+      "sourceUrl": "https://www.netbk.co.jp/contents/company/press/2026/0227_003049.html",
+      "collectedAt": "2026-08-30 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-30",
+      "category": "流行・トレンド",
+      "title": "NVIDIA、オープンソースAIの中核基盤「Hugging Face」を129億ドルで買収へ(未正式合意)",
+      "summary": "NVIDIAが8月27日、AIモデルの共有・配布基盤として事実上の標準となっている「Hugging Face」を約129億ドル(約1.9兆円)で買収する方向で交渉していると複数メディアが一斉に報道。Hugging Faceの直近の資金調達(2023年、2.35億ドル)時点の評価額45億ドルから大幅な増額となる。正式契約はまだ結ばれておらず、破談の可能性もあるとされる。",
+      "sourceUrl": "https://www.cnbc.com/2026/08/27/nvidia-hugging-face-acquisition.html",
+      "collectedAt": "2026-08-30 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
