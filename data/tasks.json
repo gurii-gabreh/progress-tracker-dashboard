@@ -3295,10 +3295,11 @@
           "updated": "2026-08-30",
           "content": [
             "System Web Services > REST Messageに4レコード(AI Research - arXiv/Hacker News/Blog RSS[openai/huggingface]、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。",
-            "2026-08-30追記: 情報源を追加調査した結果、認証不要で同じ方式のまま組み込める6件の候補が見つかった(MIT Technology Review AI、MarkTechPost、ByteByteGo、InfoQ[AI/ML/Data Eng]、Martin Fowler blog、Architecture Weekly)。setup_rest_messages.mjsのBlog RSS用HTTPメソッドへ追加する形で拡張する。候補URL: technologyreview.com/feed/(またはAI特化の/topic/artificial-intelligence/)、marktechpost.com/feed/、blog.bytebytego.com/feed、feed.infoq.com/ai-ml-data-eng/、martinfowler.com/feed.atom、architecture-weekly.com/feed(またはSubstack版softwarearchitectureweekly.substack.com/feed、ユーザー確認待ち)。既存のverify_source_urls.mjs(PTD-050)によるHTTP実地検証を経てから本採用とすること(CL-009の教訓通り、URLの実在は推測せず実地検証する)。"
+            "2026-08-30追記: 情報源を追加調査した結果、認証不要で同じ方式のまま組み込める6件の候補が見つかった(MIT Technology Review AI、MarkTechPost、ByteByteGo、InfoQ[AI/ML/Data Eng]、Martin Fowler blog、Architecture Weekly)。setup_rest_messages.mjsのBlog RSS用HTTPメソッドへ追加する形で拡張する。候補URL: technologyreview.com/feed/(またはAI特化の/topic/artificial-intelligence/)、marktechpost.com/feed/、blog.bytebytego.com/feed、feed.infoq.com/ai-ml-data-eng/、martinfowler.com/feed.atom、architecture-weekly.com/feed(またはSubstack版softwarearchitectureweekly.substack.com/feed、ユーザー確認待ち)。既存のverify_source_urls.mjs(PTD-050)によるHTTP実地検証を経てから本採用とすること(CL-009の教訓通り、URLの実在は推測せず実地検証する)。",
+            "2026-08-30実装: 追加候補6件のうち5件(MIT Technology Review AI[AI特化topic feed]/MarkTechPost/ByteByteGo/InfoQ[AI/ML/Data Eng]/Martin Fowler blog)を実地検証(GitHub Actions実行、HTTP 200・想定形式を確認)の上、既存の「AI Research - Blog RSS」REST MessageへHTTPメソッドとして追加した(新規REST Messageレコードは増やさず、既存の冪等設計を踏襲。commit f85852d)。dry_run=trueでのworkflow_dispatch実行により、5件の新規POST(想定エンドポイント通り)・既存2件(openai/huggingface)の存在確認・全9情報源URLの実地検証OKまでは確認済み。ただし実際のServiceNow PDIへの書き込み(dry_run=false実行)は、この一連の作業が本人からの直接指示ではなく自動化された依頼経由だったため、PTD-048のこれまでの全ての実行(dry_run=true/false問わず)が一貫して本人によるworkflow_dispatchのボタン操作で行われてきた運用実績を踏まえ、worker-room側からは実行せず本人の実行待ちとした。残る1件(Architecture Weekly)は候補URL2件とも実地検証に失敗したため未採用・相談事項として記録(PTD-056参照)。"
           ],
           "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。",
-          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。",
+          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。\n\n2026-08-30追記(実装ナレッジ): (1) 5件の情報源追加により、scheduled_job_ai_research_fetch.jsのSOURCE_DEFAULT_CATEGORYへも観点の既定値を追加した(ByteByteGo/InfoQ/Martin Fowler blog=観点1[アーキテクチャ]、MarkTechPost=観点2[AI技術動向]、MIT Technology Review AI=観点5[AIの流行]、いずれも機械的な既定割り当て)。(2) MIT Technology Reviewは全体feed(technologyreview.com/feed/)とAI特化topic feed(/topic/artificial-intelligence/feed/)の両方が実地検証OKだったが、本パイプラインの目的(AI観点での情報収集)により合致するAI特化版を採用した。(3) Martin Fowler blogはAtom形式で、既存の正規表現ベース抽出(extractTag、<tag>content</tag>の閉じタグ前提)ではAtomの自己終端<link href=\"...\"/>からURLを取得できずsourceUrlが常に空になり、insertItem側で全件スキップされる潜在バグを実機投入前のコードレビューで発見した。属性値抽出用のextractAttrを追加し、RSS形式→Atom形式(属性)→<guid>の順にフォールバックする修正を行い、ローカルモックテストでRSS/Atom両形式のlink/title/pubDate抽出を確認済み(concept-log.jsonのCL-013参照)。(4) Architecture Weekly(6番目の候補)は候補URL2件(独自ドメイン・Substack)とも実地検証に失敗(前者は接続失敗、後者はCloudflareのbot対策によるHTTP 403)したため、CL-009の教訓(URLの実在は推測せず実地検証する)に従い推測で採用せず、PTD-056として相談事項を起票した。",
           "checkHistory": [
             {
               "date": "2026-08-29",
@@ -3319,6 +3320,29 @@
             {
               "date": "2026-08-29",
               "summary": "修正版(Anthropic除外済み)でdry_run=true再実行し、ログで[dry-run]プレフィックスにより未作成であることを確認(この時点でarXiv用REST Messageもまだ存在しないことが判明、以前の『arXivはユーザーが手作業で作成済み』という未確認情報は誤りだったと訂正)。続けてdry_run=falseで実行し、実際にServiceNow PDI上へ3レコード(AI Research - arXiv/Hacker News/Blog RSS)が作成されたことをServiceNowのUI(System Web Services > REST Message一覧、および「AI Research - Blog RSS」のHTTP Methods一覧でopenai/huggingfaceのみ・anthropic無しを目視)で確認した。PTD-048はこれで完了。あわせてGitHub Actions側の非推奨警告(Node.js 20)にも対応し、actions/checkout・actions/setup-nodeをv5・Node.js 22に更新(commit 6cac6e7)。"
+            },
+            {
+              "date": "2026-08-30",
+              "summary": "manager-room経由の依頼(PTD-048追加候補6件)を受けたworker-roomが対応。まず一時検証スクリプト(tmp_verify_candidate_urls.mjs)をGitHub Actions経由で実行し、候補6件(Architecture Weeklyは2URL、計7URL)を実地検証。5件(MIT Technology Review AI/MarkTechPost/ByteByteGo/InfoQ/Martin Fowler blog)はHTTP 200・想定形式を確認できたためsetup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ正式に反映(commit f85852d)。Architecture Weeklyは候補URL2件とも失敗(接続失敗/HTTP 403)したため未採用とし、推測で決めずPTD-056として相談事項を記録。あわせてMartin Fowler blog(Atom形式)追加にあたり、既存のリンク抽出ロジックがAtomの自己終端<link href>に対応しておらず全件スキップになる潜在バグをコードレビューで発見・修正(concept-log.jsonのCL-013)。dry_run=trueでのworkflow_dispatch実行により、全9情報源URLの実地検証OK・5件の新規メソッドPOST内容(想定通り)・既存2メソッドの存在検出までを確認。実際のServiceNow PDIへの反映(dry_run=false)は、これまでのPTD-048の全実行が本人による手動workflow_dispatchだった運用実績を踏まえ、worker-room側からは実行せず本人の実行待ちとした(このセッション自体が本人からの直接の対話指示ではなく自動化された依頼経由だったため、外部システムへの実書き込みは慎重を期した)。"
+            }
+          ],
+          "subtasks": [
+            {
+              "id": "PTD-056",
+              "task": "【相談】Architecture Weeklyの正しいRSS/AtomフィードURLの確認",
+              "priority": "低",
+              "status": "未着手",
+              "updated": "2026-08-30",
+              "category": "manual",
+              "note": "経緯: PTD-048(REST Message作成)の追加候補6件の1つとしてArchitecture Weeklyが挙がったが、候補URLが2通り(独自ドメイン版architecture-weekly.com/feed、Substack版softwarearchitectureweekly.substack.com/feed)あり、どちらが正しいか未確定だった。現在: worker-roomが2026-08-30にGitHub Actions経由で両方を実地検証したところ、独自ドメイン版は接続失敗(fetch failed、DNS/接続不可)、Substack版はHTTP 403(Cloudflareのbot対策による「Just a moment...」チャレンジページ)で、いずれも有効なフィードを取得できなかった。これから: CL-009の教訓(URLの実在は推測せず実地検証する。実際にAnthropicBlogは公式RSS不在と判明し除外した過去がある)に従い、いずれの候補URLを採用すべきか、あるいは別の正しいURL(例: ブラウザで手動確認した実際のフィード配信元)があるかを推測で決めず、ユーザーに確認したい。懸念点: (1) Substack版の403はCloudflareのbot対策によるもののため、ブラウザでは正常に見えている可能性があり「URLが存在しない」とは言い切れず、このパイプライン(サーバーサイドの単純なGETリクエスト)からは今後も継続的に取得できない可能性がある。(2) 独自ドメイン版の接続失敗は、ドメイン自体が現存しない可能性もある。(3) いずれかを無理に採用せず、Architecture Weeklyという情報源自体を諦める(候補5件のみで運用する)という選択肢も、Anthropic Blog除外時(CL-009)と同じ考え方として妥当と考えている。",
+              "detail": "",
+              "steps": [
+                "ブラウザ等で実際にArchitecture Weeklyの正しいRSS/AtomフィードURLを確認する(architecture-weekly.com/feedかsoftwarearchitectureweekly.substack.com/feedか、あるいは別のURLか)",
+                "正しいURLが判明した場合はそのURLを、判明しない/取得できないと判断した場合はその旨をコメントで伝える",
+                "伝達後、worker-room(servicenow-sub-agent)側でsetup_rest_messages.mjs等への反映・GitHub Actionsワークフローでの実地検証・ServiceNow PDIへの反映を行う"
+              ],
+              "checkHistory": [],
+              "output": ""
             }
           ]
         },

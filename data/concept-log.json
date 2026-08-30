@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-08-30",
   "categories": [
     {
       "key": "architecture",
@@ -119,7 +119,15 @@
     {
       "key": "testing",
       "label": "🧪 テスト",
-      "items": []
+      "items": [
+        {
+          "id": "CL-013",
+          "concept": "RSS(<link>テキスト</link>)とAtom(<link href=\"...\"/>属性)は同じ「フィードのlink」でもXML構造が異なり、片方だけを想定した正規表現抽出はもう片方で静かに全滅する",
+          "context": "2026-08-30、servicenow-sub-agent(PTD-048拡張)で、既存の「AI Research - Blog RSS」REST Messageへ5件の情報源を追加する実装の一環として、Martin Fowler blog(https://martinfowler.com/feed.atom、Atom形式)を追加した際の発見。",
+          "note": "scheduled_job_ai_research_fetch.jsのfetchBlogRssは、それまでRSS 2.0形式のOpenAI Blog/Hugging Face Blogのみを扱っており、リンク抽出は`extractTag(block, \"link\")`(`<link>content</link>`のように閉じタグの間にテキストを持つ前提の正規表現)一本だった。Atom形式では`<link href=\"...\" rel=\"alternate\"/>`のように自己終端タグの属性値としてURLを持つため、この抽出方法では一致せず空文字列が返る。Martin Fowler blogをそのまま追加していた場合、全記事でsourceUrlが空になり、insertItem内の`normalizeUrl(sourceUrl)`が空dedupKeyを返して`stats.skipped++`だけが増え続け、u_ai_research_itemへは1件もinsertされない(エラーも出ないため、gs.errorのログ監視だけでは気づけない)という、CL-010(Date/Time型の形式不一致が黙って空欄になる)と同系統の『静かな失敗』になるところだった。\n\n実際のServiceNow実機投入(Scheduled Job実行)より前に、追加対象がAtom形式であることにコードレビューの段階で気づき、属性値抽出用の`extractAttr(block, tagName, attrName)`を追加。リンク抽出を「RSS形式(`<link>テキスト</link>`) → Atom形式(`<link href=\"...\">`属性) → `<guid>`」の順にフォールバックするよう修正し、Node.jsのローカルモックテスト(RSS用item・Atom用entryそれぞれのサンプルXML断片に対してlink/title/pubDateの抽出結果を期待値と突き合わせ)で両形式とも正しく抽出できることを確認してからcommitした。\n\n教訓: 「同じ種類のデータ(この場合はフィードのpubDate/link)」でも情報源によってXML構造(RSSは要素のテキスト内容、Atomは属性値)が異なり得ることを、新しい情報源を追加するたびに疑う必要がある。特に本パイプラインのように正規表現ベースの単純な抽出(README既知の制約: XMLDocument2の名前空間まわりを実機確認できないためあえて正規表現方式を採用)を選んでいる場合、XMLDocument2のような構造化パーサーと違い『タグの形が違う』だけでエラーにすらならず黙ってマッチしなくなるため、新形式を追加するたびに実際のサンプルデータ(この回はGitHub Actions実地検証で取得した本文抜粋)を見て抽出結果を目視・テストで確認する運用が欠かせない。CL-008(RESTMessageV2の${変数}が静かに空になる落とし穴)・CL-010(Date/Time型が静かに空欄になる落とし穴)と合わせて、このパイプラインでは『ServiceNow/XML関連の処理はエラーを出さず黙って空/欠落になるケースが多い』というパターンが繰り返し見つかっており、新規追加時は常にこの観点でレビューする価値がある。",
+          "date": "2026-08-30"
+        }
+      ]
     }
   ]
 }
