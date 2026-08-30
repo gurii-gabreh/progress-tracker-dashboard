@@ -3274,14 +3274,15 @@
         {
           "repo": "servicenow-sub-agent",
           "id": "PTD-048",
-          "task": "ServiceNow PDIに3件のREST Messageを作成する(arXiv/Hacker News/Blog RSS)",
+          "task": "ServiceNow PDIにREST Messageを作成する(arXiv/Hacker News/Blog RSS、追加6件を拡張中)",
           "title": "REST Message作成",
           "priority": "中",
-          "status": "完了",
+          "status": "対応中",
           "category": "manual",
-          "updated": "2026-08-29",
+          "updated": "2026-08-30",
           "content": [
-            "System Web Services > REST Messageに3レコード(AI Research - arXiv/Hacker News/Blog RSS、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。"
+            "System Web Services > REST Messageに4レコード(AI Research - arXiv/Hacker News/Blog RSS[openai/huggingface]、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。",
+            "2026-08-30追記: 情報源を追加調査した結果、認証不要で同じ方式のまま組み込める6件の候補が見つかった(MIT Technology Review AI、MarkTechPost、ByteByteGo、InfoQ[AI/ML/Data Eng]、Martin Fowler blog、Architecture Weekly)。setup_rest_messages.mjsのBlog RSS用HTTPメソッドへ追加する形で拡張する。候補URL: technologyreview.com/feed/(またはAI特化の/topic/artificial-intelligence/)、marktechpost.com/feed/、blog.bytebytego.com/feed、feed.infoq.com/ai-ml-data-eng/、martinfowler.com/feed.atom、architecture-weekly.com/feed(またはSubstack版softwarearchitectureweekly.substack.com/feed、ユーザー確認待ち)。既存のverify_source_urls.mjs(PTD-050)によるHTTP実地検証を経てから本採用とすること(CL-009の教訓通り、URLの実在は推測せず実地検証する)。"
           ],
           "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。",
           "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。",
@@ -3403,6 +3404,36 @@
           "summary": "一時診断スクリプトで原因を切り分け、(1)メッセージ検索の角括弧、(2)日付フィルタのタイムゾーンズレ、の2点を特定・修正。再度実行し、実際にsc_cat_itemを更新してsyslogに期待するログ([AI-managed BR] sc_cat_item updated: name=Manage Knowledge Ownership Group, ...)が出力されることを確認。依頼の完了条件(Business Rule実装・実機での動作確認・tasks.json/concept-log.jsonへの記録)を満たし完了とした。"
         }
       ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-054",
+      "task": "情報源にReddit API・YouTube Data API v3を追加する(要APIアカウント作成)",
+      "priority": "低",
+      "status": "未着手",
+      "updated": "2026-08-30",
+      "note": "2026-08-30、ユーザーの依頼を受けmanager-roomが調査。PTD-048(REST Message作成)の6件拡張(候補調査時)とは別に、Reddit・YouTubeは既存のarXiv/Hacker News/Blog RSSと違い、事前に認証情報(APIアカウント)の取得がユーザー側で必要なため、別タスクとして分離した。",
+      "content": [
+        "Reddit API: Reddit開発者アカウントで「アプリ」を作成しclient_id/secretを取得する必要がある(無料。ただし個人・非商用利用限定、OAuth必須、100リクエスト/分の制限あり。商用利用は$0.24/1000callsの従量課金)",
+        "YouTube Data API v3: Google CloudでAPIキーを発行する必要がある(無料。1日1万ユニットの上限あり。videos.list?chart=mostPopularは1ユニット、キーワード検索は100ユニット消費するため、なるべく前者を使う設計にする)"
+      ],
+      "nextAction": "ユーザーが上記2つのAPIアカウント/認証情報を用意した後、worker-roomへ実装を依頼する(認証情報はチャットに直接貼らず、servicenow-sub-agentのGitHub Actions Secretsへ登録する運用を踏襲、CL-007参照)",
+      "output": ""
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-055",
+      "task": "情報源にWikipedia Pageviews APIを追加するかの設計検討(要ユーザー相談)",
+      "priority": "低",
+      "status": "未着手",
+      "updated": "2026-08-30",
+      "note": "2026-08-30、ユーザーの依頼を受けmanager-roomが調査。他の情報源(arXiv/Hacker News/Blog RSS等)とは性質が異なり、既存のu_ai_research_itemテーブル設計(title/summary/source_url/published_at)にそのまま当てはまらないため、実装に入る前に設計方針の確認が必要と判断し、着手保留のまま起票した。",
+      "content": [
+        "Wikipedia Pageviews API(api.wikimedia.org、公式・無料・認証不要)は、記事の閲覧数の時系列統計を返すAPIであり、他の情報源のような「記事タイトル・要約・URL」を返すものではない",
+        "そのままではu_ai_research_itemのカラム構成(title/summary/source_url/published_at)に意味のある形でマッピングできない。「どの記事の閲覧数トレンドを追うか(対象記事の一覧をどう決めるか)」「テーブルを分けるか、u_summaryに閲覧数を文字列で詰め込むか」等の設計判断がユーザー確認待ち"
+      ],
+      "nextAction": "ユーザーへ具体的な使い方(例: 特定のAI関連記事の閲覧数トレンドを追いたい、等)を相談してから設計・実装に着手する。CLAUDE.mdルール10により、方針未確定のまま実装を進めない",
+      "output": ""
     }
   ]
 }
