@@ -3193,6 +3193,10 @@
         {
           "date": "2026-08-29",
           "summary": "PTD-046作業中に新しい再現条件をユーザーから報告された: manager-roomがservicenow-sub-agent worker-roomへ指示を中継しようとcreate_trigger(およびget_session)を呼ぶたびに、実行される代わりに『MCP tool call requires approval』というエラーが即時返る。ユーザー画面には対応する承認ポップアップ/確認画面は出ておらず(ユーザー自身が確認済み)、そのため人間が承認ボタンを押すことでも解消できない=再試行では直せない種類の詰まりだと判明した。CL-006(dormant worker-roomへのcreate_trigger転用パターン)の手順自体が、少なくともこの発生条件下では機能しないケースがあることになる。今回はユーザーがmanager-roomのメッセージ内容を直接worker-room側のチャットに手動で貼り付けて中継することで回避したが、これは人手を介する分だけCL-006の狙い(自動化された配信)を損なう回避策であり、根本原因(権限モードの設定なのか、ツール呼び出し経路の不具合なのか)は未特定のまま。次に同様の中継が必要になった際に再現するか、get_session等の他のMCPツールでも同様の即時approval要求が起きるかを含めて、引き続きユーザーからの追加情報提供待ち。"
+        },
+        {
+          "date": "2026-08-30",
+          "summary": "逆方向(worker-room→manager-room)でも同一の現象を再現した。PTD-046完了報告をmanager-room(session_011TMAanapvZ8wAn5kTPyR3w)へ届けるため、servicenow-sub-agent worker-room側からcreate_trigger(persistent_session_id指定)を呼んだところ、即座に『MCP tool call requires approval』が返り実行されなかった。これにより、この問題はmanager-room固有の設定・権限モードの問題ではなく、create_triggerというツール自体(またはその呼び出し経路)に起因する、より一般的な制約である可能性が高まった。今回もユーザーへ報告テキストを渡し手動で中継してもらう形で回避した。根本原因(権限モード設定かツール自体の不具合か)は依然未特定。次の焦点は、他のセッション間・他のMCPツールでも同様に発生するか、発生条件(呼び出し元セッションの状態・権限モード等)を絞り込むこと。"
         }
       ]
     },
