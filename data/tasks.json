@@ -3326,6 +3326,10 @@
             {
               "date": "2026-08-29",
               "summary": "コード変更のたびに手動でScheduled Jobへ貼り直す手間を無くすため、servicenow/scripts/sync_scheduled_job.mjsを追加(commit 3d82807)。script内の目印文字列(AIResearchFetcher)でsysauto_scriptレコードを特定し、scriptフィールドのみをPATCH更新する(実行頻度・有効/無効等のスケジュール設定には触れない安全な部分更新)。OAuth・Table API呼び出しの共通処理はlib/servicenow_client.mjsに切り出しsetup_rest_messages.mjsと共有。モックテストで新規更新・差分なし時のスキップ・対象未検出時のエラー終了の3パターンを検証済み。実際のServiceNow PDIへの適用はユーザーの実行待ち。"
+            },
+            {
+              "date": "2026-08-30",
+              "summary": "ユーザーから「ワークフロー実行までworker-room自身にやってほしい」との依頼を受け、GitHub Actions MCPツール(actions_run_trigger)でservicenow-setup.ymlをdry_run=falseで直接起動(手作業でのRun workflowクリック不要)。実行結果をget_job_logsでログ確認し、sync-scheduled-jobジョブで実際に\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドが更新されたことを確認した(u_published_at修正版が反映済み)。あわせてユーザーから、今後Business Rule/Catalog Client Script/Flow Designer等のServiceNow側更新が必要になった場合も、コード実装だけでなくGitHub Actions実行(ServiceNowへの実反映)までworker-room側で完結させる、という標準運用の合意を得た(concept-log.jsonのCL-011に追記)。"
             }
           ]
         },
