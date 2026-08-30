@@ -78,7 +78,8 @@
       "dormantWorkerRoomWakeup": {
         "problem": "CCR(Claude Code Remote)の既存作業ルームセッションがIDLE(休止)状態になると、セッション間メッセージ送信(SendMessage等)では宛先として認識されず、追加の指示が届かないことがある(2026-08-29確認)。これはPTD-045(ネットワークegressポリシーによるブロック)とは別原因の、セッション到達性の問題。",
         "procedure": "1. create_triggerで、対象セッションIDをpersistent_session_idに指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成する。2. fire_triggerでそのtrigger_idを即時発火し、メッセージを配信する。3. 配信後はdelete_triggerでそのtriggerを片付ける(使い捨てのため放置しない)。",
-        "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。"
+        "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。",
+        "knownIssue": "2026-08-29追記: create_trigger自体が『MCP tool call requires approval』で即座にブロックされ、ユーザー画面には対応する承認ポップアップが表示されない現象がある。manager-room→worker-room、worker-room→manager-roomの両方向で再現し、get_sessionのような読み取り専用ツールでも同様に発生する。再試行では解消しない。発生時は本手順に固執せず、ユーザーに該当セッションのチャットへ直接内容を貼り付けて中継してもらう(手動リレー)こと。根本原因は未特定(詳細はPTD-045)。"
       }
     },
     "consultationFormat": {
