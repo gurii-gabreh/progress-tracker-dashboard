@@ -3319,6 +3319,10 @@
             {
               "date": "2026-08-29",
               "summary": "修正版(Anthropic除外済み)でdry_run=true再実行し、ログで[dry-run]プレフィックスにより未作成であることを確認(この時点でarXiv用REST Messageもまだ存在しないことが判明、以前の『arXivはユーザーが手作業で作成済み』という未確認情報は誤りだったと訂正)。続けてdry_run=falseで実行し、実際にServiceNow PDI上へ3レコード(AI Research - arXiv/Hacker News/Blog RSS)が作成されたことをServiceNowのUI(System Web Services > REST Message一覧、および「AI Research - Blog RSS」のHTTP Methods一覧でopenai/huggingfaceのみ・anthropic無しを目視)で確認した。PTD-048はこれで完了。あわせてGitHub Actions側の非推奨警告(Node.js 20)にも対応し、actions/checkout・actions/setup-nodeをv5・Node.js 22に更新(commit 6cac6e7)。"
+            },
+            {
+              "date": "2026-08-30",
+              "summary": "ユーザー承認を受け、6件拡張の実装をservicenow-sub-agent作業ルームへ依頼した。従来の作業ルーム(session_01TLDaksWuu1pJC5P2groimM)は、本タスクを引き継いだ別アカウントの新規セッションからは到達不能(get_session 404、list_sessionsにも非表示)と判明したため(CL-013参照)、同リポジトリ向けに新規セッション(session_01FsQLP6DYJEpecaovVs5rCu)をcreate_sessionで作成し依頼した。依頼内容: 6候補(MIT Technology Review AI/MarkTechPost/ByteByteGo/InfoQ[AI/ML/Data Eng]/Martin Fowler blog/Architecture Weekly)をverify_source_urls.mjsで実地検証した上で採用、既存のsetup_rest_messages.mjs(Blog RSS用HTTPメソッド追加)に組み込みServiceNow PDIへ反映すること。Architecture Weeklyのみ候補URLが2通り(architecture-weekly.com/feed / softwarearchitectureweekly.substack.com/feed)ある未確定分のため、両方を実地検証し、両方有効・両方無効のいずれの場合も実装を止めてユーザー確認を仰ぐよう明記した。完了後はworker-room自身がPTD-048のdetail/checkHistoryとconcept-log.jsonをprogress-tracker-dashboardのmainへ反映する運用(PTD-053と同様)。"
             }
           ]
         },

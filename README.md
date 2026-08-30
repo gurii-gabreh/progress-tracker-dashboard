@@ -64,6 +64,10 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
 
 **2026-08-25追記: claude-voice-bridgeもこの作業ルームの担当に追加**。claude.aiのブラウザ画面を音声で操作するChrome拡張機能(`gurii-gabreh/claude-voice-bridge`)を、このマネージャールームのセッション内で直接実装・デバッグしてしまう同種の違反が発生した(音声入出力の相談から着手し、送信タイミング・応答判定・マイク再開処理の不具合修正まで一通り直接手を動かしてしまった)ことをユーザーから指摘され、`session_012kTdgM1PApMPsJC8N4ew95`(既存の作業ルーム)へ担当リポジトリとして引き継いだ。以降、claude-voice-bridgeの実装・修正もマネージャールームが自分で行わず、このセッションへ依頼する。
 
+**2026-08-29追記: `servicenow-sub-agent`専用の作業ルームを新設**。`session_01TLDaksWuu1pJC5P2groimM`(タイトル「servicenow-sub-agent 作業ルーム」)をPTD-046〜050・PTD-053の実装用に作成。
+
+**2026-08-30追記: manager-room自体がアカウントを跨いで引き継がれ、上記`session_01TLDaksWuu1pJC5P2groimM`へ到達できなくなった**。別アカウントの新規manager-roomセッションからget_session/list_sessionsを呼んでも当該セッションが見えず(CCRのセッションはアカウント単位で所有されるため。詳細はdata/concept-log.jsonのCL-013参照)、旧作業ルームへの追加依頼ができなくなった。対応として`servicenow-sub-agent`リポジトリ向けに新規セッション`session_01FsQLP6DYJEpecaovVs5rCu`(タイトル「servicenow-sub-agent 作業ルーム(PTD-048拡張)」)をcreate_sessionで作成し、以後はこちらを`servicenow-sub-agent`の作業ルームとして扱う(旧`session_01TLDaksWuu1pJC5P2groimM`は当該アカウントに残存するが、別アカウントのmanager-roomからは事実上運用終了)。
+
 ## 現在の状態
 
 - GASウェブアプリ: デプロイ済み(`gas/Code.gs`。GitHubとは自動連携していないため、コード変更時は
