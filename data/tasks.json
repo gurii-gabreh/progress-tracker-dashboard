@@ -3317,11 +3317,15 @@
             "System Definition > Scheduled Jobsで「Automatically run a script of your choosing」を選び、servicenow-sub-agent/servicenow/scheduled_job_ai_research_fetch.jsの内容をそのまま貼り付けて保存する。実行頻度は日次を推奨"
           ],
           "manualSetup": "完了。ユーザーがServiceNow PDI上でScheduled Jobを作成し、スクリプトを貼り付けて保存済み。",
-          "note": "2026-08-29、PTD-048のREST MessageはTable API経由での自動作成を実装したが、このScheduled Job作成は意図的に手動のまま残した。理由: (1) UI操作としては貼り付け+頻度選択+保存のみでREST Message作成より手間が小さい、(2) Table API経由でsysauto_script(Scheduled Script Execution)を作成する場合に必要なrun_type等のフィールド構成をこのセッションから実機検証する手段がなく、誤った設定で「動かない/意図しない頻度で動く」ジョブを自動生成してしまうリスクの方が手作業の手間より大きいと判断したため(詳細はservicenow-sub-agent/README.mdの該当箇所、concept-log.jsonのCL-008参照)。",
+          "note": "2026-08-29、PTD-048のREST MessageはTable API経由での自動作成を実装したが、このScheduled Job作成は意図的に手動のまま残した。理由: (1) UI操作としては貼り付け+頻度選択+保存のみでREST Message作成より手間が小さい、(2) Table API経由でsysauto_script(Scheduled Script Execution)を作成する場合に必要なrun_type等のフィールド構成をこのセッションから実機検証する手段がなく、誤った設定で「動かない/意図しない頻度で動く」ジョブを自動生成してしまうリスクの方が手作業の手間より大きいと判断したため(詳細はservicenow-sub-agent/README.mdの該当箇所、concept-log.jsonのCL-008参照)。2026-08-29追記: 新規作成は上記の通り手動のままだが、作成済みジョブのscript本文だけを最新化する部分更新はservicenow/scripts/sync_scheduled_job.mjsで自動化した(下記checkHistory参照)。",
           "checkHistory": [
             {
               "date": "2026-08-29",
               "summary": "ユーザーがServiceNow PDI上でScheduled Jobを作成・保存完了。PTD-050のBackground Scripts手動実行によって、このジョブに貼り付けたスクリプトが実際にエラーなく動作することも合わせて確認できた。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "コード変更のたびに手動でScheduled Jobへ貼り直す手間を無くすため、servicenow/scripts/sync_scheduled_job.mjsを追加(commit 3d82807)。script内の目印文字列(AIResearchFetcher)でsysauto_scriptレコードを特定し、scriptフィールドのみをPATCH更新する(実行頻度・有効/無効等のスケジュール設定には触れない安全な部分更新)。OAuth・Table API呼び出しの共通処理はlib/servicenow_client.mjsに切り出しsetup_rest_messages.mjsと共有。モックテストで新規更新・差分なし時のスキップ・対象未検出時のエラー終了の3パターンを検証済み。実際のServiceNow PDIへの適用はユーザーの実行待ち。"
             }
           ]
         },
@@ -3339,7 +3343,7 @@
             "arXivのAtom XML・Hacker NewsのJSONが想定通りパースされ、title/summaryが妥当な内容で入っているか確認する"
           ],
           "manualSetup": "完了。Background Scriptsで手動実行し、u_ai_research_itemへの書き込み・パース結果を確認済み。",
-          "note": "2026-08-29、.github/workflows/servicenow-setup.ymlのverify-source-urlsジョブ(GitHub Actionsランナーから実行)により、情報源URL自体の生存確認は完了した: arXiv API・Hacker News API・OpenAI Blog RSS・Hugging Face Blog RSSの4件はHTTP 200・期待形式を確認。Anthropic Blog RSS(https://www.anthropic.com/rss.xml)はHTTP 404で、Anthropicが公式RSSフィードを提供していないと判明したため情報源から除外した(concept-log.json参照)。続けてServiceNow PDI上のBackground Scriptsで実際に手動実行し、u_ai_research_itemテーブルへの書き込みも確認できた: `inserted=0 skipped(duplicate/empty)=2039 errors=[]`。u_source_name別の内訳はarXiv=10件(max_results=10と完全一致)・Hacker News=20件(hitsPerPage=20と完全一致)・Hugging Face Blog=852件・OpenAI Blog=1157件(合計2039件、skipped件数と一致)。OpenAI Blogの内容をXMLエクスポートで目視確認したところ、タイトル・要約・URLとも実際の記事に対応した正しい内容で、重複や壊れたデータは見当たらなかった(Hugging Face Blogは同一コード経路のため未サンプリングだが、arXiv/Hacker Newsの件数が設定値と完全一致している状況証拠と合わせて問題なしと判断)。既知の軽微な制限として、OpenAI Blogの`u_published_at`が全行空欄だった(RSSの`<pubDate>`取得に失敗しているか、フィードに含まれていない可能性。機能は妨げないため未修正のまま許容)。これでパイプライン全体(テーブル・REST Message・Scheduled Job・実データ書き込み)が動作することを確認できた。",
+          "note": "2026-08-29、.github/workflows/servicenow-setup.ymlのverify-source-urlsジョブ(GitHub Actionsランナーから実行)により、情報源URL自体の生存確認は完了した: arXiv API・Hacker News API・OpenAI Blog RSS・Hugging Face Blog RSSの4件はHTTP 200・期待形式を確認。Anthropic Blog RSS(https://www.anthropic.com/rss.xml)はHTTP 404で、Anthropicが公式RSSフィードを提供していないと判明したため情報源から除外した(concept-log.json参照)。続けてServiceNow PDI上のBackground Scriptsで実際に手動実行し、u_ai_research_itemテーブルへの書き込みも確認できた: `inserted=0 skipped(duplicate/empty)=2039 errors=[]`。u_source_name別の内訳はarXiv=10件(max_results=10と完全一致)・Hacker News=20件(hitsPerPage=20と完全一致)・Hugging Face Blog=852件・OpenAI Blog=1157件(合計2039件、skipped件数と一致)。OpenAI Blogの内容をXMLエクスポートで目視確認したところ、タイトル・要約・URLとも実際の記事に対応した正しい内容で、重複や壊れたデータは見当たらなかった(Hugging Face Blogは同一コード経路のため未サンプリングだが、arXiv/Hacker Newsの件数が設定値と完全一致している状況証拠と合わせて問題なしと判断)。既知の軽微な制限として、OpenAI Blogの`u_published_at`が全行空欄だった(RSSの`<pubDate>`取得に失敗しているか、フィードに含まれていない可能性。機能は妨げないため未修正のまま許容)。これでパイプライン全体(テーブル・REST Message・Scheduled Job・実データ書き込み)が動作することを確認できた。【2026-08-29追記】上記のu_published_at空欄問題は原因判明・修正・バックフィル済み(下記checkHistory、concept-log.jsonのCL-010参照)。",
           "checkHistory": [
             {
               "date": "2026-08-29",
@@ -3348,6 +3352,10 @@
             {
               "date": "2026-08-29",
               "summary": "ServiceNow PDI上のScheduled Job(PTD-049)・Background Scriptsでの手動実行により、u_ai_research_itemへ実データ2039件が書き込まれていることを確認(inserted=0 skipped=2039 errors=[]、既存データとの重複判定が正しく機能)。件数内訳はarXiv=10/Hacker News=20(いずれも設定値と完全一致)/Hugging Face Blog=852/OpenAI Blog=1157。OpenAI Blogのサンプルデータを目視確認し、実際の記事に対応した正しい内容であることを確認した。u_published_atが空欄になる軽微な既知制限を除き、パイプライン全体が正常に動作している。PTD-046(親タスク)含め全サブタスク完了。"
+            },
+            {
+              "date": "2026-08-29",
+              "summary": "「軽微な既知制限」としていたu_published_at空欄問題を、ユーザーの要望(いつのデータか判別する必要がある)を受けて追加調査。GitHub Actions上の一時診断スクリプトでOpenAI/Hugging Face Blogの実際のRSS生データを取得したところ、pubDateタグ自体は正しく存在しており(例: `Fri, 28 Aug 2026 06:00:00 GMT`)、抽出処理は正常だったと判明。真因はServiceNowのDate/Time型フィールドへ、情報源ごとに異なる形式(RFC822/ISO8601)の日付文字列をそのまま代入すると、形式不一致時にエラーも出さず黙って空欄になるという挙動だった。scheduled_job_ai_research_fetch.jsにtoGlideDateTimeString()を追加し、Dateオブジェクト経由で\"yyyy-MM-dd HH:mm:ss\"(UTC)形式に変換してから代入するよう修正(commit 18b0977)。既存2039件のうち空欄だった分は1回限りのバックフィルスクリプト(servicenow/backfill_published_at.js)をユーザーがBackground Scriptsで実行し、2009件を正しく更新(alreadyHadDate=10・noMatch=20は想定通りで異常なし、errors=[])。詳細な原因分析・教訓はconcept-log.jsonのCL-010参照。"
             }
           ]
         }
