@@ -3414,6 +3414,24 @@
               "summary": "「軽微な既知制限」としていたu_published_at空欄問題を、ユーザーの要望(いつのデータか判別する必要がある)を受けて追加調査。GitHub Actions上の一時診断スクリプトでOpenAI/Hugging Face Blogの実際のRSS生データを取得したところ、pubDateタグ自体は正しく存在しており(例: `Fri, 28 Aug 2026 06:00:00 GMT`)、抽出処理は正常だったと判明。真因はServiceNowのDate/Time型フィールドへ、情報源ごとに異なる形式(RFC822/ISO8601)の日付文字列をそのまま代入すると、形式不一致時にエラーも出さず黙って空欄になるという挙動だった。scheduled_job_ai_research_fetch.jsにtoGlideDateTimeString()を追加し、Dateオブジェクト経由で\"yyyy-MM-dd HH:mm:ss\"(UTC)形式に変換してから代入するよう修正(commit 18b0977)。既存2039件のうち空欄だった分は1回限りのバックフィルスクリプト(servicenow/backfill_published_at.js)をユーザーがBackground Scriptsで実行し、2009件を正しく更新(alreadyHadDate=10・noMatch=20は想定通りで異常なし、errors=[])。詳細な原因分析・教訓はconcept-log.jsonのCL-010参照。"
             }
           ]
+        },
+        {
+          "id": "PTD-057",
+          "repo": "servicenow-sub-agent",
+          "task": "Claude/Gemini/ChatGPT公式サイトを情報源に追加する調査・実装",
+          "priority": "中",
+          "status": "対応中",
+          "updated": "2026-08-31",
+          "category": "manual",
+          "note": "経緯: ユーザーから「ChatGPTの公式サイトも毎日確認してほしいから、APIで連携して情報を取得して」「Claude、Gemini」も、という依頼があった。ヒアリングの結果、(1) 既存のServiceNowパイプライン(RSS方式・5観点分類)への追加でよい、(2) 各社の有料開発者APIではなく無料のRSS/Atomフィードで統一する、という2点をユーザーに確認済み。現在: 3社を個別に調査した。Gemini(Google)は単独の公式Geminiブログ専用RSSは見当たらなかったが、Google DeepMind Blog(Geminiモデルの発表を含むAI研究ニュース、https://deepmind.google/blog/rss.xml)の公式RSSを実地検証(HTTP 200・RSS 2.0)の上で採用した。Claude(Anthropic)は、CL-009(2026-08-29)で公式RSS/Atom不在と確認済みの状態が2026-08-31のWeb検索でも変わっていないことを再確認し、非公式ミラー不採用の方針を維持して見送った。ChatGPT(OpenAI)は、既存のopenaiメソッド(OpenAIの公式発表チャネル、ChatGPT関連発表も含む)で実質的にカバー済みと判断し、専用のRelease Notesフィードの追加は見送った(正確な配信URLをWeb検索・実地検証のいずれでも特定できず、worker-roomセッション自身がopenai.comへ直接アクセスできないためページ内のRSSリンクも確認不可)。これから: Geminiの追加はservicenow-sub-agent側に実装・push済み(commit 4795c3f)。PTD-048同様、ServiceNow PDIへの実際の反映(dry_run=false)は本人の実行待ち。Claude・ChatGPT専用フィードについては、正確なURLの手がかりが得られれば再検討の余地がある。",
+          "detail": "",
+          "checkHistory": [
+            {
+              "date": "2026-08-31",
+              "summary": "worker-roomがGoogle DeepMind Blog(https://deepmind.google/blog/rss.xml)をGitHub Actions経由で実地検証しHTTP 200・RSS 2.0を確認、setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ反映(commit 4795c3f)。Claude(Anthropic)は公式RSS/Atom不在を再確認し見送り。ChatGPTは既存のopenaiメソッドでカバー済みと判断し見送り。dry_run=trueでの再実行で全11情報源(既存4件+PTD-048分6件+今回1件)の実地検証OKを確認済み。実際のServiceNow PDIへの書き込みは本人の実行待ちのためstatusは対応中のまま。"
+            }
+          ],
+          "output": ""
         }
       ],
       "checkHistory": [
