@@ -1150,6 +1150,51 @@
       "sourceUrl": "https://www.cnbc.com/2026/08/27/nvidia-hugging-face-acquisition.html",
       "collectedAt": "2026-08-30 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "UT Dallas等、AIエージェントの記憶を4つのグラフに分離する新設計「MAGMA」をACL 2026で発表",
+      "summary": "UT DallasとUniversity of Floridaの研究チームが、記憶を単一のリポジトリではなく意味・時間・因果・エンティティの4つの直交するグラフに分けて表現する「MAGMA」(Multi-Graph based Agentic Memory Architecture)をACL 2026本会議で発表。検索を各グラフ上のポリシー誘導型の探索として定式化し、記憶表現と検索ロジックを分離することで透明な推論経路を実現。長期対話ベンチマークLoCoMo・LongMemEvalで既存の主要エージェントメモリシステムを上回る性能を示した。",
+      "sourceUrl": "https://aclanthology.org/2026.acl-long.1709/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "モデル性能",
+      "title": "DeepSeek、マルチモーダル実験モデル「V4-Flash-Vision-Exp」を8月21日公開",
+      "summary": "DeepSeekは8月21日、画像理解機能を追加した実験的モデル「DeepSeek-V4-Flash-Vision-Exp」を公開。テキスト能力(エージェント・推論・世界知識)はベースのV4-Flashと同等を維持しつつ、マルチモーダルエージェントベンチマークではAnthropicのOpus 4.8に迫る性能に大きく躍進した。1,048,576トークンのコンテキストウィンドウを持つスパースMoEモデル(総パラメータ284B、アクティブ13B)で、価格は入力$0.22/M・出力$0.66/Mトークン。",
+      "sourceUrl": "https://api-docs.deepseek.com/news/news260821/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "活用事例・医療",
+      "title": "大阪病院、富士通Japan・日本マイクロソフトと生成AIの安全な利活用体制構築プロジェクトを開始",
+      "summary": "国立病院機構大阪病院は2026年2月13日、富士通Japan・フォーティエンスコンサルティングと協定を締結し、日本マイクロソフトの技術を活用して医師・看護師の業務全般で生成AIを安全に利活用する体制構築プロジェクトを開始。2月19日には退院サマリー作成と看護申し送りの要点整理への生成AI活用を発表し、6月の運用開始に向けて院内ガイドライン整備や情報基盤・運用ガバナンスの構築を進めている。",
+      "sourceUrl": "https://www.microsoft.com/ja-jp/industry/blog/health/2026/02/26/jcho-osaka-fujitsu-microsoft-2026-blog/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "活用分野・教育",
+      "title": "高校生の7割超がAIの助言を「実行」、悩みの決断もAIに委ねる実態が明らかに",
+      "summary": "塾選ジャーナルの調査(2026年8月27日発表)によると、高校生の7割超がAIから受けた助言を実際に「実行」しており、進路や人間関係の悩みなど重要な決断をAIに委ねる実態が明らかになった。別の調査(木村鋳造所調べ、同日発表)では、アイデアを考える際にAIを使う子どもが52.8%に上り、うち11.7%は「最初からAIを使う」と回答している。",
+      "sourceUrl": "https://ict-enews.net/2026/08/27delta-x-5/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "流行・トレンド",
+      "title": "OpenAI、SpaceXによるCursor買収を受けモデル提供を11月12日打ち切りへ、Anthropicは支援継続を表明",
+      "summary": "SpaceXが2026年8月14日にAIコーディングツール「Cursor」の開発元Anysphereの買収(約600億ドル規模)を完了させたことを受け、OpenAIは8月28日、契約上の通知期間を経て2026年11月12日にCursorへのモデル提供を打ち切ると発表。理由はイーロン・マスク氏の他企業(Twitter・xAI)が過去にOpenAIの利用規約に違反した経緯を踏まえた信頼上の懸念。一方Anthropic共同創業者のTom Brown氏は「CursorはClaude 3.5の頃からの信頼できるパートナー」とし、Cursor向けのClaudeモデルの計算資源を今後も拡大していく方針を示した。",
+      "sourceUrl": "https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
