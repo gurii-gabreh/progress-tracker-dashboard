@@ -3290,16 +3290,17 @@
           "task": "ServiceNow PDIにREST Messageを作成する(arXiv/Hacker News/Blog RSS、追加6件を拡張中)",
           "title": "REST Message作成",
           "priority": "中",
-          "status": "対応中",
+          "status": "完了",
           "category": "manual",
-          "updated": "2026-08-31",
+          "updated": "2026-09-01",
           "content": [
             "System Web Services > REST Messageに4レコード(AI Research - arXiv/Hacker News/Blog RSS[openai/huggingface]、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。",
             "2026-08-30追記: 情報源を追加調査した結果、認証不要で同じ方式のまま組み込める6件の候補が見つかった(MIT Technology Review AI、MarkTechPost、ByteByteGo、InfoQ[AI/ML/Data Eng]、Martin Fowler blog、Architecture Weekly)。setup_rest_messages.mjsのBlog RSS用HTTPメソッドへ追加する形で拡張する。候補URL: technologyreview.com/feed/(またはAI特化の/topic/artificial-intelligence/)、marktechpost.com/feed/、blog.bytebytego.com/feed、feed.infoq.com/ai-ml-data-eng/、martinfowler.com/feed.atom、architecture-weekly.com/feed(またはSubstack版softwarearchitectureweekly.substack.com/feed、ユーザー確認待ち)。既存のverify_source_urls.mjs(PTD-050)によるHTTP実地検証を経てから本採用とすること(CL-009の教訓通り、URLの実在は推測せず実地検証する)。",
             "2026-08-30実装: 追加候補6件のうち5件(MIT Technology Review AI[AI特化topic feed]/MarkTechPost/ByteByteGo/InfoQ[AI/ML/Data Eng]/Martin Fowler blog)を実地検証(GitHub Actions実行、HTTP 200・想定形式を確認)の上、既存の「AI Research - Blog RSS」REST MessageへHTTPメソッドとして追加した(新規REST Messageレコードは増やさず、既存の冪等設計を踏襲。commit f85852d)。dry_run=trueでのworkflow_dispatch実行により、5件の新規POST(想定エンドポイント通り)・既存2件(openai/huggingface)の存在確認・全9情報源URLの実地検証OKまでは確認済み。ただし実際のServiceNow PDIへの書き込み(dry_run=false実行)は、この一連の作業が本人からの直接指示ではなく自動化された依頼経由だったため、PTD-048のこれまでの全ての実行(dry_run=true/false問わず)が一貫して本人によるworkflow_dispatchのボタン操作で行われてきた運用実績を踏まえ、worker-room側からは実行せず本人の実行待ちとした。残る1件(Architecture Weekly)は候補URL2件とも実地検証に失敗したため未採用・相談事項として記録(PTD-056参照)。",
-            "2026-08-31解決: Architecture Weeklyの正しいURLをユーザーが追加調査し、運営者(Oskar Dudycz)のSubstackカスタムドメインは`www`付きの`www.architecture-weekly.com`だと判明。`https://www.architecture-weekly.com/feed`を実地検証した結果HTTP 200・RSS 2.0を確認できたため、PTD-048の追加候補6件全てを情報源として採用した(commit 4858c47)。dry_run=trueでの再実行で全10情報源(既存4件+新規6件)の実地検証OK・新規6メソッドのPOST内容(想定通り)を確認済み。"
+            "2026-08-31解決: Architecture Weeklyの正しいURLをユーザーが追加調査し、運営者(Oskar Dudycz)のSubstackカスタムドメインは`www`付きの`www.architecture-weekly.com`だと判明。`https://www.architecture-weekly.com/feed`を実地検証した結果HTTP 200・RSS 2.0を確認できたため、PTD-048の追加候補6件全てを情報源として採用した(commit 4858c47)。dry_run=trueでの再実行で全10情報源(既存4件+新規6件)の実地検証OK・新規6メソッドのPOST内容(想定通り)を確認済み。",
+            "2026-09-01完了: 2026-09-01、ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、ServiceNow PDIへ実際に反映した(run #12、servicenow-sub-agent commit 4795c3f時点のコード)。REST Message自動作成ジョブでは、既存のREST Message(arXiv/Hacker News/Blog RSS)と既存メソッド(search×2・openai・huggingface)は全てスキップ(既存のまま変更なし)、新規7件のHTTPメソッド(mittechreview/marktechpost/bytebytego/infoq/martinfowler/architectureweekly/geminideepmind)を実際に作成した(各sys_idをログで確認)。Scheduled Jobスクリプト同期ジョブでも、\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドを最新のscheduled_job_ai_research_fetch.js(7件のfetchBlogRss呼び出し追加+Atom形式のextractAttrリンク抽出修正を含む)へ実際に更新した。これで「AI Research - Blog RSS」はopenai/huggingface+新規7件=計9メソッド、パイプライン全体では情報源11件(arXiv・Hacker News・Blog RSS 9件)がServiceNow PDI上で稼働状態になった。次回のScheduled Job実行(日次)から新規7情報源が収集対象に入る想定。u_ai_research_itemへの実際の書き込み確認(PTD-050の手動確認パターン)は別途必要。"
           ],
-          "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。",
+          "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。 2026-09-01、追加6情報源(PTD-048拡張)+Gemini(PTD-057)分の反映は、ユーザーの明示的な指示に基づきworker-roomがGitHub Actionsワークフローをdry_run=falseで実行して行った(従来はユーザー自身がボタン操作していたが、今回は「ServiceNow PDIへの実反映して」という直接指示を受けて実行)。",
           "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。\n\n2026-08-30追記(実装ナレッジ): (1) 5件の情報源追加により、scheduled_job_ai_research_fetch.jsのSOURCE_DEFAULT_CATEGORYへも観点の既定値を追加した(ByteByteGo/InfoQ/Martin Fowler blog=観点1[アーキテクチャ]、MarkTechPost=観点2[AI技術動向]、MIT Technology Review AI=観点5[AIの流行]、いずれも機械的な既定割り当て)。(2) MIT Technology Reviewは全体feed(technologyreview.com/feed/)とAI特化topic feed(/topic/artificial-intelligence/feed/)の両方が実地検証OKだったが、本パイプラインの目的(AI観点での情報収集)により合致するAI特化版を採用した。(3) Martin Fowler blogはAtom形式で、既存の正規表現ベース抽出(extractTag、<tag>content</tag>の閉じタグ前提)ではAtomの自己終端<link href=\"...\"/>からURLを取得できずsourceUrlが常に空になり、insertItem側で全件スキップされる潜在バグを実機投入前のコードレビューで発見した。属性値抽出用のextractAttrを追加し、RSS形式→Atom形式(属性)→<guid>の順にフォールバックする修正を行い、ローカルモックテストでRSS/Atom両形式のlink/title/pubDate抽出を確認済み(concept-log.jsonのCL-013参照)。(4) Architecture Weekly(6番目の候補)は候補URL2件(独自ドメイン・Substack)とも実地検証に失敗(前者は接続失敗、後者はCloudflareのbot対策によるHTTP 403)したため、CL-009の教訓(URLの実在は推測せず実地検証する)に従い推測で採用せず、PTD-056として相談事項を起票した。\n\n2026-08-31追記: PTD-056(Architecture Weeklyの相談)は解決済み。原因は当初検証したURL(www無しの独自ドメイン、Substackサブドメイン)がいずれも誤りで、正しくはSubstackカスタムドメインの`www`付きURLだった。これによりPTD-048の追加候補6件は全て情報源として確定した(既存4件+新規6件=計10情報源)。実際のServiceNow PDIへの書き込み(dry_run=false)は引き続き本人の実行待ち。",
           "checkHistory": [
             {
@@ -3329,6 +3330,10 @@
             {
               "date": "2026-08-31",
               "summary": "ユーザーからの追加質問(「Architecture Weeklyってそもそもなんだっけ」)をきっかけに、Web検索でArchitecture Weekly(運営: Oskar Dudycz、Substack配信のソフトウェアアーキテクチャ週刊ニュースレター)の実体を確認したところ、正しい配信URLは`www`付きの`www.architecture-weekly.com`(Substackのカスタムドメイン)であるとユーザーが特定。worker-roomが`https://www.architecture-weekly.com/feed`をGitHub Actions経由で実地検証しHTTP 200・RSS 2.0を確認、setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ反映(commit 4858c47)。dry_run=trueでの再実行で全10情報源の実地検証OK・新規メソッドのPOST内容確認まで完了。PTD-056はこれで解決したためcompletedItemsへ移す。"
+            },
+            {
+              "date": "2026-09-01",
+              "summary": "2026-09-01、ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、ServiceNow PDIへ実際に反映した(run #12、servicenow-sub-agent commit 4795c3f時点のコード)。REST Message自動作成ジョブでは、既存のREST Message(arXiv/Hacker News/Blog RSS)と既存メソッド(search×2・openai・huggingface)は全てスキップ(既存のまま変更なし)、新規7件のHTTPメソッド(mittechreview/marktechpost/bytebytego/infoq/martinfowler/architectureweekly/geminideepmind)を実際に作成した(各sys_idをログで確認)。Scheduled Jobスクリプト同期ジョブでも、\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドを最新のscheduled_job_ai_research_fetch.js(7件のfetchBlogRss呼び出し追加+Atom形式のextractAttrリンク抽出修正を含む)へ実際に更新した。これで「AI Research - Blog RSS」はopenai/huggingface+新規7件=計9メソッド、パイプライン全体では情報源11件(arXiv・Hacker News・Blog RSS 9件)がServiceNow PDI上で稼働状態になった。次回のScheduled Job実行(日次)から新規7情報源が収集対象に入る想定。u_ai_research_itemへの実際の書き込み確認(PTD-050の手動確認パターン)は別途必要。"
             }
           ],
           "subtasks": [
@@ -3420,8 +3425,8 @@
           "repo": "servicenow-sub-agent",
           "task": "Claude/Gemini/ChatGPT公式サイトを情報源に追加する調査・実装",
           "priority": "中",
-          "status": "対応中",
-          "updated": "2026-08-31",
+          "status": "完了",
+          "updated": "2026-09-01",
           "category": "manual",
           "note": "経緯: ユーザーから「ChatGPTの公式サイトも毎日確認してほしいから、APIで連携して情報を取得して」「Claude、Gemini」も、という依頼があった。ヒアリングの結果、(1) 既存のServiceNowパイプライン(RSS方式・5観点分類)への追加でよい、(2) 各社の有料開発者APIではなく無料のRSS/Atomフィードで統一する、という2点をユーザーに確認済み。現在: 3社を個別に調査した。Gemini(Google)は単独の公式Geminiブログ専用RSSは見当たらなかったが、Google DeepMind Blog(Geminiモデルの発表を含むAI研究ニュース、https://deepmind.google/blog/rss.xml)の公式RSSを実地検証(HTTP 200・RSS 2.0)の上で採用した。Claude(Anthropic)は、CL-009(2026-08-29)で公式RSS/Atom不在と確認済みの状態が2026-08-31のWeb検索でも変わっていないことを再確認し、非公式ミラー不採用の方針を維持して見送った。ChatGPT(OpenAI)は、既存のopenaiメソッド(OpenAIの公式発表チャネル、ChatGPT関連発表も含む)で実質的にカバー済みと判断し、専用のRelease Notesフィードの追加は見送った(正確な配信URLをWeb検索・実地検証のいずれでも特定できず、worker-roomセッション自身がopenai.comへ直接アクセスできないためページ内のRSSリンクも確認不可)。これから: Geminiの追加はservicenow-sub-agent側に実装・push済み(commit 4795c3f)。PTD-048同様、ServiceNow PDIへの実際の反映(dry_run=false)は本人の実行待ち。Claude・ChatGPT専用フィードについては、正確なURLの手がかりが得られれば再検討の余地がある。",
           "detail": "",
@@ -3429,9 +3434,13 @@
             {
               "date": "2026-08-31",
               "summary": "worker-roomがGoogle DeepMind Blog(https://deepmind.google/blog/rss.xml)をGitHub Actions経由で実地検証しHTTP 200・RSS 2.0を確認、setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ反映(commit 4795c3f)。Claude(Anthropic)は公式RSS/Atom不在を再確認し見送り。ChatGPTは既存のopenaiメソッドでカバー済みと判断し見送り。dry_run=trueでの再実行で全11情報源(既存4件+PTD-048分6件+今回1件)の実地検証OKを確認済み。実際のServiceNow PDIへの書き込みは本人の実行待ちのためstatusは対応中のまま。"
+            },
+            {
+              "date": "2026-09-01",
+              "summary": "ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、geminideepmindメソッドをServiceNow PDI上に実際に作成した(PTD-048拡張分7件と同一のワークフロー実行でまとめて反映、詳細はPTD-048のcheckHistory参照)。"
             }
           ],
-          "output": ""
+          "output": "Google DeepMind Blog(https://deepmind.google/blog/rss.xml)をgeminideepmindメソッドとしてServiceNow PDIへ実際に作成済み(2026-09-01、PTD-048拡張分と合わせて一括反映)。sys_id=eca8fab993cbc350043532edfaba10b5。Claude(Anthropic)・ChatGPT専用フィードは引き続き未対応。"
         }
       ],
       "checkHistory": [
