@@ -1195,6 +1195,60 @@
       "sourceUrl": "https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/",
       "collectedAt": "2026-08-31 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "アーキテクチャ・エージェント基盤",
+      "title": "エンタープライズ向けAIエージェント基盤、「オーケストレーター/ワーカー」等7つの設計パターンに収斂",
+      "summary": "2026年時点のエンタープライズ向けAIエージェント基盤アーキテクチャは、オーケストレーター/ワーカー分業、スーパーバイザーによるルーティング、RAGに基盤付けされたエージェント、モデルゲートウェイ、人間介入ゲート、評価ループ、監査プレーンの7パターンに整理されつつある。専門特化したエージェント群をスーパーバイザーが調停し明確な権限委譲を持たせる設計は、単一の巨大エージェントより障害時の切り分けとガバナンスが容易とされる。",
+      "sourceUrl": "https://vdf.ai/blog/enterprise-ai-agent-platform-architecture-patterns-2026/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "モデル性能",
+      "title": "Z.ai、コーディング・サイバーセキュリティ特化モデル「GLM-5.3」を8月14日正式公開",
+      "summary": "Z.aiは8月14日、GLM-5.2のベースモデルをそのまま使い後学習のみで性能を伸ばした「GLM-5.3」を公開。サイバーセキュリティベンチマークCyberGymで84.5点を記録し、Claude Mythos 5(83.8)・GPT-5.6 Sol(83.6)を上回った。AutomationBenchは26.2→48.2とほぼ倍増、コンテキスト窓は100万トークン。オープンウェイトは公開から約2週間後に提供予定とされた。",
+      "sourceUrl": "https://www.explainx.ai/blog/glm-5-3-launch-cyber-defense-benchmarks-august-2026",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "モデル性能・オープンウェイト",
+      "title": "Alibaba「Qwen3.8」、8月13〜14日にオープンウェイト公開もライセンスを27BとMaxで分割",
+      "summary": "Alibabaは8月2日発表のQwen3.8-Max(2.4兆パラメータMoE、アクティブ950億、コンテキスト100万トークン、価格$2/$6毎百万トークン)に続き、8月13〜14日にオープンウェイトを公開。270億パラメータの「Qwen3.8-27B」はApache 2.0で提供される一方、2.4兆パラメータの「Qwen3.8-2.4T-A95B」は独自の「Qwen3.8-Maxライセンス」となり、年間売上5,000万ドルを超えるAIサービス事業者は別途ライセンス取得が必要と定められた。",
+      "sourceUrl": "https://www.digitalapplied.com/blog/qwen3-8-max-full-release-benchmarks-open-weights",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "活用事例・建設業",
+      "title": "清水建設、法人向けAIアシスタント「Lightblue」の利用者が約1年半で8,800名に拡大",
+      "summary": "清水建設は8月20日、法人向けAIアシスタント「Lightblue」の社内利用者数が導入から約1年半で8,800名に達したと発表。現場主導で社内に8,000個超のAIアシスタントが作成されており、建設現場・支店・本社の各部門で図面・仕様書・技術文書のRAG検索や問い合わせ対応などに活用が広がっている。",
+      "sourceUrl": "https://www.lightblue-tech.com/2026/08/20/shimz/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "流行・規制対応",
+      "title": "Anthropic、Claudeの生成テキスト・ファイルに不可視の電子透かしを8月2日から全世界導入",
+      "summary": "Anthropicは8月2日以降、Claudeが生成する全てのテキスト・ファイル出力に不可視の電子透かしを埋め込む運用を開始したと発表。EU AI法第50条(2)項の透明性義務(合成コンテンツを機械可読な形式でAI生成と識別可能にする要件)に対応するもので、地域を問わずグローバルに適用される。透かしは文章の意味・品質・読みやすさを変えずテキスト自体に織り込まれ、コピー&ペーストや一部編集にも耐える設計。ファイルにはC2PA標準を採用し、既存の旧モデルへの展開期限は2026年12月2日とされた。",
+      "sourceUrl": "https://techcrunch.com/2026/08/11/anthropic-says-it-will-watermark-text-generated-by-its-ai-models/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "流行・規制",
+      "title": "ミネソタ州、AI「ヌード化」アプリを禁止する初の州法が8月1日施行、xAIが違憲訴訟を提起",
+      "summary": "ミネソタ州で同意なくAI生成のヌード画像を作る「ヌード化(nudification)」アプリ・サービスを禁じる全米初の州法が2026年8月1日に施行され、違反1件につき最大50万ドルの民事制裁金が科されうる内容となった。同法施行を受け、Grok Imagineの画像編集機能の制限を迫られるxAIは、表現の自由(修正第1条)違反を主張してミネソタ州司法長官を相手取り違憲訴訟を提起した。",
+      "sourceUrl": "https://www.engadget.com/2225792/xai-challenging-new-minnesota-law-banning-nudify-apps/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
