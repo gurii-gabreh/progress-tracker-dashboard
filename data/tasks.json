@@ -3541,6 +3541,25 @@
           "summary": "相談ルームでCodexとClaude Sonnet 5の精度比較・連携方法(openai/codex-plugin-cc)・利用制限・費用面を調査し、ユーザーとの相談の結果、宙ぶらりんの2つ目のClaudeアカウントをChatGPT Plus(Codex)契約へ切り替える方針で合意。タスク化した。"
         }
       ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-058",
+      "task": "ServiceNowが収集したリサーチデータの閲覧サイト化(日本語要約・日/週/月表示・おすすめ順)",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-09-02",
+      "category": "manual",
+      "note": "2026-09-02、ユーザーから「ServiceNowで調査してもらっている内容を日付/週/月ごとに表示できるサイトを作ってほしい。概要が既に明記されていなければ日本語で概要・ポイント・活かせる技術を明記してほしい」との依頼。既存のu_ai_research_item(PTD-046)のu_summaryは各情報源の生の英語要約に過ぎず日本語の概要・ポイント・活かせる技術は無いことを確認した上で、対象範囲・表示件数についてユーザーへ相談(既存2,363件全件を対象に要約する、表示は全件出しつつ好みの分析で上位表示、との回答)。「まずは進めて、要約の部分は現物を見て指摘があればする」との承認を受けて着手。",
+      "detail": "【実施内容(2026-09-02)】\n\n(1) servicenow/scripts/export_research_items.mjs: u_ai_research_itemテーブルの全件(2,363件、arXiv 40・Hacker News 99・OpenAI Blog 1,164・Hugging Face Blog 855・Google DeepMind Blog 100・Architecture Weekly 20・ByteByteGo 20・InfoQ 15・MarkTechPost 10・MIT Technology Review AI 10)をTable API経由でページング取得し、data/research-items.jsonへエクスポートするスクリプトを実装。既存の日本語要約(summaryJa/pointsJa/applicableTechJa)は上書きせずマージする設計(Claudeによる手動キュレーションのみが更新する一方向設計)。\n\n(2) .github/workflows/servicenow-export-research.yml: workflow_dispatch+日次cron(00:30 UTC=09:30 JST)。初回実行時、`git diff --quiet`(add前)では新規未追跡ファイルの差分を検出できず「変化なし」と誤判定されコミットがスキップされるバグを発見・修正した(`git add`後に`git diff --cached --quiet`で判定するよう変更。同種のパターンを使うprogress-tracker-dashboard側のbuild-vector-index.ymlは、対象ファイルが既に追跡済みのため今のところこのバグは顕在化していないが、同じ地雷を踏む可能性がある点は要注意としてconcept-log.jsonに記録)。\n\n(3) servicenow/scripts/lib/score_items.mjs: 「おすすめ順」表示用のキーワードベース簡易スコアリング。明示的な評価データ(いいね等)がまだ存在しないため、このプロジェクトで繰り返し重視されてきたキーワード(agent/architecture/MCP/RAG/security/free/Anthropic・Claude等)との一致度で代用。将来的にフィードバック機能が実装されたらそちらを優先するロジックへ差し替える想定。\n\n(4) index.html: data/research-items.jsonをfetchして表示する単一ページビューア。日/週/月のグループ切替、おすすめ順/新着順のソート切替、観点(5分類)フィルタ、要約済み/未要約バッジ、グループごとの折りたたみ+もっと見るページング(初期30件)。.github/workflows/deploy-pages.ymlでGitHub Pagesへ自動デプロイする構成(Study-Schedule/Knowledge-Dashboardと同一パターン)。\n\n(5) 初回キュレーション: 直近(2026-08-31〜09-02公開分)の中から、rawSummaryに実質的な内容がある23件を選び、日本語のsummaryJa・pointsJa(2〜4点)・applicableTechJaを付与(curated:true)。タイトルのみでrawSummaryが空の項目(Hacker Newsのリンク投稿等に多い)は、推測での要約を避けるため今回は対象外とした(CLAUDE.mdルール1・5の「根拠のない情報は含めない」に従った判断)。\n\n(6) ナレッジ化: ユーザーからの追加依頼「このJSONデータをチャンク化してナレッジとして使えるようにして」を受け、progress-tracker-dashboardのscripts/knowledge/build_vector_index.pyに、servicenow-sub-agentのresearch-items.jsonを取得してチャンク化する関数を追加(chunks_from_sn_research_items)。生データ2,000件超をそのまま索引化するとノイズだらけになるため、curated:trueの項目のみをナレッジ化対象にする設計とした(要約が進むにつれてチャンクも自然に増えていく)。",
+      "output": "https://github.com/gurii-gabreh/servicenow-sub-agent (index.html等)。GitHub Pagesの公開URL(https://gurii-gabreh.github.io/servicenow-sub-agent/)は、リポジトリ側でPages機能を「Settings > Pages > Build and deployment > Source: GitHub Actions」に手動で1回有効化する必要があり、この設定がまだ完了していないため初回デプロイが失敗している(下記nextAction参照)。",
+      "nextAction": "(1) ユーザーがservicenow-sub-agentリポジトリのSettings > Pagesで「GitHub Actions」をソースとして選択(1回限りの手動設定、Study-Schedule等と同様)。設定後、deploy-pages.ymlを再実行すれば公開される。(2) 残り約2,340件(未要約分)の日本語要約を、日次のバックフィル運用で継続的に追加していく。(3) キュレーション済み23件の内容についてユーザーが実物を確認し、指摘があれば反映する(ユーザー了承済みの進め方)。",
+      "checkHistory": [
+        {
+          "date": "2026-09-02",
+          "summary": "エクスポート基盤・スコアリング・ビューアーサイト・GitHub Pagesデプロイ設定・初回23件の日本語キュレーション・知識ベクトル索引への統合まで実装しcommit・push済み(servicenow-sub-agent: 2637933→f817bab→d983d15→6598f06、progress-tracker-dashboard: 5ddceb0)。GitHub Pagesの手動有効化のみユーザー作業待ちで残っている。"
+        }
+      ]
     }
   ]
 }
