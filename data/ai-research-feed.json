@@ -1249,6 +1249,51 @@
       "sourceUrl": "https://www.engadget.com/2225792/xai-challenging-new-minnesota-law-banning-nudify-apps/",
       "collectedAt": "2026-09-01 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "アーキテクチャ・エージェントUI",
+      "title": "Perplexity、メール受信箱をAIエージェントの操作インターフェースにする「Computer in Email」を発表",
+      "summary": "Perplexityは、自律型エージェント基盤「Computer」にメールから直接タスクを依頼できる「Computer in Email」を発表。computer@perplexity.comへ新規メール送信・スレッド転送・CCのいずれかでタスクを依頼すると、送信者を認証した上でスレッド全文・添付ファイルを読み取り、その人自身が持つ権限・連携先を使ってタスクを実行し、スプレッドシートやPDF等の成果物を同じメールスレッドに返信する。各リクエストはWeb・モバイルからも確認できる完全なセッション記録(監査証跡)を生成する。",
+      "sourceUrl": "https://www.perplexity.ai/hub/blog/computer-now-works-in-email",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "モデル性能",
+      "title": "Tencent、7,700億パラメータのオープンウェイトモデル「Hy4 preview」を8月28日公開",
+      "summary": "Tencentは8月28日、次世代大規模言語モデル「Hy4 preview」をApache 2.0でオープンソース公開。総パラメータ7,700億(アクティブ490億)のMixture-of-Expertsアーキテクチャで、コンテキストウィンドウは100万トークン超。コーディング・オフィス業務・科学研究といった実務タスクで高い性能を示すとし、Tencent自社のWorkBuddy・CodeBuddy・元宝(Yuanbao)・ima等の製品からも利用できる。",
+      "sourceUrl": "https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "技術の組み合わせ・音声エージェント",
+      "title": "Google、Gemini Liveに非同期エージェント「Spark」を統合、音声指示だけでGoogleアプリを横断作業させる機能を8月26日追加",
+      "summary": "Googleは8月26日、音声アシスタント「Gemini Live」に、複数手順にわたる作業をバックグラウンドで自律実行するエージェント「Spark」との統合、話し言葉での「Daily Brief」、ハンズフリーのGmail操作、Personal Intelligenceの4機能を追加。例えば「予定を教えて」と話しかけた後、「メールから招待状を拾って家族カレンダーに登録し、移動時間も追加して」と続けると、その作業はSparkに引き渡されGoogle Docs・Sheets・Drive・Web上でバックグラウンド実行される。",
+      "sourceUrl": "https://www.unite.ai/gemini-live-gains-agentic-spark-tasks-daily-brief-and-voice-inbox-control/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "活用分野・教育",
+      "title": "Google、日本の大学生向けに「Google AI Plus」を1年間無料提供、8月20日発表",
+      "summary": "Googleは8月20日、日本在住・18〜24歳の大学生を対象に、通常月額725円の「Google AI Plus」(Gemini Omniへのアクセス・無料版の2倍の利用上限・400GBストレージ等)を登録から1年間無料提供すると発表。上位プラン「Google AI Pro」も最大75%オフで提供する。申し込み期限は2026年12月31日で、無料期間終了後は解約しない限り月額725円で自動更新される。",
+      "sourceUrl": "https://www.itmedia.co.jp/news/article/2608/20/2000000634/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "流行・トレンド",
+      "title": "SpaceXAI(旧xAI)、常時稼働のAIエージェント「Grok Bot」をCursor経由でベータ公開、月120ドル",
+      "summary": "SpaceXAIは8月11日、クラウド上で稼働し続け利用者のツールにログインして実作業を代行する「AIチームメイト」型エージェント「Grok Bot」を、Cursor経由の早期ベータとして公開。人間の判断が必要な時だけ差し戻され、スマホ・PCどちらからでも同じ会話を継続でき、「Show a Bot how it's done」機能で作業手順を録画・記憶させ定型ルーティンとしてスケジュール実行させることもできる。SuperGrok Heavy・Cursor Ultra・Cursor Teams Premiumの加入者は追加料金なしで利用可能(単体では月120ドル)。",
+      "sourceUrl": "https://venturebeat.com/orchestration/spacexais-grok-bot-turns-agents-into-persistent-digital-coworkers-that-can-operate-your-apps-for-120-per-month",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
