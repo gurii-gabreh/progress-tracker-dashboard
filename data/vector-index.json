@@ -1,7 +1,7 @@
 {
   "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json・servicenow-sub-agentのresearch-items.json[日本語要約済みcurated:trueのみ])から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "generatedAt": "2026-09-02T16:27:10Z",
+  "generatedAt": "2026-09-02T20:18:53Z",
   "chunkCount": 209,
   "chunks": [
     {
