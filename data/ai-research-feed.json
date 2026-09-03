@@ -1294,6 +1294,60 @@
       "sourceUrl": "https://venturebeat.com/orchestration/spacexais-grok-bot-turns-agents-into-persistent-digital-coworkers-that-can-operate-your-apps-for-120-per-month",
       "collectedAt": "2026-09-02 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "アーキテクチャ・AIエージェント基盤",
+      "title": "DoorDash、AIエージェント開発基盤「Flux」で月13万件のエンジニアリングタスクを自動化",
+      "summary": "DoorDashはエンジニアリング向けAIエージェントのワークロードを個人PCから自社のクラウド基盤「Flux」へ移行し、1か月間で13万件のタスクを自動化、週2万5千件超の自動コードレビューを支えていると発表。分離実行環境(Firecracker microVM)・MCPゲートウェイ・再利用可能なプレイブック・複数の起動経路を組み合わせ、権限を絞った上で一元的な監査ログを取得できる構成にしている。",
+      "sourceUrl": "https://www.infoq.com/news/2026/08/doordash-flux-cloud-agent/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "アーキテクチャ・モデルルーティング",
+      "title": "Microsoft、Azure AI FoundryのModel Routerを2リージョンから28リージョンへ拡大、Claude Opus 4.8等を追加",
+      "summary": "MicrosoftがAzure AI FoundryのModel Routerの提供リージョンをグローバル標準28・データゾーン21へ拡大し、Claude Opus 4.8とGPT-5.6を新規追加、非推奨の4モデルを除去した。既定デプロイはモデルプールの変更を自動的に受け取る一方、実効的なコンテキストウィンドウはプール内最小のモデルに合わせられる仕様になっている。",
+      "sourceUrl": "https://www.infoq.com/news/2026/08/foundry-model-router-regions/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "モデル性能",
+      "title": "Anthropic、Claude Fable 5.1・Claude Mythos 5.1を9月1日公開、Terminal-Bench-Scienceで前モデル比約2倍に",
+      "summary": "Anthropicは2026年9月1日、Claude Fable 5.1(Claude API・AWS・Google Cloud・Microsoft Foundryで一般提供)とClaude Mythos 5.1(Project Glasswing認定組織限定)を公開。Fable 5.1はTerminal-Bench-Science 0.1で52.6%(Fable 5の24.7%から倍増)、100万トークンのコンテキストウィンドウに対応し、キャッシュ読み込み価格を75%引き下げ(100万トークンあたり0.25ドル)た一方、基本価格(入力10ドル/出力50ドル)は据え置いた。",
+      "sourceUrl": "https://www.marktechpost.com/2026/09/01/anthropic-releases-claude-fable-5-1-and-claude-mythos-5-1-52-6-on-terminal-bench-science-and-75-cheaper-cache-reads/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "セキュリティ・企業向け機能",
+      "title": "Anthropic、企業向け安全機構「Enterprise Frontier Safeguards」を9月1日発表、監視データを顧客クラウドに保存",
+      "summary": "Anthropicは2026年9月1日、企業向けの新しい安全機構「Enterprise Frontier Safeguards(EFS)」を発表。監視データをAnthropicのクラウドではなく顧客自身のクラウドアカウント内に保存する「ゼロデータ保持」設計としながら、不正利用の検知自体は自動化されAnthropic側のロジックで動作させ、暗号鍵やフラグ確認の権限は顧客側が保持する。100社超の企業と共同開発し、2026年秋から段階展開予定。",
+      "sourceUrl": "https://www.marktechpost.com/2026/09/02/anthropic-enterprise-frontier-safeguards-efs/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "技術の組み合わせ・製造業",
+      "title": "NEC、独自「自動交渉AI」で部品調達交渉を自動化するAIエージェントサービスを提供開始、交渉時間を数日から約80秒に短縮",
+      "summary": "NECは2025年12月2日、独自AI技術「自動交渉AI」を基盤とする「調達交渉AIエージェントサービス」の提供を開始。2024年11月にグループ会社で行った実証実験では約1,300品目の部品調達において取引先との納期・数量調整を自動化し、自動合意達成率95%、従来数時間〜数日を要していた調整時間を約80秒に短縮した。",
+      "sourceUrl": "https://jpn.nec.com/press/202512/20251202_01.html",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "流行・AIガバナンス",
+      "title": "OpenAI、新モデル「Astra」が自社基準で「重大」レベルのサイバーセキュリティ能力を初めて満たしたと発表",
+      "summary": "OpenAIは新モデル「Astra」について、自社のPreparedness Framework(準備フレームワーク)における「重大(Critical)」レベルのサイバーセキュリティ能力基準を満たした初のモデルであると発表し、より強力な安全対策を伴って提供するとした。モデルの能力向上に応じてリリース前の安全対策を段階的に強化する運用の実例として注目されている。",
+      "sourceUrl": "https://openai.com/index/path-to-astra",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
     }
   ]
 }
