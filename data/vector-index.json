@@ -1,7 +1,7 @@
 {
   "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json・servicenow-sub-agentのresearch-items.json[日本語要約済みcurated:trueのみ])から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "generatedAt": "2026-09-02T20:18:53Z",
+  "generatedAt": "2026-09-03T11:07:56Z",
   "chunkCount": 209,
   "chunks": [
     {
@@ -37343,8 +37343,8 @@
       "id": "tasks:TEX-001",
       "source": "tasks.json",
       "ref": "text-extraction/TEX-001",
-      "text": "gurii-gabreh/text-extraction: 画像の文字起こし処理を作業ルームで直接実行する(今回分・直近の失敗画像)\nclaude_pipeline/(output/latest.json・review.html・gas/Code.gs・README.md)として実装済み(PR #1、gurii-gabreh/Text-Extraction、マージ済み)。既存のcore/*.py・batch.py・app.pyは一切変更していない。GAS(Code.gs)は元ファイル名で重複チェックし、同じJSONへの再実行でも二重追記しない設計。output/sample.jsonでreview.htmlの表示(欠損フィールド警告・正解ハイライト含む)を確認済み。\n2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。\n[2026-08-10・重要] スキャフォールド作成が3回とも作業ルームで失敗した根本原因が判明: リポジトリ`gurii-gabreh/text-extraction`は`gurii-gabreh/Text-Extraction`(大文字)へリネームされていた。旧URLでもgitコマンド単体はリダイレクトに追従するため問題ないが、create_sessionでの作業ルーム起動時のコンテナ構築処理がリダイレクト前提のディレクトリ名でchdirしてしまい失敗していたと考えられる(2回目の失敗ログ「chdir /home/user/text-extraction: no such file or directory」と符合)。今後この repo へ作業ルームを依頼する際は、必ず`https://github.com/gurii-gabreh/Text-Extraction`(大文字)を使うこと。これに気づかず3回同じURLで依頼していたため、最終的にユーザー指示でマネージャールームが直接(git clone/push/PR作成)対応した。",
-      "hash": "361b254024809496",
+      "text": "gurii-gabreh/text-extraction: 画像の文字起こし処理を作業ルームで直接実行する(今回分・直近の失敗画像)\nclaude_pipeline/(output/latest.json・review.html・gas/Code.gs・README.md)として実装済み(PR #1、gurii-gabreh/Text-Extraction、マージ済み)。既存のcore/*.py・batch.py・app.pyは一切変更していない。GAS(Code.gs)は元ファイル名で重複チェックし、同じJSONへの再実行でも二重追記しない設計。output/sample.jsonでreview.htmlの表示(欠損フィールド警告・正解ハイライト含む)を確認済み。\n2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。\n[2026-08-10・重要] スキャフォールド作成が3回とも作業ルームで失敗した根本原因が判明: リポジトリ`gurii-gabreh/text-extraction`は`gurii-gabreh/Text-Extraction`(大文字)へリネームされていた。旧URLでもgitコマンド単体はリダイレクトに追従するため問題ないが、create_sessionでの作業ルーム起動時のコンテナ構築処理がリダイレクト前提のディレクトリ名でchdirしてしまい失敗していたと考えられる(2回目の失敗ログ「chdir /home/user/text-extraction: no such file or directory」と符合)。今後この repo へ作業ルームを依頼する際は、必ず`https://github.com/gurii-gabreh/Text-Extraction`(大文字)を使うこと。これに気づかず3回同じURLで依頼していたため、最終的にユーザー指示でマネージャールームが直接(git clone/push/PR作成)対応した。\n[2026-08-24追記・方針転換] 旧方式(JSON出力→GAS(claude_pipeline/)がスプレッドシートへ自動書き込み)を破棄し、以下に変更する。(1)GASは使わず、作業ルーム(Claude)自身が新規のGoogleスプレッドシート(またはExcelファイル)を作成し直接書き込む。(2)出力先は既存のスプレッドシートではなく新規作成したものとし、ユーザーが手動で本来の管理用シートへ転記する。(3)切り抜き画像は元画像のフォルダ内に新規サブフォルダを作って保存する。(4)図・表(選択肢自体が図の場合を含む)は切り抜き画像として保持し、通常テキストはそのまま書き起こす方針を明確化。既存のclaude_pipeline/(PR #1)は本方針では使用しないため、削除するか判断すること。認証情報待ちだった旧方式の制約はこれにより解消される(作業ルーム自身のDrive/Sheetsアクセスで完結するため)。",
+      "hash": "c50bc2a4e886e090",
       "embedding": [
         -0.43204590678215027,
         -0.07847343385219574,
@@ -37736,8 +37736,8 @@
       "id": "tasks:TEX-002",
       "source": "tasks.json",
       "ref": "text-extraction/TEX-002",
-      "text": "gurii-gabreh/text-extraction: 画像の文字起こし処理(作業ルームで直接実行、標準版・定期処理テンプレート)\n2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。今後繰り返し使う定期処理テンプレートとして、TEX-001(今回分)と同内容だが対象フォルダをconfig.json記載の標準の処理対象サブフォルダとする版。運用方法(都度登録/定期実行)はTEX-001完了後に検討する。\n[2026-08-10] TEX-001と同じ出力アーキテクチャ(JSON→GAS自動書き込み→一覧HTMLレビュー、旧Pythonパイプラインとは別ディレクトリ)を共用する方針。",
-      "hash": "5fc3ef35665d06ac",
+      "text": "gurii-gabreh/text-extraction: 画像の文字起こし処理(作業ルームで直接実行、標準版・定期処理テンプレート)\n2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。今後繰り返し使う定期処理テンプレートとして、TEX-001(今回分)と同内容だが対象フォルダをconfig.json記載の標準の処理対象サブフォルダとする版。運用方法(都度登録/定期実行)はTEX-001完了後に検討する。\n[2026-08-10] TEX-001と同じ出力アーキテクチャ(JSON→GAS自動書き込み→一覧HTMLレビュー、旧Pythonパイプラインとは別ディレクトリ)を共用する方針。\n[2026-08-24追記・方針転換] 旧方式(JSON出力→GAS(claude_pipeline/)がスプレッドシートへ自動書き込み)を破棄し、以下に変更する。(1)GASは使わず、作業ルーム(Claude)自身が新規のGoogleスプレッドシート(またはExcelファイル)を作成し直接書き込む。(2)出力先は既存のスプレッドシートではなく新規作成したものとし、ユーザーが手動で本来の管理用シートへ転記する。(3)切り抜き画像は元画像のフォルダ内に新規サブフォルダを作って保存する。(4)図・表(選択肢自体が図の場合を含む)は切り抜き画像として保持し、通常テキストはそのまま書き起こす方針を明確化。既存のclaude_pipeline/(PR #1)は本方針では使用しないため、削除するか判断すること。認証情報待ちだった旧方式の制約はこれにより解消される(作業ルーム自身のDrive/Sheetsアクセスで完結するため)。",
+      "hash": "3bfd1a8e612c3d06",
       "embedding": [
         -0.31871145963668823,
         0.025881033390760422,
