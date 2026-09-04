@@ -1348,6 +1348,105 @@
       "sourceUrl": "https://openai.com/index/path-to-astra",
       "collectedAt": "2026-09-03 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "アーキテクチャ・データ設計",
+      "title": "LLMの構造化出力、2026年時点でOpenAI 99.9%・Anthropic 99.8%・Gemini 99.7%までスキーマ準拠率が向上",
+      "summary": "2026年のLLM構造化出力(Structured Output)のベストプラクティスでは、制約付きデコーディングによるネイティブ構造化出力がJSON Schema準拠を保証する手法として定着し、OpenAIのStructured Outputsが99.9%、Anthropicのtool useが99.8%、Geminiのresponse_schemaが99.7%のスキーマ準拠率を達成する一方、スキーマ強制のないJSONモードは8〜15%の頻度で失敗するとされる。",
+      "sourceUrl": "https://dev.to/pockit_tools/llm-structured-output-in-2026-stop-parsing-json-with-regex-and-do-it-right-34pk",
+      "collectedAt": "2026-09-04 10:00",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "アーキテクチャ・標準化",
+      "title": "AIエージェント決済の標準化が進行、ChatGPTの「Instant Checkout」が2026年2月16日に米国開始",
+      "summary": "OpenAIが2025年9月29日にStripeと共同で発表した「Agentic Commerce Protocol(ACP)」を用い、ChatGPT上でAIエージェントが商品購入まで完結する「Instant Checkout」機能が2026年2月16日に米国で開始され、Etsyが稼働済み、Shopifyも100万を超える加盟店で順次展開中。GoogleはMastercard・PayPal等60社超が参加する競合規格「Agent Payments Protocol(AP2)」をFIDO Allianceへ寄贈する形で推進しており、決済領域でも複数のエージェント間データ交換プロトコルが並立している。",
+      "sourceUrl": "https://aitc.dentsusoken.com/column/aiagent_acp_ap2/",
+      "collectedAt": "2026-09-04 10:05",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "モデル性能・時系列予測",
+      "title": "Google、多変量ゼロショット時系列予測基盤モデル「TimesFM-3」を2026年8月に公開",
+      "summary": "Google Researchは2026年8月、時系列予測基盤モデルの最新版「TimesFM-3」を公開。関連する複数系列や既知の将来イベントをタスク固有のファインチューニングなしに扱える初のネイティブ多変量対応版で、点予測・確率的予測の両ベンチマークで既存の多変量対応モデル(Chronos-2、Toto 2.0等)を上回った一方、公開された事前学習済み重みは非商用・非本番利用限定のライセンス(timesfm-non-commercial-license-v1.0)で提供されている。",
+      "sourceUrl": "https://github.com/google-research/timesfm/",
+      "collectedAt": "2026-09-04 10:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "モデル性能・製品",
+      "title": "Google、「Gemini 3.8 Flash」を2026年9月2日提供開始、110万トークンのコンテキストウィンドウで旧版と同価格",
+      "summary": "Googleは2026年9月2日、「Gemini 3.8 Flash」の提供を開始。1,048,576トークンのコンテキストウィンドウと最大65,536トークンの出力に対応し、ソフトウェア開発・エージェント的タスク・多段推論で前版「3.7 Flash」から性能向上を実現しながら、導入価格は入力100万トークンあたり0.75ドル・出力3.75ドルと3.7 Flash当時と同水準に据え置き、2026年12月31日までの期間限定とし2027年1月1日から入力1.50ドル・出力7.50ドルへ改定される。",
+      "sourceUrl": "https://artificialanalysis.ai/models/gemini-3-8-flash",
+      "collectedAt": "2026-09-04 10:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術動向・生成AI",
+      "title": "Runway、コードを介さずピクセル単位でUIを生成する「Solaris」を2026年8月31日発表",
+      "summary": "動画生成AI企業Runwayは2026年8月31日、新シリーズ「Interface World Models」の第1弾「Solaris」を発表。Gen-4.5の動画生成アーキテクチャを基盤に、従来のようにコードを生成してブラウザに描画させるのではなく、クリックやドラッグへの応答を含めインターフェースそのものを720pの映像としてフレーム単位でリアルタイム生成する仕組みで、文字表示・アクセシビリティ・長時間セッションでの一貫性は未解決の課題として研究プレビュー段階にとどまり、公開日・価格は未発表。",
+      "sourceUrl": "https://runway.com/news/research/introducing-solaris",
+      "collectedAt": "2026-09-04 10:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術の組み合わせ・スマートホーム",
+      "title": "シャープ、家電を横断連携させる統合AIサービス「NIAH」を2026年9月30日開始",
+      "summary": "シャープは2026年度下期からエージェンティックAIサービスを本格展開し、統合AIサービス「NIAH(ニア)」を2026年9月30日から提供開始すると発表。空気清浄機に花粉モードが設定された家庭では調理家電ヘルシオが花粉対策レシピを提案し、洗濯機が花粉を落としやすい洗濯モードを提案するなど、複数の白物家電が顧客データを共有しながら困りごとを先回りして解決策を提示する仕組みを実現する。",
+      "sourceUrl": "https://news.yahoo.co.jp/articles/ee500a0619d0fee68711c06640336ef66e313e90",
+      "collectedAt": "2026-09-04 10:25",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術の組み合わせ・防災",
+      "title": "気象庁、AIと観測網を組み合わせた「線状降水帯直前予測」を2026年5月の出水期から本運用開始",
+      "summary": "気象庁は令和8(2026)年の出水期入りに合わせ、線状降水帯が発生する2〜3時間前を目標に危険性を知らせる「線状降水帯直前予測」の本運用を開始。従来からの「半日前予測」「発生情報」と合わせ3段階に情報を整理し、1kmメッシュの局地モデルや観測データとAIによる解析を組み合わせて中小河川の水位予測にも応用しており、8月30日時点の運用実績が気象庁サイトで公表されている。",
+      "sourceUrl": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+      "collectedAt": "2026-09-04 10:30",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "活用事例・行政/防衛",
+      "title": "米国防総省、内部AIプラットフォーム「GenAI.mil」にChatGPT MilとGrok for Governmentを追加、170万人超が利用",
+      "summary": "米国防総省(Pentagon)は2026年8月31日、職員向け生成AI基盤「GenAI.mil」にOpenAIの「ChatGPT Mil」とxAI系「Grok for Government」を追加し、既存のGoogle Geminiと合わせ3社のモデルを提供する体制とした。両モデルは機密指定前の重要非公開情報(CUI)を扱えるImpact Level 5の認証を取得しており、170万人を超えるアクティブユーザーが利用、Grokは調達研究・サプライチェーン管理、ChatGPT Milは計画・政策・兵站・事務作業を主な用途とする。",
+      "sourceUrl": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok/",
+      "collectedAt": "2026-09-04 10:35",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "活用事例・医療",
+      "title": "アイリス、のどの画像で新型コロナも判定する「nodoca 3」を2025年10月26日提供開始、日本初の保険適用AI医療機器が対応疾患を拡大",
+      "summary": "AI医療機器スタートアップのアイリス株式会社は、日本初の保険適用AI医療機器であるインフルエンザ検査機器「nodoca」に新型コロナウイルス判定機能を追加し、「nodoca 3」として2025年10月26日から提供開始。2025年10月2日付で薬事承認を取得し、100万枚を超える咽頭画像データベースを基に新たに開発したAIにより、1回の撮影でインフルエンザと新型コロナの両方を判定できるようになり、発熱外来での診療支援の幅を広げた。",
+      "sourceUrl": "https://aillis.jp/news/post/20251027",
+      "collectedAt": "2026-09-04 10:40",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "流行・トレンド",
+      "title": "米国企業のAIエージェント本番導入率、2025年1月の11%から2026年1月には42%へ急伸、四半期ごとにほぼ倍増",
+      "summary": "KPMGが米主要企業を対象に四半期ごとに追跡した調査によれば、AIエージェントが「本番稼働中」と回答した企業の割合は2025年第1四半期の11%から第2四半期33%、第3四半期(2026年1月時点)には42%へと、四半期ごとにほぼ倍増するペースで拡大しており、スマートフォン普及期を上回るとも言われる速さの技術浸透カーブとして注目されている。",
+      "sourceUrl": "https://ai-japan-index.com/ai-agent-adoption/",
+      "collectedAt": "2026-09-04 10:45",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "流行・社会現象",
+      "title": "「AIスロップ」がメリアム・ウェブスター等の2025年「今年の言葉」に選出、2026年はビジネス現場の「ワークスロップ」問題が拡大",
+      "summary": "生成AIによって大量生産された低品質・目的性の薄いコンテンツを指す「AIスロップ(AI slop)」は、2025年にMerriam-Websterやオーストラリアの辞書サービスの「Word of the Year」に選ばれるほど社会的に認知が広がった。2026年にはこの現象がビジネス文書にも波及し、報告書・提案書・企画書などが生成AIで大量かつ低品質に作られる「ワークスロップ(work slop)」が2026年の流行語として注目され、Googleも2026年2月のスパムポリシー更新でスケール化されたAIコンテンツ濫用への対策を強化している。",
+      "sourceUrl": "https://marketing.petabit.co.jp/blog/1110/",
+      "collectedAt": "2026-09-04 11:00",
+      "usedAI": "Claude"
     }
   ]
 }
