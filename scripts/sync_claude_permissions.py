@@ -17,11 +17,24 @@ import urllib.request
 
 # repo full name -> env var holding a token with contents:write on that repo.
 # The workflow's own GITHUB_TOKEN only has write access to this repo itself;
-# other repos would need CROSS_REPO_PAT (see scripts/sync_claude_md.py).
-# 2026-09-05: scoped to this repo only for now (user hasn't confirmed
-# extending to the other managed repos yet).
+# other repos need CROSS_REPO_PAT (same token used by scripts/sync_claude_md.py).
+# 2026-09-05: extended to all managed repositories at the user's request, to
+# match sync_claude_md.py's TARGETS. Note: like sync_claude_md.py (which
+# requires the CORE-RULES markers to already exist in a repo's CLAUDE.md),
+# this script only UPDATES an existing .claude/settings.json -- it does not
+# create one from scratch. A repo with no .claude/settings.json yet is
+# skipped (logged, not a hard failure) until someone (asking Claude directly,
+# same as the original CLAUDE.md rollout in PTD-039) adds a minimal starter
+# file there.
 TARGETS = {
     "gurii-gabreh/progress-tracker-dashboard": "GITHUB_TOKEN",
+    "gurii-gabreh/kizashi": "CROSS_REPO_PAT",
+    "gurii-gabreh/supermarket-price-tracker": "CROSS_REPO_PAT",
+    "gurii-gabreh/gemini-monitor": "CROSS_REPO_PAT",
+    "gurii-gabreh/ai-research-radar": "CROSS_REPO_PAT",
+    "gurii-gabreh/Knowledge-Dashboard": "CROSS_REPO_PAT",
+    "gurii-gabreh/study-app": "CROSS_REPO_PAT",
+    "gurii-gabreh/servicenow-sub-agent": "CROSS_REPO_PAT",
 }
 
 
