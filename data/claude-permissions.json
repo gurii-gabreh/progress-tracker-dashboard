@@ -1,5 +1,5 @@
 {
-  "description": "全管理対象リポジトリの.claude/settings.jsonにある許可リスト(permissions.allow)の正本。data/claude-core-rules.md(CLAUDE.md核心ルール)と同じ運用にしている: このファイルだけを編集してcommitすれば、GitHub Actions(.github/workflows/sync-claude-permissions.yml)がscripts/sync_claude_permissions.pyを使って各リポジトリの.claude/settings.jsonのpermissions.allowへ自動反映する。.claude/settings.jsonを直接手で編集しても、次回の同期で上書きされる。",
+  "description": "これはClaude(Claude Code)自体の基本設定である。ここに登録されているコマンド・ツール呼び出しは、実行前の確認(承認)なしにそのまま実行される。全管理対象リポジトリの.claude/settings.jsonにある許可リスト(permissions.allow)の正本。data/claude-core-rules.md(CLAUDE.md核心ルール)と同じ運用にしている: このファイルだけを編集してcommitすれば、GitHub Actions(.github/workflows/sync-claude-permissions.yml)がscripts/sync_claude_permissions.pyを使って各リポジトリの.claude/settings.jsonのpermissions.allowへ自動反映する。.claude/settings.jsonを直接手で編集しても、次回の同期で上書きされる。",
   "updatedAt": "2026-09-05",
   "note": "2026-09-05、ユーザー指示によりCLAUDE.mdと同じ『単一の正本を編集→自動同期』方式に変更した(それまでは.claude/settings.jsonを直接手編集していた)。当初はprogress-tracker-dashboardのみを対象にしていたが、同日中にユーザーから『全リポジトリに設定すべき』との指示を受け、CLAUDE.md核心ルール(sync_claude_md.py)と同じTARGETS一覧(全8リポジトリ)へ拡張した。ただし.claude/settings.jsonが未作成のリポジトリはこの自動同期では新規作成されず(スキップされるだけ)、CLAUDE.md新設時(PTD-039)と同様、必要になったタイミングでAIに直接依頼して最小構成のファイルを作ってもらう運用とする。このタブの表示内容(web)は人が読む概要用で、実際にClaude Codeが参照するのは.claude/settings.jsonの方(このファイルから自動生成される)。",
   "categories": [
