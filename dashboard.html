@@ -994,6 +994,20 @@
           <div id="core-rules-body"></div>
         </div>
 
+        <div class="ai-config-section-title" style="margin-top: 18px; font-size: 14px;">🔐 許可リスト(.claude/settings.json)</div>
+        <div class="policy-card">
+          <div class="ai-config-toolbar">
+            <div class="policy-meta" id="permissions-meta">読み込み中…</div>
+          </div>
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            Claude Codeが「この操作をしていいですか?」と毎回確認する代わりに、安全だと分かっている操作を事前に許可しておくリストです。
+            CLAUDE.mdと同じ「単一の正本を編集→自動同期」方式(data/claude-permissions.json → GitHub Actions →
+            .claude/settings.json)で管理しており、.claude/settings.jsonを直接手で編集しても次回の同期で上書きされます。
+            変更したい場合はチャットでAIに「許可リストの〜を追加して」のように指示してください。
+          </div>
+          <div id="permissions-body"></div>
+        </div>
+
         <div class="ai-config-section-title" style="margin-top: 18px; font-size: 14px;">🛠 Skills / Superpower</div>
         <div class="policy-card">
           <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
@@ -3096,6 +3110,48 @@
     coreRulesEditing = !coreRulesEditing;
     renderCoreRulesView();
   });
+
+  // data/claude-permissions.json(.claude/settings.jsonの許可リストの正本)を🤖AI基本設定タブに
+  // 表示する(2026-09-05追加)。CLAUDE.md核心ルールと同じ「正本を編集→GitHub Actionsで自動同期」
+  // 方式(scripts/sync_claude_permissions.py、.github/workflows/sync-claude-permissions.yml)を
+  // 採用しており、このウィジェットは読み取り専用(編集はAIへチャットで依頼する運用)。
+  function renderPermissionsView(data) {
+    const bodyEl = document.getElementById("permissions-body");
+    const categories = data.categories || [];
+    bodyEl.innerHTML = categories.map((cat) => {
+      const overviewHtml = cat.overview
+        ? `<p class="ai-config-overview">${escapeHtml(cat.overview)}</p>`
+        : "";
+      const idNoteHtml = cat.idNote
+        ? `<p class="ai-config-overview" style="color: var(--text-muted);">⚠️ ${escapeHtml(cat.idNote)}</p>`
+        : "";
+      const entries = cat.entries || [];
+      const entriesHtml = `<ul class="ai-config-bullets">${entries.map((e) => `<li><code>${escapeHtml(e)}</code></li>`).join("")}</ul>`;
+      const titleHtml = `<div class="ai-config-section-title" style="font-size: 13.5px;">${escapeHtml(cat.label || cat.key)}(${entries.length}件)</div>`;
+      return `<div class="policy-card ai-config-section-card">${titleHtml}${overviewHtml}${idNoteHtml}${entriesHtml}</div>`;
+    }).join("");
+  }
+
+  function loadPermissionsData() {
+    const metaEl = document.getElementById("permissions-meta");
+    const bodyEl = document.getElementById("permissions-body");
+    return fetch("data/claude-permissions.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/claude-permissions.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        const total = (data.categories || []).reduce((sum, c) => sum + (c.entries || []).length, 0);
+        metaEl.textContent = `最終更新: ${data.updatedAt}(登録件数: ${total}件)`;
+        renderPermissionsView(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        bodyEl.innerHTML = `<div class="empty">data/claude-permissions.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadPermissionsData();
 
   document.getElementById("core-rules-apply-btn").addEventListener("click", () => {
     const textarea = document.getElementById("core-rules-edit-textarea");
