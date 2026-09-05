@@ -88,5 +88,9 @@
       "Bash(curl -s -o /dev/null -w *)",
       "Bash(curl -sI *)"
     ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   }
 }
