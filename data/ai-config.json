@@ -68,6 +68,14 @@
         "司令塔(マネージャールーム)が自動的に管理・commitする(ユーザーの手動編集は不要)",
         "スプレッドシートへの書き込みは常にGAS(gas/Code.gs)経由に統一する"
       ]
+    },
+    "customSkills": {
+      "title": "🧩 スキル化した定型作業",
+      "overview": "skill-creatorスキルを使って、繰り返し発生する定型作業を各リポジトリの.claude/skills/<スキル名>/SKILL.mdとして固定化したもの一覧です。保存場所はGitHub上の各リポジトリ(git管理・レビュー可能)で、この一覧はそのインデックスに過ぎません。次回以降は短い一言でこの手順を自動的に呼び出せます。",
+      "points": [
+        "tex-image-extraction(gurii-gabreh/Text-Extraction, .claude/skills/tex-image-extraction/SKILL.md): Googleドライブの問題画像フォルダをスプレッドシートへ書き起こす一連の手順(TEX-001〜003で確立)。図表の切り抜き判定・分割問題の統合・スプレッドシート作成・progress-tracker-dashboardへの登録までを含む(2026-09-05作成)",
+        "plugin-rollout(gurii-gabreh/progress-tracker-dashboard, .claude/skills/plugin-rollout/SKILL.md): Claude Codeプラグインのenabled化を、管理対象の全リポジトリの.claude/settings.jsonへ展開する手順(2026-09-05作成)"
+      ]
     }
   },
   "ai": {
@@ -149,6 +157,27 @@
       "autoManaged": true,
       "note": "本ファイルはマネージャールームが司令塔として自動的に更新・管理する。ユーザーが直接JSONを編集する必要はなく、相談内容に応じてマネージャールームが判断し、必要な変更をこのファイルへcommitする。",
       "spreadsheetSync": "このプロジェクトでスプレッドシートへ書き込む経路は常にGAS(gas/Code.gs)経由に統一する(直接API書き込みはしない。README「目標アーキテクチャ」と同じ原則)。本ファイル自体は現時点で専用スプレッドシートを持たず、マネージャールームからの直接commitで管理するが、将来この内容の一部をスプレッドシート起点で更新する運用に拡張する場合も、書き込みは必ずGAS経由にするというこの原則を踏襲する。"
+    },
+    "customSkills": {
+      "storageLocation": "各リポジトリの.claude/skills/<スキル名>/SKILL.md(git管理下、GitHub上が正本)。ai-config.json側にはインデックス(一覧)のみを持ち、SKILL.mdの中身を二重管理しない。",
+      "howToTrigger": "skill-creatorスキル(claude.aiアカウントで有効)を使って、頻出する定型作業の手順をSKILL.mdとして書き出す。Claude Codeは対象リポジトリで作業する際、そのリポジトリの.claude/skills/配下を自動的に読み込み、descriptionが現在のタスクと合致すれば自動的に適用する。",
+      "registry": [
+        {
+          "name": "tex-image-extraction",
+          "repo": "gurii-gabreh/Text-Extraction",
+          "path": ".claude/skills/tex-image-extraction/SKILL.md",
+          "createdAt": "2026-09-05",
+          "summary": "Googleドライブの問題画像フォルダ(TEX-001〜003で確立した手順)をスプレッドシートへ書き起こす一連の作業。図表の切り抜き判定、分割問題の統合判定、スプレッドシート作成、progress-tracker-dashboardのdata/tasks.jsonへの登録までを含む。"
+        },
+        {
+          "name": "plugin-rollout",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/plugin-rollout/SKILL.md",
+          "createdAt": "2026-09-05",
+          "summary": "Claude Codeプラグイン(例: superpowers@claude-plugins-official)のenabledPlugins設定を、管理対象の全リポジトリの.claude/settings.jsonへ展開してcommit・pushする手順。"
+        }
+      ],
+      "note": "新しく定型作業をスキル化した場合は、このregistry配列にエントリを追記すること(SKILL.md本体は各リポジトリ側で管理し、ここへ複製しない)。"
     }
   }
 }

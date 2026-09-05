@@ -1019,13 +1019,23 @@
         <div class="policy-card">
           <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
             Claude Codeのプラグイン機能。汎用的なソフトウェア開発の型(計画してから実装する・TDDで進める・完了前に2段階のセルフレビューを行う等)を、
-            セッション開始のたびに強い言葉で確実にリマインドする仕組み(2026-08-28導入、無料・オープンソース)。
+            セッション開始のたびに強い言葉で確実にリマインドする仕組み(2026-09-05導入、無料・オープンソース)。
             CLAUDE.mdが「このプロジェクト固有のルール」を担うのに対し、Skills/Superpowerは「どのプロジェクトにも通用する開発の作法」を担う、という役割分担。
             CLAUDE.md等ユーザー指示の内容がSkills/Superpowerの既定動作より優先される。
           </div>
           <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
-            <strong>運用ルール</strong>: 新しくルーム(セッション)を作成した際は、そのルームでも<code>claude plugin marketplace add obra/superpowers-marketplace</code>
-            → <code>claude plugin install superpowers@superpowers-marketplace -s user -y</code> を実行し、自動でインストールする。
+            <strong>導入済み</strong>: <code>superpowers@claude-plugins-official</code>(計画立案・TDD・レビュー一式)、
+            <code>frontend-design@claude-plugins-official</code>(フロントエンド画面デザインの個性付け、軽量)。
+            いずれもAnthropic公式マーケットプレイス(<code>claude-plugins-official</code>)経由。
+          </div>
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            <strong>運用ルール</strong>: 管理対象の全リポジトリの<code>.claude/settings.json</code>に<code>enabledPlugins</code>として明記し、git commitしておく(2026-09-05〜)。
+            こうしておくことで、ローカルのユーザースコープインストールとは別に、WEB上のクラウドセッションがそのリポジトリをクローンした時点でも自動的に有効になる
+            (ローカルのユーザースコープ設定はそのマシン限定で、クラウドセッションには引き継がれないため)。新しいリポジトリを追加した際は同様に設定すること。
+          </div>
+          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
+            <strong>注意</strong>: 設定を反映させるには、そのルーム(セッション)を一度終了して新しく開き直す必要がある。既に起動中のセッションに対して
+            「設定ファイルを読み込んで」と指示しても、プラグインが提供するスキル・フック・MCPサーバーは後から追加登録されない(セッション開始時にのみ読み込まれる仕組みのため)。
           </div>
         </div>
       </div>
@@ -2960,7 +2970,7 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "aiDirectory", "routing", "secondOpinionCheck", "management"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
