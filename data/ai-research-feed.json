@@ -1447,6 +1447,123 @@
       "sourceUrl": "https://marketing.petabit.co.jp/blog/1110/",
       "collectedAt": "2026-09-04 11:00",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "モデル性能",
+      "title": "OpenAI、「GPT-6 Astra」を9月3日公開、コンピュータ操作ベンチマークOSWorldで65.7%→72.6%に向上",
+      "summary": "OpenAIは2026年9月3日、新モデル「GPT-6 Astra」を発表。OSWorld V2-Offlineベンチマークで前モデルGPT-5.6 Solの65.7%から72.6%へスコアが向上し、平均タスク完了時間も約75分から40分へ短縮、Mind2Webでは1.9倍高速にタスクを完了したと説明している。",
+      "sourceUrl": "https://openai.com/index/gpt-6-astra/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "アーキテクチャ・標準化",
+      "title": "Linux Foundation、MCP・goose・AGENTS.mdを基盤に「Agentic AI Foundation(AAIF)」を設立",
+      "summary": "Linux Foundationは2025年12月、AnthropicのModel Context Protocol(MCP)、BlockのGoose、OpenAIのAGENTS.mdを創設プロジェクトとする「Agentic AI Foundation(AAIF)」の設立を発表した。AIエージェント連携プロトコルをベンダー中立のガバナンス下に置く動きで、MCPのエコシステムは月間1億1000万ダウンロード超に拡大しているという。",
+      "sourceUrl": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "アーキテクチャ・データのやり取り",
+      "title": "Linux Foundation、AIエージェント向け決済プロトコル「x402」を運用開始、Coinbase等40組織超が参加",
+      "summary": "Linux Foundationは2026年7月14日、Coinbaseが開発した決済プロトコル「x402」の寄贈を受けた「x402 Foundation」の運用開始を発表。AWS・Google・Mastercard・Stripe・Visa等40組織超がメンバーとして参加し、AIエージェントやアプリがカードからステーブルコインまでの決済をデータのやり取りと同じ手軽さで送受信できる仕組みの標準化を目指すとしている。",
+      "sourceUrl": "https://www.linuxfoundation.org/press/linux-foundation-announces-operational-launch-of-x402-foundation-to-standardize-internet-native-payments-for-ai-agents-and-applications",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Google DeepMind、視覚・言語・行動を統合したロボット向けモデル「Gemini Robotics ER 2」を7月30日公開",
+      "summary": "Google DeepMindは2026年7月30日、Vision-Language-Action(VLA)モデル「Gemini Robotics ER 2」を公開。静止画や短時間クリップの推論に留まっていた従来版と異なり、連続した動画ストリームを推論し数分単位でタスクの状態を自ら追跡できるようになったと説明している。",
+      "sourceUrl": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-robotics-er-2/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "技術の組み合わせ・エッジAI",
+      "title": "ADI・Lattice・NVIDIAの技術を組み合わせたロボット向けエッジ基盤、音声空間認識をリアルタイム実現",
+      "summary": "Edge AI and Vision Allianceの2026年8月の記事によると、Analog Devicesの車載音声バス「A2B」とLatticeの「Holoscan Sensor Bridge」、NVIDIAのGPUアクセラレーションを組み合わせたマルチモーダルエッジ基盤により、音声認識(ASR)とVision-Language Modelを統合し、ロボットが話者位置の特定・音声分離を含む音響的な空間認識をリアルタイムで行えるようになったと報告している。",
+      "sourceUrl": "https://www.edge-ai-vision.com/2026/08/advancing-multimodal-robotics-at-the-edge-from-vision-to-voice/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・建設",
+      "title": "建設業クラウドCONOC、JAPAN AIと共同開発のAIエージェント「ゲンバフォトAI」「ゲンチョウAI」を9月1日提供開始",
+      "summary": "株式会社CONOCは2026年9月1日、JAPAN AIと共同開発した建設業向けAIエージェント第1弾として、現場写真を分類し台帳を自動作成する「ゲンバフォトAI」と、現地調査時の記録作成を支援する「ゲンチョウAI」の提供を開始した。「入力ゼロ、確認だけ」で現場の記録業務が回る状態を目指すとしている。",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000000082.000012493.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・小売",
+      "title": "Amazon、AIショッピングアシスタント「Rufus」が2025年通期で約120億ドルの増分売上に貢献と発表",
+      "summary": "Amazonは2026年2月7日の第4四半期決算発表で、AIアシスタント「Rufus」が2025年通期で約120億ドルの年換算増分売上に貢献したと公表。利用者は3億人超に達し、月間アクティブユーザーは前年比149%増、Rufus利用者のコンバージョン率は非利用者より60%以上高いとしている。",
+      "sourceUrl": "https://ppc.land/amazons-ai-shopping-assistant-drove-12-billion-in-sales-for-2025/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・小売",
+      "title": "Walmart、AIエージェント「Sparky」利用者の平均注文額が非利用者より35〜40%高いと決算で報告",
+      "summary": "Walmartは2026年の決算発表で、AIショッピングエージェント「Sparky」の利用者数が前年比70%増加し、利用者の平均注文額(AOV)が非利用者より35〜40%高いと報告。一方で在庫は通貨影響を除き2.6%増加にとどまり、売上成長より緩やかな在庫増でまかなえている一因としてAIによる在庫可視化を挙げている。",
+      "sourceUrl": "https://www.digitalcommerce360.com/2026/05/22/walmart-sparky-agent-ai-sales-supply-chain/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・教育",
+      "title": "Anthropic、米国K-12教員向け無料プラン「Claude for Teachers」を7月14日開始、8月28日には学区向けにも拡大",
+      "summary": "Anthropicは2026年7月14日、米国の認証済みK-12教員を対象に、少なくとも1年間無料でClaudeの主要機能を提供する「Claude for Teachers」を開始した。Chan Zuckerberg InitiativeのLearning Commonsと連携し全50州の学習基準に対応した授業計画スキルを提供するとし、8月28日には学区が教員・スタッフを一元管理できる学区向けプランも発表した。",
+      "sourceUrl": "https://www.anthropic.com/news/claude-for-teachers",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "流行・トレンド",
+      "title": "McKinsey調査、AIエージェントを「試行中」の企業は62%だが、1つの業務機能でも全社的にスケール中と答えたのは23%にとどまる",
+      "summary": "McKinseyが2025年6〜7月に105カ国1,993人を対象に実施した調査によると、AIエージェントを少なくとも試行中の企業は62%に達する一方、少なくとも1つの業務機能でスケール(展開・導入の拡大)中と回答したのは23%、残る39%はまだ実験段階にとどまり、いずれの業務機能でも自社の10%を超えてスケールできていると答えた割合はごくわずかだったという。",
+      "sourceUrl": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "流行・トレンド",
+      "title": "日本の生成AI利用率、2025年2月の27%から2026年2月には51%へ1年で急増",
+      "summary": "モバイル社会研究所の調査によると、日本国内の生成AI利用率は2025年2月の27%から2026年2月には51%へと1年間でほぼ倍増し、初めて過半数に達した。生成AIが一部の先進的な利用者から一般層へ急速に裾野を広げている実態を示す数値としている。",
+      "sourceUrl": "https://www.moba-ken.jp/project/lifestyle/20260406.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "モデル性能",
+      "title": "NVIDIA、フィジカルAI向けオープン基盤モデル「Cosmos 3」を6月1日公開",
+      "summary": "NVIDIAは2026年6月1日、物理世界のシミュレーションに使うワールド基盤モデル「Cosmos 3」を発表。テキスト・画像・動画・環境音・行動を横断するマルチモーダル生成とネイティブな視覚推論を備えた、完全オープンとしては初めてのオムニモデルと説明しており、自動運転・ロボティクス・製造業のデジタルツイン開発への活用を想定している。",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/06/01/3303987/0/en/NVIDIA-Launches-Cosmos-3-the-Open-Frontier-Foundation-Model-for-Physical-AI.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "アーキテクチャ・データ構造",
+      "title": "2026年のモバイルAIアーキテクチャ、端末上の小型言語モデルとクラウドLLMを機能単位で使い分ける「ハイブリッド型」が主流に",
+      "summary": "2026年のAIモバイルアプリ設計では、オンデバイスの小型言語モデル(SLM)がクエリの9割程度を端末上で処理し、複雑な処理のみクラウドLLMへエスカレーションする「ハイブリッドエッジ・クラウド」構成がデフォルトのアーキテクチャパターンになりつつあると報告されている。オン/オフの判断はアプリ単位ではなく機能単位で動的に行う設計が主流という。",
+      "sourceUrl": "https://studiokrew.com/blog/on-device-ai-mobile-app-edge-ai-2026/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
     }
   ]
 }
