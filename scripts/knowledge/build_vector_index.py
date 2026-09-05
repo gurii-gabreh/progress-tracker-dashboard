@@ -43,6 +43,7 @@ AI_LIST_JSON = REPO_ROOT / "data" / "ai-list.json"
 OUTPUT_JSON = REPO_ROOT / "data" / "vector-index.json"
 
 RESEARCH_LOG_URL = "https://raw.githubusercontent.com/gurii-gabreh/ai-research-radar/main/data/research-log.json"
+SN_RESEARCH_ITEMS_URL = "https://raw.githubusercontent.com/gurii-gabreh/servicenow-sub-agent/main/data/research-items.json"
 
 EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
@@ -170,6 +171,37 @@ def chunks_from_research_log(data: dict) -> list[dict]:
     return chunks
 
 
+# ---- チャンク抽出: servicenow-sub-agentのresearch-items.json(リモート取得) ----
+def chunks_from_sn_research_items(data: dict) -> list[dict]:
+    """PTD-058: ServiceNowが自動収集した生データは英語の断片が大量(2026-09-02時点で
+    2,000件超)にあり、そのまま全件をチャンク化すると索引がノイズだらけになる。
+    Claudeが日本語要約(summaryJa等)を付与済み=curated:trueの項目だけをナレッジ化する
+    (curated:falseの生データは対象外。要約が進むにつれてチャンクも自然に増えていく)。"""
+    chunks = []
+    categories = data.get("categories", {})
+    for item in data.get("items", []):
+        if not item.get("curated"):
+            continue
+        sys_id = item.get("sysId", "")
+        parts = [
+            item.get("title", ""),
+            categories.get(str(item.get("category", "")), ""),
+            item.get("summaryJa", ""),
+            "\n".join(item.get("pointsJa", []) or []),
+            item.get("applicableTechJa", ""),
+        ]
+        text = "\n".join(p for p in parts if p)
+        chunk = make_chunk(
+            chunk_id=f"sn-research-items:{sys_id}",
+            source="research-items.json (servicenow-sub-agent)",
+            ref=item.get("sourceUrl", "") or sys_id,
+            text=text,
+        )
+        if chunk:
+            chunks.append(chunk)
+    return chunks
+
+
 _embed_model_instance = None
 
 
@@ -194,6 +226,7 @@ def main() -> int:
     all_chunks += chunks_from_concept_log(load_json(CONCEPT_LOG_JSON))
     all_chunks += chunks_from_ai_list(load_json(AI_LIST_JSON))
     all_chunks += chunks_from_research_log(fetch_remote_json(RESEARCH_LOG_URL))
+    all_chunks += chunks_from_sn_research_items(fetch_remote_json(SN_RESEARCH_ITEMS_URL))
     all_chunks = dedupe_chunk_ids(all_chunks)
 
     existing = load_json(OUTPUT_JSON)
@@ -218,7 +251,7 @@ def main() -> int:
         result_chunks.append(chunk)
 
     output = {
-        "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json)から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
+        "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json・servicenow-sub-agentのresearch-items.json[日本語要約済みcurated:trueのみ])から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
         "model": EMBED_MODEL,
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "chunkCount": len(result_chunks),

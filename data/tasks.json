@@ -589,10 +589,10 @@
       "id": "PTD-020",
       "task": "AIを活用したエンジニアとして更に上を目指すための方向性の相談。都庁主催のハッカソンのようなコンテストへの参加で実績を作っていく方針について",
       "priority": "中",
-      "status": "未着手",
-      "updated": "2026-08-10",
+      "status": "対応中",
+      "updated": "2026-08-30",
       "category": "manual",
-      "note": "",
+      "note": "2026-08-30、実際にkizashi(土砂災害警戒アプリ「結」、kizashi-app.yui-gurii.workers.dev)で「都知事杯オープンデータ・ハッカソン2026」に応募し、一次審査(2分間のプレゼン動画提出、2026-08-26〜30)まで完了したとの報告あり。方針としては実行段階に入ったため未着手から対応中に更新。以降の具体的な進捗はkizashiリポジトリ側のKIZ-046で追跡する。",
       "detail": "",
       "output": ""
     },
@@ -1103,10 +1103,10 @@
           "task": "既存のdemo_video.mp4・地図/AIチャットのスクリーンショットを、実機で撮り直す",
           "title": "提出物スクショ・動画の撮り直し",
           "priority": "中",
-          "status": "未着手",
-          "updated": "2026-08-08",
+          "status": "対応中",
+          "updated": "2026-08-30",
           "category": "manual",
-          "note": "2026-08-08、相談ルームで方針決定: 地図タイルは実際のレンダリングにこだわらず、イメージ(モックアップ)のままで良い。AIチャット応答をモックのままにするか実際の応答に差し替えるかは未確定。",
+          "note": "2026-08-08、相談ルームで方針決定: 地図タイルは実際のレンダリングにこだわらず、イメージ(モックアップ)のままで良い。AIチャット応答をモックのままにするか実際の応答に差し替えるかは未確定。\n2026-08-30追記(manager-roomによる棚卸し調査): ダッシュボード上は「未着手」のまま長期間放置されていたが、リポジトリのコミット履歴では8/15〜8/23にdemo_video.mp4・screenshot_01〜05の撮り直しが繰り返し行われていた(KIZ-045参照)。ただしAIチャット単体のスクリーンショットは提出物になく、chat.jsは環境未接続時スタブ応答を返す設計のため、収録内容が実際のAI応答かスタブかは切り分けられなかった。地図はKIZ-019の決定通りサンプル画像のままで方針通り。ダッシュボードの「未着手」表示は実態とズレていたため「対応中」に修正したが、完了と断定できる根拠はないため未完了のまま残す。",
           "detail": "現在のドラフトは地図の背景タイルが表示されない状態・AIチャット応答がモックという既知のギャップがある。地図についてはこのまま(イメージ)で提出する方針に確定。ユーザー自身の環境(実際のネットワーク・Cloudflareアカウント)での撮り直しが必要な部分が残るかは、AIチャット応答の扱いが決まり次第確定する。",
           "output": ""
         },
@@ -1470,10 +1470,10 @@
               "id": "SPT-006",
               "task": "PR #1をレビューしてmainへマージし、Apps Scriptエディタで最新のCode.gsを貼り付けて保存、ウェブアプリとして再デプロイする(GEMINI_API_KEYが未設定ならScript Propertiesにも設定する)",
               "priority": "高",
-              "status": "未着手",
-              "updated": "-",
+              "status": "対応中",
+              "updated": "2026-08-30",
               "category": "manual",
-              "note": "",
+              "note": "2026-08-30、棚卸し調査(subagent)でPR #1(重複レコード防止・チラシ誤検知修正・APIキーのScript Properties化)が2026-08-02にmainへマージ済みであることを確認した。ただし残るApps Scriptエディタへの貼り付け保存・ウェブアプリ再デプロイ・GEMINI_API_KEYのScript Properties設定はGitHub外の作業のためリポジトリ側からは確認できず、完了とは断定できない。実施済みかご確認をお願いします。",
               "detail": "",
               "output": "https://github.com/gurii-gabreh/supermarket-price-tracker/pull/1",
               "steps": [
@@ -1611,10 +1611,10 @@
       "id": "AIR-001",
       "task": "Gemini調査実行",
       "priority": "高",
-      "status": "対応中",
-      "updated": "2026-08-05",
-      "nextAction": "専用のClaude調査ルームの作成とgas/Code.gs再デプロイを行う(下の子タスク参照)",
-      "note": "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)の作成・依頼文の貼り付けはユーザー側の対応待ち。",
+      "status": "中止(統合済み)",
+      "updated": "2026-08-30",
+      "nextAction": "",
+      "note": "GitHub Pages・レート制限対応・繰り返し調査・混雑時間帯最適化・Claudeフォールバックの各機能はコード側は完了。Claude調査ルーム(専用セッション)の作成・依頼文の貼り付けはユーザー側の対応待ちだった。\n2026-08-30追記(棚卸し調査で判明): ai-research-radarリポジトリ自体が2026-08-26頃に廃止され、progress-tracker-dashboardのdata/ai-research-feed.jsonへ統合されていた(concept-log.jsonのCL-004参照、ユーザーとの会話で「ドライブに保存されているものと同じでは」と指摘され判明した経緯)。実際の収集ログ32件も「使用AI」欄が全件Claudeで、本来メインのはずのGemini経路が実質稼働していなかったことも今回のリポジトリ調査で確認した。このためAIR-001以下(AIR-004・008・009・010)は「未完了のまま放置」ではなく、リポジトリごと役目を終えたものとして中止に整理する。",
       "detail": "GitHub Pagesデプロイ修正(AIR-002)・レート制限の検知/可視化/自動リトライ(AIR-005)・混雑時間帯の最適化・Geminiレート制限時のClaude調査フォールバック(AIR-008)は、いずれもコード側の実装は完了済み(詳細は各子タスク参照)。残るのは専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付け、およびgas/Code.gsの再デプロイというユーザー側対応のみで、コード側に未着手の作業は無い。",
       "output": "",
       "subtasks": [
@@ -1667,10 +1667,10 @@
               "id": "AIR-004",
               "task": "gemini-3.5-flashの正式なリクエスト数上限(RPM/RPD)を公式ドキュメントで確認する",
               "priority": "低",
-              "status": "未着手",
-              "updated": "-",
+              "status": "中止(統合済み)",
+              "updated": "2026-08-30",
               "category": "manual",
-              "note": "【作業タスク】",
+              "note": "【作業タスク】\n2026-08-30、親タスクAIR-001の通りai-research-radarリポジトリ自体が廃止されたため中止。参考までに棚卸し調査時点(2026年8月)の二次情報源では、gemini-3.5-flash無料枠はおおむね15RPM/1,500RPD程度という情報が見られたが、情報源間で数値にばらつきがあり公式一次情報での確定はできていない。",
               "detail": "gemini-2.5-flashと比べてどうかは未検証。",
               "output": "",
               "steps": [
@@ -1753,10 +1753,10 @@
           "id": "AIR-008",
           "task": "Geminiレート制限時のClaude調査フォールバック(プル型同期)",
           "priority": "高",
-          "status": "対応中",
-          "updated": "2026-08-05",
-          "nextAction": "gas/Code.gsの再デプロイと、専用のClaude調査ルームの作成を行う(下の子タスク参照)",
-          "note": "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ち。",
+          "status": "中止(統合済み)",
+          "updated": "2026-08-30",
+          "nextAction": "",
+          "note": "GAS側の実装・data/claude-fallback-results.jsonの用意・README記載まではコード側で完了。専用のClaude調査ルーム(別セッション)の作成と依頼文の貼り付けは人の対応待ちだった。\n2026-08-30追記: git logではフォールバック結果のcommitが2026-08-02〜08-29の間断続的に多数存在し機能自体には稼働実績があったが、本来メインのはずのGemini経路が実質稼働しておらず「フォールバックが実質本番」という逆転状態のまま、リポジトリごと2026-08-26に廃止・progress-tracker-dashboardへ統合された(AIR-001参照)。このため中止として整理する。",
           "completedItems": [
             {
               "item": "レート制限がかかった行を、専用のClaude調査ルームが代わりにWeb検索で調査できるようにするGAS側の仕組み(syncClaudeResearchFromGithub_の実装、data/claude-fallback-results.jsonのスキーマ・README整備)",
@@ -1776,10 +1776,10 @@
               "id": "AIR-009",
               "task": "Apps Scriptエディタで最新のgas/Code.gsを貼り付けて保存する(doGet/doPostは変更していないため再デプロイ不要)",
               "priority": "高",
-              "status": "未着手",
-              "updated": "-",
+              "status": "中止(統合済み)",
+              "updated": "2026-08-30",
               "category": "manual",
-              "note": "",
+              "note": "2026-08-30、親タスクAIR-008・AIR-001の通りai-research-radarリポジトリ自体が廃止されたため中止。",
               "detail": "",
               "output": "",
               "steps": [
@@ -1793,10 +1793,10 @@
               "id": "AIR-010",
               "task": "専用のClaude調査ルーム(別セッション)を実際に作成し、渡した依頼文を貼り付けて自己バインドのRoutineとして設定する",
               "priority": "高",
-              "status": "未着手",
-              "updated": "-",
+              "status": "中止(統合済み)",
+              "updated": "2026-08-30",
               "category": "manual",
-              "note": "",
+              "note": "2026-08-30、親タスクAIR-008・AIR-001の通りai-research-radarリポジトリ自体が廃止されたため中止。実際にはprogress-tracker-dashboard側の別Routine(ai-research-feed.json向け)や手動対応が代替していたと見られる(concept-log.jsonのCL-004参照)。",
               "detail": "",
               "output": "",
               "steps": [
@@ -2190,23 +2190,26 @@
       "task": "gurii-gabreh/text-extraction: 画像の文字起こし処理を作業ルームで直接実行する(今回分・直近の失敗画像)",
       "title": "文字起こし処理(今回分の失敗画像)",
       "priority": "高",
-      "status": "対応中",
-      "updated": "2026-09-03",
+      "status": "完了",
+      "updated": "2026-09-04",
       "category": "manual",
-      "nextAction": "スキャフォールドはマネージャールームが直接実装し完了(PR #1マージ済み)。実データ処理(本タスクの本題)は認証情報提供後に着手",
-      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。\n[2026-08-10・重要] スキャフォールド作成が3回とも作業ルームで失敗した根本原因が判明: リポジトリ`gurii-gabreh/text-extraction`は`gurii-gabreh/Text-Extraction`(大文字)へリネームされていた。旧URLでもgitコマンド単体はリダイレクトに追従するため問題ないが、create_sessionでの作業ルーム起動時のコンテナ構築処理がリダイレクト前提のディレクトリ名でchdirしてしまい失敗していたと考えられる(2回目の失敗ログ「chdir /home/user/text-extraction: no such file or directory」と符合)。今後この repo へ作業ルームを依頼する際は、必ず`https://github.com/gurii-gabreh/Text-Extraction`(大文字)を使うこと。これに気づかず3回同じURLで依頼していたため、最終的にユーザー指示でマネージャールームが直接(git clone/push/PR作成)対応した。\n[2026-09-03] 運用方式を最新化。text-extraction改修ルーム(session_01LXSKAKbeRC8fNRqTEpqNg2、ブランチclaude/attachment-based-collection-uuax8w)での作業により、以前このタスクで採用していたGAS経由の方式(claude_pipeline/、既存スプレッドシートへの反映、サービスアカウント認証情報が必要)は撤回・削除された(Text-ExtractionリポジトリのREADME「7. 運用方法の変遷」参照)。現在の方式は、作業ルームが対象フォルダの画像を直接読み取り、認証情報を一切使わず新規のGoogleスプレッドシート(またはExcelファイル)を作成してそこへ直接出力する(GAS不要)。問題文・選択肢中の図・表は画像として切り抜き、元画像フォルダ内の新規サブフォルダへまとめて保存する。出力された新規スプレッドシートの内容は、ユーザーが本来の管理用スプレッドシートへ手動で転記する運用。gurii-gabreh/my-dashboardの「文字起こし処理」カードの依頼文テンプレート・使い方もこの方式に合わせて更新済み。content・steps を新方式に合わせて書き換えた。",
+      "nextAction": "完了。TEX-002(標準版テンプレート)は本タスクの実績を踏まえ、次回の対象フォルダが指定され次第、同じ手順で着手する",
+      "note": "2026-08-09、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。コード実装・PR作成は不要な運用(データ処理)タスクのため、text-extractionはknownReposに追加せずcategory:manualを明示して分類した。\n[2026-08-09] 作業ルームへ処理を依頼したが、認証情報(credentials/service_account.json、config.jsonともに.gitignore対象でリポジトリに含まれずローカルのみに存在)が無いと実行できないことが判明。ユーザーへ提供方法を確認中。\n[2026-08-10] 出力アーキテクチャ方針を確定: (1)処理結果をJSONにまとめる (2)GAS(Apps Script)がJSONをpullしてスプレッドシートへ自動書き込み (3)書き込み前レビュー用の一覧HTMLページを用意、の3点セット構成に決定。既存のローカルPython実行パイプライン(core/*.py, batch.py)とは別ディレクトリに分離し、新旧を混在させない。GASコードの完成後、Apps Scriptへの貼り付け・デプロイはユーザー自身が行う(このセッション・作業ルームはコード生成のみ担当)。\n[2026-08-10・重要] スキャフォールド作成が3回とも作業ルームで失敗した根本原因が判明: リポジトリ`gurii-gabreh/text-extraction`は`gurii-gabreh/Text-Extraction`(大文字)へリネームされていた。旧URLでもgitコマンド単体はリダイレクトに追従するため問題ないが、create_sessionでの作業ルーム起動時のコンテナ構築処理がリダイレクト前提のディレクトリ名でchdirしてしまい失敗していたと考えられる(2回目の失敗ログ「chdir /home/user/text-extraction: no such file or directory」と符合)。今後この repo へ作業ルームを依頼する際は、必ず`https://github.com/gurii-gabreh/Text-Extraction`(大文字)を使うこと。これに気づかず3回同じURLで依頼していたため、最終的にユーザー指示でマネージャールームが直接(git clone/push/PR作成)対応した。\n[2026-08-24追記・方針転換] 旧方式(JSON出力→GAS(claude_pipeline/)がスプレッドシートへ自動書き込み)を破棄し、以下に変更する。(1)GASは使わず、作業ルーム(Claude)自身が新規のGoogleスプレッドシート(またはExcelファイル)を作成し直接書き込む。(2)出力先は既存のスプレッドシートではなく新規作成したものとし、ユーザーが手動で本来の管理用シートへ転記する。(3)切り抜き画像は元画像のフォルダ内に新規サブフォルダを作って保存する。(4)図・表(選択肢自体が図の場合を含む)は切り抜き画像として保持し、通常テキストはそのまま書き起こす方針を明確化。既存のclaude_pipeline/(PR #1)は本方針では使用しないため、削除するか判断すること。認証情報待ちだった旧方式の制約はこれにより解消される(作業ルーム自身のDrive/Sheetsアクセスで完結するため)。\n[2026-09-03] manager-roomが別途、gurii-gabreh/my-dashboardの「文字起こし処理」カードの依頼文テンプレート・使い方を、この新方式(GAS不要・新規スプレッドシート直接出力・図表切り抜き)に合わせて更新した。あわせてTEX-002のcontent/stepsもこの方式に統一した。",
       "content": [
-        "背景: これまでtext-extractionはローカル(Mac)からPythonのbatch.pyがclaude CLIをサブプロセス呼び出しして画像の文字起こしを行っていたが、CLIが原因不明のエラー(code=1、エラーメッセージ空)で全件失敗するようになった。CLIサブプロセス経由をやめ、作業ルーム自身の画像読み取り能力で直接処理する方式に切り替える。以前試みたJSON出力+GAS経由でスプレッドシートへ反映する方式(claude_pipeline/)は撤回・削除済みで、GAS・認証情報ファイルはいずれも使わない",
-        "対象データ: Googleドライブの直近の失敗分フォルダ(https://drive.google.com/drive/u/0/folders/1BM7Utm0zLntiz1uVH_zY5sPgjnBhogT7)",
-        "出力先: 新規のGoogleスプレッドシート(またはExcelファイル)を作成し出力(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名,問題文画像)。切り抜き画像は元画像フォルダ内の新規サブフォルダにまとめて保存"
+        "背景: これまでtext-extractionはローカル(Mac)からPythonのbatch.pyがclaude CLIをサブプロセス呼び出しして画像の文字起こしを行っていたが、CLIが原因不明のエラー(code=1、エラーメッセージ空)で全件失敗するようになった。CLIサブプロセス経由をやめ、作業ルーム自身の画像読み取り能力で直接処理する方式に切り替える",
+        "対象データ: Googleドライブの直近の失敗分フォルダ(https://drive.google.com/drive/u/0/folders/1BM7Utm0zLntiz1uVH_zY5sPgjnBhogT7)"
       ],
-      "detail": "claude_pipeline/(output/latest.json・review.html・gas/Code.gs・README.md)として実装済み(PR #1、gurii-gabreh/Text-Extraction、マージ済み)。既存のcore/*.py・batch.py・app.pyは一切変更していない。GAS(Code.gs)は元ファイル名で重複チェックし、同じJSONへの再実行でも二重追記しない設計。output/sample.jsonでreview.htmlの表示(欠損フィールド警告・正解ハイライト含む)を確認済み。",
+      "detail": "2026-08-24の方針転換(GAS不使用・作業ルームが新規スプレッドシートへ直接出力)に沿って完了。対象: Googleドライブ「基本情報技術者令和3年」フォルダ(34枚)・「基本情報技術者令和2年」フォルダ(3枚)、計37枚。結果: 成功29問(令和3年28問+令和2年1問)、処理対象外(失敗)2問(いずれも令和2年、画像に「正解：」欄が写っておらず前後の画像でも選択肢が一致せず統合不可)。1問が2枚の画像に分割されているケース(問題文+選択肢の画像と、正解+解説の画像)と、1枚に全て収まっているケースの両方が混在していたため、各画像ごとに必須項目(問題文・正解)の有無を確認し、欠けている場合のみファイル名の時刻順で前後の画像と選択肢の完全一致を確認して統合する方式で処理した。図・表の切り抜きが必要だった3問(第20問=PWM駆動波形の4択グラフ、第75問=発注量と費用の関係グラフ、第76問=デシジョンツリー)は画像を切り抜き、元画像フォルダ内の既存「cropped」サブフォルダ(既に同種の切り抜き1枚が存在していたため新規作成はせず流用)へ保存し、そのDrive URLを新規スプレッドシートの「問題文画像」列に記載した。単純な数値表・対応表(第63問のスキルセット表、第65問の評価点表、第77問の製品別数値表)は情報が失われないためテキストとして問題文中に書き起こし、切り抜きは行っていない。選択肢が4つ(ア〜エ)を超えるケースは今回は無かったが、その場合は選択肢オ・カ...の列を動的に追加する設計にしている。",
       "issues": "",
-      "output": "https://github.com/gurii-gabreh/Text-Extraction/pull/1",
+      "output": "https://docs.google.com/spreadsheets/d/179gs7MMkcz1pKAL_dbM5Sn6yIOi4rNTWmfcAoPALly8/edit?usp=drivesdk",
       "completedItems": [
         {
           "item": "claude_pipeline/ディレクトリ一式(JSON出力スキーマ・サンプル・review.html・GAS・README)をマネージャールームが直接実装し、PR #1として作成・マージ",
           "date": "2026-08-10"
+        },
+        {
+          "item": "新規Googleスプレッドシート「基本情報技術者_文字起こし結果(令和3年・令和2年)」を作成し、成功29問+処理対象外2問の全件を記載。図表切り抜き3枚もDriveへアップロードしURLを記載",
+          "date": "2026-09-04"
         }
       ],
       "steps": [
@@ -2214,9 +2217,10 @@
         "各画像を直接読み取り、question_number(第◯問)・question_text(問題文本文。メタ情報・模擬試験進捗表示は除外)・choice_a〜d(選択肢ア〜エ本文、ラベル除く)・answer(「正解：」直後の1文字、「あなたの解答：」は無視)を抽出する。「分類：」「解説：」以降は読み取り対象外",
         "1枚で必須項目(問題文 or 正解)が欠ける場合、ファイル名の時刻順で前後の画像を確認し、選択肢ア〜エが完全一致すれば同一問題として統合する(1問が2枚に分割されるケースへの対処)",
         "前後を確認しても揃わない場合はその画像を処理対象外として記録する",
-        "問題文中・選択肢中に図・表(手書き図、グラフ、UIスクリーンショット等、テキスト化すると情報が失われるもの)がある場合、その領域を画像として切り抜く(選択肢自体が図の場合は選択肢欄も切り抜き対象に含め、テキスト欄にはラベル文字のみ記載)",
-        "抽出結果を新規のGoogleスプレッドシート(またはExcelファイル)に出力する(列: 問題番号,問題文,選択肢ア〜エ,正解,元ファイル名,問題文画像)。切り抜き画像は元画像フォルダ内に新規作成するサブフォルダにまとめて保存する",
-        "処理結果(成功件数・失敗件数・失敗理由)とスプレッドシートのURLを記録・報告する"
+        "問題文中に図・表(手書き図、グラフ、UIスクリーンショット等、テキストに起こすと情報が失われるもの)がある場合、その領域を画像として切り抜く。選択肢自体が図(グラフ等)の場合は選択肢の領域も切り抜き対象に含め(問題文の図と合わせて1枚にまとめてよい)、選択肢のテキスト欄にはラベル文字(ア/イ/ウ/エ)のみを記載する。該当しない通常のテキストはそのまま書き起こす",
+        "抽出・統合できた問題は、新規に作成するGoogleスプレッドシート(またはExcelファイル)に1行追記する。列: 問題番号, 問題文, 選択肢ア, 選択肢イ, 選択肢ウ, 選択肢エ, 正解, 元ファイル名, 問題文画像(切り抜きがある場合のみ)",
+        "切り抜き画像は、元画像が格納されているフォルダの中に新規サブフォルダを作成し、そこにまとめて保存する",
+        "処理結果(成功件数・失敗件数・失敗理由)と、作成した新規スプレッドシートのURLを報告する"
       ],
       "checkHistory": [
         {
@@ -2244,8 +2248,16 @@
           "summary": "3回目も同一エラーで失敗。ユーザーの指示でマネージャールームが直接対応することに変更。調査の結果、リポジトリがgurii-gabreh/text-extraction→Text-Extraction(大文字)へリネームされていたことが根本原因と判明。マネージャールームがclaude_pipeline/一式を実装し、正しいURL(Text-Extraction)でPR #1を作成・マージした。"
         },
         {
+          "date": "2026-08-24",
+          "summary": "方針転換: JSON+GAS(claude_pipeline/)方式を破棄し、作業ルームが新規スプレッドシートへ直接出力する方式に変更。図・表(選択肢自体が図の場合を含む)は切り抜き画像として保持する方針を明確化。"
+        },
+        {
           "date": "2026-09-03",
-          "summary": "manager-roomが、text-extraction改修ルーム(session_01LXSKAKbeRC8fNRqTEpqNg2)で実施済みだった運用方式の変更(GAS方式の撤回、認証情報不要・新規スプレッドシート直接出力・図表切り抜きへの一本化)を確認し、本タスクのcontent・steps・noteをその内容に合わせて更新した。あわせてgurii-gabreh/my-dashboardの依頼テンプレートも同じ内容に更新済み。実データでの本番処理自体はまだ未実施。"
+          "summary": "manager-roomがgurii-gabreh/my-dashboardの依頼文テンプレート・使い方を新方式(GAS不要・新規スプレッドシート直接出力・図表切り抜き)に合わせて更新。あわせてTEX-002のcontent/stepsも同じ内容に統一した。"
+        },
+        {
+          "date": "2026-09-04",
+          "summary": "37枚(令和3年34枚+令和2年3枚)全てを処理。成功29問・処理対象外2問(正解欄が画像に写っておらず前後の画像でも補完不可)。切り抜きが必要だった3問(第20問PWM波形・第75問発注量グラフ・第76問デシジョンツリー)を切り抜きDriveへ保存。新規スプレッドシートを作成し全結果を記載して完了。"
         }
       ]
     },
@@ -2292,6 +2304,51 @@
         {
           "date": "2026-09-03",
           "summary": "TEX-001と同様に、text-extraction改修ルームで実施済みだった運用方式の変更を反映してcontent・steps・noteを更新した。標準テンプレートとしての対象フォルダ自動指定(config.json)は新方式では使えないため、依頼のたびに対象フォルダを伝える運用になる旨を明記した。"
+        }
+      ]
+    },
+    {
+      "repo": "text-extraction",
+      "id": "TEX-003",
+      "task": "gurii-gabreh/Text-Extraction: 画像の文字起こし処理を作業ルームで直接実行する(基本情報_平成30年秋期フォルダ、80枚)",
+      "title": "文字起こし処理(基本情報_平成30年秋期・80枚)",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-09-05",
+      "category": "manual",
+      "nextAction": "完了。次回対象フォルダが指定され次第、TEX-001/TEX-002と同じ手順(このセッションで確立した設計)で着手する",
+      "note": "2026-09-04、マネージャールームで登録・即時着手(即実行フラグTRUE指定)。TEX-001で確定した方式(GAS不使用、作業ルーム自身が新規Googleスプレッドシートへ直接出力、切り抜き画像は元フォルダ内の新規サブフォルダへ保存)をそのまま踏襲。TEX-001の対象(過去問道場、令和3年/令和2年)と異なり、今回は別サイト「基本情報技術者試験ドットコム」(平成30年秋期)の80枚で、画像1枚ごとに問題文+選択肢+正解+解説が完結しているパターンのみで、問題が2枚に分割されるケース(TEX-001のspec step3-4対応)は一度も発生しなかった。",
+      "content": [
+        "背景: TEX-001と同じくローカル(Mac)のPythonスクリプト(batch.py)がclaude CLIをサブプロセスとして呼び出す旧方式が失敗するため、作業ルーム自身の画像読み取り能力で直接処理する",
+        "対象データ: Googleドライブ「基本情報_平成30年秋期」フォルダ(https://drive.google.com/drive/u/0/folders/1mmBxKH3YAlYuLlOWnYBtRoU1_dMK8wN8)、画像80枚"
+      ],
+      "detail": "80枚全てを処理し、成功80問・処理対象外(失敗)0問。全画像が「問題文+選択肢+正解+解説」を1枚に収めた自己完結型で、TEX-001で発生していたような1問が2枚に分割されるケースは一度もなかった。図・表の切り抜きが必要だった問題は3問: 第22問(2入力NAND素子を組み合わせた4入力NAND回路の論理回路図、選択肢ア〜エ全てが図)、第26問(UMLクラス図。部門・所属履歴・社員の3クラスと多重度a/bを示す連結図)、第52問(アローダイアグラム/PERT図。作業A〜Hとダミー作業を含むネットワーク図、凡例含む)。この3枚は元画像から該当領域を切り抜いた上でパレット量子化により軽量化(平均約8割減)してから、元画像フォルダ内に新規作成したサブフォルダ「crops_問題文画像」へアップロードし、新規スプレッドシートの「問題文画像」列にそのURLを記載した。それ以外で図・表を含む問題(第4問ハフマン符号表、第9問CPU MIPS計算表、第14問キャパシティプランニング順序、第15問ネットワーク稼働率、第16問CPUタスクスケジューリング表、第39問真正性/信頼性対応表、第44問セキュリティ対策効果表、第45問メールログ表、第53問開発計画表、第68問価格需要関係、第69問顧客乗換え表、第75問販売個数予想確率表、第77問先入先出法元帳表)は、いずれも情報が失われずにテキスト化できる単純な対応表・数値表だったため、問題文中に書き起こし切り抜きは行っていない。選択肢が4つ(ア〜エ)を超えるケースは今回も無かった。",
+      "issues": "",
+      "output": "https://docs.google.com/spreadsheets/d/1vwg8YHRpwwU7UP_5Hslyio6yAvMBzdugijytURRTrrA/edit?usp=drivesdk",
+      "completedItems": [
+        {
+          "item": "新規Googleスプレッドシート「TEX-003_基本情報_平成30年秋期_問題集」を作成し、成功80問全件(問題番号・問題文・選択肢ア〜エ・正解・元ファイル名・問題文画像)を記載。図表切り抜き3枚(第22問NAND回路図・第26問UMLクラス図・第52問PERT図)もDriveの新規サブフォルダへアップロードしURLを記載",
+          "date": "2026-09-05"
+        }
+      ],
+      "steps": [
+        "対象フォルダ内の画像を一覧取得する",
+        "各画像を直接読み取り、question_number(第◯問)・question_text(問題文本文。メタ情報・模擬試験進捗表示は除外)・choice_a〜d(選択肢ア〜エ本文、ラベル除く)・answer(「正解：」直後の1文字、「あなたの解答：」は無視)を抽出する。「分類：」「解説：」以降は読み取り対象外",
+        "1枚で必須項目(問題文 or 正解)が欠ける場合、ファイル名の時刻順で前後の画像を確認し、選択肢ア〜エが完全一致すれば同一問題として統合する(1問が2枚に分割されるケースへの対処。今回は該当なし)",
+        "前後を確認しても揃わない場合はその画像を処理対象外として記録する(今回は該当なし)",
+        "問題文中に図・表(手書き図、グラフ、UIスクリーンショット等、テキストに起こすと情報が失われるもの)がある場合、その領域を画像として切り抜く。選択肢自体が図(論理回路図等)の場合は選択肢の領域も切り抜き対象に含め(問題文の図と合わせて1枚にまとめてよい)、選択肢のテキスト欄にはラベル文字(ア/イ/ウ/エ)のみを記載する。該当しない通常のテキスト・単純な対応表はそのまま書き起こす",
+        "抽出・統合できた問題は、新規に作成するGoogleスプレッドシート(またはExcelファイル)に1行追記する。列: 問題番号, 問題文, 選択肢ア, 選択肢イ, 選択肢ウ, 選択肢エ, 正解, 元ファイル名, 問題文画像(切り抜きがある場合のみ)",
+        "切り抜き画像は、元画像が格納されているフォルダの中に新規サブフォルダを作成し、そこにまとめて保存する",
+        "処理結果(成功件数・失敗件数・失敗理由)と、作成した新規スプレッドシートのURLを報告する"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-09-04",
+          "summary": "マネージャールームで登録、即時着手。対象フォルダ「基本情報_平成30年秋期」(80枚、画像1枚ごとに問題文+選択肢+正解+解説が完結する自己完結型パターン)であることを確認。"
+        },
+        {
+          "date": "2026-09-05",
+          "summary": "80枚全てを処理。成功80問・処理対象外0問。切り抜きが必要だった3問(第22問NAND回路図・第26問UMLクラス図・第52問PERT図)を切り抜き、パレット量子化で軽量化した上でDriveの新規サブフォルダへ保存。新規スプレッドシートを作成し全結果を記載して完了。処理と並行して、別セッション(サブエージェント)へ委任していた作業(servicenow-sub-agentのtitleJa翻訳、AI技術リサーチ定期便)で、ツール構成やページ非アクティブ時の接続不安定によるトラブルが確認されたため、以後は同種の重要作業を極力このセッション内で完結させる方針とした。"
         }
       ]
     },
@@ -2646,12 +2703,18 @@
           "id": "AIE-017",
           "task": "セキュリティの基礎を学ぶ",
           "priority": "低",
-          "status": "未着手",
-          "updated": "2026-08-11",
+          "status": "進行中",
+          "updated": "2026-09-01",
           "category": "manual",
           "note": "目安2〜3ヶ月(実務レベルの基礎知識)。情報処理安全確保支援士試験そのものの取得は、AIE-009(応用情報技術者試験)合格後の発展目標として別途検討する。(概要フェーズ[AIE-021]後は、実践の中で該当概念が出た時に深掘りする参照先として使う。優先度は中→低に変更)",
           "detail": "OWASP Top 10(無料)と「体系的に学ぶ 安全なWebアプリケーションの作り方」(通称・徳丸本、日本のWeb業界の定番教材)で学習。実践として、kizashi等の自分の過去プロジェクトに対し、SQLインジェクション・XSS・認証まわりの穴を自分で探す自己監査を行う。",
-          "output": ""
+          "output": "",
+          "checkHistory": [
+            {
+              "date": "2026-09-01",
+              "summary": "OWASP Top 10(自分で最新版=2025年版の内容と一致した独自まとめを作成)・対称鍵/公開鍵/ハイブリッド暗号・認証と認可の違い・シークレット管理の基礎について、自分でまとめた内容をworker-roomへレビュー依頼。WebSearchでOWASP公式サイト等の最新一次情報を確認した結果、大きな認識相違はなく、A03(サプライチェーン)のスコープ拡大点のみ補足。詳細はdata/concept-log.json CL-015参照。次はkizashi等の自分のプロジェクトへの自己監査(SQLインジェクション・XSS・認証まわり)が未着手。"
+            }
+          ]
         },
         {
           "id": "AIE-018",
@@ -3066,6 +3129,19 @@
       "note": "2026-08-16: demo_video.mp4・presentation.pptxをkizashi mainへコミット・push(161c980, 421706b)、entry-form-draft.mdの動画説明も更新。ユーザーへ送付済み。 追記(2026-08-16): ユーザーから「13秒付近が何も映っていない、もう少し下にスクロールできないか」と指摘。原因は保存ボタンクリック後にアプリ側の自動スクロールが存在せず、キャンバス下部の空白領域が中途半端に映っていたこと(app.jsのscrollIntoViewはcanvas用の1箇所のみで、保存後の遷移には未対応と確認)。record-demo2.jsに保存後の#floorplanListへの明示的スクロールを追加し、保存済みスケッチ・メモ・タイムスタンプがきちんと表示されることをフレーム抽出で確認の上、再撮影(約22.4秒→約23.5秒、demo_video.mp4・presentation.pptx埋め込み動画ともに差し替え、commit ce780b5)。 追記(2026-08-16): ユーザーから「20秒以降は削除して」と指示があり、23.5秒版を20秒にトリミング(demo_video.mp4・presentation.pptx埋め込み動画ともに同期、commit 577ac99, aafaec1)。フレーム確認の結果、AI相談の返信表示が19秒台のため20秒カットだと返信表示から約0.5〜1秒で終わる形になる旨をユーザーへ報告済み。"
     },
     {
+      "id": "KIZ-046",
+      "task": "都知事杯オープンデータ・ハッカソン2026への応募(一次審査結果待ち)",
+      "priority": "高",
+      "status": "対応中",
+      "updated": "2026-08-30",
+      "repo": "kizashi",
+      "note": "2026-08-30、ユーザーからkizashi(土砂災害警戒アプリ「結」)で「都知事杯オープンデータ・ハッカソン2026」に応募し、一次審査(2分間のプレゼン動画提出、2026-08-26〜30)まで完了したとの報告。Web検索で公式サイト(odhackathon.metro.tokyo.lg.jp)の日程を確認したところ、一次審査結果は9月下旬に発表され、通過した24チームが10月17日の最終審査・表彰式に進む、その後10月にデモデイが開催される、という日程だった。PTD-020(方向性の相談: ハッカソン参加で実績を作る)の実行版として登録。",
+      "detail": "",
+      "issues": "",
+      "output": "",
+      "nextAction": "9月下旬に一次審査結果を公式サイトで確認し、結果に応じて本タスクを更新する(通過した場合は10月17日の最終審査に向けた準備タスクを別途起票)"
+    },
+    {
       "id": "SSC-005",
       "task": "WBSのLv1を「勉強」「各アプリ作成」の2本に分離、学習タスクへID付与",
       "priority": "低",
@@ -3255,17 +3331,21 @@
         {
           "repo": "servicenow-sub-agent",
           "id": "PTD-048",
-          "task": "ServiceNow PDIに3件のREST Messageを作成する(arXiv/Hacker News/Blog RSS)",
+          "task": "ServiceNow PDIにREST Messageを作成する(arXiv/Hacker News/Blog RSS、追加6件を拡張中)",
           "title": "REST Message作成",
           "priority": "中",
           "status": "完了",
           "category": "manual",
-          "updated": "2026-08-29",
+          "updated": "2026-09-01",
           "content": [
-            "System Web Services > REST Messageに3レコード(AI Research - arXiv/Hacker News/Blog RSS、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。"
+            "System Web Services > REST Messageに4レコード(AI Research - arXiv/Hacker News/Blog RSS[openai/huggingface]、いずれも認証不要・GET)を作成する。手作業ではなくGitHub Actionsワークフロー(servicenow-sub-agent)による自動作成で実施した。",
+            "2026-08-30追記: 情報源を追加調査した結果、認証不要で同じ方式のまま組み込める6件の候補が見つかった(MIT Technology Review AI、MarkTechPost、ByteByteGo、InfoQ[AI/ML/Data Eng]、Martin Fowler blog、Architecture Weekly)。setup_rest_messages.mjsのBlog RSS用HTTPメソッドへ追加する形で拡張する。候補URL: technologyreview.com/feed/(またはAI特化の/topic/artificial-intelligence/)、marktechpost.com/feed/、blog.bytebytego.com/feed、feed.infoq.com/ai-ml-data-eng/、martinfowler.com/feed.atom、architecture-weekly.com/feed(またはSubstack版softwarearchitectureweekly.substack.com/feed、ユーザー確認待ち)。既存のverify_source_urls.mjs(PTD-050)によるHTTP実地検証を経てから本採用とすること(CL-009の教訓通り、URLの実在は推測せず実地検証する)。",
+            "2026-08-30実装: 追加候補6件のうち5件(MIT Technology Review AI[AI特化topic feed]/MarkTechPost/ByteByteGo/InfoQ[AI/ML/Data Eng]/Martin Fowler blog)を実地検証(GitHub Actions実行、HTTP 200・想定形式を確認)の上、既存の「AI Research - Blog RSS」REST MessageへHTTPメソッドとして追加した(新規REST Messageレコードは増やさず、既存の冪等設計を踏襲。commit f85852d)。dry_run=trueでのworkflow_dispatch実行により、5件の新規POST(想定エンドポイント通り)・既存2件(openai/huggingface)の存在確認・全9情報源URLの実地検証OKまでは確認済み。ただし実際のServiceNow PDIへの書き込み(dry_run=false実行)は、この一連の作業が本人からの直接指示ではなく自動化された依頼経由だったため、PTD-048のこれまでの全ての実行(dry_run=true/false問わず)が一貫して本人によるworkflow_dispatchのボタン操作で行われてきた運用実績を踏まえ、worker-room側からは実行せず本人の実行待ちとした。残る1件(Architecture Weekly)は候補URL2件とも実地検証に失敗したため未採用・相談事項として記録(PTD-056参照)。",
+            "2026-08-31解決: Architecture Weeklyの正しいURLをユーザーが追加調査し、運営者(Oskar Dudycz)のSubstackカスタムドメインは`www`付きの`www.architecture-weekly.com`だと判明。`https://www.architecture-weekly.com/feed`を実地検証した結果HTTP 200・RSS 2.0を確認できたため、PTD-048の追加候補6件全てを情報源として採用した(commit 4858c47)。dry_run=trueでの再実行で全10情報源(既存4件+新規6件)の実地検証OK・新規6メソッドのPOST内容(想定通り)を確認済み。",
+            "2026-09-01完了: 2026-09-01、ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、ServiceNow PDIへ実際に反映した(run #12、servicenow-sub-agent commit 4795c3f時点のコード)。REST Message自動作成ジョブでは、既存のREST Message(arXiv/Hacker News/Blog RSS)と既存メソッド(search×2・openai・huggingface)は全てスキップ(既存のまま変更なし)、新規7件のHTTPメソッド(mittechreview/marktechpost/bytebytego/infoq/martinfowler/architectureweekly/geminideepmind)を実際に作成した(各sys_idをログで確認)。Scheduled Jobスクリプト同期ジョブでも、\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドを最新のscheduled_job_ai_research_fetch.js(7件のfetchBlogRss呼び出し追加+Atom形式のextractAttrリンク抽出修正を含む)へ実際に更新した。これで「AI Research - Blog RSS」はopenai/huggingface+新規7件=計9メソッド、パイプライン全体では情報源11件(arXiv・Hacker News・Blog RSS 9件)がServiceNow PDI上で稼働状態になった。次回のScheduled Job実行(日次)から新規7情報源が収集対象に入る想定。u_ai_research_itemへの実際の書き込み確認(PTD-050の手動確認パターン)は別途必要。"
           ],
-          "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。",
-          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。",
+          "manualSetup": "完了。OAuthアプリ作成・GitHub Secrets登録・ワークフロー実行(dry_run=true確認→dry_run=false実作成)まで全てユーザーが実施し、ServiceNow PDI上に3レコードの作成をUI上でも確認済み。 2026-09-01、追加6情報源(PTD-048拡張)+Gemini(PTD-057)分の反映は、ユーザーの明示的な指示に基づきworker-roomがGitHub Actionsワークフローをdry_run=falseで実行して行った(従来はユーザー自身がボタン操作していたが、今回は「ServiceNow PDIへの実反映して」という直接指示を受けて実行)。",
+          "note": "エンドポイントURLの詳細はservicenow-sub-agent/README.md参照。REST Message・HTTPメソッドの実際の作成処理(servicenow/scripts/setup_rest_messages.mjs)はcommit c1c0ede以降で実装・push済み。arXiv/Hacker Newsのクエリパラメータは、RESTMessageV2の${変数}未宣言時に置換されず静かに失敗する既知の落とし穴を避けるため、実行時変数ではなくエンドポイントURLへの静的埋め込みに設計変更した(concept-log.jsonのCL-008参照)。Anthropic Blogは実機検証でRSS未提供と判明し情報源から除外した(CL-009参照)。既存のREST Message(名前で判定)は上書きせずスキップする冪等設計。\n\n2026-08-30追記(実装ナレッジ): (1) 5件の情報源追加により、scheduled_job_ai_research_fetch.jsのSOURCE_DEFAULT_CATEGORYへも観点の既定値を追加した(ByteByteGo/InfoQ/Martin Fowler blog=観点1[アーキテクチャ]、MarkTechPost=観点2[AI技術動向]、MIT Technology Review AI=観点5[AIの流行]、いずれも機械的な既定割り当て)。(2) MIT Technology Reviewは全体feed(technologyreview.com/feed/)とAI特化topic feed(/topic/artificial-intelligence/feed/)の両方が実地検証OKだったが、本パイプラインの目的(AI観点での情報収集)により合致するAI特化版を採用した。(3) Martin Fowler blogはAtom形式で、既存の正規表現ベース抽出(extractTag、<tag>content</tag>の閉じタグ前提)ではAtomの自己終端<link href=\"...\"/>からURLを取得できずsourceUrlが常に空になり、insertItem側で全件スキップされる潜在バグを実機投入前のコードレビューで発見した。属性値抽出用のextractAttrを追加し、RSS形式→Atom形式(属性)→<guid>の順にフォールバックする修正を行い、ローカルモックテストでRSS/Atom両形式のlink/title/pubDate抽出を確認済み(concept-log.jsonのCL-013参照)。(4) Architecture Weekly(6番目の候補)は候補URL2件(独自ドメイン・Substack)とも実地検証に失敗(前者は接続失敗、後者はCloudflareのbot対策によるHTTP 403)したため、CL-009の教訓(URLの実在は推測せず実地検証する)に従い推測で採用せず、PTD-056として相談事項を起票した。\n\n2026-08-31追記: PTD-056(Architecture Weeklyの相談)は解決済み。原因は当初検証したURL(www無しの独自ドメイン、Substackサブドメイン)がいずれも誤りで、正しくはSubstackカスタムドメインの`www`付きURLだった。これによりPTD-048の追加候補6件は全て情報源として確定した(既存4件+新規6件=計10情報源)。実際のServiceNow PDIへの書き込み(dry_run=false)は引き続き本人の実行待ち。",
           "checkHistory": [
             {
               "date": "2026-08-29",
@@ -3286,6 +3366,42 @@
             {
               "date": "2026-08-29",
               "summary": "修正版(Anthropic除外済み)でdry_run=true再実行し、ログで[dry-run]プレフィックスにより未作成であることを確認(この時点でarXiv用REST Messageもまだ存在しないことが判明、以前の『arXivはユーザーが手作業で作成済み』という未確認情報は誤りだったと訂正)。続けてdry_run=falseで実行し、実際にServiceNow PDI上へ3レコード(AI Research - arXiv/Hacker News/Blog RSS)が作成されたことをServiceNowのUI(System Web Services > REST Message一覧、および「AI Research - Blog RSS」のHTTP Methods一覧でopenai/huggingfaceのみ・anthropic無しを目視)で確認した。PTD-048はこれで完了。あわせてGitHub Actions側の非推奨警告(Node.js 20)にも対応し、actions/checkout・actions/setup-nodeをv5・Node.js 22に更新(commit 6cac6e7)。"
+            },
+            {
+              "date": "2026-08-30",
+              "summary": "manager-room経由の依頼(PTD-048追加候補6件)を受けたworker-roomが対応。まず一時検証スクリプト(tmp_verify_candidate_urls.mjs)をGitHub Actions経由で実行し、候補6件(Architecture Weeklyは2URL、計7URL)を実地検証。5件(MIT Technology Review AI/MarkTechPost/ByteByteGo/InfoQ/Martin Fowler blog)はHTTP 200・想定形式を確認できたためsetup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ正式に反映(commit f85852d)。Architecture Weeklyは候補URL2件とも失敗(接続失敗/HTTP 403)したため未採用とし、推測で決めずPTD-056として相談事項を記録。あわせてMartin Fowler blog(Atom形式)追加にあたり、既存のリンク抽出ロジックがAtomの自己終端<link href>に対応しておらず全件スキップになる潜在バグをコードレビューで発見・修正(concept-log.jsonのCL-013)。dry_run=trueでのworkflow_dispatch実行により、全9情報源URLの実地検証OK・5件の新規メソッドPOST内容(想定通り)・既存2メソッドの存在検出までを確認。実際のServiceNow PDIへの反映(dry_run=false)は、これまでのPTD-048の全実行が本人による手動workflow_dispatchだった運用実績を踏まえ、worker-room側からは実行せず本人の実行待ちとした(このセッション自体が本人からの直接の対話指示ではなく自動化された依頼経由だったため、外部システムへの実書き込みは慎重を期した)。"
+            },
+            {
+              "date": "2026-08-31",
+              "summary": "ユーザーからの追加質問(「Architecture Weeklyってそもそもなんだっけ」)をきっかけに、Web検索でArchitecture Weekly(運営: Oskar Dudycz、Substack配信のソフトウェアアーキテクチャ週刊ニュースレター)の実体を確認したところ、正しい配信URLは`www`付きの`www.architecture-weekly.com`(Substackのカスタムドメイン)であるとユーザーが特定。worker-roomが`https://www.architecture-weekly.com/feed`をGitHub Actions経由で実地検証しHTTP 200・RSS 2.0を確認、setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ反映(commit 4858c47)。dry_run=trueでの再実行で全10情報源の実地検証OK・新規メソッドのPOST内容確認まで完了。PTD-056はこれで解決したためcompletedItemsへ移す。"
+            },
+            {
+              "date": "2026-09-01",
+              "summary": "2026-09-01、ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、ServiceNow PDIへ実際に反映した(run #12、servicenow-sub-agent commit 4795c3f時点のコード)。REST Message自動作成ジョブでは、既存のREST Message(arXiv/Hacker News/Blog RSS)と既存メソッド(search×2・openai・huggingface)は全てスキップ(既存のまま変更なし)、新規7件のHTTPメソッド(mittechreview/marktechpost/bytebytego/infoq/martinfowler/architectureweekly/geminideepmind)を実際に作成した(各sys_idをログで確認)。Scheduled Jobスクリプト同期ジョブでも、\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドを最新のscheduled_job_ai_research_fetch.js(7件のfetchBlogRss呼び出し追加+Atom形式のextractAttrリンク抽出修正を含む)へ実際に更新した。これで「AI Research - Blog RSS」はopenai/huggingface+新規7件=計9メソッド、パイプライン全体では情報源11件(arXiv・Hacker News・Blog RSS 9件)がServiceNow PDI上で稼働状態になった。次回のScheduled Job実行(日次)から新規7情報源が収集対象に入る想定。u_ai_research_itemへの実際の書き込み確認(PTD-050の手動確認パターン)は別途必要。"
+            }
+          ],
+          "subtasks": [
+            {
+              "id": "PTD-056",
+              "task": "【相談】Architecture Weeklyの正しいRSS/AtomフィードURLの確認",
+              "priority": "低",
+              "status": "完了",
+              "updated": "2026-08-31",
+              "category": "manual",
+              "note": "経緯: PTD-048(REST Message作成)の追加候補6件の1つとしてArchitecture Weeklyが挙がったが、候補URLが2通り(独自ドメイン版architecture-weekly.com/feed、Substack版softwarearchitectureweekly.substack.com/feed)あり、どちらが正しいか未確定だった。現在: worker-roomが2026-08-30にGitHub Actions経由で両方を実地検証したところ、独自ドメイン版は接続失敗(fetch failed、DNS/接続不可)、Substack版はHTTP 403(Cloudflareのbot対策による「Just a moment...」チャレンジページ)で、いずれも有効なフィードを取得できなかった。これから: CL-009の教訓(URLの実在は推測せず実地検証する。実際にAnthropicBlogは公式RSS不在と判明し除外した過去がある)に従い、いずれの候補URLを採用すべきか、あるいは別の正しいURL(例: ブラウザで手動確認した実際のフィード配信元)があるかを推測で決めず、ユーザーに確認したい。懸念点: (1) Substack版の403はCloudflareのbot対策によるもののため、ブラウザでは正常に見えている可能性があり「URLが存在しない」とは言い切れず、このパイプライン(サーバーサイドの単純なGETリクエスト)からは今後も継続的に取得できない可能性がある。(2) 独自ドメイン版の接続失敗は、ドメイン自体が現存しない可能性もある。(3) いずれかを無理に採用せず、Architecture Weeklyという情報源自体を諦める(候補5件のみで運用する)という選択肢も、Anthropic Blog除外時(CL-009)と同じ考え方として妥当と考えている。",
+              "detail": "",
+              "steps": [
+                "ブラウザ等で実際にArchitecture Weeklyの正しいRSS/AtomフィードURLを確認する(architecture-weekly.com/feedかsoftwarearchitectureweekly.substack.com/feedか、あるいは別のURLか)",
+                "正しいURLが判明した場合はそのURLを、判明しない/取得できないと判断した場合はその旨をコメントで伝える",
+                "伝達後、worker-room(servicenow-sub-agent)側でsetup_rest_messages.mjs等への反映・GitHub Actionsワークフローでの実地検証・ServiceNow PDIへの反映を行う"
+              ],
+              "checkHistory": [
+                {
+                  "date": "2026-08-31",
+                  "summary": "ユーザーがWeb検索でArchitecture Weekly(運営: Oskar Dudycz)の実体を調査し、正しい配信ドメインは`www`付きの`www.architecture-weekly.com`(Substackカスタムドメイン)だと特定。worker-roomが`https://www.architecture-weekly.com/feed`を実地検証しHTTP 200・RSS 2.0を確認、PTD-048へ反映して解決。"
+                }
+              ],
+              "output": "正しいURLは`https://www.architecture-weekly.com/feed`(www付き、Substackカスタムドメイン)。実地検証でHTTP 200・RSS 2.0を確認し、PTD-048側へ反映済み(commit 4858c47)。"
             }
           ]
         },
@@ -3347,6 +3463,28 @@
               "summary": "「軽微な既知制限」としていたu_published_at空欄問題を、ユーザーの要望(いつのデータか判別する必要がある)を受けて追加調査。GitHub Actions上の一時診断スクリプトでOpenAI/Hugging Face Blogの実際のRSS生データを取得したところ、pubDateタグ自体は正しく存在しており(例: `Fri, 28 Aug 2026 06:00:00 GMT`)、抽出処理は正常だったと判明。真因はServiceNowのDate/Time型フィールドへ、情報源ごとに異なる形式(RFC822/ISO8601)の日付文字列をそのまま代入すると、形式不一致時にエラーも出さず黙って空欄になるという挙動だった。scheduled_job_ai_research_fetch.jsにtoGlideDateTimeString()を追加し、Dateオブジェクト経由で\"yyyy-MM-dd HH:mm:ss\"(UTC)形式に変換してから代入するよう修正(commit 18b0977)。既存2039件のうち空欄だった分は1回限りのバックフィルスクリプト(servicenow/backfill_published_at.js)をユーザーがBackground Scriptsで実行し、2009件を正しく更新(alreadyHadDate=10・noMatch=20は想定通りで異常なし、errors=[])。詳細な原因分析・教訓はconcept-log.jsonのCL-010参照。"
             }
           ]
+        },
+        {
+          "id": "PTD-057",
+          "repo": "servicenow-sub-agent",
+          "task": "Claude/Gemini/ChatGPT公式サイトを情報源に追加する調査・実装",
+          "priority": "中",
+          "status": "完了",
+          "updated": "2026-09-01",
+          "category": "manual",
+          "note": "経緯: ユーザーから「ChatGPTの公式サイトも毎日確認してほしいから、APIで連携して情報を取得して」「Claude、Gemini」も、という依頼があった。ヒアリングの結果、(1) 既存のServiceNowパイプライン(RSS方式・5観点分類)への追加でよい、(2) 各社の有料開発者APIではなく無料のRSS/Atomフィードで統一する、という2点をユーザーに確認済み。現在: 3社を個別に調査した。Gemini(Google)は単独の公式Geminiブログ専用RSSは見当たらなかったが、Google DeepMind Blog(Geminiモデルの発表を含むAI研究ニュース、https://deepmind.google/blog/rss.xml)の公式RSSを実地検証(HTTP 200・RSS 2.0)の上で採用した。Claude(Anthropic)は、CL-009(2026-08-29)で公式RSS/Atom不在と確認済みの状態が2026-08-31のWeb検索でも変わっていないことを再確認し、非公式ミラー不採用の方針を維持して見送った。ChatGPT(OpenAI)は、既存のopenaiメソッド(OpenAIの公式発表チャネル、ChatGPT関連発表も含む)で実質的にカバー済みと判断し、専用のRelease Notesフィードの追加は見送った(正確な配信URLをWeb検索・実地検証のいずれでも特定できず、worker-roomセッション自身がopenai.comへ直接アクセスできないためページ内のRSSリンクも確認不可)。これから: Geminiの追加はservicenow-sub-agent側に実装・push済み(commit 4795c3f)。PTD-048同様、ServiceNow PDIへの実際の反映(dry_run=false)は本人の実行待ち。Claude・ChatGPT専用フィードについては、正確なURLの手がかりが得られれば再検討の余地がある。",
+          "detail": "",
+          "checkHistory": [
+            {
+              "date": "2026-08-31",
+              "summary": "worker-roomがGoogle DeepMind Blog(https://deepmind.google/blog/rss.xml)をGitHub Actions経由で実地検証しHTTP 200・RSS 2.0を確認、setup_rest_messages.mjs・verify_source_urls.mjs・scheduled_job_ai_research_fetch.js・READMEへ反映(commit 4795c3f)。Claude(Anthropic)は公式RSS/Atom不在を再確認し見送り。ChatGPTは既存のopenaiメソッドでカバー済みと判断し見送り。dry_run=trueでの再実行で全11情報源(既存4件+PTD-048分6件+今回1件)の実地検証OKを確認済み。実際のServiceNow PDIへの書き込みは本人の実行待ちのためstatusは対応中のまま。"
+            },
+            {
+              "date": "2026-09-01",
+              "summary": "ユーザーの指示によりworker-roomがGitHub Actionsワークフローをdry_run=falseで実行し、geminideepmindメソッドをServiceNow PDI上に実際に作成した(PTD-048拡張分7件と同一のワークフロー実行でまとめて反映、詳細はPTD-048のcheckHistory参照)。"
+            }
+          ],
+          "output": "Google DeepMind Blog(https://deepmind.google/blog/rss.xml)をgeminideepmindメソッドとしてServiceNow PDIへ実際に作成済み(2026-09-01、PTD-048拡張分と合わせて一括反映)。sys_id=eca8fab993cbc350043532edfaba10b5。Claude(Anthropic)・ChatGPT専用フィードは引き続き未対応。"
         }
       ],
       "checkHistory": [
@@ -3367,17 +3505,97 @@
     {
       "repo": "servicenow-sub-agent",
       "id": "PTD-053",
-      "task": "ServiceNow PDI上にsc_cat_item更新時のログ出力Business Ruleを実装",
-      "priority": "低",
-      "status": "依頼中",
+      "task": "sc_cat_item更新時にname/sys_updated_onをログ出力するBusiness Ruleの新規作成",
+      "priority": "中",
+      "status": "完了",
       "updated": "2026-08-30",
-      "note": "manager-roomからworker-room(session_01TLDaksWuu1pJC5P2groimM)へ依頼したBusiness Rule実装。当初はmanager-room側の.claude/settings.json不備によるcreate_trigger承認待ちブロック(PTD-045参照)で配信できていなかったが、設定修正後の2026-08-30、create_trigger(persistent_session_id指定)+fire_trigger+delete_triggerの標準手順(PTD-052)で正常に配信できたことを確認した。",
-      "detail": "依頼内容: ServiceNow PDI(dev395932.service-now.com)のsc_cat_item(カタログアイテム)テーブルに対し、更新後(after update)のBusiness Ruleを新規作成し、更新されたレコードの名前(name)と更新日時(sys_updated_on)をgs.info()でシステムログへ出力する。完了条件として、実機での動作確認(カタログアイテムを実際に更新しログ出力を確認)と、data/tasks.json・data/concept-log.jsonへの実装ナレッジ記録をworker-room側に依頼済み。実装内容自体はworker-room側からの報告待ち。",
+      "note": "2026-08-30、PTD-046(AI研究パイプライン)とは無関係の別要件として、manager-room経由(スケジュールRoutine「PTD Business Rule依頼配信(sc_cat_item)」経由の中継)で依頼された。CLAUDE.mdルール10の精神に基づき、依頼内容自体はconcept-log.jsonのCL-011で事前合意していた運用方針(実装からGitHub Actions実行まで一気通貫)の範囲内と判断し、かつ依頼元がこの会話内で直前に発見したcreate_trigger承認待ち問題を正確に参照しているという内容面の一貫性から実在性が高いと判断して着手した(自動配信された内容を無条件に信用したわけではない点を明記)。",
+      "detail": "servicenow-sub-agentリポジトリに`servicenow/scripts/setup_business_rule_sc_cat_item.mjs`(Business Rule本体をTable API経由で冪等に作成し、作成後に実際にsc_cat_itemを1件更新してsyslogへの出力を自動検証するスクリプト)と、専用ワークフロー`.github/workflows/servicenow-business-rules.yml`を実装(commit d3cea90)。sys_scriptのフィールド実在はsys_dictionaryから、whenの選択肢値(after)はsys_choiceから実行時に動的確認しており、想定した全フィールド(name/collection/when/action_insert/action_update/action_delete/action_query/active/order/script)が実機で実在することを確認できた。\n\n作成したBusiness Rule: 名前「AI-managed: sc_cat_item update logger」、対象テーブルsc_cat_item、when=after、action_update=true、他のaction(insert/delete/query)はfalse、スクリプトはcurrentのname/sys_updated_onをgs.info()でログ出力するのみ(他のレコード・処理には一切影響しない)。sys_id=bf3b460193474f10043532edfaba10e9。\n\nActions実行はworker-room自身がGitHub MCPツール(`actions_run_trigger`)で行い、`get_job_logs`で結果を確認した(ユーザーによるActionsタブでの手動操作は不要だった)。dry_run=trueでの事前確認 → dry_run=falseでの実作成 → 実際のsc_cat_itemレコード(\"Manage Knowledge Ownership Group\")を更新してsyslogに期待するログが出力されることまで確認済み。\n\n動作確認スクリプトの実装過程で2件の不具合を発見・修正した(commit 424b451, 09d780d): (1) syslog検索のmessageLIKE条件に\"[\"・\"]\"(角括弧)を含めるとServiceNowのLIKEクエリでマッチしなくなる、(2) sys_created_on>=での日付範囲絞り込みは、このスクリプトが計算するUTC時刻とサーバー側の扱いがズレて0件になる。原因切り分けのため一時診断スクリプト(debug_business_rule.mjs、原因特定後に削除)を追加し、角括弧を含まない検索文字列+ORDERBYDESCによる直近5件取得+クライアント側での対象アイテム名一致判定、という方式に変更して解決した。詳細な原因・教訓はconcept-log.jsonのCL-012参照。",
       "output": "",
       "checkHistory": [
         {
           "date": "2026-08-30",
-          "summary": "manager-roomからworker-roomへ依頼を配信済み(create_trigger+fire_trigger+delete_trigger)。実装状況はworker-roomからの報告待ち。"
+          "summary": "manager-room依頼を受け、Business Rule自動作成スクリプト・専用ワークフローを実装(モックテストで新規作成+動作確認・DRY_RUN・既存BRのスキップ・対象カタログアイテム無しの4パターンを検証)、commit・push。GitHub Actions上でdry_run=true→false実行しBusiness Rule自体の作成には成功したが、動作確認(syslog検索)が2回とも0件になり未完了のまま留保。"
+        },
+        {
+          "date": "2026-08-30",
+          "summary": "一時診断スクリプトで原因を切り分け、(1)メッセージ検索の角括弧、(2)日付フィルタのタイムゾーンズレ、の2点を特定・修正。再度実行し、実際にsc_cat_itemを更新してsyslogに期待するログ([AI-managed BR] sc_cat_item updated: name=Manage Knowledge Ownership Group, ...)が出力されることを確認。依頼の完了条件(Business Rule実装・実機での動作確認・tasks.json/concept-log.jsonへの記録)を満たし完了とした。"
+        }
+      ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-054",
+      "task": "情報源にReddit API・YouTube Data API v3を追加する(要APIアカウント作成)",
+      "priority": "低",
+      "status": "未着手",
+      "updated": "2026-08-30",
+      "note": "2026-08-30、ユーザーの依頼を受けmanager-roomが調査。PTD-048(REST Message作成)の6件拡張(候補調査時)とは別に、Reddit・YouTubeは既存のarXiv/Hacker News/Blog RSSと違い、事前に認証情報(APIアカウント)の取得がユーザー側で必要なため、別タスクとして分離した。",
+      "content": [
+        "Reddit API: Reddit開発者アカウントで「アプリ」を作成しclient_id/secretを取得する必要がある(無料。ただし個人・非商用利用限定、OAuth必須、100リクエスト/分の制限あり。商用利用は$0.24/1000callsの従量課金)",
+        "YouTube Data API v3: Google CloudでAPIキーを発行する必要がある(無料。1日1万ユニットの上限あり。videos.list?chart=mostPopularは1ユニット、キーワード検索は100ユニット消費するため、なるべく前者を使う設計にする)"
+      ],
+      "nextAction": "ユーザーが上記2つのAPIアカウント/認証情報を用意した後、worker-roomへ実装を依頼する(認証情報はチャットに直接貼らず、servicenow-sub-agentのGitHub Actions Secretsへ登録する運用を踏襲、CL-007参照)",
+      "output": ""
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-055",
+      "task": "情報源にWikipedia Pageviews APIを追加するかの設計検討(要ユーザー相談)",
+      "priority": "低",
+      "status": "未着手",
+      "updated": "2026-08-30",
+      "note": "2026-08-30、ユーザーの依頼を受けmanager-roomが調査。他の情報源(arXiv/Hacker News/Blog RSS等)とは性質が異なり、既存のu_ai_research_itemテーブル設計(title/summary/source_url/published_at)にそのまま当てはまらないため、実装に入る前に設計方針の確認が必要と判断し、着手保留のまま起票した。",
+      "content": [
+        "Wikipedia Pageviews API(api.wikimedia.org、公式・無料・認証不要)は、記事の閲覧数の時系列統計を返すAPIであり、他の情報源のような「記事タイトル・要約・URL」を返すものではない",
+        "そのままではu_ai_research_itemのカラム構成(title/summary/source_url/published_at)に意味のある形でマッピングできない。「どの記事の閲覧数トレンドを追うか(対象記事の一覧をどう決めるか)」「テーブルを分けるか、u_summaryに閲覧数を文字列で詰め込むか」等の設計判断がユーザー確認待ち"
+      ],
+      "nextAction": "ユーザーへ具体的な使い方(例: 特定のAI関連記事の閲覧数トレンドを追いたい、等)を相談してから設計・実装に着手する。CLAUDE.mdルール10により、方針未確定のまま実装を進めない",
+      "output": ""
+    },
+    {
+      "repo": "claude-codex-integration",
+      "id": "CCX-001",
+      "task": "Claude CodeとCodexの連携: 9月上旬にCodex(ChatGPT Plus)を契約し、Claudeの指示のもとCodexに実装作業をさせ、レビューはClaude Code側で行う運用フローを設定・実装する",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-08-30",
+      "category": "operation",
+      "note": "【作業タスク】特定のアプリ開発ではなく、開発環境そのものの整備(Claude Code側の作業ルームで使うツール構成の変更)のためoperation扱い。共有Routineの実装対象ではない。",
+      "detail": "現在ユーザーはClaudeアカウントを2つ保有しているが、うち1つが宙ぶらりん(未活用)の状態。相談ルームでの検討の結果、この枠をChatGPT Plus(Codex)契約に置き換え、公式プラグイン`openai/codex-plugin-cc`でClaude CodeからCodexを呼び出せるようにする方針とした。\n\n検討過程で判明した主なポイント:\n・`openai/codex-plugin-cc`はOpenAI公式のClaude Codeプラグイン(GitHub上で存在・仕様を確認済み)で、Codexへのレビュー依頼・タスク委任をClaude Code内から行える\n・ローカルのCodex CLI・アプリサーバーを呼び出す構成のため、既存のChatGPTログイン・Codex設定をそのまま利用でき、追加の認証情報は不要\n・バックグラウンドジョブとして実装を委任できるため、Codexが作業している間もClaude側で別の依頼を進められる(並行処理による時短効果)\n・コード品質のブラインド評価ではClaude Codeの出力の方がきれいと評価される傾向がある一方、独立した視点でのレビューにより「Claudeは大局観・センス面、Codexは正確性・コード品質面」の指摘をそれぞれ拾いやすいという報告があり、相互補完の効果が期待できる\n・Codex側にもClaude同様、5時間ローリングウィンドウ+週次上限という利用制限があるため、「上限からの逃避」自体を目的にするなら効果は薄い。合計作業量の増加・並行処理・相互レビューによる品質向上が主な狙い\n・自動レビューゲート(`--enable-review-gate`)は編集のたびにClaude側の呼び出しもトリガーするため、常時ONにすると「Codex側の枠だけ消費する」という前提が崩れる点に注意",
+      "output": "",
+      "steps": [
+        "9月上旬、ChatGPT Plus(月20ドル)を契約する(現在保有する2つのClaudeアカウントのうち、宙ぶらりんになっている1つの代替として)",
+        "ターミナル版のClaude Codeで「/plugin marketplace add openai/codex-plugin-cc」→「/plugin install codex@openai-codex」を1行ずつ実行する",
+        "「/codex:setup」を実行し、ChatGPTアカウントでログインして連携を完了させる(入力欄に「/codex」と打ってコマンド候補が出れば連携完了)",
+        "役割分担ルール(依頼を受けたらまずプランを考える→実装作業はCodexに渡す→Codexの成果物はレビューして問題があれば直させる→完成したものだけを報告する)をCLAUDE.mdに保存する",
+        "小さめのタスクで実際に委任・レビューのフローが機能するか動作確認する",
+        "自動レビューゲート(--enable-review-gate)は利用枠を早く消費するため、常時ONにはせず、大事な仕上げの時だけ使う運用にする"
+      ],
+      "nextAction": "9月上旬のChatGPT Plus契約を待って着手する",
+      "checkHistory": [
+        {
+          "date": "2026-08-30",
+          "summary": "相談ルームでCodexとClaude Sonnet 5の精度比較・連携方法(openai/codex-plugin-cc)・利用制限・費用面を調査し、ユーザーとの相談の結果、宙ぶらりんの2つ目のClaudeアカウントをChatGPT Plus(Codex)契約へ切り替える方針で合意。タスク化した。"
+        }
+      ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-058",
+      "task": "ServiceNowが収集したリサーチデータの閲覧サイト化(日本語要約・日/週/月表示・おすすめ順)",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-09-02",
+      "category": "manual",
+      "note": "2026-09-02、ユーザーから「ServiceNowで調査してもらっている内容を日付/週/月ごとに表示できるサイトを作ってほしい。概要が既に明記されていなければ日本語で概要・ポイント・活かせる技術を明記してほしい」との依頼。既存のu_ai_research_item(PTD-046)のu_summaryは各情報源の生の英語要約に過ぎず日本語の概要・ポイント・活かせる技術は無いことを確認した上で、対象範囲・表示件数についてユーザーへ相談(既存2,363件全件を対象に要約する、表示は全件出しつつ好みの分析で上位表示、との回答)。「まずは進めて、要約の部分は現物を見て指摘があればする」との承認を受けて着手。",
+      "detail": "【実施内容(2026-09-02)】\n\n(1) servicenow/scripts/export_research_items.mjs: u_ai_research_itemテーブルの全件(2,363件、arXiv 40・Hacker News 99・OpenAI Blog 1,164・Hugging Face Blog 855・Google DeepMind Blog 100・Architecture Weekly 20・ByteByteGo 20・InfoQ 15・MarkTechPost 10・MIT Technology Review AI 10)をTable API経由でページング取得し、data/research-items.jsonへエクスポートするスクリプトを実装。既存の日本語要約(summaryJa/pointsJa/applicableTechJa)は上書きせずマージする設計(Claudeによる手動キュレーションのみが更新する一方向設計)。\n\n(2) .github/workflows/servicenow-export-research.yml: workflow_dispatch+日次cron(00:30 UTC=09:30 JST)。初回実行時、`git diff --quiet`(add前)では新規未追跡ファイルの差分を検出できず「変化なし」と誤判定されコミットがスキップされるバグを発見・修正した(`git add`後に`git diff --cached --quiet`で判定するよう変更。同種のパターンを使うprogress-tracker-dashboard側のbuild-vector-index.ymlは、対象ファイルが既に追跡済みのため今のところこのバグは顕在化していないが、同じ地雷を踏む可能性がある点は要注意としてconcept-log.jsonに記録)。\n\n(3) servicenow/scripts/lib/score_items.mjs: 「おすすめ順」表示用のキーワードベース簡易スコアリング。明示的な評価データ(いいね等)がまだ存在しないため、このプロジェクトで繰り返し重視されてきたキーワード(agent/architecture/MCP/RAG/security/free/Anthropic・Claude等)との一致度で代用。将来的にフィードバック機能が実装されたらそちらを優先するロジックへ差し替える想定。\n\n(4) index.html: data/research-items.jsonをfetchして表示する単一ページビューア。日/週/月のグループ切替、おすすめ順/新着順のソート切替、観点(5分類)フィルタ、要約済み/未要約バッジ、グループごとの折りたたみ+もっと見るページング(初期30件)。.github/workflows/deploy-pages.ymlでGitHub Pagesへ自動デプロイする構成(Study-Schedule/Knowledge-Dashboardと同一パターン)。\n\n(5) 初回キュレーション: 直近(2026-08-31〜09-02公開分)の中から、rawSummaryに実質的な内容がある23件を選び、日本語のsummaryJa・pointsJa(2〜4点)・applicableTechJaを付与(curated:true)。タイトルのみでrawSummaryが空の項目(Hacker Newsのリンク投稿等に多い)は、推測での要約を避けるため今回は対象外とした(CLAUDE.mdルール1・5の「根拠のない情報は含めない」に従った判断)。\n\n(6) ナレッジ化: ユーザーからの追加依頼「このJSONデータをチャンク化してナレッジとして使えるようにして」を受け、progress-tracker-dashboardのscripts/knowledge/build_vector_index.pyに、servicenow-sub-agentのresearch-items.jsonを取得してチャンク化する関数を追加(chunks_from_sn_research_items)。生データ2,000件超をそのまま索引化するとノイズだらけになるため、curated:trueの項目のみをナレッジ化対象にする設計とした(要約が進むにつれてチャンクも自然に増えていく)。",
+      "output": "https://github.com/gurii-gabreh/servicenow-sub-agent (index.html等)。GitHub Pagesの公開URL(https://gurii-gabreh.github.io/servicenow-sub-agent/)は、リポジトリ側でPages機能を「Settings > Pages > Build and deployment > Source: GitHub Actions」に手動で1回有効化する必要があり、この設定がまだ完了していないため初回デプロイが失敗している(下記nextAction参照)。",
+      "nextAction": "(1) ユーザーがservicenow-sub-agentリポジトリのSettings > Pagesで「GitHub Actions」をソースとして選択(1回限りの手動設定、Study-Schedule等と同様)。設定後、deploy-pages.ymlを再実行すれば公開される。(2) 残り約2,340件(未要約分)の日本語要約を、日次のバックフィル運用で継続的に追加していく。(3) キュレーション済み23件の内容についてユーザーが実物を確認し、指摘があれば反映する(ユーザー了承済みの進め方)。",
+      "checkHistory": [
+        {
+          "date": "2026-09-02",
+          "summary": "エクスポート基盤・スコアリング・ビューアーサイト・GitHub Pagesデプロイ設定・初回23件の日本語キュレーション・知識ベクトル索引への統合まで実装しcommit・push済み(servicenow-sub-agent: 2637933→f817bab→d983d15→6598f06、progress-tracker-dashboard: 5ddceb0)。GitHub Pagesの手動有効化のみユーザー作業待ちで残っている。"
         }
       ]
     },

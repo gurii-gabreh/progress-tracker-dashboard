@@ -1150,6 +1150,411 @@
       "sourceUrl": "https://www.cnbc.com/2026/08/27/nvidia-hugging-face-acquisition.html",
       "collectedAt": "2026-08-30 09:10",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "アーキテクチャ・AIエージェント設計",
+      "title": "UT Dallas等、AIエージェントの記憶を4つのグラフに分離する新設計「MAGMA」をACL 2026で発表",
+      "summary": "UT DallasとUniversity of Floridaの研究チームが、記憶を単一のリポジトリではなく意味・時間・因果・エンティティの4つの直交するグラフに分けて表現する「MAGMA」(Multi-Graph based Agentic Memory Architecture)をACL 2026本会議で発表。検索を各グラフ上のポリシー誘導型の探索として定式化し、記憶表現と検索ロジックを分離することで透明な推論経路を実現。長期対話ベンチマークLoCoMo・LongMemEvalで既存の主要エージェントメモリシステムを上回る性能を示した。",
+      "sourceUrl": "https://aclanthology.org/2026.acl-long.1709/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "モデル性能",
+      "title": "DeepSeek、マルチモーダル実験モデル「V4-Flash-Vision-Exp」を8月21日公開",
+      "summary": "DeepSeekは8月21日、画像理解機能を追加した実験的モデル「DeepSeek-V4-Flash-Vision-Exp」を公開。テキスト能力(エージェント・推論・世界知識)はベースのV4-Flashと同等を維持しつつ、マルチモーダルエージェントベンチマークではAnthropicのOpus 4.8に迫る性能に大きく躍進した。1,048,576トークンのコンテキストウィンドウを持つスパースMoEモデル(総パラメータ284B、アクティブ13B)で、価格は入力$0.22/M・出力$0.66/Mトークン。",
+      "sourceUrl": "https://api-docs.deepseek.com/news/news260821/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "活用事例・医療",
+      "title": "大阪病院、富士通Japan・日本マイクロソフトと生成AIの安全な利活用体制構築プロジェクトを開始",
+      "summary": "国立病院機構大阪病院は2026年2月13日、富士通Japan・フォーティエンスコンサルティングと協定を締結し、日本マイクロソフトの技術を活用して医師・看護師の業務全般で生成AIを安全に利活用する体制構築プロジェクトを開始。2月19日には退院サマリー作成と看護申し送りの要点整理への生成AI活用を発表し、6月の運用開始に向けて院内ガイドライン整備や情報基盤・運用ガバナンスの構築を進めている。",
+      "sourceUrl": "https://www.microsoft.com/ja-jp/industry/blog/health/2026/02/26/jcho-osaka-fujitsu-microsoft-2026-blog/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "活用分野・教育",
+      "title": "高校生の7割超がAIの助言を「実行」、悩みの決断もAIに委ねる実態が明らかに",
+      "summary": "塾選ジャーナルの調査(2026年8月27日発表)によると、高校生の7割超がAIから受けた助言を実際に「実行」しており、進路や人間関係の悩みなど重要な決断をAIに委ねる実態が明らかになった。別の調査(木村鋳造所調べ、同日発表)では、アイデアを考える際にAIを使う子どもが52.8%に上り、うち11.7%は「最初からAIを使う」と回答している。",
+      "sourceUrl": "https://ict-enews.net/2026/08/27delta-x-5/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-08-31",
+      "category": "流行・トレンド",
+      "title": "OpenAI、SpaceXによるCursor買収を受けモデル提供を11月12日打ち切りへ、Anthropicは支援継続を表明",
+      "summary": "SpaceXが2026年8月14日にAIコーディングツール「Cursor」の開発元Anysphereの買収(約600億ドル規模)を完了させたことを受け、OpenAIは8月28日、契約上の通知期間を経て2026年11月12日にCursorへのモデル提供を打ち切ると発表。理由はイーロン・マスク氏の他企業(Twitter・xAI)が過去にOpenAIの利用規約に違反した経緯を踏まえた信頼上の懸念。一方Anthropic共同創業者のTom Brown氏は「CursorはClaude 3.5の頃からの信頼できるパートナー」とし、Cursor向けのClaudeモデルの計算資源を今後も拡大していく方針を示した。",
+      "sourceUrl": "https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/",
+      "collectedAt": "2026-08-31 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "アーキテクチャ・エージェント基盤",
+      "title": "エンタープライズ向けAIエージェント基盤、「オーケストレーター/ワーカー」等7つの設計パターンに収斂",
+      "summary": "2026年時点のエンタープライズ向けAIエージェント基盤アーキテクチャは、オーケストレーター/ワーカー分業、スーパーバイザーによるルーティング、RAGに基盤付けされたエージェント、モデルゲートウェイ、人間介入ゲート、評価ループ、監査プレーンの7パターンに整理されつつある。専門特化したエージェント群をスーパーバイザーが調停し明確な権限委譲を持たせる設計は、単一の巨大エージェントより障害時の切り分けとガバナンスが容易とされる。",
+      "sourceUrl": "https://vdf.ai/blog/enterprise-ai-agent-platform-architecture-patterns-2026/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "モデル性能",
+      "title": "Z.ai、コーディング・サイバーセキュリティ特化モデル「GLM-5.3」を8月14日正式公開",
+      "summary": "Z.aiは8月14日、GLM-5.2のベースモデルをそのまま使い後学習のみで性能を伸ばした「GLM-5.3」を公開。サイバーセキュリティベンチマークCyberGymで84.5点を記録し、Claude Mythos 5(83.8)・GPT-5.6 Sol(83.6)を上回った。AutomationBenchは26.2→48.2とほぼ倍増、コンテキスト窓は100万トークン。オープンウェイトは公開から約2週間後に提供予定とされた。",
+      "sourceUrl": "https://www.explainx.ai/blog/glm-5-3-launch-cyber-defense-benchmarks-august-2026",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "モデル性能・オープンウェイト",
+      "title": "Alibaba「Qwen3.8」、8月13〜14日にオープンウェイト公開もライセンスを27BとMaxで分割",
+      "summary": "Alibabaは8月2日発表のQwen3.8-Max(2.4兆パラメータMoE、アクティブ950億、コンテキスト100万トークン、価格$2/$6毎百万トークン)に続き、8月13〜14日にオープンウェイトを公開。270億パラメータの「Qwen3.8-27B」はApache 2.0で提供される一方、2.4兆パラメータの「Qwen3.8-2.4T-A95B」は独自の「Qwen3.8-Maxライセンス」となり、年間売上5,000万ドルを超えるAIサービス事業者は別途ライセンス取得が必要と定められた。",
+      "sourceUrl": "https://www.digitalapplied.com/blog/qwen3-8-max-full-release-benchmarks-open-weights",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "活用事例・建設業",
+      "title": "清水建設、法人向けAIアシスタント「Lightblue」の利用者が約1年半で8,800名に拡大",
+      "summary": "清水建設は8月20日、法人向けAIアシスタント「Lightblue」の社内利用者数が導入から約1年半で8,800名に達したと発表。現場主導で社内に8,000個超のAIアシスタントが作成されており、建設現場・支店・本社の各部門で図面・仕様書・技術文書のRAG検索や問い合わせ対応などに活用が広がっている。",
+      "sourceUrl": "https://www.lightblue-tech.com/2026/08/20/shimz/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "流行・規制対応",
+      "title": "Anthropic、Claudeの生成テキスト・ファイルに不可視の電子透かしを8月2日から全世界導入",
+      "summary": "Anthropicは8月2日以降、Claudeが生成する全てのテキスト・ファイル出力に不可視の電子透かしを埋め込む運用を開始したと発表。EU AI法第50条(2)項の透明性義務(合成コンテンツを機械可読な形式でAI生成と識別可能にする要件)に対応するもので、地域を問わずグローバルに適用される。透かしは文章の意味・品質・読みやすさを変えずテキスト自体に織り込まれ、コピー&ペーストや一部編集にも耐える設計。ファイルにはC2PA標準を採用し、既存の旧モデルへの展開期限は2026年12月2日とされた。",
+      "sourceUrl": "https://techcrunch.com/2026/08/11/anthropic-says-it-will-watermark-text-generated-by-its-ai-models/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-01",
+      "category": "流行・規制",
+      "title": "ミネソタ州、AI「ヌード化」アプリを禁止する初の州法が8月1日施行、xAIが違憲訴訟を提起",
+      "summary": "ミネソタ州で同意なくAI生成のヌード画像を作る「ヌード化(nudification)」アプリ・サービスを禁じる全米初の州法が2026年8月1日に施行され、違反1件につき最大50万ドルの民事制裁金が科されうる内容となった。同法施行を受け、Grok Imagineの画像編集機能の制限を迫られるxAIは、表現の自由(修正第1条)違反を主張してミネソタ州司法長官を相手取り違憲訴訟を提起した。",
+      "sourceUrl": "https://www.engadget.com/2225792/xai-challenging-new-minnesota-law-banning-nudify-apps/",
+      "collectedAt": "2026-09-01 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "アーキテクチャ・エージェントUI",
+      "title": "Perplexity、メール受信箱をAIエージェントの操作インターフェースにする「Computer in Email」を発表",
+      "summary": "Perplexityは、自律型エージェント基盤「Computer」にメールから直接タスクを依頼できる「Computer in Email」を発表。computer@perplexity.comへ新規メール送信・スレッド転送・CCのいずれかでタスクを依頼すると、送信者を認証した上でスレッド全文・添付ファイルを読み取り、その人自身が持つ権限・連携先を使ってタスクを実行し、スプレッドシートやPDF等の成果物を同じメールスレッドに返信する。各リクエストはWeb・モバイルからも確認できる完全なセッション記録(監査証跡)を生成する。",
+      "sourceUrl": "https://www.perplexity.ai/hub/blog/computer-now-works-in-email",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "モデル性能",
+      "title": "Tencent、7,700億パラメータのオープンウェイトモデル「Hy4 preview」を8月28日公開",
+      "summary": "Tencentは8月28日、次世代大規模言語モデル「Hy4 preview」をApache 2.0でオープンソース公開。総パラメータ7,700億(アクティブ490億)のMixture-of-Expertsアーキテクチャで、コンテキストウィンドウは100万トークン超。コーディング・オフィス業務・科学研究といった実務タスクで高い性能を示すとし、Tencent自社のWorkBuddy・CodeBuddy・元宝(Yuanbao)・ima等の製品からも利用できる。",
+      "sourceUrl": "https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "技術の組み合わせ・音声エージェント",
+      "title": "Google、Gemini Liveに非同期エージェント「Spark」を統合、音声指示だけでGoogleアプリを横断作業させる機能を8月26日追加",
+      "summary": "Googleは8月26日、音声アシスタント「Gemini Live」に、複数手順にわたる作業をバックグラウンドで自律実行するエージェント「Spark」との統合、話し言葉での「Daily Brief」、ハンズフリーのGmail操作、Personal Intelligenceの4機能を追加。例えば「予定を教えて」と話しかけた後、「メールから招待状を拾って家族カレンダーに登録し、移動時間も追加して」と続けると、その作業はSparkに引き渡されGoogle Docs・Sheets・Drive・Web上でバックグラウンド実行される。",
+      "sourceUrl": "https://www.unite.ai/gemini-live-gains-agentic-spark-tasks-daily-brief-and-voice-inbox-control/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "活用分野・教育",
+      "title": "Google、日本の大学生向けに「Google AI Plus」を1年間無料提供、8月20日発表",
+      "summary": "Googleは8月20日、日本在住・18〜24歳の大学生を対象に、通常月額725円の「Google AI Plus」(Gemini Omniへのアクセス・無料版の2倍の利用上限・400GBストレージ等)を登録から1年間無料提供すると発表。上位プラン「Google AI Pro」も最大75%オフで提供する。申し込み期限は2026年12月31日で、無料期間終了後は解約しない限り月額725円で自動更新される。",
+      "sourceUrl": "https://www.itmedia.co.jp/news/article/2608/20/2000000634/",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "流行・トレンド",
+      "title": "SpaceXAI(旧xAI)、常時稼働のAIエージェント「Grok Bot」をCursor経由でベータ公開、月120ドル",
+      "summary": "SpaceXAIは8月11日、クラウド上で稼働し続け利用者のツールにログインして実作業を代行する「AIチームメイト」型エージェント「Grok Bot」を、Cursor経由の早期ベータとして公開。人間の判断が必要な時だけ差し戻され、スマホ・PCどちらからでも同じ会話を継続でき、「Show a Bot how it's done」機能で作業手順を録画・記憶させ定型ルーティンとしてスケジュール実行させることもできる。SuperGrok Heavy・Cursor Ultra・Cursor Teams Premiumの加入者は追加料金なしで利用可能(単体では月120ドル)。",
+      "sourceUrl": "https://venturebeat.com/orchestration/spacexais-grok-bot-turns-agents-into-persistent-digital-coworkers-that-can-operate-your-apps-for-120-per-month",
+      "collectedAt": "2026-09-02 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "アーキテクチャ・AIエージェント基盤",
+      "title": "DoorDash、AIエージェント開発基盤「Flux」で月13万件のエンジニアリングタスクを自動化",
+      "summary": "DoorDashはエンジニアリング向けAIエージェントのワークロードを個人PCから自社のクラウド基盤「Flux」へ移行し、1か月間で13万件のタスクを自動化、週2万5千件超の自動コードレビューを支えていると発表。分離実行環境(Firecracker microVM)・MCPゲートウェイ・再利用可能なプレイブック・複数の起動経路を組み合わせ、権限を絞った上で一元的な監査ログを取得できる構成にしている。",
+      "sourceUrl": "https://www.infoq.com/news/2026/08/doordash-flux-cloud-agent/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "アーキテクチャ・モデルルーティング",
+      "title": "Microsoft、Azure AI FoundryのModel Routerを2リージョンから28リージョンへ拡大、Claude Opus 4.8等を追加",
+      "summary": "MicrosoftがAzure AI FoundryのModel Routerの提供リージョンをグローバル標準28・データゾーン21へ拡大し、Claude Opus 4.8とGPT-5.6を新規追加、非推奨の4モデルを除去した。既定デプロイはモデルプールの変更を自動的に受け取る一方、実効的なコンテキストウィンドウはプール内最小のモデルに合わせられる仕様になっている。",
+      "sourceUrl": "https://www.infoq.com/news/2026/08/foundry-model-router-regions/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "モデル性能",
+      "title": "Anthropic、Claude Fable 5.1・Claude Mythos 5.1を9月1日公開、Terminal-Bench-Scienceで前モデル比約2倍に",
+      "summary": "Anthropicは2026年9月1日、Claude Fable 5.1(Claude API・AWS・Google Cloud・Microsoft Foundryで一般提供)とClaude Mythos 5.1(Project Glasswing認定組織限定)を公開。Fable 5.1はTerminal-Bench-Science 0.1で52.6%(Fable 5の24.7%から倍増)、100万トークンのコンテキストウィンドウに対応し、キャッシュ読み込み価格を75%引き下げ(100万トークンあたり0.25ドル)た一方、基本価格(入力10ドル/出力50ドル)は据え置いた。",
+      "sourceUrl": "https://www.marktechpost.com/2026/09/01/anthropic-releases-claude-fable-5-1-and-claude-mythos-5-1-52-6-on-terminal-bench-science-and-75-cheaper-cache-reads/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "セキュリティ・企業向け機能",
+      "title": "Anthropic、企業向け安全機構「Enterprise Frontier Safeguards」を9月1日発表、監視データを顧客クラウドに保存",
+      "summary": "Anthropicは2026年9月1日、企業向けの新しい安全機構「Enterprise Frontier Safeguards(EFS)」を発表。監視データをAnthropicのクラウドではなく顧客自身のクラウドアカウント内に保存する「ゼロデータ保持」設計としながら、不正利用の検知自体は自動化されAnthropic側のロジックで動作させ、暗号鍵やフラグ確認の権限は顧客側が保持する。100社超の企業と共同開発し、2026年秋から段階展開予定。",
+      "sourceUrl": "https://www.marktechpost.com/2026/09/02/anthropic-enterprise-frontier-safeguards-efs/",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "技術の組み合わせ・製造業",
+      "title": "NEC、独自「自動交渉AI」で部品調達交渉を自動化するAIエージェントサービスを提供開始、交渉時間を数日から約80秒に短縮",
+      "summary": "NECは2025年12月2日、独自AI技術「自動交渉AI」を基盤とする「調達交渉AIエージェントサービス」の提供を開始。2024年11月にグループ会社で行った実証実験では約1,300品目の部品調達において取引先との納期・数量調整を自動化し、自動合意達成率95%、従来数時間〜数日を要していた調整時間を約80秒に短縮した。",
+      "sourceUrl": "https://jpn.nec.com/press/202512/20251202_01.html",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "流行・AIガバナンス",
+      "title": "OpenAI、新モデル「Astra」が自社基準で「重大」レベルのサイバーセキュリティ能力を初めて満たしたと発表",
+      "summary": "OpenAIは新モデル「Astra」について、自社のPreparedness Framework(準備フレームワーク)における「重大(Critical)」レベルのサイバーセキュリティ能力基準を満たした初のモデルであると発表し、より強力な安全対策を伴って提供するとした。モデルの能力向上に応じてリリース前の安全対策を段階的に強化する運用の実例として注目されている。",
+      "sourceUrl": "https://openai.com/index/path-to-astra",
+      "collectedAt": "2026-09-03 09:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "アーキテクチャ・データ設計",
+      "title": "LLMの構造化出力、2026年時点でOpenAI 99.9%・Anthropic 99.8%・Gemini 99.7%までスキーマ準拠率が向上",
+      "summary": "2026年のLLM構造化出力(Structured Output)のベストプラクティスでは、制約付きデコーディングによるネイティブ構造化出力がJSON Schema準拠を保証する手法として定着し、OpenAIのStructured Outputsが99.9%、Anthropicのtool useが99.8%、Geminiのresponse_schemaが99.7%のスキーマ準拠率を達成する一方、スキーマ強制のないJSONモードは8〜15%の頻度で失敗するとされる。",
+      "sourceUrl": "https://dev.to/pockit_tools/llm-structured-output-in-2026-stop-parsing-json-with-regex-and-do-it-right-34pk",
+      "collectedAt": "2026-09-04 10:00",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "アーキテクチャ・標準化",
+      "title": "AIエージェント決済の標準化が進行、ChatGPTの「Instant Checkout」が2026年2月16日に米国開始",
+      "summary": "OpenAIが2025年9月29日にStripeと共同で発表した「Agentic Commerce Protocol(ACP)」を用い、ChatGPT上でAIエージェントが商品購入まで完結する「Instant Checkout」機能が2026年2月16日に米国で開始され、Etsyが稼働済み、Shopifyも100万を超える加盟店で順次展開中。GoogleはMastercard・PayPal等60社超が参加する競合規格「Agent Payments Protocol(AP2)」をFIDO Allianceへ寄贈する形で推進しており、決済領域でも複数のエージェント間データ交換プロトコルが並立している。",
+      "sourceUrl": "https://aitc.dentsusoken.com/column/aiagent_acp_ap2/",
+      "collectedAt": "2026-09-04 10:05",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "モデル性能・時系列予測",
+      "title": "Google、多変量ゼロショット時系列予測基盤モデル「TimesFM-3」を2026年8月に公開",
+      "summary": "Google Researchは2026年8月、時系列予測基盤モデルの最新版「TimesFM-3」を公開。関連する複数系列や既知の将来イベントをタスク固有のファインチューニングなしに扱える初のネイティブ多変量対応版で、点予測・確率的予測の両ベンチマークで既存の多変量対応モデル(Chronos-2、Toto 2.0等)を上回った一方、公開された事前学習済み重みは非商用・非本番利用限定のライセンス(timesfm-non-commercial-license-v1.0)で提供されている。",
+      "sourceUrl": "https://github.com/google-research/timesfm/",
+      "collectedAt": "2026-09-04 10:10",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "モデル性能・製品",
+      "title": "Google、「Gemini 3.8 Flash」を2026年9月2日提供開始、110万トークンのコンテキストウィンドウで旧版と同価格",
+      "summary": "Googleは2026年9月2日、「Gemini 3.8 Flash」の提供を開始。1,048,576トークンのコンテキストウィンドウと最大65,536トークンの出力に対応し、ソフトウェア開発・エージェント的タスク・多段推論で前版「3.7 Flash」から性能向上を実現しながら、導入価格は入力100万トークンあたり0.75ドル・出力3.75ドルと3.7 Flash当時と同水準に据え置き、2026年12月31日までの期間限定とし2027年1月1日から入力1.50ドル・出力7.50ドルへ改定される。",
+      "sourceUrl": "https://artificialanalysis.ai/models/gemini-3-8-flash",
+      "collectedAt": "2026-09-04 10:15",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術動向・生成AI",
+      "title": "Runway、コードを介さずピクセル単位でUIを生成する「Solaris」を2026年8月31日発表",
+      "summary": "動画生成AI企業Runwayは2026年8月31日、新シリーズ「Interface World Models」の第1弾「Solaris」を発表。Gen-4.5の動画生成アーキテクチャを基盤に、従来のようにコードを生成してブラウザに描画させるのではなく、クリックやドラッグへの応答を含めインターフェースそのものを720pの映像としてフレーム単位でリアルタイム生成する仕組みで、文字表示・アクセシビリティ・長時間セッションでの一貫性は未解決の課題として研究プレビュー段階にとどまり、公開日・価格は未発表。",
+      "sourceUrl": "https://runway.com/news/research/introducing-solaris",
+      "collectedAt": "2026-09-04 10:20",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術の組み合わせ・スマートホーム",
+      "title": "シャープ、家電を横断連携させる統合AIサービス「NIAH」を2026年9月30日開始",
+      "summary": "シャープは2026年度下期からエージェンティックAIサービスを本格展開し、統合AIサービス「NIAH(ニア)」を2026年9月30日から提供開始すると発表。空気清浄機に花粉モードが設定された家庭では調理家電ヘルシオが花粉対策レシピを提案し、洗濯機が花粉を落としやすい洗濯モードを提案するなど、複数の白物家電が顧客データを共有しながら困りごとを先回りして解決策を提示する仕組みを実現する。",
+      "sourceUrl": "https://news.yahoo.co.jp/articles/ee500a0619d0fee68711c06640336ef66e313e90",
+      "collectedAt": "2026-09-04 10:25",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "技術の組み合わせ・防災",
+      "title": "気象庁、AIと観測網を組み合わせた「線状降水帯直前予測」を2026年5月の出水期から本運用開始",
+      "summary": "気象庁は令和8(2026)年の出水期入りに合わせ、線状降水帯が発生する2〜3時間前を目標に危険性を知らせる「線状降水帯直前予測」の本運用を開始。従来からの「半日前予測」「発生情報」と合わせ3段階に情報を整理し、1kmメッシュの局地モデルや観測データとAIによる解析を組み合わせて中小河川の水位予測にも応用しており、8月30日時点の運用実績が気象庁サイトで公表されている。",
+      "sourceUrl": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+      "collectedAt": "2026-09-04 10:30",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "活用事例・行政/防衛",
+      "title": "米国防総省、内部AIプラットフォーム「GenAI.mil」にChatGPT MilとGrok for Governmentを追加、170万人超が利用",
+      "summary": "米国防総省(Pentagon)は2026年8月31日、職員向け生成AI基盤「GenAI.mil」にOpenAIの「ChatGPT Mil」とxAI系「Grok for Government」を追加し、既存のGoogle Geminiと合わせ3社のモデルを提供する体制とした。両モデルは機密指定前の重要非公開情報(CUI)を扱えるImpact Level 5の認証を取得しており、170万人を超えるアクティブユーザーが利用、Grokは調達研究・サプライチェーン管理、ChatGPT Milは計画・政策・兵站・事務作業を主な用途とする。",
+      "sourceUrl": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok/",
+      "collectedAt": "2026-09-04 10:35",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "活用事例・医療",
+      "title": "アイリス、のどの画像で新型コロナも判定する「nodoca 3」を2025年10月26日提供開始、日本初の保険適用AI医療機器が対応疾患を拡大",
+      "summary": "AI医療機器スタートアップのアイリス株式会社は、日本初の保険適用AI医療機器であるインフルエンザ検査機器「nodoca」に新型コロナウイルス判定機能を追加し、「nodoca 3」として2025年10月26日から提供開始。2025年10月2日付で薬事承認を取得し、100万枚を超える咽頭画像データベースを基に新たに開発したAIにより、1回の撮影でインフルエンザと新型コロナの両方を判定できるようになり、発熱外来での診療支援の幅を広げた。",
+      "sourceUrl": "https://aillis.jp/news/post/20251027",
+      "collectedAt": "2026-09-04 10:40",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "流行・トレンド",
+      "title": "米国企業のAIエージェント本番導入率、2025年1月の11%から2026年1月には42%へ急伸、四半期ごとにほぼ倍増",
+      "summary": "KPMGが米主要企業を対象に四半期ごとに追跡した調査によれば、AIエージェントが「本番稼働中」と回答した企業の割合は2025年第1四半期の11%から第2四半期33%、第3四半期(2026年1月時点)には42%へと、四半期ごとにほぼ倍増するペースで拡大しており、スマートフォン普及期を上回るとも言われる速さの技術浸透カーブとして注目されている。",
+      "sourceUrl": "https://ai-japan-index.com/ai-agent-adoption/",
+      "collectedAt": "2026-09-04 10:45",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "流行・社会現象",
+      "title": "「AIスロップ」がメリアム・ウェブスター等の2025年「今年の言葉」に選出、2026年はビジネス現場の「ワークスロップ」問題が拡大",
+      "summary": "生成AIによって大量生産された低品質・目的性の薄いコンテンツを指す「AIスロップ(AI slop)」は、2025年にMerriam-Websterやオーストラリアの辞書サービスの「Word of the Year」に選ばれるほど社会的に認知が広がった。2026年にはこの現象がビジネス文書にも波及し、報告書・提案書・企画書などが生成AIで大量かつ低品質に作られる「ワークスロップ(work slop)」が2026年の流行語として注目され、Googleも2026年2月のスパムポリシー更新でスケール化されたAIコンテンツ濫用への対策を強化している。",
+      "sourceUrl": "https://marketing.petabit.co.jp/blog/1110/",
+      "collectedAt": "2026-09-04 11:00",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "モデル性能",
+      "title": "OpenAI、「GPT-6 Astra」を9月3日公開、コンピュータ操作ベンチマークOSWorldで65.7%→72.6%に向上",
+      "summary": "OpenAIは2026年9月3日、新モデル「GPT-6 Astra」を発表。OSWorld V2-Offlineベンチマークで前モデルGPT-5.6 Solの65.7%から72.6%へスコアが向上し、平均タスク完了時間も約75分から40分へ短縮、Mind2Webでは1.9倍高速にタスクを完了したと説明している。",
+      "sourceUrl": "https://openai.com/index/gpt-6-astra/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "アーキテクチャ・標準化",
+      "title": "Linux Foundation、MCP・goose・AGENTS.mdを基盤に「Agentic AI Foundation(AAIF)」を設立",
+      "summary": "Linux Foundationは2025年12月、AnthropicのModel Context Protocol(MCP)、BlockのGoose、OpenAIのAGENTS.mdを創設プロジェクトとする「Agentic AI Foundation(AAIF)」の設立を発表した。AIエージェント連携プロトコルをベンダー中立のガバナンス下に置く動きで、MCPのエコシステムは月間1億1000万ダウンロード超に拡大しているという。",
+      "sourceUrl": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "アーキテクチャ・データのやり取り",
+      "title": "Linux Foundation、AIエージェント向け決済プロトコル「x402」を運用開始、Coinbase等40組織超が参加",
+      "summary": "Linux Foundationは2026年7月14日、Coinbaseが開発した決済プロトコル「x402」の寄贈を受けた「x402 Foundation」の運用開始を発表。AWS・Google・Mastercard・Stripe・Visa等40組織超がメンバーとして参加し、AIエージェントやアプリがカードからステーブルコインまでの決済をデータのやり取りと同じ手軽さで送受信できる仕組みの標準化を目指すとしている。",
+      "sourceUrl": "https://www.linuxfoundation.org/press/linux-foundation-announces-operational-launch-of-x402-foundation-to-standardize-internet-native-payments-for-ai-agents-and-applications",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Google DeepMind、視覚・言語・行動を統合したロボット向けモデル「Gemini Robotics ER 2」を7月30日公開",
+      "summary": "Google DeepMindは2026年7月30日、Vision-Language-Action(VLA)モデル「Gemini Robotics ER 2」を公開。静止画や短時間クリップの推論に留まっていた従来版と異なり、連続した動画ストリームを推論し数分単位でタスクの状態を自ら追跡できるようになったと説明している。",
+      "sourceUrl": "https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-robotics-er-2/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・建設",
+      "title": "建設業クラウドCONOC、JAPAN AIと共同開発のAIエージェント「ゲンバフォトAI」「ゲンチョウAI」を9月1日提供開始",
+      "summary": "株式会社CONOCは2026年9月1日、JAPAN AIと共同開発した建設業向けAIエージェント第1弾として、現場写真を分類し台帳を自動作成する「ゲンバフォトAI」と、現地調査時の記録作成を支援する「ゲンチョウAI」の提供を開始した。「入力ゼロ、確認だけ」で現場の記録業務が回る状態を目指すとしている。",
+      "sourceUrl": "https://prtimes.jp/main/html/rd/p/000000082.000012493.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・小売",
+      "title": "Amazon、AIショッピングアシスタント「Rufus」が2025年通期で約120億ドルの増分売上に貢献と発表",
+      "summary": "Amazonは2026年2月7日の第4四半期決算発表で、AIアシスタント「Rufus」が2025年通期で約120億ドルの年換算増分売上に貢献したと公表。利用者は3億人超に達し、月間アクティブユーザーは前年比149%増、Rufus利用者のコンバージョン率は非利用者より60%以上高いとしている。",
+      "sourceUrl": "https://ppc.land/amazons-ai-shopping-assistant-drove-12-billion-in-sales-for-2025/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・小売",
+      "title": "Walmart、AIエージェント「Sparky」利用者の平均注文額が非利用者より35〜40%高いと決算で報告",
+      "summary": "Walmartは2026年の決算発表で、AIショッピングエージェント「Sparky」の利用者数が前年比70%増加し、利用者の平均注文額(AOV)が非利用者より35〜40%高いと報告。一方で在庫は通貨影響を除き2.6%増加にとどまり、売上成長より緩やかな在庫増でまかなえている一因としてAIによる在庫可視化を挙げている。",
+      "sourceUrl": "https://www.digitalcommerce360.com/2026/05/22/walmart-sparky-agent-ai-sales-supply-chain/",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "活用事例・教育",
+      "title": "Anthropic、米国K-12教員向け無料プラン「Claude for Teachers」を7月14日開始、8月28日には学区向けにも拡大",
+      "summary": "Anthropicは2026年7月14日、米国の認証済みK-12教員を対象に、少なくとも1年間無料でClaudeの主要機能を提供する「Claude for Teachers」を開始した。Chan Zuckerberg InitiativeのLearning Commonsと連携し全50州の学習基準に対応した授業計画スキルを提供するとし、8月28日には学区が教員・スタッフを一元管理できる学区向けプランも発表した。",
+      "sourceUrl": "https://www.anthropic.com/news/claude-for-teachers",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "流行・トレンド",
+      "title": "McKinsey調査、AIエージェントを「試行中」の企業は62%だが、1つの業務機能でも全社的にスケール中と答えたのは23%にとどまる",
+      "summary": "McKinseyが2025年6〜7月に105カ国1,993人を対象に実施した調査によると、AIエージェントを少なくとも試行中の企業は62%に達する一方、少なくとも1つの業務機能でスケール(展開・導入の拡大)中と回答したのは23%、残る39%はまだ実験段階にとどまり、いずれの業務機能でも自社の10%を超えてスケールできていると答えた割合はごくわずかだったという。",
+      "sourceUrl": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "流行・トレンド",
+      "title": "日本の生成AI利用率、2025年2月の27%から2026年2月には51%へ1年で急増",
+      "summary": "モバイル社会研究所の調査によると、日本国内の生成AI利用率は2025年2月の27%から2026年2月には51%へと1年間でほぼ倍増し、初めて過半数に達した。生成AIが一部の先進的な利用者から一般層へ急速に裾野を広げている実態を示す数値としている。",
+      "sourceUrl": "https://www.moba-ken.jp/project/lifestyle/20260406.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "モデル性能",
+      "title": "NVIDIA、フィジカルAI向けオープン基盤モデル「Cosmos 3」を6月1日公開",
+      "summary": "NVIDIAは2026年6月1日、物理世界のシミュレーションに使うワールド基盤モデル「Cosmos 3」を発表。テキスト・画像・動画・環境音・行動を横断するマルチモーダル生成とネイティブな視覚推論を備えた、完全オープンとしては初めてのオムニモデルと説明しており、自動運転・ロボティクス・製造業のデジタルツイン開発への活用を想定している。",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/06/01/3303987/0/en/NVIDIA-Launches-Cosmos-3-the-Open-Frontier-Foundation-Model-for-Physical-AI.html",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-05",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Anthropic、MCPを物理機器へ拡張する「Model Hardware Standard(MHS)」を8月27日に研究プレビュー公開",
+      "summary": "Anthropicは2026年8月27日、ソフトウェアツール向けのMCPと同じ発想を物理機器に広げた「Model Hardware Standard(MHS)」の研究プレビューを公開。AWS・Danaher・Tecan・Universal Robots等が初期パートナーとして参加し、Genentechはタンパク質アッセイ工程を液体ハンドラー・ロボットアーム・プレートリーダー間で自動化、QuEraのエージェントはレーザーロック復旧作業の成功率を手書きスクリプトの58%から99.3%まで高めたと報告している。",
+      "sourceUrl": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
+      "collectedAt": "2026-09-05 13:18",
+      "usedAI": "Claude"
     }
   ]
 }
