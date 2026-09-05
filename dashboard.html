@@ -999,16 +999,18 @@
           <div class="ai-config-toolbar">
             <div class="policy-meta" id="permissions-meta">読み込み中…</div>
           </div>
-          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
-            <strong>これはClaude(Claude Code)自体の基本設定です。</strong>
-            以下に一覧表示されているコマンド・ツール呼び出しは、実行前の確認(承認)なしにそのまま実行されます。
-            承認が頻繁に必要になる操作のうち、内容が軽微(安全)なものは、AIが判断してこの許可リストへ追加します。
-          </div>
-          <div class="ai-config-link" style="display:block; margin-bottom: 8px;">
-            Claude Codeが「この操作をしていいですか?」と毎回確認する代わりに、安全だと分かっている操作を事前に許可しておくリストです。
-            CLAUDE.mdと同じ「単一の正本を編集→自動同期」方式(data/claude-permissions.json → GitHub Actions →
-            .claude/settings.json)で管理しており、.claude/settings.jsonを直接手で編集しても次回の同期で上書きされます。
-            変更したい場合はチャットでAIに「許可リストの〜を追加して」のように指示してください。
+          <div class="ai-config-subheading">■概要</div>
+          <ul class="ai-config-bullets">
+            <li>これはClaude(Claude Code)自体の基本設定</li>
+            <li>一覧表示されているコマンド・ツール呼び出しは、実行前の確認(承認)なしにそのまま実行される</li>
+            <li>承認が頻繁に必要になる操作のうち、内容が軽微(安全)なものは、AIが判断してこの許可リストへ追加する</li>
+          </ul>
+          <div class="ai-config-subheading">■手順(更新したいとき)</div>
+          <ul class="ai-config-bullets">
+            <li>チャットでAIに「許可リストの〜を追加して」のように依頼する</li>
+            <li>正本はdata/claude-permissions.json。GitHub Actionsが自動で各リポジトリの.claude/settings.jsonへ反映する</li>
+            <li>.claude/settings.jsonを直接手で編集しても、次回の同期で上書きされる</li>
+          </ul>
           </div>
           <div id="permissions-body"></div>
         </div>
@@ -3124,15 +3126,16 @@
     const bodyEl = document.getElementById("permissions-body");
     const categories = data.categories || [];
     bodyEl.innerHTML = categories.map((cat) => {
-      const overviewHtml = cat.overview
-        ? `<p class="ai-config-overview">${escapeHtml(cat.overview)}</p>`
+      const overviewPoints = cat.overviewPoints || (cat.overview ? [cat.overview] : []);
+      const overviewHtml = overviewPoints.length
+        ? `<div class="ai-config-subheading" style="font-size: 12px;">■概要</div><ul class="ai-config-bullets">${overviewPoints.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>`
         : "";
       const idNoteHtml = cat.idNote
         ? `<p class="ai-config-overview" style="color: var(--text-muted);">⚠️ ${escapeHtml(cat.idNote)}</p>`
         : "";
       const entries = cat.entries || [];
-      const entriesHtml = `<ul class="ai-config-bullets">${entries.map((e) => `<li><code>${escapeHtml(e)}</code></li>`).join("")}</ul>`;
-      const titleHtml = `<div class="ai-config-section-title" style="font-size: 13.5px;">${escapeHtml(cat.label || cat.key)}(${entries.length}件)</div>`;
+      const entriesHtml = `<div class="ai-config-subheading" style="font-size: 12px;">■登録内容(${entries.length}件)</div><ul class="ai-config-bullets">${entries.map((e) => `<li><code>${escapeHtml(e)}</code></li>`).join("")}</ul>`;
+      const titleHtml = `<div class="ai-config-section-title" style="font-size: 13.5px;">${escapeHtml(cat.label || cat.key)}</div>`;
       return `<div class="policy-card ai-config-section-card">${titleHtml}${overviewHtml}${idNoteHtml}${entriesHtml}</div>`;
     }).join("");
   }

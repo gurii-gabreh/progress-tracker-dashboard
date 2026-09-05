@@ -6,7 +6,7 @@
     {
       "key": "google-drive",
       "label": "📁 Google Drive",
-      "overview": "manager-room・worker-roomがGoogleドライブ上のファイルを読み書きする際に、確認なしで実行してよい操作。ファイルの共有設定変更(share_file)・ゴミ箱への移動(trash_file)は、他人からの見え方やデータ消失に関わる操作のため、あえて許可リストに入れず都度確認が必要なままにしている。",
+      "overview": "manager-room・worker-roomがGoogleドライブのファイルを読み書きする際、確認なしで実行してよい操作",
       "entries": [
         "mcp__Google_Drive__read_file_content",
         "mcp__Google_Drive__search_files",
@@ -17,12 +17,16 @@
         "mcp__Google_Drive__create_file",
         "mcp__Google_Drive__update_file",
         "mcp__Google_Drive__copy_file"
+      ],
+      "overviewPoints": [
+        "manager-room・worker-roomがGoogleドライブのファイルを読み書きする際、確認なしで実行してよい操作",
+        "共有設定の変更(share_file)・ゴミ箱への移動(trash_file)は対象外(他人への見え方・データ消失に関わるため、都度確認する)"
       ]
     },
     {
       "key": "github",
       "label": "🐙 GitHub",
-      "overview": "リポジトリの中身・Issue/PR・Actionsの実行状況を読み取る操作、およびGitHub Actionsワークフローの実行(actions_run_trigger)を許可リストに入れている。一方、PRの作成・マージ・ファイルの直接削除・新規リポジトリ作成など、他人から見える形に残ったり取り消しにくい操作は、あえて許可リストに入れず都度確認が必要なままにしている。",
+      "overview": "リポジトリの中身・Issue/PR・Actionsの実行状況を読み取る操作、およびワークフロー実行(actions_run_trigger)を許可",
       "entries": [
         "mcp__github__actions_list",
         "mcp__github__actions_get",
@@ -55,12 +59,16 @@
         "mcp__github__issue_read",
         "mcp__github__list_issue_fields",
         "mcp__github__list_issue_types"
+      ],
+      "overviewPoints": [
+        "リポジトリの中身・Issue/PR・Actionsの実行状況を読み取る操作、およびワークフロー実行(actions_run_trigger)を許可",
+        "PRの作成・マージ・ファイル削除・リポジトリ作成など、他人から見える/取り消しにくい操作は対象外(都度確認する)"
       ]
     },
     {
       "key": "ccr",
       "label": "🧭 CCR(Claude Code Remote、manager-room⇔worker-room連携)",
-      "overview": "manager-room・worker-room間の状況確認・指示配信・セッション管理に使うツール。PTD-045で判明した通り、CCRツールは表示名(mcp__Claude_Code_Remote__〜)ではなく実行時に割り当てられる内部ID形式の名前(mcp__<英数字ハイフンID>__〜)で許可リストに登録する必要がある。【注意】この内部IDは環境が変わると別の値になる可能性があり、その場合はこのリストのID部分を新しい値に差し替える必要がある(未検証の懸念、PTD-045参照)。",
+      "overview": "manager-room・worker-room間の状況確認・指示配信・セッション管理に使うツール",
       "idNote": "現在有効な内部ID: bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a(2026-09-05時点)",
       "entries": [
         "mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__get_session",
@@ -85,12 +93,17 @@
         "mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__unsubscribe_pr_activity",
         "mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__watch_url",
         "mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__unwatch_url"
+      ],
+      "overviewPoints": [
+        "manager-room・worker-room間の状況確認・指示配信・セッション管理に使うツール",
+        "表示名(mcp__Claude_Code_Remote__〜)ではなく、実行時に割り当てられる内部ID形式の名前で登録する必要がある(PTD-045)",
+        "【注意】この内部IDは環境が変わると別の値になる可能性がある(未検証の懸念、PTD-045参照)"
       ]
     },
     {
       "key": "bash",
       "label": "💻 コマンド実行(Bash)",
-      "overview": "実装後のcommit・push・動作確認で日常的に使うコマンド。git操作は「状態を見るだけ」「変更を積んで送る」系のサブコマンドのみを個別に許可しており、意図せず履歴を書き換えたり強制上書きしたりする危険なサブコマンド(reset --hard、push --force、clean -f等)はあえて対象外にしている。",
+      "overview": "実装後のcommit・push・動作確認で日常的に使うコマンド",
       "entries": [
         "Bash(git status)",
         "Bash(git status *)",
@@ -116,6 +129,11 @@
         "Bash(jobs)",
         "Bash(curl -s -o /dev/null -w *)",
         "Bash(curl -sI *)"
+      ],
+      "overviewPoints": [
+        "実装後のcommit・push・動作確認で日常的に使うコマンド",
+        "gitは「状態を見るだけ」「変更を積んで送る」系のサブコマンドのみ許可",
+        "reset --hard・push --force・clean -f等の破壊的なサブコマンドは対象外(都度確認する)"
       ]
     }
   ]
