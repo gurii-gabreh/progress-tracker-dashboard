@@ -1486,15 +1486,6 @@
     },
     {
       "date": "2026-09-05",
-      "category": "技術の組み合わせ・エッジAI",
-      "title": "ADI・Lattice・NVIDIAの技術を組み合わせたロボット向けエッジ基盤、音声空間認識をリアルタイム実現",
-      "summary": "Edge AI and Vision Allianceの2026年8月の記事によると、Analog Devicesの車載音声バス「A2B」とLatticeの「Holoscan Sensor Bridge」、NVIDIAのGPUアクセラレーションを組み合わせたマルチモーダルエッジ基盤により、音声認識(ASR)とVision-Language Modelを統合し、ロボットが話者位置の特定・音声分離を含む音響的な空間認識をリアルタイムで行えるようになったと報告している。",
-      "sourceUrl": "https://www.edge-ai-vision.com/2026/08/advancing-multimodal-robotics-at-the-edge-from-vision-to-voice/",
-      "collectedAt": "2026-09-05 13:18",
-      "usedAI": "Claude"
-    },
-    {
-      "date": "2026-09-05",
       "category": "活用事例・建設",
       "title": "建設業クラウドCONOC、JAPAN AIと共同開発のAIエージェント「ゲンバフォトAI」「ゲンチョウAI」を9月1日提供開始",
       "summary": "株式会社CONOCは2026年9月1日、JAPAN AIと共同開発した建設業向けAIエージェント第1弾として、現場写真を分類し台帳を自動作成する「ゲンバフォトAI」と、現地調査時の記録作成を支援する「ゲンチョウAI」の提供を開始した。「入力ゼロ、確認だけ」で現場の記録業務が回る状態を目指すとしている。",
@@ -1558,10 +1549,10 @@
     },
     {
       "date": "2026-09-05",
-      "category": "アーキテクチャ・データ構造",
-      "title": "2026年のモバイルAIアーキテクチャ、端末上の小型言語モデルとクラウドLLMを機能単位で使い分ける「ハイブリッド型」が主流に",
-      "summary": "2026年のAIモバイルアプリ設計では、オンデバイスの小型言語モデル(SLM)がクエリの9割程度を端末上で処理し、複雑な処理のみクラウドLLMへエスカレーションする「ハイブリッドエッジ・クラウド」構成がデフォルトのアーキテクチャパターンになりつつあると報告されている。オン/オフの判断はアプリ単位ではなく機能単位で動的に行う設計が主流という。",
-      "sourceUrl": "https://studiokrew.com/blog/on-device-ai-mobile-app-edge-ai-2026/",
+      "category": "技術の組み合わせ・ロボティクス",
+      "title": "Anthropic、MCPを物理機器へ拡張する「Model Hardware Standard(MHS)」を8月27日に研究プレビュー公開",
+      "summary": "Anthropicは2026年8月27日、ソフトウェアツール向けのMCPと同じ発想を物理機器に広げた「Model Hardware Standard(MHS)」の研究プレビューを公開。AWS・Danaher・Tecan・Universal Robots等が初期パートナーとして参加し、Genentechはタンパク質アッセイ工程を液体ハンドラー・ロボットアーム・プレートリーダー間で自動化、QuEraのエージェントはレーザーロック復旧作業の成功率を手書きスクリプトの58%から99.3%まで高めたと報告している。",
+      "sourceUrl": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
       "collectedAt": "2026-09-05 13:18",
       "usedAI": "Claude"
     }
