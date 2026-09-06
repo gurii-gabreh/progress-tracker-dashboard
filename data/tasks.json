@@ -3495,6 +3495,31 @@
             }
           ],
           "output": "Google DeepMind Blog(https://deepmind.google/blog/rss.xml)をgeminideepmindメソッドとしてServiceNow PDIへ実際に作成済み(2026-09-01、PTD-048拡張分と合わせて一括反映)。sys_id=eca8fab993cbc350043532edfaba10b5。Claude(Anthropic)・ChatGPT専用フィードは引き続き未対応。"
+        },
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-061",
+          "task": "research-items.jsonの埋め込みベース(embedding)セマンティック検索の導入",
+          "title": "埋め込み検索(計画中)",
+          "priority": "低",
+          "status": "検討中",
+          "category": "auto",
+          "updated": "2026-09-06",
+          "content": [
+            "背景: research-items.jsonが2481件・約1.67MBまで増え、質問のたびに全件を読むと時間・トークンがかかる問題が発生。ユーザーから「チャンク分割+ベクトルデータベース化」の相談があった。",
+            "方式: 有料の外部埋め込みAPIは使わず、無料のオープンソース埋め込みモデル(例: Sentence Transformers系のall-MiniLM-L6-v2)をGitHub Actions上で実行し、各記事のタイトル+要約をベクトル化して保存する。質問時は同じモデルで質問文もベクトル化し、コサイン類似度で近い上位数件だけを抽出する。",
+            "コスト: servicenow-sub-agentはpublicリポジトリのためGitHub Actions実行時間は無制限・無料。埋め込みモデル自体も無料・オフライン実行可能なため、初期実装後の運用コストは金銭的に$0(CLAUDE.mdルール9『永久無料』と整合)。",
+            "実装規模: 埋め込み生成スクリプト・類似度検索ロジック・日次差分更新の3点が必要で、軽微な変更とは言えない規模。方針(ルール18)に沿ってworker-room(別セッション)へ依頼する想定。",
+            "詳細な技術知識はconcept-log.json CL-018参照。"
+          ],
+          "note": "2026-09-06時点ではまだ着手していない(概念説明・コスト確認のみ完了)。実装に進めてよいかはユーザー確認待ち。",
+          "nextAction": "ユーザーの実装ゴーサインが出たら、worker-room(新規セッション)へ実装を依頼する",
+          "checkHistory": [
+            {
+              "date": "2026-09-06",
+              "summary": "埋め込み(embedding)の仕組み・コスト面をユーザーと確認。無料構成(オープンソースモデル+GitHub Actions、publicリポジトリで実行時間無制限)で実現可能と判断。concept-log.jsonにCL-018として記録。実装はまだ未着手、ユーザーのゴーサイン待ち。"
+            }
+          ]
         }
       ],
       "checkHistory": [
