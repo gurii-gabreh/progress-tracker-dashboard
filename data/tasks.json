@@ -3525,6 +3525,29 @@
               "summary": "埋め込み(embedding)の仕組み・コスト面をユーザーと確認。無料構成(オープンソースモデル+GitHub Actions、publicリポジトリで実行時間無制限)で実現可能と判断。concept-log.jsonにCL-018として記録。実装はまだ未着手、ユーザーのゴーサイン待ち。"
             }
           ]
+        },
+        {
+          "repo": "servicenow-sub-agent",
+          "id": "PTD-062",
+          "task": "research-items.jsonのキュレーション件数を増やし、ビューアーサイトを「ピックアップ済みのみ」表示へ変更する",
+          "title": "ピックアップ限定サイト化(計画中)",
+          "priority": "低",
+          "status": "進行中",
+          "category": "auto",
+          "updated": "2026-09-06",
+          "content": [
+            "経緯: 2481件の生データのうちcurated(日本語要約付き)は当初23件のみだった。ユーザーから『ビューアーサイトをピックアップ済みのみのサイトに変更したい』という提案があり、2択(a: 先にキュレーション件数を増やしてから変更/b: 生データ一覧は残しつつUIだけ変更)を提示したところ、ユーザーはaを選択した。",
+            "対応: research-item-curationスキルを作成(.claude/skills/research-item-curation/SKILL.md)。初回分として6件を追加キュレーションし、curated 23→29件になった(commit 95cf560)。",
+            "次のステップ: 継続的にキュレーション件数を増やす(このスキルを都度呼び出すか、定期Routine化するかは未決定)。件数が十分増えたと判断できたタイミングで、GitHub Pagesのビューアーサイト(index.html)をcurated=trueのみ表示するよう変更する(まだ未実施、閾値も未設定)。"
+          ],
+          "note": "サイト側の表示変更(index.html)はまだ行っていない。まずキュレーション件数を増やすフェーズ。",
+          "nextAction": "research-item-curationスキルを使って継続的にキュレーションを進める。十分な件数になったらサイト変更をユーザーに提案する。",
+          "checkHistory": [
+            {
+              "date": "2026-09-06",
+              "summary": "ユーザーが方向性a(先にキュレーション件数を増やす)を選択。research-item-curationスキルを新規作成し、初回6件をキュレーション(23→29件)。"
+            }
+          ]
         }
       ],
       "checkHistory": [
