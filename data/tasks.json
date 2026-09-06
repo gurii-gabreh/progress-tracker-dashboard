@@ -3258,7 +3258,7 @@
         },
         {
           "date": "2026-09-06",
-          "summary": "worker-room方式の段階的廃止方針の決定に伴う当面の緩和策として、許可リスト修正(data/claude-permissions.json)を実際に稼働実績のある2リポジトリ(servicenow-sub-agent、Text-Extraction)へ展開し、commit・push済み(enabledPluginsは維持)。残り5リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)は未展開。またText-Extractionはデフォルトブランチがmainではなくclaude/app-creation-resources-eenb15のため、scripts/sync_claude_permissions.pyのTARGETS辞書(ref=main前提)にそのまま追加しても自動同期は失敗する見込みで、対応するには同スクリプトへブランチ指定機能を追加する必要がある(未実装)。"
+          "summary": "worker-room方式の段階的廃止方針の決定に伴う当面の緩和策として、許可リスト修正(data/claude-permissions.json)を実際に稼働実績のある2リポジトリ(servicenow-sub-agent、Text-Extraction)へ展開し、commit・push済み(enabledPluginsは維持)。残り5リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)は未展開。またText-Extractionはデフォルトブランチがmainではなくclaude/app-creation-resources-eenb15のため、scripts/sync_claude_permissions.pyのTARGETS辞書(ref=main前提)にそのまま追加しても自動同期は失敗する見込みで、対応するには同スクリプトへブランチ指定機能を追加する必要がある(未実装)。 【2026-09-06追記・完了】ユーザー指示「全て実施して」を受け、残り6リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app)にも展開完了。ai-research-radarは.claude/settings.json自体が無かったため新規作成、他は既存のenabledPlugins設定を維持したままpermissions.allowを追加した。Text-Extraction・Knowledge-Dashboardはデフォルトブランチがmainでないため、scripts/sync_claude_permissions.pyのTARGETSにbranch指定を追加して対応した(それぞれclaude/app-creation-resources-eenb15、claude/spreadsheet-list-dashboard-te7yvs)。これで管理対象の全9リポジトリ(progress-tracker-dashboard含む)への展開が完了した。"
         }
       ]
     },
