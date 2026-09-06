@@ -11,7 +11,8 @@
         "実装: 作業ルーム(共有Routineの定期実行、またはタスクごとの相談ルーム)が担当",
         "ルームの具体的な対応表はREADME.mdの「ルームマッピング」を参照(二重管理しない)",
         "休止中(IDLE)の既存作業ルームへ追加の指示を出すときは、通常のセッション間メッセージ送信では届かないことがあるため、create_trigger+fire_triggerでセッションを起こしてから届ける(2026-08-29追加。詳細はaiのorchestration.dormantWorkerRoomWakeup参照)",
-        "【注意】CCR系ツール(get_session/create_trigger等)が理由不明の「承認待ち」で即座にブロックされる場合、.claude/settings.jsonの許可リストのツール名が古い形式(mcp__Claude_Code_Remote__*)のままで、実際の内部ID形式(mcp__<英数字ハイフンID>__*、例: mcp__bf7c680d-...__get_session)と一致していない可能性がある(2026-08-30、PTD-045で判明・修正)。ただしこの内部IDが環境をまたいで固定かは未確認で、別の環境・セッションで再びIDがずれて同じ現象が再発する可能性は否定できない(ここは仮説・未検証)。"
+        "【注意】CCR系ツール(get_session/create_trigger等)が理由不明の「承認待ち」で即座にブロックされる場合、.claude/settings.jsonの許可リストのツール名が古い形式(mcp__Claude_Code_Remote__*)のままで、実際の内部ID形式(mcp__<英数字ハイフンID>__*、例: mcp__bf7c680d-...__get_session)と一致していない可能性がある(2026-08-30、PTD-045で判明・修正)。ただしこの内部IDが環境をまたいで固定かは未確認で、別の環境・セッションで再びIDがずれて同じ現象が再発する可能性は否定できない(ここは仮説・未検証)。",
+        "【2026-09-06追記・方針転換】CCR worker-room方式は、承認待ちでの停止・休止セッション再起動の手間・複数ルーム同時稼働時の調整不足(ルールの重複追加等)が繰り返し発生しており、現状のままでは信頼して任せ続けられないと判断。段階的に廃止し、別の仕組み(このセッション内のサブエージェント、またはCCX-001のCodex連携)へ移行する方針(ユーザー指摘)。移行完了までの当面の緩和策として、PTD-045で判明した許可リストの修正を他の管理対象リポジトリへも展開する対応を進める。"
       ]
     },
     "consultationFormat": {
@@ -101,6 +102,17 @@
         "procedure": "1. create_triggerで、対象セッションIDをpersistent_session_idに指定し、cron_expression/run_once_atは指定しない一回限りのRoutineとして指示内容をpromptに積んで作成する。2. fire_triggerでそのtrigger_idを即時発火し、メッセージを配信する。3. 配信後はdelete_triggerでそのtriggerを片付ける(使い捨てのため放置しない)。",
         "scope": "既存の休止中作業ルームへ追加指示を出す場合にのみ適用する。create_sessionで新規に作るセッションへの初回プロンプトはこの問題の対象外(通常通り届く)。",
         "knownIssue": "2026-08-29追記: create_trigger自体が『MCP tool call requires approval』で即座にブロックされ、ユーザー画面には対応する承認ポップアップが表示されない現象がある。manager-room→worker-room、worker-room→manager-roomの両方向で再現し、get_sessionのような読み取り専用ツールでも同様に発生する。再試行では解消しない。発生時は本手順に固執せず、ユーザーに該当セッションのチャットへ直接内容を貼り付けて中継してもらう(手動リレー)こと。根本原因は未特定(詳細はPTD-045)。 【2026-08-30追記・原因特定/対応済み】根本原因は、progress-tracker-dashboardの.claude/settings.jsonの許可リストが旧ツール名(mcp__Claude_Code_Remote__*)のまま登録されており、実際にCCRツールを識別する内部ID形式の名前(mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__*)と一致していなかったこと。許可リストを現行の内部ID名で追加しcommit・push(ba2b26e)し、新規manager-roomセッションでget_session/create_trigger/fire_trigger/delete_triggerが正常動作することを確認した(PTD-045参照)。ただし、この内部ID(bf7c680d-...)が環境やセッションをまたいで常に同一かは未検証であり、別の環境で接続し直された場合にIDが変わり、同じ現象が再発する可能性は否定できない(この一文は仮説であり実証されていない)。再発した場合は、その時点の.claude/settings.jsonの許可リストに記載されたツール名と、実際に呼び出しているツール名の形式が一致しているかをまず確認すること。"
+      },
+      "workerRoomDeprecation": {
+        "decidedAt": "2026-09-06",
+        "status": "段階的廃止を決定、移行方針検討中",
+        "reason": "承認待ちでの停止(PTD-045)・休止セッション再起動の手間(PTD-052)・複数ルーム同時稼働時の調整不足(同一ルール番号の重複追加等)が繰り返し発生し、現状のままでは信頼して任せ続けられないとユーザーが判断したため。",
+        "interimMitigation": "PTD-045で判明した許可リストの修正(data/claude-permissions.json → sync-claude-permissions.yml → 各リポジトリの.claude/settings.json)を、progress-tracker-dashboard自身だけでなく他の管理対象リポジトリへも展開し、承認ブロックの発生自体を減らす。",
+        "candidateReplacements": [
+          "このセッション(manager-room)内のサブエージェント(Agent/Taskツール)への一本化",
+          "CCX-001: Codex(ChatGPT Plus契約後、openai/codex-plugin-cc経由)への実装委任"
+        ],
+        "note": "移行先の最終決定・切り替え時期は未確定。決まり次第このファイルとdata/claude-core-rules.mdの両方を更新すること。"
       }
     },
     "consultationFormat": {
