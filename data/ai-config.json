@@ -81,6 +81,32 @@
         "sheet-memo-sync(gurii-gabreh/study-app, .claude/skills/sheet-memo-sync/SKILL.md): study-appのメモ用スプレッドシートに追加された行を、data/lessons.jsonのcommentsへ反映する手順。反映前に件数・該当コース・サンプルを提示しユーザーの確認を得ることを含む(2026-09-06作成)",
         "governance-config-sync(gurii-gabreh/progress-tracker-dashboard, .claude/skills/governance-config-sync/SKILL.md): 新しい運用ルールを追加・変更する際、data/claude-core-rules.md(正本)→自動同期→data/ai-config.jsonのweb/ai両方→dashboard.htmlのAI_CONFIG_SECTIONS配列→このregistryまで、すべてを一致させて更新する手順(2026-09-06作成)"
       ]
+    },
+    "serviceNowResearch": {
+      "title": "📡 ServiceNow AI研究自動収集パイプライン",
+      "overview": "servicenow-sub-agentリポジトリが構築した、AI・アプリ開発に関わる5観点の情報を無料の公開API/RSS/公式サイトから自動収集する仕組みです。ServiceNow PDIが実際の収集を行い、GitHub Actionsが定期的にリポジトリ側のJSONへエクスポートします(2026-09-06追加)。",
+      "points": [
+        "収集はServiceNow PDI自身が日次で行う(ServiceNowのScheduled Job → REST Message経由で各サイトへHTTP GET)。GitHub Actionsは収集そのものは行わない",
+        "収集結果はServiceNowの`u_ai_research_item`テーブルに蓄積される",
+        "別の日次ジョブ(GitHub Actions、収集後の09:30 JST)が、ServiceNowから全件をエクスポートし、servicenow-sub-agentリポジトリの`data/research-items.json`へ保存する(2026-09-06時点2481件・約1.67MB)",
+        "GitHub Pages上のビューアーサイトはこのJSONを表示するのみで、質問のたびにServiceNowへ問い合わせているわけではない(最大1日遅れのスナップショット)",
+        "情報源は現在13件(下記「情報源一覧」参照)。認証不要・無料のAPI/RSS/公式サイトのみを使用し、有料APIキーは使わない",
+        "データ量増加への対応として、埋め込み(embedding)によるセマンティック検索の導入を計画中(PTD-061、まだ未実装。詳細はconcept-log.jsonのCL-018参照)",
+        "【情報源一覧(13件、何を取得しているか)】",
+        "arXiv(API・Atom XML): cs.AI/cs.CL/cs.LGカテゴリの最新論文(タイトル・要約・URL)",
+        "Hacker News(Algolia API): AI関連の人気投稿(タイトル・URL)",
+        "OpenAI Blog(RSS): OpenAI公式発表",
+        "Hugging Face Blog(RSS): Hugging Face公式ブログ記事",
+        "MIT Technology Review AI(RSS、AI特化topic feed): AI関連の一般向け報道",
+        "MarkTechPost(RSS): AI研究ニュース",
+        "ByteByteGo(RSS): ソフトウェアアーキテクチャ記事",
+        "InfoQ(AI/ML/Data Eng、RSS): アーキテクチャ・データエンジニアリング記事",
+        "Martin Fowler blog(Atom): ソフトウェアアーキテクチャ記事",
+        "Architecture Weekly(RSS): アーキテクチャのキュレーション記事",
+        "Google DeepMind Blog(RSS): Geminiモデル発表を含むAI研究ニュース",
+        "Anthropic claude-code Releases(Atom、GitHub標準機能): claude-codeのバージョンリリース情報",
+        "Anthropic News(生HTML、www.anthropic.com/news): Anthropic公式ニュース・発表(2026-09-06追加、CL-017参照)"
+      ]
     }
   },
   "ai": {
@@ -210,6 +236,33 @@
         }
       ],
       "note": "新しく定型作業をスキル化した場合は、このregistry配列にエントリを追記すること(SKILL.md本体は各リポジトリ側で管理し、ここへ複製しない)。"
+    },
+    "serviceNowResearch": {
+      "repo": "gurii-gabreh/servicenow-sub-agent",
+      "taskId": "PTD-046",
+      "description": "ServiceNow PDI(dev395932.service-now.com)上で、AI・アプリ開発に関わる5観点の情報を無料の公開API/RSS/公式サイトから日次で自動収集し、u_ai_research_itemテーブルへ蓄積するパイプライン。収集の実行主体はServiceNow自身であり、GitHub Actionsは収集を行わない(検証・設定登録・エクスポートのみを担当)。",
+      "pipeline": {
+        "collect": "ServiceNow PDIのScheduled Job(scheduled_job_ai_research_fetch.js、日次)が、sn_ws.RESTMessageV2経由で各情報源へHTTP GETし、その場でレスポンスを解析してu_ai_research_itemへinsertする。認証はいずれも不要(no authentication)。",
+        "export": "GitHub Actions(servicenow-export-research.yml、毎日00:30 UTC=09:30 JST、ServiceNow側の収集完了後を狙ったタイミング)がexport_research_items.mjsを実行し、ServiceNow Table APIでu_ai_research_item全件を取得してservicenow-sub-agentリポジトリのdata/research-items.jsonへマージ保存する。既存の日本語要約(summaryJa等)は上書きしない。",
+        "consume": "GitHub Pages上のビューアーサイトはdata/research-items.jsonを表示するのみ(最大1日遅れのスナップショット、質問のたびにServiceNowへ問い合わせるわけではない)。ChatがこのデータについてAIに質問された場合も、同じdata/research-items.jsonを読む想定(2026-09-06時点2481件・約1.67MBのため、全件を読むより category/日付/キーワードで絞り込むかスクリプトで抽出する方が効率的)。",
+        "futureWork": "データ量増加への対応として、埋め込み(embedding)によるセマンティック検索の導入を計画中(PTD-061、まだ未実装)。無料のオープンソース埋め込みモデルをGitHub Actions上で実行する設計を想定しており、外部有料APIは使わない方針。詳細はconcept-log.jsonのCL-018参照。"
+      },
+      "sources": [
+        { "name": "arXiv", "type": "API(Atom XML)", "endpoint": "http://export.arxiv.org/api/query", "collects": "cs.AI/cs.CL/cs.LGカテゴリの最新論文(タイトル・要約・URL)" },
+        { "name": "Hacker News", "type": "API(JSON、Algolia)", "endpoint": "http://hn.algolia.com/api/v1/search_by_date", "collects": "AI関連の人気投稿(タイトル・URL)" },
+        { "name": "OpenAI Blog", "type": "RSS", "endpoint": "https://openai.com/blog/rss.xml", "collects": "OpenAI公式発表" },
+        { "name": "Hugging Face Blog", "type": "RSS", "endpoint": "https://huggingface.co/blog/feed.xml", "collects": "Hugging Face公式ブログ記事" },
+        { "name": "MIT Technology Review AI", "type": "RSS(AI特化topic feed)", "endpoint": "https://www.technologyreview.com/topic/artificial-intelligence/feed/", "collects": "AI関連の一般向け報道" },
+        { "name": "MarkTechPost", "type": "RSS", "endpoint": "https://www.marktechpost.com/feed/", "collects": "AI研究ニュース" },
+        { "name": "ByteByteGo", "type": "RSS", "endpoint": "https://blog.bytebytego.com/feed", "collects": "ソフトウェアアーキテクチャ記事" },
+        { "name": "InfoQ (AI/ML/Data Eng)", "type": "RSS", "endpoint": "https://feed.infoq.com/ai-ml-data-eng/", "collects": "アーキテクチャ・データエンジニアリング記事" },
+        { "name": "Martin Fowler blog", "type": "Atom", "endpoint": "https://martinfowler.com/feed.atom", "collects": "ソフトウェアアーキテクチャ記事" },
+        { "name": "Architecture Weekly", "type": "RSS", "endpoint": "https://www.architecture-weekly.com/feed", "collects": "アーキテクチャのキュレーション記事" },
+        { "name": "Google DeepMind Blog", "type": "RSS", "endpoint": "https://deepmind.google/blog/rss.xml", "collects": "Geminiモデル発表を含むAI研究ニュース" },
+        { "name": "Anthropic (claude-code releases)", "type": "Atom(GitHub標準機能)", "endpoint": "https://github.com/anthropics/claude-code/releases.atom", "collects": "claude-codeのバージョンリリース情報(2026-09-06追加)" },
+        { "name": "Anthropic News", "type": "生HTML(RSSではない)", "endpoint": "https://www.anthropic.com/news", "collects": "Anthropic公式ニュース・発表(2026-09-06追加。CSS Modulesのビルドハッシュに依存する解析のため、他ソースよりメンテナンス性は低い。CL-017参照)" }
+      ],
+      "note": "情報源を追加・変更した場合は、このsources配列とweb.serviceNowResearch.pointsの一覧、およびservicenow-sub-agentのREADME.md「情報源」表の3箇所を一致させて更新すること。"
     }
   }
 }

@@ -2970,7 +2970,7 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -3022,6 +3022,26 @@
         <div class="ai-diagram-node">📄 data/ai-config.json ・ data/policy.json(GitHubが正本)</div>
         <div class="ai-diagram-arrow">↕ 書き込みは常にGAS経由(直接API POSTはしない)</div>
         <div class="ai-diagram-node">📊 実装進捗管理シート</div>
+      </div>`,
+    serviceNowResearch: `
+      <div class="ai-diagram">
+        <div class="ai-diagram-node">🌐 情報源13件(arXiv・Hacker News・各社ブログ・公式サイト等)</div>
+        <div class="ai-diagram-arrow">↓ HTTP GET(認証不要・日次)</div>
+        <div class="ai-diagram-node highlight">🏢 ServiceNow PDI Scheduled Job(収集の実行主体)</div>
+        <div class="ai-diagram-arrow">↓ insert</div>
+        <div class="ai-diagram-node">📊 u_ai_research_item テーブル(ServiceNow内)</div>
+        <div class="ai-diagram-arrow">↓ 別ジョブ・日次エクスポート(09:30 JST)</div>
+        <div class="ai-diagram-node">📄 GitHub: data/research-items.json(2481件)</div>
+        <div class="ai-diagram-branches">
+          <div class="ai-diagram-branch">
+            <div class="ai-diagram-node">🖥 GitHub Pagesビューアー</div>
+            <div class="ai-diagram-caption">JSONを表示するだけ<br>(最大1日遅れ)</div>
+          </div>
+          <div class="ai-diagram-branch">
+            <div class="ai-diagram-node">🤖 質問時のClaude</div>
+            <div class="ai-diagram-caption">同じJSONを読む<br>(都度ServiceNowへは聞きに行かない)</div>
+          </div>
+        </div>
       </div>`,
   };
 
