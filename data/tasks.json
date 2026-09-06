@@ -10,7 +10,8 @@
     "Knowledge-Dashboard",
     "study-app",
     "Study-Schedule",
-    "servicenow-sub-agent"
+    "servicenow-sub-agent",
+    "English-LevelUp-Reader"
   ],
   "tasks": [
     {
@@ -3678,6 +3679,39 @@
         {
           "date": "2026-09-05",
           "summary": "既存のPTD-041(CLAUDE.md核心ルールウィジェット)と新規のPTD-059(許可リストの正本化・自動同期)を、共通の設計パターンを持つ関連タスクとしてPTD-060の下にsubtasks化した。個別タスクとしての経緯(checkHistory等)はそれぞれの元の内容をそのまま保持している。"
+        }
+      ]
+    },
+    {
+      "repo": "English-LevelUp-Reader",
+      "id": "ELR-001",
+      "task": "gurii-gabreh/English-LevelUp-Reader: 新規アプリ「日常会話からレベルアップする英語読解アプリ」の要件定義・実装",
+      "title": "英語読解アプリ 新規開発",
+      "priority": "中",
+      "status": "未着手",
+      "updated": "2026-09-06",
+      "category": "app",
+      "nextAction": "worker-roomへ実装を依頼する",
+      "note": "2026-09-06、マネージャールームでユーザーと要件を詰めて登録。以下は今回のやり取りで確定した方針:\n- コンテンツ: 日常会話レベルから徐々に難化する構成、日本語と英文を混ぜて表示。10段階のレベル分け。コンテンツ自体はClaudeが作成する(ユーザーからの教材提供なし)。\n- 読み上げ(TTS): ブラウザ標準のSpeechSynthesis APIを使用(無料、iPhone含め概ねどの端末でも動作)。\n- 発音チェック(音声認識): ブラウザ標準のWeb Speech API(webkitSpeechRecognition)は不採用。理由: 既存のgurii-gabreh/English-Speaking-Appで同APIを使用しており(index.htmlで`window.SpeechRecognition||window.webkitSpeechRecognition`、コード中に「Chrome推奨」という警告が残っている)、ユーザーからiPhone Safariでの認識精度が悪いとの指摘があった。代わりに、ブラウザ内でWhisper系モデルをWebAssemblyで動かす方式(クラウドAPI不使用、無料、音声データを外部送信しない)を採用する。\n- 対応端末: 今回は例外的にPC専用とする(CLAUDE.mdルール8の標準方針「PCだけでなくiPhoneでも使用できるアプリにする」は今回は適用しない、とユーザーが明示的に選択)。\n- アーキテクチャ: 既存の技術方針(/root/.claude/CLAUDE.md「静的クライアントアプリのコンテンツ管理」)を踏襲。コンテンツはリポジトリ内JSON(例: data/lessons.json)が正、進捗はlocalStorageのみ、GitHub Pagesでホスティング、書き込み系トークンはフロントに埋め込まない。\n- リポジトリ: ユーザーが https://github.com/gurii-gabreh/English-LevelUp-Reader を作成済み(空のリポジトリ)。\n- ブラウザ内Whisper方式は新規の試みのため、本実装前に精度・速度を確認する試作(プロトタイプ)を推奨したが、詳細な進め方は未確定。",
+      "content": [
+        "背景: ユーザーから、日常会話から徐々にレベルアップしていく英語読解アプリが欲しいという相談。日本語と英文を混ぜて表示し、読み上げと発音チェック(音声認識)機能を持たせたい",
+        "対象リポジトリ: gurii-gabreh/English-LevelUp-Reader(ユーザーが作成済み、空)"
+      ],
+      "detail": "",
+      "issues": "",
+      "output": "",
+      "steps": [
+        "ブラウザ内Whisper(WebAssembly)方式の試作を行い、PC上での認識精度・速度を確認する",
+        "10段階のレベル設計(各レベルの難易度定義・トピック)を作成し、ユーザーに確認する",
+        "各レベルの日英混在コンテンツ(data/lessons.json相当)を作成する",
+        "study-app等と同じ静的サイト構成(GitHub Pages + localStorage)でアプリ本体を実装する",
+        "SpeechSynthesis(読み上げ)・ブラウザ内Whisper(発音チェック)を組み込む",
+        "PC上で一通り動作確認し、progress-tracker-dashboardへ完了報告・登録する"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-09-06",
+          "summary": "マネージャールームでユーザーと要件定義。コンテンツ方式・レベル数(10)・音声認識方式(ブラウザ内Whisper、Web Speech APIは既存Appでの精度不良が理由で不採用)・対応端末(今回はPC専用の例外)・リポジトリ名を確定。リポジトリはユーザーが作成済み。実装はworker-roomへ依頼予定。"
         }
       ]
     }
