@@ -3753,21 +3753,21 @@
       "status": "進行中",
       "updated": "2026-09-06",
       "category": "app",
-      "nextAction": "ユーザーへ相談・確認待ち: (1)発音チェック試作(prototype/whisper-test.html)を実機で試して精度・速度を確認してほしい (2)10段階レベル設計案を確認してほしい",
+      "nextAction": "ユーザーによるprototype/whisper-test.htmlの実機検証待ち(精度・速度・tiny/base比較)。結果を受けて発音チェック機能を本実装するか判断する。",
       "note": "2026-09-06、マネージャールームでユーザーと要件を詰めて登録。以下は今回のやり取りで確定した方針:\n- コンテンツ: 日常会話レベルから徐々に難化する構成、日本語と英文を混ぜて表示。10段階のレベル分け。コンテンツ自体はClaudeが作成する(ユーザーからの教材提供なし)。\n- 読み上げ(TTS): ブラウザ標準のSpeechSynthesis APIを使用(無料、iPhone含め概ねどの端末でも動作)。\n- 発音チェック(音声認識): ブラウザ標準のWeb Speech API(webkitSpeechRecognition)は不採用。理由: 既存のgurii-gabreh/English-Speaking-Appで同APIを使用しており(index.htmlで`window.SpeechRecognition||window.webkitSpeechRecognition`、コード中に「Chrome推奨」という警告が残っている)、ユーザーからiPhone Safariでの認識精度が悪いとの指摘があった。代わりに、ブラウザ内でWhisper系モデルをWebAssemblyで動かす方式(クラウドAPI不使用、無料、音声データを外部送信しない)を採用する。\n- 対応端末: 今回は例外的にPC専用とする(CLAUDE.mdルール8の標準方針「PCだけでなくiPhoneでも使用できるアプリにする」は今回は適用しない、とユーザーが明示的に選択)。\n- アーキテクチャ: 既存の技術方針(/root/.claude/CLAUDE.md「静的クライアントアプリのコンテンツ管理」)を踏襲。コンテンツはリポジトリ内JSON(例: data/lessons.json)が正、進捗はlocalStorageのみ、GitHub Pagesでホスティング、書き込み系トークンはフロントに埋め込まない。\n- リポジトリ: ユーザーが https://github.com/gurii-gabreh/English-LevelUp-Reader を作成済み(空のリポジトリ)。\n- ブラウザ内Whisper方式は新規の試みのため、本実装前に精度・速度を確認する試作(プロトタイプ)を推奨したが、詳細な進め方は未確定。",
       "content": [
         "背景: ユーザーから、日常会話から徐々にレベルアップしていく英語読解アプリが欲しいという相談。日本語と英文を混ぜて表示し、読み上げと発音チェック(音声認識)機能を持たせたい",
         "対象リポジトリ: gurii-gabreh/English-LevelUp-Reader(ユーザーが作成済み、空)"
       ],
-      "detail": "リポジトリgurii-gabreh/English-LevelUp-Readerの初期セットアップを実施し、README.mdと発音チェック方式(ブラウザ内Whisper/WASM)の試作プロトタイプ(prototype/whisper-test.html、transformers.js + Xenova/whisper-tiny.en または whisper-base.en を使用)を作成しmainブランチへpush済み。\n本実装前に必要な精度・速度検証について: 開発セッション(サンドボックス)からcdn.jsdelivr.netとhuggingface.coへの通信が組織ネットワークポリシーで403ブロックされており、モデルダウンロードを伴う実機検証がこのセッション内では完結できないことが判明した(詳細はconcept-log.json CL-019、prototype/README.mdに記載)。この制約は開発サンドボックス固有のものであり、エンドユーザーが実際に使うブラウザ(通常のインターネット接続を持つ)には影響しない。そのため、ユーザー自身のPCでprototype/whisper-test.htmlを開いて精度・速度を確認してもらい、その結果を踏まえて本実装へ進むかどうかを判断する運用とした。\nまた10段階のレベル設計(各レベルの難易度定義・トピック)についても叩き台をworker-roomのチャットで提示し、ユーザーの確認を待っている状態。",
-      "issues": "開発セッションのネットワークポリシーにより、huggingface.co / cdn.jsdelivr.netへ接続できず、ブラウザ内Whisper試作の精度・速度をこのセッション内で直接検証することができない。回避策として、試作コードの検証はユーザー自身の実機ブラウザで行ってもらう運用に変更した(アプリ本体はGitHub Pagesで配信されエンドユーザーの通常のブラウザで動作するため、この制約の影響を受けない)。",
+      "detail": "10段階レベル設計の叩き台をユーザーに提示し確認を得た(トピック配分はそのままでOK、あとから同じトピックへコンテンツを追加できる構造にすること、英語はアメリカ英語、1レベル10〜15文程度、発音チェックの合否基準はプロトタイプ確認後に決定、で合意)。\nこれを受けてdata/lessons.jsonを『levels > topics > lessons』の3階層・追記しやすいスキーマで設計し、レベル1(挨拶・自己紹介、3トピック・12文)の内容を作成。レベル2-10はタイトル・説明のみのプレースホルダー(status: coming_soon)としてコミット済み。\nあわせてアプリ本体の骨組み(index.html / css/style.css / js/app.js)を実装: レベル一覧→トピック一覧→文単位の読解画面という導線、SpeechSynthesis APIによる読み上げ(速度調整可)、完了記録をlocalStorageのみに保存する進捗管理。発音チェックはprototype/whisper-test.htmlでの精度検証待ちのため、レッスン画面に「準備中」のプレースホルダーとして表示するのみで、まだ機能としては組み込んでいない。\nPlaywright(ヘッドレスChromium)でこのアプリ骨組みの動作確認を実施し、レベル一覧描画・画面遷移・TTS呼び出し・完了記録のlocalStorage永続化・進捗数の再描画・準備中レベルのdisabled化を確認、コンソールエラーなしを確認済み。\n残作業: (1)ユーザーによるWhisper試作の実機検証(精度・速度・tiny/base比較)待ち、(2)レベル2-10のコンテンツ作成、(3)発音チェック機能の本実装(試作確認後)、(4)最終動作確認。",
+      "issues": "開発セッションのネットワークポリシーにより、huggingface.co / cdn.jsdelivr.netへ接続できず、ブラウザ内Whisper試作の精度・速度をこのセッション内で直接検証することができない(CL-019)。ユーザー自身の実機ブラウザでの検証待ちの状態が続いている。",
       "output": "",
       "steps": [
-        "[進行中] ブラウザ内Whisper(WebAssembly)方式の試作を行い、ユーザーのPC上での認識精度・速度を確認する(試作コードは作成・push済み。ユーザーによる実機検証待ち)",
-        "[進行中] 10段階のレベル設計(各レベルの難易度定義・トピック)の叩き台を提示し、ユーザーに確認する",
-        "各レベルの日英混在コンテンツ(data/lessons.json相当)を作成する",
-        "study-app等と同じ静的サイト構成(GitHub Pages + localStorage)でアプリ本体を実装する",
-        "SpeechSynthesis(読み上げ)・ブラウザ内Whisper(発音チェック)を組み込む",
+        "[ユーザー確認待ち] ブラウザ内Whisper(WebAssembly)方式の試作(prototype/whisper-test.html)を、ユーザーのPC上で実際に試してもらい認識精度・速度を確認する",
+        "[完了] 10段階のレベル設計の叩き台を提示し、ユーザーに確認する",
+        "[一部完了] 各レベルの日英混在コンテンツ(data/lessons.json)を作成する(レベル1のみ完了、レベル2-10は未作成)",
+        "[一部完了] study-app等と同じ静的サイト構成(GitHub Pages + localStorage)でアプリ本体を実装する(骨組みは完成、レベル2-10のコンテンツ待ち)",
+        "[一部完了] SpeechSynthesis(読み上げ、組み込み済み)・ブラウザ内Whisper(発音チェック、試作確認待ちで未組み込み)を組み込む",
         "PC上で一通り動作確認し、progress-tracker-dashboardへ完了報告・登録する"
       ],
       "checkHistory": [
@@ -3778,6 +3778,10 @@
         {
           "date": "2026-09-06",
           "summary": "worker-roomで着手。リポジトリ初期セットアップ(README.md)と、発音チェック方式(ブラウザ内Whisper/WASM)の試作プロトタイプ(prototype/whisper-test.html、prototype/README.md)を作成しmainへpush。試作に必要なCDN(cdn.jsdelivr.net、huggingface.co)への通信が開発セッションのネットワークポリシーでブロックされているため、精度・速度の実機検証はユーザー自身のPCブラウザで行ってもらう運用に変更(詳細をconcept-log.json CL-019に記録)。10段階レベル設計の叩き台も提示し、ユーザーの確認待ち。"
+        },
+        {
+          "date": "2026-09-06",
+          "summary": "10段階レベル設計案をユーザーに提示し確認を得た(トピック配分OK、あとから同トピックへ追加できる構造にすること、アメリカ英語、1レベル10〜15文程度、発音チェック基準はプロトタイプ確認後に決定)。これを受けdata/lessons.json(拡張可能な3階層スキーマ、レベル1の12文を作成、レベル2-10はプレースホルダー)とアプリ本体の骨組み(レベル選択→トピック選択→文単位読解、TTS読み上げ、localStorage進捗管理)を実装しmainへpush。Playwrightで動作確認済み(コンソールエラーなし)。発音チェックは準備中表示のみで未組み込み。次はユーザーによるWhisper試作(prototype/whisper-test.html)の実機検証待ち。"
         }
       ]
     }
