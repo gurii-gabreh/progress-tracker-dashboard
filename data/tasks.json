@@ -3560,6 +3560,25 @@
               "summary": "ユーザーが方向性a(先にキュレーション件数を増やす)を選択。research-item-curationスキルを新規作成し、初回6件をキュレーション(23→29件)。"
             }
           ]
+        },
+        {
+          "repo": "progress-tracker-dashboard",
+          "id": "PTD-063",
+          "task": "CROSS_REPO_PATの失効を修正し、sync-claude-md.ymlを正常化する",
+          "title": "CROSS_REPO_PAT失効の修正",
+          "priority": "中",
+          "status": "未着手",
+          "category": "manual",
+          "updated": "2026-09-12",
+          "content": "GitHub Actionsのsync-claude-md.ymlが、CROSS_REPO_PAT(他リポジトリのCLAUDE.mdを更新するための個人アクセストークン)の認証エラー(401 Bad Credentials)で、直近3回連続(2026-09-06×2、2026-09-12)失敗し続けている。progress-tracker-dashboard自身は既定のGITHUB_TOKENで更新できるが、kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・Knowledge-Dashboard・study-app・servicenow-sub-agentの7リポジトリへは反映されていない。",
+          "note": "2026-09-12、ルール23・24追加の反映確認中に発覚。ユーザー作業タスク: GitHubの個人アクセストークン設定画面(Settings → Developer settings → Personal access tokens)で新しいトークンを発行し、このリポジトリのSecrets(Settings → Secrets and variables → Actions → CROSS_REPO_PAT)に登録し直す必要がある。AI側からは実行できない。完了後、再度sync-claude-md.ymlの実行結果を確認する。",
+          "nextAction": "ユーザーがCROSS_REPO_PATを再発行・再登録",
+          "checkHistory": [
+            {
+              "date": "2026-09-12",
+              "summary": "sync-claude-md.yml実行結果を確認したところ、CROSS_REPO_PATの401エラーで全7リポジトリへの反映が失敗していると判明。タスク化のみ行い、以後は繰り返し口頭で確認せずここで追跡する。"
+            }
+          ]
         }
       ],
       "checkHistory": [
