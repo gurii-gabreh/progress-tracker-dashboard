@@ -97,6 +97,30 @@
     color: var(--text-muted); cursor: pointer; white-space: nowrap; flex: 0 0 auto;
   }
   .top-tab-btn.active { background: var(--surface); color: var(--accent); }
+  /* 携帯幅では上部タブを常時表示せず、ハンバーガーボタンで開閉するプルダウンにする
+     (2026-09-12、ユーザー指示「携帯の画面で開くとレイアウト構成が壊れる。各メニュー部分は
+     プルダウンや、押したときだけ表示にすべて修正しろ」)。PC幅(641px以上)は従来通り
+     常時表示のまま変更しない。 */
+  .top-tab-toggle { display: none; }
+  @media (max-width: 640px) {
+    .top-tab-toggle {
+      display: flex; align-items: center; gap: 6px; margin: 10px 16px 0;
+      font-size: 13px; font-weight: 700; padding: 8px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      cursor: pointer; width: fit-content;
+    }
+    .top-tab-bar {
+      display: none; flex-wrap: column; flex-direction: column; gap: 2px;
+      position: absolute; left: 0; right: 0; top: 50px; z-index: 120;
+      max-width: none; margin: 0; padding: 8px; border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow); background: var(--bg);
+    }
+    .top-tab-bar.mobile-open { display: flex; }
+    .top-tab-btn { width: 100%; text-align: left; border-radius: 8px; border-bottom: 1px solid var(--border); }
+    /* 詳細タブ(リポジトリごとのサブタブ等)は本数が可変のため、ハンバーガー化はせず
+       横スクロールできる状態にして、はみ出し・折り返し崩れだけを防ぐ */
+    .detail-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  }
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
@@ -747,7 +771,8 @@
 </style>
 
 <div class="app-shell">
-  <div class="top-tab-bar">
+  <button class="top-tab-toggle" id="top-tab-toggle-btn" type="button" aria-expanded="false">☰ メニュー</button>
+  <div class="top-tab-bar" id="top-tab-bar">
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
     <button class="top-tab-btn" id="top-tab-learning" data-view="learning">🎓 学習</button>
@@ -2835,6 +2860,19 @@
   // ヘッダーより下の表示だけをこのタブで切り替える(2026-08-10追加)。アプリ一覧・ナレッジタブは
   // それぞれ対象リポジトリのGitHub Pagesをiframe埋め込みし、初回クリック時にだけsrcをセットして
   // 読み込む(使わない場合は余計な外部リクエストをしない)。
+  // 携帯幅でのハンバーガーメニュー化(2026-09-12追加)。トグル自体はここでのみ扱い、
+  // タブ選択時の自動クローズはsetupTopTabs()のactivate()内から呼ぶ。
+  const topTabBar = document.getElementById("top-tab-bar");
+  const topTabToggleBtn = document.getElementById("top-tab-toggle-btn");
+  function closeMobileTopTabBar() {
+    topTabBar.classList.remove("mobile-open");
+    topTabToggleBtn.setAttribute("aria-expanded", "false");
+  }
+  topTabToggleBtn.addEventListener("click", () => {
+    const open = topTabBar.classList.toggle("mobile-open");
+    topTabToggleBtn.setAttribute("aria-expanded", String(open));
+  });
+
   (function setupTopTabs() {
     const tabs = {
       hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
@@ -2864,6 +2902,7 @@
         const iframe = document.getElementById(tab.iframeId);
         if (!iframe.src) iframe.src = tab.url;
       }
+      closeMobileTopTabBar(); // 携帯幅でタブを選んだらプルダウンを閉じる
     }
     Object.entries(tabs).forEach(([key, { btn }]) => btn.addEventListener("click", () => activate(key)));
     document.querySelectorAll("[data-hub-nav]").forEach((el) => {
