@@ -3815,6 +3815,25 @@
           "summary": "10段階レベル設計案をユーザーに提示し確認を得た(トピック配分OK、あとから同トピックへ追加できる構造にすること、アメリカ英語、1レベル10〜15文程度、発音チェック基準はプロトタイプ確認後に決定)。これを受けdata/lessons.json(拡張可能な3階層スキーマ、レベル1の12文を作成、レベル2-10はプレースホルダー)とアプリ本体の骨組み(レベル選択→トピック選択→文単位読解、TTS読み上げ、localStorage進捗管理)を実装しmainへpush。Playwrightで動作確認済み(コンソールエラーなし)。発音チェックは準備中表示のみで未組み込み。次はユーザーによるWhisper試作(prototype/whisper-test.html)の実機検証待ち。"
         }
       ]
+    },
+    {
+      "repo": "複数",
+      "id": "PTD-064",
+      "task": "携帯画面でのレイアウト崩れ対策(メニューのハンバーガー/プルダウン化)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-09-12",
+      "category": "implementation",
+      "note": "ユーザー指示(2026-09-12)「全アプリそうだが、携帯の画面で開くとレイアウト構成が壊れる。各メニュー部分はプルダウンや、押したときだけ表示にすべて修正しろ」への対応。対象は管理対象リポジトリのうちUIを持つもの全て。kizashi(kizashi-app)は都知事杯ハッカソン2026への提出済み作品(submission/フォルダにスクリーンショット・デモ動画あり)のため、提出内容との整合性を優先し今回は除外(ユーザー確認済み)。",
+      "detail": "5リポジトリを調査し、実際に携帯幅(375px想定)でメニューが崩れる/場所を圧迫するものだけを修正した(壊れていないものは無理に変更しなかった)。いずれも@media(max-width:640px)の範囲でのみハンバーガー/プルダウン化し、PC幅は無変更。実装後は全てPlaywright(375x700・1280x800)で実機相当の動作確認を実施した。\n\n1. study-app(index.html): ヘッダータブ(要約/問題/復習/苦手問題/履歴)とサイドバー(レッスン一覧)をハンバーガー化。実装中、ハンバーガーボタン追加によりヘッダー自体が375px幅に収まらずホームボタン等が画面外に押し出される不具合をPlaywrightテストで発見・修正(ロゴ文字を携帯幅で非表示、カテゴリselectを可変幅に)。commit c891acc。\n2. progress-tracker-dashboard(dashboard.html): 上部タブ(一覧/タスクWBS/学習/アプリ一覧/ナレッジ/AI基本設定/クレジット、既存はflex-wrapで3行に折り返るのみだった)をハンバーガー化。リポジトリ詳細のサブタブ(.detail-tabs)はタブ数が可変なためハンバーガー化はせず横スクロールで吸収するのみに留めた。commit fea9066(designated branch)→7620959(mainへマージ)。\n3. supermarket-price-tracker(index.html/prices.html、home.htmlはnav無しのため対象外): header-navをハンバーガー化。js/ui.js・js/app.jsに実装を集約し2ページで共通化。サブエージェントが実装、Playwrightで3ページとも確認、commit 42e8831。\n4. knowledge-dashboard(dashboard.html): 上部タブ(.tab-row、ラベルが2行折返りで崩れていた)と、ナレッジタブの絞り込みチップ2段(リポジトリ8個+種別、常時展開で170px圧迫)をハンバーガー化。サブエージェントが実装、Playwright 19/19アサーション通過、commit 033804b。副次的に、Sheetsタブのデータテーブルが携帯幅で潰れて読めなくなる別問題(メニューではなくテーブルなので指示範囲外)を発見・報告のみ(PTD-065として別途起票要検討)。\n5. gemini-monitor(index.html): 調査の結果、既存のflex-wrap・設定ドロワー・比較/履歴アコーディオンで携帯幅でも崩れておらず、既に「押したときだけ表示」のパターンになっていたため変更不要と判断(Playwrightで375px/1280px確認済み)。\n\nkizashi(kizashi-app)は対象外(上記note参照)。",
+      "output": "",
+      "nextAction": "knowledge-dashboardのSheetsタブ・テーブルの携帯幅崩れ(別問題)を修正するかどうかユーザーに確認",
+      "checkHistory": [
+        {
+          "date": "2026-09-12",
+          "summary": "5リポジトリを調査し、study-app・progress-tracker-dashboard・supermarket-price-tracker・knowledge-dashboardの4件を実装(gemini-monitorは調査の結果変更不要と判断)。kizashiはハッカソン提出済みのため対象外とすることをユーザーに確認済み。全てPlaywrightでモバイル/デスクトップ両方の動作確認を実施した上でcommit・push(該当する場合はmainへのマージも)完了。"
+        }
+      ]
     }
   ]
 }
