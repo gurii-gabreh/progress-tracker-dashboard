@@ -2732,23 +2732,35 @@
           "id": "AIE-019",
           "task": "データベースの基礎を学ぶ",
           "priority": "低",
-          "status": "未着手",
-          "updated": "2026-08-11",
+          "status": "進行中",
+          "updated": "2026-09-06",
           "category": "manual",
           "note": "目安1〜2ヶ月。(概要フェーズ[AIE-021]後は、実践の中で該当概念が出た時に深掘りする参照先として使う。優先度は中→低に変更)",
           "detail": "SQL基礎、インデックス設計、正規化、トランザクション/ACIDを学ぶ。「Use The Index, Luke」(無料サイト)等を活用。",
-          "output": ""
+          "output": "",
+          "checkHistory": [
+            {
+              "date": "2026-09-06",
+              "summary": "SQL/NoSQLの違い、正規化・非正規化のトレードオフ、インデックス、トランザクション/ACIDの要点を自分の言葉でまとめ、レビュー(記録先: data/concept-log.json CL-020)。大きな誤りなし。"
+            }
+          ]
         },
         {
           "id": "AIE-020",
           "task": "テストの基礎を身につける",
           "priority": "低",
-          "status": "未着手",
-          "updated": "2026-08-11",
+          "status": "進行中",
+          "updated": "2026-09-08",
           "category": "manual",
           "note": "期限を区切らない継続的な実践。(概要フェーズ[AIE-021]後は、実践の中で該当概念が出た時に深掘りする参照先として使う。優先度は中→低に変更)",
           "detail": "TDD(Red-Green-Refactor)を習慣化する。既存プロジェクト(kizashi・progress-tracker-dashboard)に後付けでテストを追加し、CIでのテスト実行をブロッキングチェックにする。ゼロから作るより既存コードにテストを足す方が実務に近い練習になる。",
-          "output": ""
+          "output": "",
+          "checkHistory": [
+            {
+              "date": "2026-09-08",
+              "summary": "単体/結合/E2Eテストの違い、TDD、カバレッジの意味と限界の要点を自分の言葉でまとめ、レビュー(記録先: data/concept-log.json CL-021)。大きな誤りなし。"
+            }
+          ]
         }
       ]
     },
