@@ -11,7 +11,8 @@
     "study-app",
     "Study-Schedule",
     "servicenow-sub-agent",
-    "English-LevelUp-Reader"
+    "English-LevelUp-Reader",
+    "claude-voice-bridge"
   ],
   "tasks": [
     {
@@ -3832,6 +3833,58 @@
         {
           "date": "2026-09-12",
           "summary": "5リポジトリを調査し、study-app・progress-tracker-dashboard・supermarket-price-tracker・knowledge-dashboardの4件を実装(gemini-monitorは調査の結果変更不要と判断)。kizashiはハッカソン提出済みのため対象外とすることをユーザーに確認済み。全てPlaywrightでモバイル/デスクトップ両方の動作確認を実施した上でcommit・push(該当する場合はmainへのマージも)完了。"
+        }
+      ]
+    },
+    {
+      "repo": "claude-voice-bridge",
+      "id": "CVB-001",
+      "task": "サイドパネルの「ルームタスク監査」(未解決の相談・作業の自動検出)機能の実装と不具合修正",
+      "title": "ルームタスク監査機能(AI直接確認方式)",
+      "priority": "中",
+      "status": "進行中",
+      "updated": "2026-09-13",
+      "category": "feature",
+      "note": "claude-voice-bridgeは今回のトラッカーで初めて管理対象に加えたリポジトリ(gurii-gabreh/claude-voice-bridge)。本来は各実装の都度このtasks.jsonへ記録すべきだったが、一連の会話の中で記録が漏れていたため、ここで経緯をまとめて記録する(CLAUDE.md最重要ルール「実装したタスクのdetail・noteを空欄のまま完了させない」への対応)。",
+      "content": [
+        "当初は【相談NNN】【処理開始NNN】【処理完了NNN】(CLAUDE.mdルール14マーカー)を正規表現でスキャンしてサイドパネルのトラッカー表に表示する方式だったが、AI側がマーカーを付け忘れる頻度が高く信頼できないとユーザーから指摘され、2026-09-13に方式を全面転換した",
+        "新方式: 「🔍 ルームタスク一覧を抽出」ボタンを押すと、(1)表示中の発言をナレッジログとして記録、(2)固定フレーズをチャット入力欄へ送信してprogress-tracker-dashboardの room-task-audit スキルを起動し、AI自身にルームを読み返させて未解決の相談・未完了作業を判定させ、結果を表に反映する",
+        "表には種別・内容・ルーム・ステータスを表示し、番号クリックでルーム内の該当箇所へスクロール、📋ボタンでコピー、✕ボタンで一覧から除外できる",
+        "サイドパネル上部に「🎙️ ボイス」「📋 一覧」タブを追加し、ボイスモードと一覧モードを切り替えられるようにした"
+      ],
+      "completedItems": [
+        {
+          "item": "マーカー正規表現方式を廃止し、room-task-auditスキル(progress-tracker-dashboardの.claude/skills/room-task-audit/)によるAI直接確認方式へ全面移行(tracker-store.jsのスキーマをitems配列へ変更、sidepanel.jsにparseAuditResponse()等を追加)",
+          "date": "2026-09-13"
+        },
+        {
+          "item": "コピーボタン・該当箇所へのスクロール移動・ボイス/一覧タブ切り替えを追加",
+          "date": "2026-09-13"
+        },
+        {
+          "item": "findMessageBlocks()の重複検出バグ(claude.ai/codeで抽出結果が重複だらけになる)を、祖先要素フィルタ+テキスト完全一致の重複除去で修正",
+          "date": "2026-09-13"
+        },
+        {
+          "item": "抽出ボタンを押しても応答が来ず固まり、代わりにClaude Code組み込みのスラッシュコマンド/スキル選択ポップアップが開いてしまう不具合を発見・修正。原因は監査起動フレーズの先頭が\"/\"(\"/room-task-audit\")だったため、claude.ai/codeの入力欄がこれをスラッシュコマンドの起動とみなしてしまっていたこと。先頭\"/\"を使わず「room-task-auditスキルを呼び出して実行してください。」という平文の言い回しに変更した",
+          "date": "2026-09-13"
+        }
+      ],
+      "detail": "【アーキテクチャ】claude-voice-bridge(Chrome拡張)の content.js がページ内のcontenteditable入力欄へ document.execCommand(\"insertText\") でテキストを流し込み、送信ボタンをクリックして送信する。応答はMutationObserverで新規メッセージブロックの出現→安定化を監視して抽出し、サイドパネルへ中継する。\n\n【今回の不具合の技術的原因】room-task-auditスキルを起動する固定フレーズを当初\"/room-task-audit\"(先頭が\"/\")にしていたが、claude.ai/codeの入力欄は先頭\"/\"をClaude Code組み込みのスラッシュコマンド/スキル選択ポップアップ(候補ドロップダウン)の起動トリガーとして扱う仕様になっている。execCommand(\"insertText\")は本物のinputイベントを発火させる(合成KeyboardEventと違い信頼される)ため、このポップアップが実際に開いてしまい、直後の送信ボタンクリック/Enterキーがポップアップ側の候補選択操作に奪われ、実際にはメッセージが送信されないまま待機し続ける(ユーザー報告「抽出ボタンを押しても動かない、フィードバックの小ウィンドウが開く」と一致)。\n\n【対応】AUDIT_TRIGGER_TEXTの先頭の\"/\"を廃止し、「room-task-auditスキルを呼び出して実行してください。」という平文でスキル名を明示する言い回しに変更(commit dc475b1、claude-voice-bridgeリポジトリのmainへpush済み)。Skillツールは名前を明示的に指名された場合もスラッシュ無しの呼び出しとして有効に機能するため、挙動は変わらない想定。\n\n【教訓・汎用パターン】ブラウザ拡張等でチャットUIの入力欄へ合成テキストを流し込む実装をする場合、そのチャットUI自身が予約している制御文字(スラッシュコマンド等の先頭文字)をペイロードの先頭に置くと、UI側の組み込み機能に横取りされて「送信されたように見えて実際には送信されない」という検知しづらい不具合になる。同様の自動化を他サイト(Slack/Discord等、スラッシュコマンドを持つチャットUI全般)へ拡張する際は同じ注意が必要。この教訓はdata/concept-log.json(CL-023想定)にも記録する。\n\n【未確認事項】この修正はコードレビュー・構文チェックのみで、実際のブラウザ(chrome://extensions でのリロード後)でユーザーが「🔍 ルームタスク一覧を抽出」ボタンを押して正常に動作するかはまだユーザー未確認。確認が取れるまでstatusは「進行中」のままとする。",
+      "issues": "ユーザーによる実機確認(拡張機能の再読み込み→ボタン押下→監査結果が表に反映されるか)が未完了。claude-voice-bridge自身のGAS連携(CVB_GAS_URL)も別件で未デプロイのまま(knowledge-log/trackerのGitHub同期は動作しない)。",
+      "output": "gurii-gabreh/claude-voice-bridge (sidepanel.js: AUDIT_TRIGGER_TEXT/parseAuditResponse/handleAuditResponse, content.js: findMessageBlocks/setComposerText/submitComposer, tracker-store.js, README.md)",
+      "checkHistory": [
+        {
+          "date": "2026-09-13",
+          "summary": "マーカー正規表現方式からAI直接確認(room-task-auditスキル)方式への全面移行を実装・push。ユーザー要望(コピーボタン・該当箇所への遷移・タブ切替)も合わせて実装。"
+        },
+        {
+          "date": "2026-09-13",
+          "summary": "ユーザーから「抽出結果が重複だらけ」と報告を受け、findMessageBlocks()の重複検出バグを修正・push。"
+        },
+        {
+          "date": "2026-09-13",
+          "summary": "ユーザーから「抽出ボタンを押しても動かない、フィードバックの小ウィンドウが開く」と報告を受け、調査。AUDIT_TRIGGER_TEXTの先頭\"/\"がclaude.ai/code組み込みのスラッシュコマンドポップアップを誤って起動させ送信を妨げていたと特定し、平文の言い回しへ変更して修正・push(commit dc475b1)。ユーザーによる実機確認は未完了のため、statusは進行中のまま。"
         }
       ]
     }
