@@ -84,7 +84,8 @@
         "plugin-rollout(gurii-gabreh/progress-tracker-dashboard, .claude/skills/plugin-rollout/SKILL.md): Claude Codeプラグインのenabled化を、管理対象の全リポジトリの.claude/settings.jsonへ展開する手順(2026-09-05作成)",
         "sheet-memo-sync(gurii-gabreh/study-app, .claude/skills/sheet-memo-sync/SKILL.md): study-appのメモ用スプレッドシートに追加された行を、data/lessons.jsonのcommentsへ反映する手順。反映前に件数・該当コース・サンプルを提示しユーザーの確認を得ることを含む(2026-09-06作成)",
         "governance-config-sync(gurii-gabreh/progress-tracker-dashboard, .claude/skills/governance-config-sync/SKILL.md): 新しい運用ルールを追加・変更する際、data/claude-core-rules.md(正本)→自動同期→data/ai-config.jsonのweb/ai両方→dashboard.htmlのAI_CONFIG_SECTIONS配列→このregistryまで、すべてを一致させて更新する手順(2026-09-06作成)",
-        "research-item-curation(gurii-gabreh/servicenow-sub-agent, .claude/skills/research-item-curation/SKILL.md): research-items.jsonの生データにcurated=trueと日本語要約・ポイント・活かせる技術を付与する手順。ビューアーサイトを将来「ピックアップ済みのみ」表示へ変更する前段の作業(2026-09-06作成)"
+        "research-item-curation(gurii-gabreh/servicenow-sub-agent, .claude/skills/research-item-curation/SKILL.md): research-items.jsonの生データにcurated=trueと日本語要約・ポイント・活かせる技術を付与する手順。ビューアーサイトを将来「ピックアップ済みのみ」表示へ変更する前段の作業(2026-09-06作成)",
+        "research-knowledge-lookup(servicenow-sub-agent): servicenow sub agentの調査結果を見てと言われた時、data/research-items.jsonを実際に確認してから回答する手順(2026-09-17追加)"
       ]
     },
     "serviceNowResearch": {
@@ -110,7 +111,8 @@
         "Architecture Weekly(RSS): アーキテクチャのキュレーション記事",
         "Google DeepMind Blog(RSS): Geminiモデル発表を含むAI研究ニュース",
         "Anthropic claude-code Releases(Atom、GitHub標準機能): claude-codeのバージョンリリース情報",
-        "Anthropic News(生HTML、www.anthropic.com/news): Anthropic公式ニュース・発表(2026-09-06追加、CL-017参照)"
+        "Anthropic News(生HTML、www.anthropic.com/news): Anthropic公式ニュース・発表(2026-09-06追加、CL-017参照)",
+        "「servicenow sub agentの調査結果/ナレッジを見て」等と言われた場合は、記憶だけで答えず実際にdata/research-items.jsonを確認する(2026-09-17追加、ユーザー指示。出典: claude-core-rules.mdルール26)。手順はresearch-knowledge-lookupスキル(servicenow-sub-agentリポジトリ)に明文化した"
       ]
     }
   },
@@ -249,6 +251,13 @@
           "path": ".claude/skills/research-item-curation/SKILL.md",
           "createdAt": "2026-09-06",
           "summary": "research-items.jsonの生データ(2481件、curated済みはごく一部)から、スコア上位・最近のものを優先して読み、日本語の要約・ポイント・活かせる技術を書いてcurated=trueにする手順。ビューアーサイトを『ピックアップ済みのみ』表示へ変更する計画(PTD-062)の前段。"
+        },
+        {
+          "name": "research-knowledge-lookup",
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "path": ".claude/skills/research-knowledge-lookup/SKILL.md",
+          "createdAt": "2026-09-17",
+          "summary": "「servicenow sub agentの調査結果/ナレッジを見て」等と言われた時に、記憶だけで答えず実際にdata/research-items.jsonを確認してから回答する手順。curated:true(人による日本語分析済み)を優先し、無ければ未検証の生データである旨を明記して出典を添える。research-item-curationスキル(書き込み用)とは別の参照専用スキル。"
         }
       ],
       "note": "新しく定型作業をスキル化した場合は、このregistry配列にエントリを追記すること(SKILL.md本体は各リポジトリ側で管理し、ここへ複製しない)。"
@@ -260,7 +269,7 @@
       "pipeline": {
         "collect": "ServiceNow PDIのScheduled Job(scheduled_job_ai_research_fetch.js、日次)が、sn_ws.RESTMessageV2経由で各情報源へHTTP GETし、その場でレスポンスを解析してu_ai_research_itemへinsertする。認証はいずれも不要(no authentication)。",
         "export": "GitHub Actions(servicenow-export-research.yml、毎日00:30 UTC=09:30 JST、ServiceNow側の収集完了後を狙ったタイミング)がexport_research_items.mjsを実行し、ServiceNow Table APIでu_ai_research_item全件を取得してservicenow-sub-agentリポジトリのdata/research-items.jsonへマージ保存する。既存の日本語要約(summaryJa等)は上書きしない。",
-        "consume": "GitHub Pages上のビューアーサイトはdata/research-items.jsonを表示するのみ(最大1日遅れのスナップショット、質問のたびにServiceNowへ問い合わせるわけではない)。ChatがこのデータについてAIに質問された場合も、同じdata/research-items.jsonを読む想定(2026-09-06時点2481件・約1.67MBのため、全件を読むより category/日付/キーワードで絞り込むかスクリプトで抽出する方が効率的)。",
+        "consume": "GitHub Pages上のビューアーサイトはdata/research-items.jsonを表示するのみ(最大1日遅れのスナップショット、質問のたびにServiceNowへ問い合わせるわけではない)。ChatがこのデータについてAIに質問された場合も、同じdata/research-items.jsonを読む想定(2026-09-06時点2481件・約1.67MBのため、全件を読むより category/日付/キーワードで絞り込むかスクリプトで抽出する方が効率的)。(2026-09-17追記: この期待は当初ここに書かれていただけでCLAUDE.mdの明文化されたルールにはなっておらず、実際には徹底されていなかった。claude-core-rules.mdルール26として明文化し、research-knowledge-lookupスキル(servicenow-sub-agent/.claude/skills/research-knowledge-lookup/)として手順化した。)",
         "futureWork": "データ量増加への対応として、埋め込み(embedding)によるセマンティック検索の導入を計画中(PTD-061、まだ未実装)。無料のオープンソース埋め込みモデルをGitHub Actions上で実行する設計を想定しており、外部有料APIは使わない方針。詳細はconcept-log.jsonのCL-018参照。"
       },
       "sources": [
