@@ -197,6 +197,12 @@
   .ai-config-skills-table td.skill-name { font-weight: 600; color: var(--accent); white-space: nowrap; }
   .ai-config-skills-table td.skill-repo { color: var(--text-muted); white-space: nowrap; }
   .ai-config-skills-table td.skill-summary { line-height: 1.6; }
+  .ai-config-skills-table td.skill-trigger { white-space: nowrap; }
+  .skill-trigger-badge {
+    display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  }
+  .skill-trigger-badge.user { background: var(--accent-soft); color: var(--accent); }
+  .skill-trigger-badge.ai { background: #e3f3e6; color: #2f8f4e; }
   .ai-config-edit-textarea {
     width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; line-height: 1.7;
     color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
@@ -3021,7 +3027,7 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -3129,7 +3135,11 @@
       // それ以外のセクションは従来通りpoints配列を箇条書きで表示する。
       const table = section.table || [];
       const body = key === "customSkills" && table.length
-        ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>概要</th></tr></thead><tbody>${table.map((s) => `<tr><td class="skill-name">${escapeHtml(s.name || "")}</td><td class="skill-repo">${escapeHtml(s.repo || "")}</td><td class="skill-summary">${escapeHtml(s.summary || "")}</td></tr>`).join("")}</tbody></table>${linkHtml}`
+        ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>起動方法</th><th>概要</th></tr></thead><tbody>${table.map((s) => {
+            const isUser = s.triggerType === "user";
+            const triggerHtml = `<span class="skill-trigger-badge ${isUser ? "user" : "ai"}">${isUser ? "👤 ユーザー起動" : "🤖 AI判断"}</span>`;
+            return `<tr><td class="skill-name">${escapeHtml(s.name || "")}</td><td class="skill-repo">${escapeHtml(s.repo || "")}</td><td class="skill-trigger">${triggerHtml}</td><td class="skill-summary">${escapeHtml(s.summary || "")}</td></tr>`;
+          }).join("")}</tbody></table>${linkHtml}`
         : `<div class="ai-config-subheading">📋 詳細</div><ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
       const titleHtml = `<div class="ai-config-section-title">${escapeHtml(section.title || key)}</div>`;
       return `<div class="policy-card ai-config-section-card">${titleHtml}${overviewHtml}${diagramHtml}${body}</div>`;
