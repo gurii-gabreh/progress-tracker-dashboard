@@ -79,16 +79,52 @@
     "customSkills": {
       "title": "🧩 スキル化した定型作業",
       "overview": "skill-creatorスキルを使って、繰り返し発生する定型作業を各リポジトリの.claude/skills/<スキル名>/SKILL.mdとして固定化したもの一覧です。保存場所はGitHub上の各リポジトリ(git管理・レビュー可能)で、この一覧はそのインデックスに過ぎません。次回以降は短い一言でこの手順を自動的に呼び出せます。チャット文言で呼び出す固定の起動フレーズを持つスキルの場合は、claude-voice-bridgeのdata/templates.jsonにも同時に追記し、サイドパネルの「🔧 スキル呼び出し文言」に反映させること(2026-09-19追加、ユーザー指示)。",
-      "points": [
-        "tex-image-extraction(gurii-gabreh/Text-Extraction, .claude/skills/tex-image-extraction/SKILL.md): Googleドライブの問題画像フォルダをスプレッドシートへ書き起こす一連の手順(TEX-001〜003で確立)。図表の切り抜き判定・分割問題の統合・スプレッドシート作成・progress-tracker-dashboardへの登録までを含む(2026-09-05作成)",
-        "plugin-rollout(gurii-gabreh/progress-tracker-dashboard, .claude/skills/plugin-rollout/SKILL.md): Claude Codeプラグインのenabled化を、管理対象の全リポジトリの.claude/settings.jsonへ展開する手順(2026-09-05作成)",
-        "sheet-memo-sync(gurii-gabreh/study-app, .claude/skills/sheet-memo-sync/SKILL.md): study-appのメモ用スプレッドシートに追加された行を、data/lessons.jsonのcommentsへ反映する手順。反映前に件数・該当コース・サンプルを提示しユーザーの確認を得ることを含む(2026-09-06作成)",
-        "room-task-audit(gurii-gabreh/progress-tracker-dashboard, .claude/skills/room-task-audit/SKILL.md): claude-voice-bridgeの「🔍 ルームタスク一覧を抽出」ボタンから固定フレーズで呼び出され、会話を読み返して未解決の相談・未完了作業を判定・報告する手順。マーカー正規表現方式(付け忘れが多く不信頼だった)の後継(2026-09-13作成)",
-        "governance-config-sync(gurii-gabreh/progress-tracker-dashboard, .claude/skills/governance-config-sync/SKILL.md): 新しい運用ルールを追加・変更する際、data/claude-core-rules.md(正本)→自動同期→data/ai-config.jsonのweb/ai両方→dashboard.htmlのAI_CONFIG_SECTIONS配列→このregistryまで、すべてを一致させて更新する手順(2026-09-06作成)",
-        "research-item-curation(gurii-gabreh/servicenow-sub-agent, .claude/skills/research-item-curation/SKILL.md): research-items.jsonの生データにcurated=trueと日本語要約・ポイント・活かせる技術を付与する手順。ビューアーサイトを将来「ピックアップ済みのみ」表示へ変更する前段の作業(2026-09-06作成)",
-        "research-knowledge-lookup(servicenow-sub-agent): servicenow sub agentの調査結果を見てと言われた時、data/research-items.jsonを実際に確認してから回答する手順(2026-09-17追加)",
-        "weekly-log-digest-routine: 生ログJSON→AI要約JSONを週次Routineで作る手順(2026-09-18追加、claude-voice-bridgeの実装が最初の実例)",
-        "study-session-log(gurii-gabreh/progress-tracker-dashboard, .claude/skills/study-session-log/SKILL.md): ユーザー自身の自己学習セッションを「いつものように記録して」で報告された時、AIE-012〜020の該当タスクへ記録する手順(2026-09-08作成)"
+      "table": [
+        {
+          "name": "tex-image-extraction",
+          "repo": "gurii-gabreh/Text-Extraction",
+          "summary": "Googleドライブの問題画像フォルダ(TEX-001〜003で確立した手順)をスプレッドシートへ書き起こす一連の作業。図表の切り抜き判定、分割問題の統合判定、スプレッドシート作成、progress-tracker-dashboardのdata/tasks.jsonへの登録までを含む。"
+        },
+        {
+          "name": "plugin-rollout",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "Claude Codeプラグイン(例: superpowers@claude-plugins-official)のenabledPlugins設定を、管理対象の全リポジトリの.claude/settings.jsonへ展開してcommit・pushする手順。"
+        },
+        {
+          "name": "sheet-memo-sync",
+          "repo": "gurii-gabreh/study-app",
+          "summary": "study-appのメモ用スプレッドシートに追加された行をdata/lessons.jsonのcommentsへ反映する手順。件数・該当コース・サンプルを提示してユーザーの確認を得てからcommit・pushする(ルール21に準拠)。"
+        },
+        {
+          "name": "room-task-audit",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "claude-voice-bridge(音声サイドパネル拡張機能)の「🔍 ルームタスク一覧を抽出」ボタンが送る固定フレーズ「【ルームタスク抽出】room-task-auditスキルを呼び出して実行してください。」で起動し、会話全体を読み返して未解決の相談・未完了作業を判定し[ROOM-TASK-AUDIT-START]〜[END]の固定形式で報告する。以前のマーカー正規表現スキャン方式(付け忘れが多く不信頼)を廃止した後継。"
+        },
+        {
+          "name": "governance-config-sync",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "新しい運用ルールの追加・変更時に、data/claude-core-rules.md→(自動同期)→各リポジトリCLAUDE.md、data/ai-config.jsonのweb/ai両方、dashboard.htmlのAI_CONFIG_SECTIONS配列、このregistryまでを一致させて更新する手順。"
+        },
+        {
+          "name": "research-item-curation",
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "summary": "research-items.jsonの生データ(2481件、curated済みはごく一部)から、スコア上位・最近のものを優先して読み、日本語の要約・ポイント・活かせる技術を書いてcurated=trueにする手順。ビューアーサイトを『ピックアップ済みのみ』表示へ変更する計画(PTD-062)の前段。"
+        },
+        {
+          "name": "research-knowledge-lookup",
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "summary": "「servicenow sub agentの調査結果/ナレッジを見て」等と言われた時に、記憶だけで答えず実際にdata/research-items.jsonを確認してから回答する手順。curated:true(人による日本語分析済み)を優先し、無ければ未検証の生データである旨を明記して出典を添える。research-item-curationスキル(書き込み用)とは別の参照専用スキル。"
+        },
+        {
+          "name": "weekly-log-digest-routine",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "claude-voice-bridgeの「①ローカル保存→②GitHub生ログ集約→③週次AI要約」パターンのうち③を、他のリポジトリでもClaude Code RemoteのRoutine(fresh session方式)として再現するための手順。①②(生データをリポジトリのJSONへ溜める仕組み)は対象リポジトリごとに別途必要。"
+        },
+        {
+          "name": "study-session-log",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "ユーザーが自分で学習したセッション(トピックX・日付Y、本人がまとめたメモ)を報告した時、「いつものように記録して」等の指示でAIE-012〜020(設計パターン/SOLID/アーキテクチャ/インフラ/セキュリティ/AI-LLM/DB/テスト)へ記録する手順。実装時の設計判断ログ(policy.json POL-004)とは別物。"
+        }
       ]
     },
     "serviceNowResearch": {
