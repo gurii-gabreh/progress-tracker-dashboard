@@ -115,6 +115,17 @@
         "Anthropic News(生HTML、www.anthropic.com/news): Anthropic公式ニュース・発表(2026-09-06追加、CL-017参照)",
         "「servicenow sub agentの調査結果/ナレッジを見て」等と言われた場合は、記憶だけで答えず実際にdata/research-items.jsonを確認する(2026-09-17追加、ユーザー指示。出典: claude-core-rules.mdルール26)。手順はresearch-knowledge-lookupスキル(servicenow-sub-agentリポジトリ)に明文化した"
       ]
+    },
+    "taskListJsonSync": {
+      "title": "📦 claude-voice-bridgeタスク一覧のJSON管理方法",
+      "overview": "claude-voice-bridge(音声サイドパネル拡張機能)のタスク一覧(未解決の相談・作業)が、PC版・モバイル版・週次Routineの間でどうJSONデータをやり取りしているかの整理(2026-09-19追加、ユーザー指示)。両アプリの該当箇所にも同じ内容の折りたたみを設置済み。",
+      "points": [
+        "PC版・モバイル版はどちらも同じGitHub上のdata/tracker.jsonを共有する",
+        "PC版: 「🔍 抽出」でroom-task-auditスキルがルームを読み返し、その時点の未解決タスクだけで一覧を丸ごと置き換える(ローカル表示のみ)。「☁️ タスク一覧→JSONへ同期」で初めてGitHubへ書き込まれる",
+        "モバイル版: claude.aiで直接room-task-auditを呼び出した回答を貼り付けると、PC版と同じ『その時点の未解決タスク全部』で一覧を丸ごと置き換える(差分ではない)。同期ボタンも同じ仕組み",
+        "どちらも丸ごと置き換え方式のため重複登録はされない。ただしPC・モバイルが別々の内容のまま両方同期すると、後から同期した方が前の内容を完全に上書きする(マージはしない仕様、2026-09-19確認済み)",
+        "tracker.jsonとは別に、会話の生ログはroom-log.json/knowledge-log.jsonへ差分方式(前回から増えた分だけ)で蓄積し、週次RoutineがlastProcessedTsより新しい分だけをAIが判断してweekly-digest.json(傾向分析用の永続ナレッジ)へ要約を追記する"
+      ]
     }
   },
   "ai": {
@@ -361,6 +372,14 @@
         }
       ],
       "note": "情報源を追加・変更した場合は、このsources配列とweb.serviceNowResearch.pointsの一覧、およびservicenow-sub-agentのREADME.md「情報源」表の3箇所を一致させて更新すること。"
+    },
+    "taskListJsonSync": {
+      "sharedFile": "claude-voice-bridgeリポジトリのdata/tracker.json。PC版(サイドパネル拡張機能)・モバイル版(webapp/index.html、GitHub Pages)の両方が同じファイルを読み書きする。",
+      "pcVersionFlow": "「🔍 抽出」ボタン→room-task-auditスキルがルーム全体を読み返し、その時点の未解決タスクだけを判定→TrackerStore.setItems()で表示を丸ごと置き換え(ローカルのみ)。「☁️ タスク一覧→JSONへ同期」ボタンを押した時だけGAS経由でtracker.jsonへ上書き保存される。",
+      "mobileVersionFlow": "拡張機能が無い環境向け。claude.aiで直接room-task-auditスキルを呼び出し、その回答全文をwebapp/index.htmlの貼り付け欄に入力→「📥 一覧に反映」でPC版と同じ『丸ごと置き換え』方式で画面表示を更新(この時点ではブラウザ内のみ)→「☁️ タスク一覧→JSONへ同期」で同じGASエンドポイント・同じペイロード形式でtracker.jsonへ書き込む。",
+      "conflictBehavior": "saveTracker_(GAS側)はtracker.jsonを常に丸ごと上書きする方式のため、同じ内容を2回送っても重複はしない。ただしPC・モバイルが異なる内容を持ったまま両方が同期すると、後から同期した方が前の内容を完全に上書きする(last-write-wins、マージ機能は無い)。2026-09-19、ユーザーに説明の上でこの挙動のままでよいと確認済み。",
+      "rawLogVsSnapshot": "tracker.json(未解決タスクのスナップショット、丸ごと置き換え方式)とは別に、room-log.json/knowledge-log.json(会話の生ログ)は差分方式(前回からの新規分だけ、manualExtractSeenCount等)で蓄積する。週次Routine(trig_01Gvk1AGN7sr5F7b9qJW8haD)がroom-log.jsonのうちlastProcessedTsより新しいentryだけをAIが判断してweekly-digest.jsonへ要約を追記する(傾向分析用の永続ナレッジという位置づけ、cron: 毎週日本時間日曜0時)。",
+      "uiLocation": "PC版(sidepanel.html)・モバイル版(webapp/index.html)どちらも、タスク一覧セクションの直下に「📦 タスク一覧のJSON管理方法」という折りたたみ(既定で閉)としてこの内容を掲示している(2026-09-19追加、ユーザー指示)。"
     }
   }
 }
