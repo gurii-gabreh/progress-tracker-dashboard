@@ -173,6 +173,17 @@
         "どちらも丸ごと置き換え方式のため重複登録はされない。ただしPC・モバイルが別々の内容のまま両方同期すると、後から同期した方が前の内容を完全に上書きする(マージはしない仕様、2026-09-19確認済み)",
         "tracker.jsonとは別に、会話の生ログはroom-log.json/knowledge-log.jsonへ差分方式(前回から増えた分だけ)で蓄積し、週次RoutineがlastProcessedTsより新しい分だけをAIが判断してweekly-digest.json(傾向分析用の永続ナレッジ)へ要約を追記する"
       ]
+    },
+    "roomHistoryCapture": {
+      "title": "🗂 全ルーム履歴の蓄積・週次AI要約(claude-voice-bridge)",
+      "overview": "claude-voice-bridge拡張機能が有効なclaude.ai/Geminiのブラウザタブでのやり取り(音声モードの会話・常時監視しているタブ・「🔍 抽出」ボタンを押したタブ)を、どのJSONデータへどう蓄積しているかの整理です(2026-09-19追加、ユーザー指示)。CCR(Claude Code Remote)上のセッション(manager-room/worker-room等、ブラウザ拡張機能を介さないルーム)はこの仕組みの対象外です。",
+      "points": [
+        "対象範囲: claude-voice-bridge拡張機能が有効なタブでのやり取りのみ。捕捉経路は3つ(①音声モードでの会話ターン、②常時監視している別タブでの新規発言、③「🔍 抽出」ボタンを押した時の新規分)",
+        "① ローカル保存: 上記①②③で捕捉した発言はまずRoomLogStore(chrome.storage.localのcvb_room_log)へ、前回捕捉した分からの差分のみを逐次追記する(重複を防ぐため、2026-09-19に③も差分方式へ統一)",
+        "② GitHub生ログ集約: background.jsのchrome.alarms(1日1回)が、RoomLogStoreの未送信分をclaude-voice-bridgeリポジトリのdata/room-log.jsonへ自動送信する。手動の「🔍 抽出」ボタンを押した時は、その場でdata/knowledge-log.jsonへも別途1件追記される(こちらは全文保存、要約せず)",
+        "③ 週次AI要約: Claude Code RemoteのRoutine(trig_01Gvk1AGN7sr5F7b9qJW8haD、毎週日本時間日曜0時)がdata/room-log.jsonを読み、lastProcessedTs(前回処理時点)より新しい分だけをAIが判断して「未解決の相談・完了が明言されていない作業・繰り返し出てくる関心事」を抽出し、data/weekly-digest.jsonへ要約を追記する。これが傾向分析用の永続ナレッジという位置づけ",
+        "他のJSONとの違い: data/tracker.json(未解決タスクの一覧)は、この履歴蓄積の仕組みとは別物。room-task-auditスキルが「その時点の未解決タスクだけ」をスナップショットとして丸ごと置き換える方式で、過去の会話を時系列で蓄積するものではない"
+      ]
     }
   },
   "ai": {
@@ -450,6 +461,39 @@
       "conflictBehavior": "saveTracker_(GAS側)はtracker.jsonを常に丸ごと上書きする方式のため、同じ内容を2回送っても重複はしない。ただしPC・モバイルが異なる内容を持ったまま両方が同期すると、後から同期した方が前の内容を完全に上書きする(last-write-wins、マージ機能は無い)。2026-09-19、ユーザーに説明の上でこの挙動のままでよいと確認済み。",
       "rawLogVsSnapshot": "tracker.json(未解決タスクのスナップショット、丸ごと置き換え方式)とは別に、room-log.json/knowledge-log.json(会話の生ログ)は差分方式(前回からの新規分だけ、manualExtractSeenCount等)で蓄積する。週次Routine(trig_01Gvk1AGN7sr5F7b9qJW8haD)がroom-log.jsonのうちlastProcessedTsより新しいentryだけをAIが判断してweekly-digest.jsonへ要約を追記する(傾向分析用の永続ナレッジという位置づけ、cron: 毎週日本時間日曜0時)。",
       "uiLocation": "PC版(sidepanel.html)・モバイル版(webapp/index.html)どちらも、タスク一覧セクションの直下に「📦 タスク一覧のJSON管理方法」という折りたたみ(既定で閉)としてこの内容を掲示している(2026-09-19追加、ユーザー指示)。"
+    },
+    "roomHistoryCapture": {
+      "scope": "claude-voice-bridge拡張機能(Chrome拡張機能)が有効な、claude.ai/Geminiのブラウザタブでのやり取りのみが対象。CCR(Claude Code Remote)上のセッション(manager-room/worker-room等、ブラウザ拡張機能を介さないルーム)は対象外(2026-09-19、ユーザーに確認の上で明記)。",
+      "captureSources": [
+        {
+          "source": "音声モードの会話ターン",
+          "mechanism": "sidepanel.jsのcvb-response-readyハンドラがRoomLogStore.append()を呼ぶ。1応答=1entry、重複なし。"
+        },
+        {
+          "source": "常時監視している別タブ",
+          "mechanism": "content.jsのpassiveCheckAndSend()がpassiveSeenCountで前回からの新規ブロックだけを検出し、cvb-passive-message経由でRoomLogStore.append()。重複なし。"
+        },
+        {
+          "source": "「🔍 抽出」ボタン",
+          "mechanism": "content.jsのcvb-extract-room-textハンドラがmanualExtractSeenCount(このボタン専用のカウンタ)で前回からの新規分だけを返す(2026-09-19修正、以前は毎回全文を返し重複が発生していた)。RoomLogStore.append()に加え、data/knowledge-log.jsonへも同じ差分を1件追記する。"
+        }
+      ],
+      "storageFlow": [
+        {
+          "step": "①ローカル保存",
+          "detail": "RoomLogStore(chrome.storage.local、キー: cvb_room_log)。このブラウザ・端末に閉じたデータ。"
+        },
+        {
+          "step": "②GitHub生ログ集約",
+          "detail": "background.jsのchrome.alarms(1日1回)がRoomLogStoreの未送信分(id > 前回送信済みid)をGAS経由でdata/room-log.json(claude-voice-bridgeリポジトリ)へ追記。「🔍 抽出」時はdata/knowledge-log.jsonへも別途1件追記される(全文保存、こちらは要約しない)。"
+        },
+        {
+          "step": "③週次AI要約",
+          "detail": "trig_01Gvk1AGN7sr5F7b9qJW8haD(毎週日本時間日曜0時、create_new_session_on_fire方式)がdata/room-log.jsonのうちlastProcessedTsより新しいentryだけを読み、AIが未解決の相談・未完了作業・繰り返し出てくる関心事を判断してdata/weekly-digest.jsonのdigests配列へ要約を1件追記し、lastProcessedTsを更新する。"
+        }
+      ],
+      "notPartOfThisFlow": "data/tracker.json(未解決タスク一覧)は別の仕組み(room-task-auditスキルによるスナップショット置き換え方式、web.taskListJsonSync参照)であり、この時系列的な履歴蓄積(room-log.json→weekly-digest.json)とは独立している。",
+      "outOfScope": "CCR(Claude Code Remote)上のセッション(このprogress-tracker-dashboardセッション自身を含むmanager-room/worker-room等)は、claude-voice-bridge拡張機能を介さないため、この仕組みでは一切捕捉されない。CCR上のセッション履歴を捕捉する仕組みは2026-09-19時点で存在しない(必要な場合は別途実装が必要)。"
     }
   }
 }
