@@ -185,6 +185,18 @@
   .ai-config-toolbar .policy-meta { flex: 1 1 auto; }
   .ai-config-bullets { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--text); }
   .ai-config-bullets li { margin: 2px 0; }
+  /* 2026-09-19追加、ユーザー指示「(スキル一覧が)ごちゃごちゃして分かりづらいから
+     表形式にしろ。スキル名、適用リポジトリ、概要でまとめろ」: customSkillsセクション
+     専用の表形式レンダリング。 */
+  .ai-config-skills-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ai-config-skills-table th, .ai-config-skills-table td {
+    text-align: left; vertical-align: top; padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-config-skills-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+  .ai-config-skills-table td.skill-name { font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .ai-config-skills-table td.skill-repo { color: var(--text-muted); white-space: nowrap; }
+  .ai-config-skills-table td.skill-summary { line-height: 1.6; }
   .ai-config-edit-textarea {
     width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; line-height: 1.7;
     color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
@@ -3112,7 +3124,13 @@
       const diagramHtml = AI_CONFIG_DIAGRAMS[key]
         ? `<div class="ai-config-subheading">🗺 関係図</div>${AI_CONFIG_DIAGRAMS[key]}`
         : "";
-      const body = `<div class="ai-config-subheading">📋 詳細</div><ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
+      // customSkillsだけは「スキル名・適用リポジトリ・概要」の表形式で表示する
+      // (2026-09-19追加、ユーザー指示「ごちゃごちゃして分かりづらいから表形式にしろ」)。
+      // それ以外のセクションは従来通りpoints配列を箇条書きで表示する。
+      const table = section.table || [];
+      const body = key === "customSkills" && table.length
+        ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>概要</th></tr></thead><tbody>${table.map((s) => `<tr><td class="skill-name">${escapeHtml(s.name || "")}</td><td class="skill-repo">${escapeHtml(s.repo || "")}</td><td class="skill-summary">${escapeHtml(s.summary || "")}</td></tr>`).join("")}</tbody></table>${linkHtml}`
+        : `<div class="ai-config-subheading">📋 詳細</div><ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`;
       const titleHtml = `<div class="ai-config-section-title">${escapeHtml(section.title || key)}</div>`;
       return `<div class="policy-card ai-config-section-card">${titleHtml}${overviewHtml}${diagramHtml}${body}</div>`;
     }).join("");
