@@ -1,17 +1,26 @@
 ---
 name: new-app-kickoff
-description: Kick off the planning phase for a brand-new app idea. Triggered by claude-voice-bridge's fixed skill phrase "【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。" (sent via the "🔧 スキル呼び出し文言" template button, though users can also type it directly). Before doing anything else, reviews this project's own settings (CLAUDE.md/claude-core-rules.md), researched knowledge (concept-log.json), and past track-record knowledge (tasks.json's completed detail/issues) so the new idea isn't designed in a vacuum. Then creates a brand-new Claude Code Remote session sourced from progress-tracker-dashboard itself (not a new dedicated repo, and not repo-less) and hands the actual idea-fleshing-out (要件・機能・技術選定などの構想) off to that new room — this skill (running in manager-room) does not design the app itself, per CLAUDE.mdルール18の作業分担方針.
+description: Kick off the planning phase for a brand-new app idea via a voice/chat-triggered phrase, as an automated alternate entry point into the EXISTING "🆕 新規相談"(new-consultation)flow that dashboard.html's copy-paste template already defines — not a separate/duplicate procedure. Triggered by claude-voice-bridge's fixed skill phrase "【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。" (sent via the "🔧 スキル呼び出し文言" template button, though users can also type it directly). Reuses the same knowledge sources, interview style, userProfile.patterns check, and a/b/c/d classification as the dashboard button's prompt template; the only addition is automating room creation with create_session instead of manual copy-paste.
 ---
 
 # 新規アプリ構想の立ち上げ(New app kickoff)
 
 ## これは何か
 
-ユーザーから「新しいアプリを作りたい」のような依頼があった時に、manager-room(このセッション)が
-自分でいきなり要件定義・機能設計を始めるのではなく、①既存のナレッジを踏まえた上で、②専用の新規ルームを
-立ち上げ、③実際の構想(要件・機能・技術選定など)はそのルームに任せる、という手順を固定化したもの
-(2026-09-25追加、ユーザー指示)。CLAUDE.mdルール18「manager-roomは実装が必要な作業を見つけたら
-自分でコードを書かず作業ルームへ依頼する」の考え方を、コーディング以前の"構想"フェーズにも広げたもの。
+claude-voice-bridge側から音声・チャットの固定フレーズで、既存の「🆕 新規相談」フロー
+(dashboard.htmlの依頼文テンプレート、`buildNewConsultationPromptText()`、2026-08-08追加、
+README運用ルール31)を起動するための**自動化された別入口**(2026-09-25追加)。
+
+**重要**: これは新規相談フローとは別の、新しい手順ではない。当初(2026-09-25)、この点を
+確認せずに独自の手順(基本設定・調査ナレッジ・実績ナレッジの確認→リポジトリ無しの新規ルーム作成)
+を設計してしまい、既存の「🆕 新規相談」フローとほぼ同じ目的の車輪の再発明になっていたことが
+判明した(ユーザー指摘、CLAUDE.mdルール23違反)。このSKILL.mdはその後、中身を既存フローに
+合わせて作り直したもの。**手順・確認するナレッジ・分類方法は、dashboard.htmlの
+`buildNewConsultationPromptText()`が生成するテンプレートと同一にすること。** 将来どちらかを
+変更する場合は、もう一方も必ず同時に更新して内容を一致させる(乖離を防ぐため)。
+
+このスキルが追加する価値は1点だけ: 従来は「テンプレート文をコピーして手動で新しいチャットに
+貼り付ける」必要があったが、`create_session`で新規ルームの作成そのものを自動化する。
 
 ## 手順
 
@@ -22,36 +31,48 @@ description: Kick off the planning phase for a brand-new app idea. Triggered by 
    ```
    誤発火防止のため、このスキルは固定フレーズでのみ起動する(自然文からのAI自動判断はしない)。
 
-2. **既存ナレッジを確認する(構想を始める前に必ず)**。何も見ずに新しいアイデアを一から考えるのではなく、
-   下記を実際に読んでから臨む(CLAUDE.mdルール13・23の考え方に基づく)。
-   - **基本設定**: `data/claude-core-rules.md`(CLAUDE.mdの正本、全リポジトリ共通の運用ルール。
-     特にルール9「永久無料」・ルール8「PC/iPhone両対応の確認」・ルール22(実装規模での書き込み方式使い分け)等、
-     新規アプリの設計方針に直接影響するルールがある)
-   - **調査したナレッジ**: `data/concept-log.json`(過去の実装判断ログ。設計パターン・DB設計・
-     セキュリティ対応・AI/LLM関連・テスト方針など、他アプリで既に検証済みの知見を再利用できないか確認する)
-   - **今までの実績ナレッジ**: `data/tasks.json`(過去に完了したタスクの`detail`(実装ナレッジ)・
-     `issues`(問題点)。類似のアプリ・機能を過去に作っていないか、その際どんな問題にぶつかったかを確認する)
-   - 上記に加え、依頼された新規アプリのジャンル次第では`data/policy.json`(全体方針)や、関連しそうな
-     既存アプリの実装(例: 似た機能を持つ既存リポジトリのREADME)も確認する
-
-3. **専用の新規ルーム(CCRセッション)を作成する**。`create_session`を使う。
-   - **`source_url`にprogress-tracker-dashboard自身(`https://github.com/gurii-gabreh/progress-tracker-dashboard`)を指定する**(2026-09-25、当初は「リポジトリ無しのプレーンな会話」案だったが、ユーザーとの相談の結果変更。理由は2点: ①新しく別の「開発検討用リポジトリ」を作ると、そこにも改めて`.claude/settings.json`の許可リスト整備が必要になり、CCRツール呼び出しのたびに承認待ちで止まりやすくなる(ルール19参照)のに対し、progress-tracker-dashboard自身は既に許可リストが正しく整備済みなのでこの問題を避けられる。②手順2で集める参考ナレッジ(claude-core-rules.md・concept-log.json・tasks.json)が既にこのリポジトリ内にあるため、コピー・二重管理が不要になる)。
-   - **新しく専用リポジトリを作る必要はない**。構想フェーズのメモは、progress-tracker-dashboardの`data/concept-drafts/<アプリ名(仮)>.md`のような下書きファイルとしてそのまま書けばよい。専用のGitHubリポジトリが必要になるのは構想が固まりコードを書き始める段階からで、それはこのスキルの範囲外(実装フェーズになったら別途リポジトリを作成し、README「ルームマッピング」表へ追記する)。
+2. **`source_url`にprogress-tracker-dashboard自身
+   (`https://github.com/gurii-gabreh/progress-tracker-dashboard`)を指定して`create_session`で
+   新規ルームを作成する**。
+   - 理由: ①progress-tracker-dashboardは`.claude/settings.json`の許可リストが既に整備済みで、
+     承認待ちで止まりにくい。②手順3で確認するナレッジ(下記)がほぼ全てこのリポジトリ内にあり、
+     コピー・二重管理が不要。
+   - 新しく専用リポジトリを作る必要はない(構想が固まりコードを書き始める段階で初めて別途
+     リポジトリを作成する。それはこのスキルの範囲外)。
    - タイトルは`<アプリ名(仮)または依頼内容の要約> 構想ルーム`のようにわかりやすくする。
-   - 新規ルームはmanager-room(このセッション)とは別セッションになるため、「manager-room自身は構想の中身に踏み込まない」という役割分担は保たれる(同じリポジトリを共有していても、担当するセッションが違う点に注意)。
+   - 新規ルームはmanager-room(このセッション)とは別セッションになるため、「manager-room自身は
+     構想の中身に踏み込まない」という役割分担は保たれる。
 
-4. **手順2で集めたナレッジの要点を、新規ルームへ`send_message`で引き継ぐ**。新規ルームは同じリポジトリを
-   持っているため参考ファイル自体は自分で読めるが、今回のアプリ案に関連しそうな要点(適用できそうな
-   過去の設計判断・気をつけるべき過去の問題点・絶対に守るべき基本ルールの要約)だけは、送信メッセージ内で
-   明示的に絞り込んで伝える(新規ルームが無関係な情報まで読み込んで構想が発散するのを防ぐため)。あわせて
-   「ここでこのアプリの構想(要件・機能・技術選定など)を練り、`data/concept-drafts/<アプリ名>.md`に
-   まとめてください」と、構想フェーズの担当がこの新規ルームであることを明示する。
+3. **新規ルームへ、以下の内容を`send_message`で伝える(`buildNewConsultationPromptText()`と
+   同じ内容)**:
+   1. まず下記を読み、関連する過去の実績・判断が無いか確認すること:
+      - `data/ai-config.json`(AI基本設定)・`data/policy.json`(運用ポリシー)・`data/tasks.json`
+        (過去の実装ナレッジ・issues)・`data/concept-log.json`(実装判断ログ)
+      - `data/requirements.json`の`requirements`配列(過去の新規リポジトリ要件定義シート)と
+        **`userProfile.patterns`(ユーザー自身の思考パターン。必ず確認すること)**
+      - 参考として`gurii-gabreh/Knowledge-Dashboard`の`data/knowledge-index.json`
+        (上記を横断集約した索引。ただし正本は常にprogress-tracker-dashboard側)
+   2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、埋まっていない点だけを順に質問する。
+      過去の実績で埋まる点は聞き直さない。
+   3. `userProfile.patterns`に該当しそうな傾向(`confirmedByUser: true`のもののみ)が見えたら、
+      要所で「これまでの傾向からすると、こういう間違い・進み方になりやすいです」と先回りして
+      一言アドバイスする(事実に基づき、押し付けがましくならないように)。ユーザーが認めた新しい
+      傾向があれば、本人の了承を得た上で`userProfile.patterns`へ追記してよい(AI側が一方的に
+      決めつけて追加しない)。
+   4. 聞き取りの中で、この相談が次のどれに当たるかを判断する:
+      - a. 新規リポジトリが必要な話 → 要件定義シートとしてまとめる対象
+      - b. 既存リポジトリのタスクで済む話 → 通常のタスクとして起票すれば足りる
+      - c. 調査・確認だけで完結する話 → 調べて回答すれば終わり
+      - d. その場で回答すれば終わる軽微な相談 → 記録は不要
+   5. 出力の出し分け:
+      - a: 聞き取りが十分固まったらシートの下書きを提示し、確定を得てから
+        progress-tracker-dashboardの`data/requirements.json`の`requirements`配列へ1件追加して
+        commit・push。あわせて対応するタスクを`data/tasks.json`へ起票する
+      - b: `data/tasks.json`へ通常通り起票するだけでよい(要件定義シートは不要)
+      - c・d: 記録不要。その場で調べて回答・相談に乗って終わってよい
 
-5. **manager-room自身は構想の中身(要件定義・機能設計・技術選定など)に踏み込まない**。手順3〜4を
-   終えたら、作成したセッションIDと新規ルームのタイトルをユーザーへ報告して完了とする(CLAUDE.mdの
-   「manager-roomは振り分けのみ」という役割分担を踏襲。過去にmanager-room自身が直接実装してしまい
-   繰り返し指摘された経緯があるため、構想フェーズでも同じ違反を起こさないよう注意する)。
+4. **manager-room自身は構想の中身(要件定義・機能設計・技術選定など)に踏み込まない**。手順2〜3を
+   終えたら、作成したセッションIDと新規ルームのタイトルをユーザーへ報告して完了とする。
 
-6. **記録**: 実施した新規アプリ構想の立ち上げ(いつ・どのアプリ案・どのセッションID)を
-   progress-tracker-dashboardの`data/concept-log.json`または`data/tasks.json`に記録する
-   (CLAUDE.mdの最重要ルール)。
+5. **記録**: 実施した新規アプリ構想の立ち上げ(いつ・どのアプリ案・どのセッションID)を
+   progress-tracker-dashboardの`data/concept-log.json`または`data/tasks.json`に記録する。
