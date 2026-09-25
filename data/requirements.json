@@ -1,6 +1,22 @@
 {
-  "schemaVersion": 1,
-  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。",
+  "schemaVersion": 2,
+  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/background/goals/nonGoals/openQuestions/reusedKnowledge/decisions/approvedAtを持つ想定。",
+  "interviewChecklist": {
+    "description": "2026-09-25追加、ユーザー指示「確認する項目を統一したい」。新規相談の聞き取りで必ず1つずつ確認する標準10項目と、requirementsエントリの各フィールドへの対応付け。聞き取りのたびにこの並び・項目名を変えないこと(ブレ防止が目的)。",
+    "items": [
+      { "n": 1, "question": "アプリ名(仮)", "field": "title" },
+      { "n": 2, "question": "目的・解決したい課題(何を・誰のために)", "field": "background" },
+      { "n": 3, "question": "きっかけ(なぜ今このアイデアが出てきたか)", "field": "background" },
+      { "n": 4, "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)", "field": "decisions" },
+      { "n": 5, "question": "費用面での制約(ルール9「永久無料」が大前提)", "field": "decisions" },
+      { "n": 6, "question": "主要機能(MVP・最初に欲しい機能の一覧)", "field": "goals" },
+      { "n": 7, "question": "使うデータ(何を、どこに保存するか)", "field": "decisions" },
+      { "n": 8, "question": "技術選定の希望・制約", "field": "decisions" },
+      { "n": 9, "question": "優先度・着手時期の希望", "field": "decisions" },
+      { "n": 10, "question": "progress-tracker-dashboardでの管理要否", "field": "decisions" }
+    ],
+    "note": "対象外と判明した点はnonGoalsへ、未確定のまま残った点はopenQuestionsへ。各項目確認時にdata/tasks.jsonのissues・concept-log.json・servicenow-sub-agentのresearch-items.json・過去のrequirements配列と照合し、該当する過去のトラブル・バグ事例と提示した代替案はreusedKnowledgeへ記録する。"
+  },
   "requirements": [],
   "userProfile": {
     "description": "依頼者(ユーザー)自身の思考パターン・癖のナレッジ。プロジェクトの要件知識(requirements配列)とは別軸。ユーザー自身が『確かにそうだ』と認めたものだけをconfirmedByUser:trueとして記録し、AI側が一方的に決めつけて追加しない(README運用ルール31参照)。",

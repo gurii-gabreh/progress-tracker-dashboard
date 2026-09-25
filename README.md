@@ -354,11 +354,21 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       タスクで足りる/調査で完結する/その場で回答して終わる軽微なもの)。ユーザーへの
       事前のカテゴリ選択は求めない
     - **出力の出し分け**: 新規リポジトリが必要な相談だけ、聞き取りが固まった時点で要件定義
-      シートの下書きを提示しユーザーの確定を得た上で、`gurii-gabreh/Knowledge-Dashboard`の
-      `data/requirements.json`(存在しない場合は`progress-tracker-dashboard`の
-      `data/requirements.json`)へ1件追加してcommit・push。あわせて対応するタスクを
+      シートの下書きを提示しユーザーの確定を得た上で、`progress-tracker-dashboard`自身の
+      `data/requirements.json`(正本はここ。Knowledge-Dashboardには存在せず、`knowledge-index.json`
+      経由でプル集約される想定)へ1件追加してcommit・push。あわせて対応するタスクを
       依頼タスクタブ/`data/tasks.json`へ起票し、既存の自動実装Routineが拾える状態にする。
       既存リポジトリのタスクで足りる相談は、要件定義シートを作らず通常のタスク起票のみでよい
+    - **聞き取り項目を10項目に標準化**(2026-09-25追加、ユーザー指示「確認する項目を統一
+      したい」)。アプリ名(仮)/目的・解決したい課題/きっかけ/PC・iPhone対応/費用面の制約/
+      主要機能/使うデータ/技術選定/優先度・着手時期/progress-tracker-dashboardでの管理要否、
+      の10項目を1つずつ順に確認する(`data/requirements.json`の`interviewChecklist`が正本)。
+      各項目の確認時には、`data/tasks.json`のissues・`data/concept-log.json`・
+      `gurii-gabreh/servicenow-sub-agent`の`data/research-items.json`・過去の
+      `requirements`配列と照合し、関連する過去のトラブル・バグ事例が見つかれば指摘した上で
+      代替案を提示する(該当があれば`reusedKnowledge`フィールドへ記録)。claude-voice-bridgeの
+      new-app-kickoffスキルも同じ聞き取り項目・手順を使う(内容が乖離しないよう、変更時は
+      dashboard.html・SKILL.md・data/requirements.jsonのinterviewChecklistを同時に更新すること)
     - **`requirements.json`のスキーマ**: `progress-tracker-dashboard`の`data/requirements.json`に
       ひな形を用意した(`requirements`配列、1件ごとに`id`/`repo`/`title`/`status`/`background`/
       `goals`/`nonGoals`/`openQuestions`/`reusedKnowledge`/`decisions`/`approvedAt`を持つ想定。
