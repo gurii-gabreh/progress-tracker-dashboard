@@ -190,6 +190,199 @@
         "③ 週次AI要約: Claude Code RemoteのRoutine(trig_01Gvk1AGN7sr5F7b9qJW8haD、毎週日本時間日曜0時)がdata/room-log.jsonを読み、lastProcessedTs(前回処理時点)より新しい分だけをAIが判断して「未解決の相談・完了が明言されていない作業・繰り返し出てくる関心事」を抽出し、data/weekly-digest.jsonへ要約を追記する。これが傾向分析用の永続ナレッジという位置づけ",
         "他のJSONとの違い: data/tracker.json(未解決タスクの一覧)は、この履歴蓄積の仕組みとは別物。room-task-auditスキルが「その時点の未解決タスクだけ」をスナップショットとして丸ごと置き換える方式で、過去の会話を時系列で蓄積するものではない"
       ]
+    },
+    "jsonDataIndex": {
+      "title": "🗂 全リポジトリのJSONデータ一覧",
+      "overview": "管理対象の全リポジトリ(knownRepos)が持つJSONデータファイルを、保存場所・内容・役割ごとに一覧化したもの(2026-09-25追加、ユーザー指示)。new-app-kickoffスキルが既存の「新規相談」フローと重複していた反省(ルール23違反)を踏まえ、次に何かを作る前にまずここを確認できるようにする狙い。usage-trackerはこのセッションからアクセス不可のため未掲載。",
+      "repos": [
+        {
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "appName": "progress-tracker-dashboard(進捗・ナレッジ管理)",
+          "files": [
+            {
+              "path": "data/ai-config.json",
+              "purpose": "AI基本設定(このタブ)自体の正本。オーケストレーション方針・スキル一覧など"
+            },
+            {
+              "path": "data/ai-list.json",
+              "purpose": "第二意見チェック等で使うAIツール一覧(手動管理)"
+            },
+            {
+              "path": "data/ai-research-feed.json",
+              "purpose": "AI/開発関連の外部調査フィード(日付/カテゴリ/タイトル/概要/URL等、182件)"
+            },
+            {
+              "path": "data/claude-permissions.json",
+              "purpose": "全管理対象リポジトリ共通の.claude/settings.json許可リストの正本"
+            },
+            {
+              "path": "data/concept-log.json",
+              "purpose": "実装判断ナレッジログ(AIE-*6分野。設計パターン・DB設計・セキュリティ等)"
+            },
+            {
+              "path": "data/concept-overview.json",
+              "purpose": "AIエンジニア6分野の静的な参照知識まとめ"
+            },
+            {
+              "path": "data/credit-log.json",
+              "purpose": "Claude Code利用量(5時間枠)の暫定記録表"
+            },
+            {
+              "path": "data/policy.json",
+              "purpose": "全ルーム共通の運用ポリシー正本(プル型)"
+            },
+            {
+              "path": "data/requirements.json",
+              "purpose": "新規リポジトリ要件定義シート+ユーザー思考パターン(userProfile)+聞き取り標準10項目(interviewChecklist)"
+            },
+            {
+              "path": "data/tasks.json",
+              "purpose": "依頼タスク・進捗管理のメインデータ(detail/issues/checkHistory等、全リポジトリのタスクを集約)"
+            },
+            {
+              "path": "data/vector-index.json",
+              "purpose": "主要JSON群(tasks.json・concept-log.json等)の埋め込みベクトル検索インデックス"
+            },
+            {
+              "path": "status.json",
+              "purpose": "直近の作業(PR等)の完了報告スナップショット(単発の一時ファイル、継続蓄積はしない)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/claude-voice-bridge",
+          "appName": "claude-voice-bridge(音声サイドパネル拡張機能)",
+          "files": [
+            {
+              "path": "data/knowledge-log.json",
+              "purpose": "「🔍 抽出」実行時の生ログ全文アーカイブ"
+            },
+            {
+              "path": "data/room-log.json",
+              "purpose": "常時監視で蓄積される生の会話ログ(週次要約の元データ、差分方式)"
+            },
+            {
+              "path": "data/templates.json",
+              "purpose": "定例文・スキル呼び出し文言の正本(PC/モバイル共通)"
+            },
+            {
+              "path": "data/tracker.json",
+              "purpose": "room-task-auditで抽出した未解決タスク一覧(タスクID機能含む)"
+            },
+            {
+              "path": "data/weekly-digest.json",
+              "purpose": "週次AI要約Routineの出力(傾向分析用の永続ナレッジ、lastProcessedTsカーソル方式)"
+            },
+            {
+              "path": "manifest.json",
+              "purpose": "(アプリデータではなくChrome拡張機能自体のmanifest定義)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/Knowledge-Dashboard",
+          "appName": "Knowledge-Dashboard(横断ナレッジダッシュボード)",
+          "files": [
+            {
+              "path": "data/knowledge-index.json",
+              "purpose": "progress-tracker-dashboardのtasks.json/requirements.jsonを横断集約した索引(GitHub Actionsで毎日自動更新)"
+            },
+            {
+              "path": "data/spreadsheet-labels.json",
+              "purpose": "spreadsheets.jsonの各エントリに対応するアプリ名・概要の手動ラベル"
+            },
+            {
+              "path": "data/spreadsheets.json",
+              "purpose": "Google Driveのナレッジ用スプレッドシート一覧(GASが毎日自動生成)"
+            },
+            {
+              "path": "status.json",
+              "purpose": "直近の作業の完了報告スナップショット(progress-tracker-dashboardと同パターン)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/kizashi",
+          "appName": "kizashi(結(ゆい)土砂災害アプリ)",
+          "files": [],
+          "note": "JSONデータファイルは無し。Cloudflare D1(tools/d1-poc)等、JSON以外のデータ層を検討中と見られる"
+        },
+        {
+          "repo": "gurii-gabreh/supermarket-price-tracker",
+          "appName": "supermarket-price-tracker",
+          "files": [],
+          "note": "JSONデータファイルは無し(データ層はスプレッドシート/GAS側の可能性、未確認)"
+        },
+        {
+          "repo": "gurii-gabreh/gemini-monitor",
+          "appName": "gemini-monitor",
+          "files": [],
+          "note": "JSONデータファイルは無し(データ層はスプレッドシート/GAS側の可能性、未確認)"
+        },
+        {
+          "repo": "gurii-gabreh/ai-research-radar",
+          "appName": "ai-research-radar(AI技術情報自動収集)",
+          "files": [
+            {
+              "path": "data/claude-fallback-results.json",
+              "purpose": "Geminiがレート制限で調査できなかったキーワードをClaude調査ルームが代替調査した結果(プル型でGASが回収)"
+            },
+            {
+              "path": "data/research-log.json",
+              "purpose": "「AI技術情報・活用事例 収集ログ」スプレッドシートのJSON自動ミラー"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/study-app",
+          "appName": "study-app(学習アプリ)",
+          "files": [
+            {
+              "path": "data/history.json",
+              "purpose": "学習履歴"
+            },
+            {
+              "path": "data/lessons.json",
+              "purpose": "レッスン本体データ(大容量、約1.2MB)"
+            },
+            {
+              "path": "data/progress.json",
+              "purpose": "進捗状況"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/Study-Schedule",
+          "appName": "Study-Schedule(Task-WBS、学習・開発タスクスケジュール)",
+          "files": [
+            {
+              "path": "data/tasks.json",
+              "purpose": "学習・各アプリ開発・ルーティン作業を同じ時間予算で管理するタスクツリー(WBS)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "appName": "servicenow-sub-agent(ServiceNow AI研究自動収集)",
+          "files": [
+            {
+              "path": "data/research-items.json",
+              "purpose": "ServiceNow PDI収集のAI研究アイテム全件(約2MB。curated:trueのみ日本語要約付き)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/English-LevelUp-Reader",
+          "appName": "English-LevelUp-Reader(英語学習アプリ)",
+          "files": [
+            {
+              "path": "data/lessons.json",
+              "purpose": "英語学習レッスンデータ"
+            }
+          ]
+        }
+      ],
+      "note": "新しいJSONファイルを追加した場合は、この一覧にも追記すること。kizashi/supermarket-price-tracker/gemini-monitorはJSONデータファイルを持たない(未確認・別データ層の可能性)。"
     }
   },
   "ai": {
@@ -508,6 +701,199 @@
       ],
       "notPartOfThisFlow": "data/tracker.json(未解決タスク一覧)は別の仕組み(room-task-auditスキルによるスナップショット置き換え方式、web.taskListJsonSync参照)であり、この時系列的な履歴蓄積(room-log.json→weekly-digest.json)とは独立している。",
       "outOfScope": "CCR(Claude Code Remote)上のセッション(このprogress-tracker-dashboardセッション自身を含むmanager-room/worker-room等)は、claude-voice-bridge拡張機能を介さないため、この仕組みでは一切捕捉されない。CCR上のセッション履歴を捕捉する仕組みは2026-09-19時点で存在しない(必要な場合は別途実装が必要)。"
+    },
+    "jsonDataIndex": {
+      "title": "🗂 全リポジトリのJSONデータ一覧",
+      "overview": "管理対象の全リポジトリ(knownRepos)が持つJSONデータファイルを、保存場所・内容・役割ごとに一覧化したもの(2026-09-25追加、ユーザー指示)。new-app-kickoffスキルが既存の「新規相談」フローと重複していた反省(ルール23違反)を踏まえ、次に何かを作る前にまずここを確認できるようにする狙い。usage-trackerはこのセッションからアクセス不可のため未掲載。",
+      "repos": [
+        {
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "appName": "progress-tracker-dashboard(進捗・ナレッジ管理)",
+          "files": [
+            {
+              "path": "data/ai-config.json",
+              "purpose": "AI基本設定(このタブ)自体の正本。オーケストレーション方針・スキル一覧など"
+            },
+            {
+              "path": "data/ai-list.json",
+              "purpose": "第二意見チェック等で使うAIツール一覧(手動管理)"
+            },
+            {
+              "path": "data/ai-research-feed.json",
+              "purpose": "AI/開発関連の外部調査フィード(日付/カテゴリ/タイトル/概要/URL等、182件)"
+            },
+            {
+              "path": "data/claude-permissions.json",
+              "purpose": "全管理対象リポジトリ共通の.claude/settings.json許可リストの正本"
+            },
+            {
+              "path": "data/concept-log.json",
+              "purpose": "実装判断ナレッジログ(AIE-*6分野。設計パターン・DB設計・セキュリティ等)"
+            },
+            {
+              "path": "data/concept-overview.json",
+              "purpose": "AIエンジニア6分野の静的な参照知識まとめ"
+            },
+            {
+              "path": "data/credit-log.json",
+              "purpose": "Claude Code利用量(5時間枠)の暫定記録表"
+            },
+            {
+              "path": "data/policy.json",
+              "purpose": "全ルーム共通の運用ポリシー正本(プル型)"
+            },
+            {
+              "path": "data/requirements.json",
+              "purpose": "新規リポジトリ要件定義シート+ユーザー思考パターン(userProfile)+聞き取り標準10項目(interviewChecklist)"
+            },
+            {
+              "path": "data/tasks.json",
+              "purpose": "依頼タスク・進捗管理のメインデータ(detail/issues/checkHistory等、全リポジトリのタスクを集約)"
+            },
+            {
+              "path": "data/vector-index.json",
+              "purpose": "主要JSON群(tasks.json・concept-log.json等)の埋め込みベクトル検索インデックス"
+            },
+            {
+              "path": "status.json",
+              "purpose": "直近の作業(PR等)の完了報告スナップショット(単発の一時ファイル、継続蓄積はしない)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/claude-voice-bridge",
+          "appName": "claude-voice-bridge(音声サイドパネル拡張機能)",
+          "files": [
+            {
+              "path": "data/knowledge-log.json",
+              "purpose": "「🔍 抽出」実行時の生ログ全文アーカイブ"
+            },
+            {
+              "path": "data/room-log.json",
+              "purpose": "常時監視で蓄積される生の会話ログ(週次要約の元データ、差分方式)"
+            },
+            {
+              "path": "data/templates.json",
+              "purpose": "定例文・スキル呼び出し文言の正本(PC/モバイル共通)"
+            },
+            {
+              "path": "data/tracker.json",
+              "purpose": "room-task-auditで抽出した未解決タスク一覧(タスクID機能含む)"
+            },
+            {
+              "path": "data/weekly-digest.json",
+              "purpose": "週次AI要約Routineの出力(傾向分析用の永続ナレッジ、lastProcessedTsカーソル方式)"
+            },
+            {
+              "path": "manifest.json",
+              "purpose": "(アプリデータではなくChrome拡張機能自体のmanifest定義)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/Knowledge-Dashboard",
+          "appName": "Knowledge-Dashboard(横断ナレッジダッシュボード)",
+          "files": [
+            {
+              "path": "data/knowledge-index.json",
+              "purpose": "progress-tracker-dashboardのtasks.json/requirements.jsonを横断集約した索引(GitHub Actionsで毎日自動更新)"
+            },
+            {
+              "path": "data/spreadsheet-labels.json",
+              "purpose": "spreadsheets.jsonの各エントリに対応するアプリ名・概要の手動ラベル"
+            },
+            {
+              "path": "data/spreadsheets.json",
+              "purpose": "Google Driveのナレッジ用スプレッドシート一覧(GASが毎日自動生成)"
+            },
+            {
+              "path": "status.json",
+              "purpose": "直近の作業の完了報告スナップショット(progress-tracker-dashboardと同パターン)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/kizashi",
+          "appName": "kizashi(結(ゆい)土砂災害アプリ)",
+          "files": [],
+          "note": "JSONデータファイルは無し。Cloudflare D1(tools/d1-poc)等、JSON以外のデータ層を検討中と見られる"
+        },
+        {
+          "repo": "gurii-gabreh/supermarket-price-tracker",
+          "appName": "supermarket-price-tracker",
+          "files": [],
+          "note": "JSONデータファイルは無し(データ層はスプレッドシート/GAS側の可能性、未確認)"
+        },
+        {
+          "repo": "gurii-gabreh/gemini-monitor",
+          "appName": "gemini-monitor",
+          "files": [],
+          "note": "JSONデータファイルは無し(データ層はスプレッドシート/GAS側の可能性、未確認)"
+        },
+        {
+          "repo": "gurii-gabreh/ai-research-radar",
+          "appName": "ai-research-radar(AI技術情報自動収集)",
+          "files": [
+            {
+              "path": "data/claude-fallback-results.json",
+              "purpose": "Geminiがレート制限で調査できなかったキーワードをClaude調査ルームが代替調査した結果(プル型でGASが回収)"
+            },
+            {
+              "path": "data/research-log.json",
+              "purpose": "「AI技術情報・活用事例 収集ログ」スプレッドシートのJSON自動ミラー"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/study-app",
+          "appName": "study-app(学習アプリ)",
+          "files": [
+            {
+              "path": "data/history.json",
+              "purpose": "学習履歴"
+            },
+            {
+              "path": "data/lessons.json",
+              "purpose": "レッスン本体データ(大容量、約1.2MB)"
+            },
+            {
+              "path": "data/progress.json",
+              "purpose": "進捗状況"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/Study-Schedule",
+          "appName": "Study-Schedule(Task-WBS、学習・開発タスクスケジュール)",
+          "files": [
+            {
+              "path": "data/tasks.json",
+              "purpose": "学習・各アプリ開発・ルーティン作業を同じ時間予算で管理するタスクツリー(WBS)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "appName": "servicenow-sub-agent(ServiceNow AI研究自動収集)",
+          "files": [
+            {
+              "path": "data/research-items.json",
+              "purpose": "ServiceNow PDI収集のAI研究アイテム全件(約2MB。curated:trueのみ日本語要約付き)"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/English-LevelUp-Reader",
+          "appName": "English-LevelUp-Reader(英語学習アプリ)",
+          "files": [
+            {
+              "path": "data/lessons.json",
+              "purpose": "英語学習レッスンデータ"
+            }
+          ]
+        }
+      ],
+      "note": "新しいJSONファイルを追加した場合は、この一覧にも追記すること。kizashi/supermarket-price-tracker/gemini-monitorはJSONデータファイルを持たない(未確認・別データ層の可能性)。"
     }
   }
 }
