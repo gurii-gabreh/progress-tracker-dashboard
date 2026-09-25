@@ -177,7 +177,7 @@
   .ai-config-section-card + .ai-config-section-card { margin-top: 16px; }
   .ai-config-subheading {
     font-size: 10.5px; font-weight: 700; color: var(--accent); letter-spacing: .03em;
-    margin: 0 0 4px; display: flex; align-items: center; gap: 4px;
+    margin: 0 0 4px; overflow-wrap: break-word; word-break: break-word;
   }
   .ai-config-overview { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); margin: 0 0 10px; }
   .ai-config-link { display: inline-block; margin-top: 6px; font-size: 12.5px; color: var(--accent); }
@@ -188,14 +188,19 @@
   /* 2026-09-19追加、ユーザー指示「(スキル一覧が)ごちゃごちゃして分かりづらいから
      表形式にしろ。スキル名、適用リポジトリ、概要でまとめろ」: customSkillsセクション
      専用の表形式レンダリング。 */
-  .ai-config-skills-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  /* 2026-09-25修正: skill-name/skill-repoのwhite-space:nowrapが、jsonDataIndexウィジェットの
+     長いファイルパス・長いリポジトリ名で表全体を画面幅より広げ、携帯幅で文字列がはみ出す不具合の
+     原因になっていた(ユーザー報告)。table-layout:fixedで列幅を固定した上でwrapさせる方式に変更し、
+     どの画面幅でもテーブルが親要素の幅を超えないようにした。 */
+  .ai-config-skills-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12.5px; }
   .ai-config-skills-table th, .ai-config-skills-table td {
     text-align: left; vertical-align: top; padding: 6px 8px;
     border-bottom: 1px solid var(--border);
+    overflow-wrap: break-word; word-break: break-word;
   }
-  .ai-config-skills-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
-  .ai-config-skills-table td.skill-name { font-weight: 600; color: var(--accent); white-space: nowrap; }
-  .ai-config-skills-table td.skill-repo { color: var(--text-muted); white-space: nowrap; }
+  .ai-config-skills-table th { color: var(--text-muted); font-weight: 600; }
+  .ai-config-skills-table td.skill-name { font-weight: 600; color: var(--accent); }
+  .ai-config-skills-table td.skill-repo { color: var(--text-muted); }
   .ai-config-skills-table td.skill-summary { line-height: 1.6; }
   .ai-config-skills-table td.skill-trigger { white-space: nowrap; }
   .skill-trigger-badge {
