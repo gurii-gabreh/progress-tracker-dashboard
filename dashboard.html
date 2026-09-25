@@ -218,9 +218,12 @@
   .ai-config-skills-table td.skill-name { font-weight: 600; color: var(--accent); }
   .ai-config-skills-table td.skill-repo { color: var(--text-muted); }
   .ai-config-skills-table td.skill-summary { line-height: 1.6; }
-  .ai-config-skills-table td.skill-trigger { white-space: nowrap; }
+  /* 2026-09-25再修正: white-space:nowrapのまま列幅をcolgroupで固定した結果、携帯幅では
+     バッジがセル幅に収まらず隣の列(概要)へ重なって見える不具合が出た(ユーザー報告)。
+     nowrapをやめ、狭い幅では自然に2行になる(重ならない)ようにした。 */
   .skill-trigger-badge {
     display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    white-space: normal;
   }
   .skill-trigger-badge.user { background: var(--accent-soft); color: var(--accent); }
   .skill-trigger-badge.ai { background: #e3f3e6; color: #2f8f4e; }
@@ -3204,7 +3207,7 @@
       const body = key === "jsonDataIndex" && repos.length
         ? repos.map((r) => {
             const filesHtml = r.files && r.files.length
-              ? `<table class="ai-config-skills-table"><thead><tr><th>ファイル</th><th>内容・役割</th></tr></thead><tbody>${r.files.map((f) =>
+              ? `<table class="ai-config-skills-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>ファイル</th><th>内容・役割</th></tr></thead><tbody>${r.files.map((f) =>
                   `<tr><td class="skill-name">${escapeHtml(f.path || "")}</td><td class="skill-summary">${escapeHtml(f.purpose || "")}</td></tr>`
                 ).join("")}</tbody></table>`
               : "";
@@ -3212,7 +3215,7 @@
             return `<div class="ai-config-subheading">📁 ${escapeHtml(r.appName || r.repo || "")}(${escapeHtml(r.repo || "")})</div>${filesHtml}${noteHtml}`;
           }).join("") + (section.note ? `<p class="ai-config-overview">${escapeHtml(section.note)}</p>` : "") + linkHtml
         : key === "customSkills" && table.length
-        ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>起動方法</th><th>概要</th></tr></thead><tbody>${table.map((s) => {
+        ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><colgroup><col style="width:16%"><col style="width:22%"><col style="width:16%"><col style="width:46%"></colgroup><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>起動方法</th><th>概要</th></tr></thead><tbody>${table.map((s) => {
             const isUser = s.triggerType === "user";
             const triggerHtml = `<span class="skill-trigger-badge ${isUser ? "user" : "ai"}">${isUser ? "👤 ユーザー起動" : "🤖 AI判断"}</span>`;
             return `<tr><td class="skill-name">${escapeHtml(s.name || "")}</td><td class="skill-repo">${escapeHtml(s.repo || "")}</td><td class="skill-trigger">${triggerHtml}</td><td class="skill-summary">${escapeHtml(s.summary || "")}</td></tr>`;
