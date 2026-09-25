@@ -1,6 +1,6 @@
 ---
 name: new-app-kickoff
-description: Kick off the planning phase for a brand-new app idea. Triggered by claude-voice-bridge's fixed skill phrase "【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。" (sent via the "🔧 スキル呼び出し文言" template button, though users can also type it directly). Before doing anything else, reviews this project's own settings (CLAUDE.md/claude-core-rules.md), researched knowledge (concept-log.json), and past track-record knowledge (tasks.json's completed detail/issues) so the new idea isn't designed in a vacuum. Then creates a brand-new, repo-less Claude Code Remote session dedicated to that one app and hands the actual idea-fleshing-out (要件・機能・技術選定などの構想) off to that new room — this skill (running in manager-room) does not design the app itself, per CLAUDE.mdルール18の作業分担方針.
+description: Kick off the planning phase for a brand-new app idea. Triggered by claude-voice-bridge's fixed skill phrase "【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。" (sent via the "🔧 スキル呼び出し文言" template button, though users can also type it directly). Before doing anything else, reviews this project's own settings (CLAUDE.md/claude-core-rules.md), researched knowledge (concept-log.json), and past track-record knowledge (tasks.json's completed detail/issues) so the new idea isn't designed in a vacuum. Then creates a brand-new Claude Code Remote session sourced from progress-tracker-dashboard itself (not a new dedicated repo, and not repo-less) and hands the actual idea-fleshing-out (要件・機能・技術選定などの構想) off to that new room — this skill (running in manager-room) does not design the app itself, per CLAUDE.mdルール18の作業分担方針.
 ---
 
 # 新規アプリ構想の立ち上げ(New app kickoff)
@@ -35,16 +35,17 @@ description: Kick off the planning phase for a brand-new app idea. Triggered by 
      既存アプリの実装(例: 似た機能を持つ既存リポジトリのREADME)も確認する
 
 3. **専用の新規ルーム(CCRセッション)を作成する**。`create_session`を使う。
-   - **リポジトリには紐付けない(`source_url`を指定しない)**。この段階ではまだGitHubリポジトリが
-     存在しない構想フェーズのため、素のプレーンな会話セッションとして作成する(2026-09-25、ユーザー確認
-     済み)。リポジトリが必要になるのは構想が固まりコードを書き始める段階からで、それはこのスキルの
-     範囲外(実装フェーズになったら別途リポジトリを作成し、README「ルームマッピング」表へ追記する)。
+   - **`source_url`にprogress-tracker-dashboard自身(`https://github.com/gurii-gabreh/progress-tracker-dashboard`)を指定する**(2026-09-25、当初は「リポジトリ無しのプレーンな会話」案だったが、ユーザーとの相談の結果変更。理由は2点: ①新しく別の「開発検討用リポジトリ」を作ると、そこにも改めて`.claude/settings.json`の許可リスト整備が必要になり、CCRツール呼び出しのたびに承認待ちで止まりやすくなる(ルール19参照)のに対し、progress-tracker-dashboard自身は既に許可リストが正しく整備済みなのでこの問題を避けられる。②手順2で集める参考ナレッジ(claude-core-rules.md・concept-log.json・tasks.json)が既にこのリポジトリ内にあるため、コピー・二重管理が不要になる)。
+   - **新しく専用リポジトリを作る必要はない**。構想フェーズのメモは、progress-tracker-dashboardの`data/concept-drafts/<アプリ名(仮)>.md`のような下書きファイルとしてそのまま書けばよい。専用のGitHubリポジトリが必要になるのは構想が固まりコードを書き始める段階からで、それはこのスキルの範囲外(実装フェーズになったら別途リポジトリを作成し、README「ルームマッピング」表へ追記する)。
    - タイトルは`<アプリ名(仮)または依頼内容の要約> 構想ルーム`のようにわかりやすくする。
+   - 新規ルームはmanager-room(このセッション)とは別セッションになるため、「manager-room自身は構想の中身に踏み込まない」という役割分担は保たれる(同じリポジトリを共有していても、担当するセッションが違う点に注意)。
 
-4. **手順2で集めたナレッジの要点を、新規ルームへ`send_message`で引き継ぐ**。丸ごと転記するのではなく、
-   今回のアプリ案に関連しそうな要点(適用できそうな過去の設計判断・気をつけるべき過去の問題点・
-   絶対に守るべき基本ルールの要約)に絞って渡す。あわせて「ここでこのアプリの構想(要件・機能・
-   技術選定など)を練ってください」と、構想フェーズの担当がこの新規ルームであることを明示する。
+4. **手順2で集めたナレッジの要点を、新規ルームへ`send_message`で引き継ぐ**。新規ルームは同じリポジトリを
+   持っているため参考ファイル自体は自分で読めるが、今回のアプリ案に関連しそうな要点(適用できそうな
+   過去の設計判断・気をつけるべき過去の問題点・絶対に守るべき基本ルールの要約)だけは、送信メッセージ内で
+   明示的に絞り込んで伝える(新規ルームが無関係な情報まで読み込んで構想が発散するのを防ぐため)。あわせて
+   「ここでこのアプリの構想(要件・機能・技術選定など)を練り、`data/concept-drafts/<アプリ名>.md`に
+   まとめてください」と、構想フェーズの担当がこの新規ルームであることを明示する。
 
 5. **manager-room自身は構想の中身(要件定義・機能設計・技術選定など)に踏み込まない**。手順3〜4を
    終えたら、作成したセッションIDと新規ルームのタイトルをユーザーへ報告して完了とする(CLAUDE.mdの

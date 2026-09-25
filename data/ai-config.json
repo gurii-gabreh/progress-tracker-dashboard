@@ -137,7 +137,7 @@
         {
           "name": "new-app-kickoff",
           "repo": "gurii-gabreh/progress-tracker-dashboard",
-          "summary": "固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動。基本設定(claude-core-rules.md)・調査ナレッジ(concept-log.json)・実績ナレッジ(tasks.json)を確認してから、リポジトリ無しの専用新規ルーム(create_session)を作成し、その新規ルームへ構想(要件・機能・技術選定など)を引き継ぐ。manager-room自身は構想の中身に踏み込まない。",
+          "summary": "固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動。基本設定(claude-core-rules.md)・調査ナレッジ(concept-log.json)・実績ナレッジ(tasks.json)を確認してから、progress-tracker-dashboard自身をsource_urlにした専用新規ルーム(create_session。許可リスト整備済みで承認待ちになりにくく、参考ナレッジも二重管理不要)を作成し、構想メモをdata/concept-drafts/<アプリ名>.mdにまとめる形でその新規ルームへ引き継ぐ。manager-room自身は構想の中身に踏み込まない。",
           "triggerType": "user"
         }
       ]
@@ -370,7 +370,7 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "path": ".claude/skills/new-app-kickoff/SKILL.md",
           "createdAt": "2026-09-25",
-          "summary": "固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動。基本設定(claude-core-rules.md)・調査ナレッジ(concept-log.json)・実績ナレッジ(tasks.json)を確認してから、リポジトリ無しの専用新規ルーム(create_session)を作成し、その新規ルームへ構想(要件・機能・技術選定など)を引き継ぐ。manager-room自身は構想の中身に踏み込まない。",
+          "summary": "固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動。基本設定(claude-core-rules.md)・調査ナレッジ(concept-log.json)・実績ナレッジ(tasks.json)を確認してから、progress-tracker-dashboard自身をsource_urlにした専用新規ルーム(create_session。許可リスト整備済みで承認待ちになりにくく、参考ナレッジも二重管理不要)を作成し、構想メモをdata/concept-drafts/<アプリ名>.mdにまとめる形でその新規ルームへ引き継ぐ。manager-room自身は構想の中身に踏み込まない。",
           "triggerType": "user"
         }
       ],
