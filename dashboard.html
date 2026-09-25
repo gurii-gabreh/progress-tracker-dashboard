@@ -3069,7 +3069,7 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "jsonDataIndex"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -3176,7 +3176,21 @@
       // (2026-09-19追加、ユーザー指示「ごちゃごちゃして分かりづらいから表形式にしろ」)。
       // それ以外のセクションは従来通りpoints配列を箇条書きで表示する。
       const table = section.table || [];
-      const body = key === "customSkills" && table.length
+      // jsonDataIndexだけは「リポジトリごとのJSONファイル一覧」をグループ化して表示する
+      // (2026-09-25追加、ユーザー指示「全リポジトリのjsonデータも内容と保存場所、アプリ名を
+      // 明記して一覧化して」)。
+      const repos = section.repos || [];
+      const body = key === "jsonDataIndex" && repos.length
+        ? repos.map((r) => {
+            const filesHtml = r.files && r.files.length
+              ? `<table class="ai-config-skills-table"><thead><tr><th>ファイル</th><th>内容・役割</th></tr></thead><tbody>${r.files.map((f) =>
+                  `<tr><td class="skill-name">${escapeHtml(f.path || "")}</td><td class="skill-summary">${escapeHtml(f.purpose || "")}</td></tr>`
+                ).join("")}</tbody></table>`
+              : "";
+            const noteHtml = r.note ? `<p class="ai-config-overview">${escapeHtml(r.note)}</p>` : "";
+            return `<div class="ai-config-subheading">📁 ${escapeHtml(r.appName || r.repo || "")}(${escapeHtml(r.repo || "")})</div>${filesHtml}${noteHtml}`;
+          }).join("") + (section.note ? `<p class="ai-config-overview">${escapeHtml(section.note)}</p>` : "") + linkHtml
+        : key === "customSkills" && table.length
         ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>起動方法</th><th>概要</th></tr></thead><tbody>${table.map((s) => {
             const isUser = s.triggerType === "user";
             const triggerHtml = `<span class="skill-trigger-badge ${isUser ? "user" : "ai"}">${isUser ? "👤 ユーザー起動" : "🤖 AI判断"}</span>`;
