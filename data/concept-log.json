@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-09-13",
+  "updatedAt": "2026-09-25",
   "categories": [
     {
       "key": "architecture",
@@ -87,6 +87,13 @@
           "concept": "create_new_session_on_fireのRoutineはリポジトリへのpush権限を持てない制約と、状態の外部化による常駐セッション化の回避策",
           "context": "2026-09-19に設定したclaude-voice-bridgeの週次ログ要約Routine(create_new_session_on_fire: true)を実際に発火させたところ、git pushが「access denied by the git proxy: ...is not in this session's authorized repository set」で失敗することが2026-09-25に判明。",
           "note": "create_trigger(create_new_session_on_fire: true)で作るRoutineは、発火のたびにまっさらな新規セッションを生成するが、create_triggerには特定リポジトリを事前認可する仕組み(source_url等)が無い。フレッシュセッション自身がadd_repoで書き込み権限を取得しようとしても、スケジュール発火セッションにはCCRオーケストレーション用のMCPツール(add_repo等)自体が無い場合があり、この場合そのRoutineは対象リポジトリへの読み取りはできてもpushはできない、という制約がある。対応策は、あらかじめ対話セッションからcreate_sessionで(source_urlに対象リポジトリを指定して)常駐セッションを作成し、Routineをcreate_new_session_on_fireではなくpersistent_session_idでそのセッションに紐付けること。ただし常駐セッションは発火のたびにコンテキストが蓄積し続けるため、(1)処理に必要な状態は会話の記憶ではなく外部のJSONファイル等に持たせる設計にして『前回の記憶が無くても正しく動く』ようにしておく、(2)別の(すでにツールを持つ)Routineから定期的にget_sessionでそのセッションのcontext_usageを確認し、閾値を超えたら新しい常駐セッションを作ってRoutineの紐付け先を切り替える、という2点をセットで設計しておくとよい。『まっさらなセッションで独立して動かしたい』という設計意図自体は妥当でも、書き込み権限が必要な処理では実現できないことがある、という教訓。",
+          "date": "2026-09-25"
+        },
+        {
+          "id": "CL-026",
+          "concept": "manager-room/worker-roomの役割分担を『構想フェーズ』にも拡張する設計パターン(new-app-kickoffスキル)",
+          "context": "2026-09-25、ユーザー指示「新規アプリ制作用のスキル化。基本設定・調査ナレッジ・実績ナレッジを見るように指示し、新規のルームを作りそこで構想を練る仕様にしろ」への対応でnew-app-kickoffスキルを作成。",
+          "note": "CLAUDE.mdルール18(manager-roomは実装作業を見つけたら自分でコードを書かず作業ルームへ依頼する)は元々『実装フェーズ』を想定した役割分担だったが、これを『構想フェーズ(要件・機能・技術選定を練る段階)』にも広げた。新しいアプリのアイデアが出た時点でmanager-roomが即座に構想を始めるのではなく、(1)基本設定(claude-core-rules.md)・調査ナレッジ(concept-log.json、まさにこのファイル)・実績ナレッジ(tasks.jsonの完了detail/issues)を確認してから、(2)リポジトリにまだ紐付けない専用の新規CCRセッションを作成し、(3)構想そのものはそちらのルームに委ねる、という3段構成にした。リポジトリを最初から紐付けない理由は、構想段階ではまだGitHubリポジトリ自体が存在しないことが多いため(実装フェーズに進んだ時点で別途リポジトリを作成・紐付ける)。既存の『役割ごとに部屋を分ける』設計思想(CL-006の休止セッション起動パターン等と同じ『既存の仕組みを別の場面に転用する』系統)の延長線上にある。",
           "date": "2026-09-25"
         }
       ]
