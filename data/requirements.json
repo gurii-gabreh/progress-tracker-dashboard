@@ -1,28 +1,68 @@
 {
   "schemaVersion": 2,
-  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/background/goals/nonGoals/openQuestions/reusedKnowledge/decisions/approvedAtを持つ想定。",
+  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/background/goals/nonGoals/openQuestions/reusedKnowledge/decisions/approvedAt/concernReviewを持つ想定。concernReview(2026-09-26追加、ユーザー指示)は、10項目の回答が揃った後のconcerns照合で実際に該当した項目ごとに、どう相談し最終的にどう決着したか(concernId・該当理由・最終的な回答/決定内容)を記録する配列。concernsは『一般化された陥りやすい問題の一覧』、concernReviewは『そのアプリでは実際にどう解決したか』という個別記録で、両方をJSONとして残すことで今後の同種の要件定義検討のナレッジとして再利用できるようにする。",
   "interviewChecklist": {
     "description": "2026-09-25追加、ユーザー指示「確認する項目を統一したい」。新規相談の聞き取りで必ず1つずつ確認する標準10項目と、requirementsエントリの各フィールドへの対応付け。聞き取りのたびにこの並び・項目名を変えないこと(ブレ防止が目的)。",
     "items": [
-      { "n": 1, "question": "アプリ名(仮)", "field": "title" },
-      { "n": 2, "question": "目的・解決したい課題(何を・誰のために)", "field": "background" },
-      { "n": 3, "question": "きっかけ(なぜ今このアイデアが出てきたか)", "field": "background" },
-      { "n": 4, "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)", "field": "decisions" },
-      { "n": 5, "question": "費用面での制約(ルール9「永久無料」が大前提)", "field": "decisions" },
-      { "n": 6, "question": "主要機能(MVP・最初に欲しい機能の一覧)", "field": "goals" },
-      { "n": 7, "question": "使うデータ(何を、どこに保存するか)", "field": "decisions" },
-      { "n": 8, "question": "技術選定の希望・制約", "field": "decisions" },
-      { "n": 9, "question": "優先度・着手時期の希望", "field": "decisions" },
-      { "n": 10, "question": "progress-tracker-dashboardでの管理要否", "field": "decisions" }
+      {
+        "n": 1,
+        "question": "アプリ名(仮)",
+        "field": "title"
+      },
+      {
+        "n": 2,
+        "question": "目的・解決したい課題(何を・誰のために)",
+        "field": "background"
+      },
+      {
+        "n": 3,
+        "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+        "field": "background"
+      },
+      {
+        "n": 4,
+        "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+        "field": "decisions"
+      },
+      {
+        "n": 5,
+        "question": "費用面での制約(ルール9「永久無料」が大前提)",
+        "field": "decisions"
+      },
+      {
+        "n": 6,
+        "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+        "field": "goals"
+      },
+      {
+        "n": 7,
+        "question": "使うデータ(何を、どこに保存するか)",
+        "field": "decisions"
+      },
+      {
+        "n": 8,
+        "question": "技術選定の希望・制約",
+        "field": "decisions"
+      },
+      {
+        "n": 9,
+        "question": "優先度・着手時期の希望",
+        "field": "decisions"
+      },
+      {
+        "n": 10,
+        "question": "progress-tracker-dashboardでの管理要否",
+        "field": "decisions"
+      }
     ],
     "note": "対象外と判明した点はnonGoalsへ、未確定のまま残った点はopenQuestionsへ。各項目確認時にdata/tasks.jsonのissues・concept-log.json・servicenow-sub-agentのresearch-items.json・過去のrequirements配列と照合し、該当する過去のトラブル・バグ事例と提示した代替案はreusedKnowledgeへ記録する。"
   },
   "requirements": [],
-  "userProfile": {
-    "description": "依頼者(ユーザー)自身の思考パターン・癖のナレッジ。プロジェクトの要件知識(requirements配列)とは別軸。ユーザー自身が『確かにそうだ』と認めたものだけをconfirmedByUser:trueとして記録し、AI側が一方的に決めつけて追加しない(README運用ルール31参照)。",
-    "patterns": [
+  "concerns": {
+    "description": "新規アプリ構想の聞き取り(標準10項目)を終えた後、その回答内容と照らし合わせてチェックする「陥りやすい問題」の一覧(2026-09-26、ユーザー指示で userProfile から改称・拡充)。ユーザー自身の思考の癖だけでなく、過去の実績(CLAUDE.mdルールの追加経緯・README記載の繰り返し違反)から判明した、実装・進め方そのものの陥りやすいパターンも含む。ユーザー自身が「確かにそうだ」と認めたもの、またはCLAUDE.mdの既存ルールとして既に明文化されているもの(=追加時点で既にユーザー確認済み)だけを記録し、AI側が新たに一方的に決めつけて追加しない(この安全策自体は旧 userProfile.patterns から継続)。",
+    "items": [
       {
-        "id": "UP-001",
+        "id": "CN-001",
         "trend": "思いついたアイデアをそのまま機能追加として投げてしまい、後から仕様が積み重なってシステムが複雑化し、不具合につながりやすい",
         "observedIn": [
           "kizashi(結)の企画整理.mdの変遷(前兆現象共有の再優先度付け、間取り共有の統合など、後出しの仕様変更が複数回発生)",
@@ -30,7 +70,66 @@
         ],
         "mitigation": "新規性の高い相談(特に新規リポジトリ)は、実装前に「🆕 新規相談」ルームで聞き取り・要件定義シート作成を挟み、思いつきベースのまま実装に進まないようにする",
         "confirmedByUser": true,
-        "confirmedAt": "2026-08-08"
+        "confirmedAt": "2026-08-08",
+        "source": "userProfile.patterns UP-001(旧)"
+      },
+      {
+        "id": "CN-002",
+        "trend": "新しくアプリ・機能を作る際、PC専用/iPhone専用/両対応のどの方向で進めるかを確認せず、AIが自己判断で決め打ちしてしまう",
+        "observedIn": [
+          "claude-core-rules.md ルール8(2026-09-06追加、ユーザー指摘)"
+        ],
+        "mitigation": "実装に着手する前に必ずユーザーへ確認する(ルール8として既に明文化済み)",
+        "confirmedByUser": true,
+        "confirmedAt": "2026-09-06",
+        "source": "claude-core-rules.md ルール8"
+      },
+      {
+        "id": "CN-003",
+        "trend": "次に必要なアクションが自分の中で明確に見えている場合、それを実行前に確認せず、黙って実行してから事後報告してしまう",
+        "observedIn": [
+          "claude-core-rules.md ルール21(2026-09-06追加、ユーザー指摘)",
+          "study-appのスプレッドシート内容をdata/lessons.jsonへ反映する場面で、確認前にローカルへ変更を適用してしまった"
+        ],
+        "mitigation": "何をすべきか判断がついていても、実行前に必ず「どちらの方向で進めるか」を確認する(ルール21として既に明文化済み)",
+        "confirmedByUser": true,
+        "confirmedAt": "2026-09-06",
+        "source": "claude-core-rules.md ルール21"
+      },
+      {
+        "id": "CN-004",
+        "trend": "既存の仕組み・経緯を確認せずに、新しい仕組みを次々提案・設計してしまう",
+        "observedIn": [
+          "claude-core-rules.md ルール23(2026-09-12追加、ユーザー指摘。study-appの履歴・メモ同期方式で、既存のGAS連携廃止の経緯を確認しないまま新しい仕組みを提案した)",
+          "2026-09-25、new-app-kickoffスキルを設計した際、既存の「🆕 新規相談」フローを確認せず、ほぼ同じ目的の車輪の再発明をしてしまい、ユーザー指摘で作り直した(ルール23の再発)"
+        ],
+        "mitigation": "何かを提案する前に、必ず現状のデータ・構造・経緯を確認し、まず既存の仕組みで実現できないか検討する(ルール23として既に明文化済み)",
+        "confirmedByUser": true,
+        "confirmedAt": "2026-09-12",
+        "source": "claude-core-rules.md ルール23"
+      },
+      {
+        "id": "CN-005",
+        "trend": "manager-room(状況把握・振り分け役)が、自分で実装作業を直接行ってしまう",
+        "observedIn": [
+          "README「ルームマッピング」記載、2026-08-12〜13にgas/Code.gsの変更・別リポジトリへのGitHub Actionsワークフロー追加を直接実装してしまい、繰り返し指摘された",
+          "claude-voice-bridgeの音声入出力の実装・デバッグも同様に直接行ってしまった(2026-08-25)"
+        ],
+        "mitigation": "実装が必要な作業を見つけたら自分でコードを書かず、作業ルーム(worker-room)へ依頼する",
+        "confirmedByUser": true,
+        "confirmedAt": "2026-08-13",
+        "source": "README.md ルームマッピング"
+      },
+      {
+        "id": "CN-006",
+        "trend": "複数のルーム(セッション)を同時稼働させると、同一ルールを異なる内容で重複追加してしまう等、調整不足が起きやすい",
+        "observedIn": [
+          "claude-core-rules.md ルール18の2026-09-06追記(方針転換の理由として記載)"
+        ],
+        "mitigation": "大きな実装・並行運用が必要な場合は、事前に役割分担と調整方法を明確にしておく",
+        "confirmedByUser": true,
+        "confirmedAt": "2026-09-06",
+        "source": "claude-core-rules.md ルール18"
       }
     ]
   }
