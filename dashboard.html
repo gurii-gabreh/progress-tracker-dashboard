@@ -227,6 +227,17 @@
   }
   .skill-trigger-badge.user { background: var(--accent-soft); color: var(--accent); }
   .skill-trigger-badge.ai { background: #e3f3e6; color: #2f8f4e; }
+  /* 🗂 JSONデータ一覧(jsonDataIndex)専用、2026-09-26追加。表の列はみ出し・重なり不具合を
+     避けるため、ファイル名→内容を縦に積むリスト形式にした(列という概念が無いので
+     列がはみ出す・重なるということ自体が起こらない)。 */
+  .json-file-list { list-style: none; margin: 0; padding: 0; }
+  .json-file-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .json-file-item:last-child { border-bottom: none; }
+  .json-file-path {
+    font-family: var(--mono, monospace); font-size: 12px; font-weight: 700; color: var(--accent);
+    overflow-wrap: break-word; word-break: break-word; margin-bottom: 3px;
+  }
+  .json-file-purpose { font-size: 12.5px; line-height: 1.6; color: var(--text); overflow-wrap: break-word; }
   .ai-config-edit-textarea {
     width: 100%; box-sizing: border-box; font: inherit; font-size: 13px; line-height: 1.7;
     color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
@@ -3206,10 +3217,14 @@
       const repos = section.repos || [];
       const body = key === "jsonDataIndex" && repos.length
         ? repos.map((r) => {
+            // 2026-09-26修正: 表形式(2列)だと携帯幅でファイルパスが折り返した際に列の境界が
+            // 分かりにくく「隣の列に飛び出して見える」というユーザー報告があったため、表をやめて
+            // 縦積み(ファイル名の行→内容の行)のリスト形式に変更した。そもそも列が無ければ
+            // 列がはみ出す・重なるという不具合自体が起こり得ない。
             const filesHtml = r.files && r.files.length
-              ? `<table class="ai-config-skills-table"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>ファイル</th><th>内容・役割</th></tr></thead><tbody>${r.files.map((f) =>
-                  `<tr><td class="skill-name">${escapeHtml(f.path || "")}</td><td class="skill-summary">${escapeHtml(f.purpose || "")}</td></tr>`
-                ).join("")}</tbody></table>`
+              ? `<ul class="json-file-list">${r.files.map((f) =>
+                  `<li class="json-file-item"><div class="json-file-path">${escapeHtml(f.path || "")}</div><div class="json-file-purpose">${escapeHtml(f.purpose || "")}</div></li>`
+                ).join("")}</ul>`
               : "";
             const noteHtml = r.note ? `<p class="ai-config-overview">${escapeHtml(r.note)}</p>` : "";
             return `<div class="ai-config-subheading">📁 ${escapeHtml(r.appName || r.repo || "")}(${escapeHtml(r.repo || "")})</div>${filesHtml}${noteHtml}`;
