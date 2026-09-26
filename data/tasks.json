@@ -3854,7 +3854,7 @@
       "title": "ルームタスク監査機能(AI直接確認方式)",
       "priority": "中",
       "status": "進行中",
-      "updated": "2026-09-26",
+      "updated": "2026-09-27",
       "category": "feature",
       "note": "claude-voice-bridgeは今回のトラッカーで初めて管理対象に加えたリポジトリ(gurii-gabreh/claude-voice-bridge)。本来は各実装の都度このtasks.jsonへ記録すべきだったが、一連の会話の中で記録が漏れていたため、ここで経緯をまとめて記録する(CLAUDE.md最重要ルール「実装したタスクのdetail・noteを空欄のまま完了させない」への対応)。",
       "content": [
@@ -3928,6 +3928,10 @@
         {
           "item": "タスクIDクリック時のジャンプ先を、抽出結果の要約行から元のClaude回答/ユーザー発言へ変更(sidepanel.js、commit 13e9d2f)。従来はnavigateToTaskId()が【タスクID:回答MM/DD HH:MM:SS-N】という複合文字列そのものを検索していたが、この文字列は監査(抽出)自身の出力にしか存在せず、起点となった元の回答自体には無かったため、結局いつも抽出結果自身にしかジャンプできない不具合があった(ユーザー指摘「クリックすると大本の回答部分にスキップする仕様にしたい。抽出結果部分に遷移ではない」)。buildJumpSearchText()を新設し、起点がAIの回答なら起点自身に実在する素の【回答MM/DD HH:MM:SS】マーカーを、起点がユーザー発言(マーカー無し)なら引用文(quote)を検索テキストにするよう変更。window.find()による仮想化耐性のある検索方式自体は変更していない",
           "date": "2026-09-26"
+        },
+        {
+          "item": "room-task-auditの出力に「リポジトリ」フィールドを追加し(progress-tracker-dashboardの.claude/skills/room-task-audit/SKILL.md、commit 4e18ee6)、claude-voice-bridge側(tracker-store.js/sidepanel.js/webapp/index.html、commit 9106b05)でこれをパース・表示・絞り込みできるようにした。ユーザー指摘「manager-room上ではランダムに複数アプリの話をするため、AI側で判断してリポジトリを判定してほしい」への対応。値は固定リストからの選択ではなくAIがその場で判断するが、tasks.jsonのknownRepos(管理対象12リポジトリ)に該当する話題は表記を揃えるため正式名称をそのまま使う仕様(該当しない場合は「不明」、複数アプリにまたがる場合は「複数」)。一覧の内容欄先頭に小さなバッジで表示し、「アプリで絞り込み」ドロップダウン(PC版・モバイル版Web版の両方)で特定アプリのみに絞り込める",
+          "date": "2026-09-27"
         }
       ],
       "detail": "【アーキテクチャ】claude-voice-bridge(Chrome拡張)の content.js がページ内のcontenteditable入力欄へ document.execCommand(\"insertText\") でテキストを流し込み、送信ボタンをクリックして送信する。応答はMutationObserverで新規メッセージブロックの出現→安定化を監視して抽出し、サイドパネルへ中継する。\n\n【今回の不具合の技術的原因】room-task-auditスキルを起動する固定フレーズを当初\"/room-task-audit\"(先頭が\"/\")にしていたが、claude.ai/codeの入力欄は先頭\"/\"をClaude Code組み込みのスラッシュコマンド/スキル選択ポップアップ(候補ドロップダウン)の起動トリガーとして扱う仕様になっている。execCommand(\"insertText\")は本物のinputイベントを発火させる(合成KeyboardEventと違い信頼される)ため、このポップアップが実際に開いてしまい、直後の送信ボタンクリック/Enterキーがポップアップ側の候補選択操作に奪われ、実際にはメッセージが送信されないまま待機し続ける(ユーザー報告「抽出ボタンを押しても動かない、フィードバックの小ウィンドウが開く」と一致)。\n\n【対応】AUDIT_TRIGGER_TEXTの先頭の\"/\"を廃止し、「room-task-auditスキルを呼び出して実行してください。」という平文でスキル名を明示する言い回しに変更(commit dc475b1、claude-voice-bridgeリポジトリのmainへpush済み)。Skillツールは名前を明示的に指名された場合もスラッシュ無しの呼び出しとして有効に機能するため、挙動は変わらない想定。\n\n【教訓・汎用パターン】ブラウザ拡張等でチャットUIの入力欄へ合成テキストを流し込む実装をする場合、そのチャットUI自身が予約している制御文字(スラッシュコマンド等の先頭文字)をペイロードの先頭に置くと、UI側の組み込み機能に横取りされて「送信されたように見えて実際には送信されない」という検知しづらい不具合になる。同様の自動化を他サイト(Slack/Discord等、スラッシュコマンドを持つチャットUI全般)へ拡張する際は同じ注意が必要。この教訓はdata/concept-log.json(CL-023想定)にも記録する。\n\n【未確認事項】この修正はコードレビュー・構文チェックのみで、実際のブラウザ(chrome://extensions でのリロード後)でユーザーが「🔍 ルームタスク一覧を抽出」ボタンを押して正常に動作するかはまだユーザー未確認。確認が取れるまでstatusは「進行中」のままとする。",
@@ -3965,6 +3969,10 @@
         {
           "date": "2026-09-26",
           "summary": "タスクIDクリックのジャンプ先が常に抽出結果自身になってしまう不具合をユーザーから指摘され、起点(元のClaude回答/ユーザー発言)へジャンプするようsidepanel.jsを修正しcommit・push(main直push)まで完了。実機での動作確認はまだ"
+        },
+        {
+          "date": "2026-09-27",
+          "summary": "タスク一覧をアプリ単位で絞り込めるようにする「リポジトリ」フィールドを、room-task-audit出力・tracker-store.js・sidepanel.js・webapp/index.htmlの4箇所に追加してcommit・push(progress-tracker-dashboardはmain反映、claude-voice-bridgeはmain直push)まで完了。実機での動作確認はまだ"
         }
       ]
     },
