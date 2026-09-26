@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/background/goals/nonGoals/openQuestions/reusedKnowledge/decisions/approvedAt/concernReviewを持つ想定。concernReview(2026-09-26追加、ユーザー指示)は、10項目の回答が揃った後のconcerns照合で実際に該当した項目ごとに、どう相談し最終的にどう決着したか(concernId・該当理由・最終的な回答/決定内容)を記録する配列。concernsは『一般化された陥りやすい問題の一覧』、concernReviewは『そのアプリでは実際にどう解決したか』という個別記録で、両方をJSONとして残すことで今後の同種の要件定義検討のナレッジとして再利用できるようにする。",
+  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/background/goals/nonGoals/openQuestions/reusedKnowledge/decisions/approvedAt/concernReviewを持つ想定。concernReview(2026-09-26追加、ユーザー指示「相談途中に出てくる懸念は、全てJSON側に記録しナレッジとして使用できるように」)は、10項目の回答が揃った後の懸念チェックで実際に浮かび上がった懸念を1件ずつ記録する配列。concernsと照合して該当したものは{concernId, matchedBecause, resolution}、concernsにまだ無い新規の懸念がその場で出てきた場合も{concernId: null, description, resolution}として漏らさず記録する。concernsは『一般化された陥りやすい問題の一覧』、concernReviewは『そのアプリの相談で実際に出てきた懸念と解決内容』という個別記録で、両方をJSONとして残すことで今後の同種の検討のナレッジとして再利用できるようにする。",
   "interviewChecklist": {
     "description": "2026-09-25追加、ユーザー指示「確認する項目を統一したい」。新規相談の聞き取りで必ず1つずつ確認する標準10項目と、requirementsエントリの各フィールドへの対応付け。聞き取りのたびにこの並び・項目名を変えないこと(ブレ防止が目的)。",
     "items": [

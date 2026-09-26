@@ -396,11 +396,13 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       いずれの依頼文テンプレートにもこの指示を明記済み。指摘は過去の実例に基づくものに限り、
       押し付けがましい決めつけにはしない
     - **相談した結果は`concernReview`として個別に記録する**(2026-09-26追加、ユーザー指示
-      「懸念点については、相談した結果の最終的な回答も明記する仕様に」)。`concerns`は
+      「懸念点については、相談した結果の最終的な回答も明記する仕様に」「相談途中に出てくる
+      懸念は、全てJSON側に記録しナレッジとして使用できるように」)。`concerns`は
       「一般化された問題の一覧」、`concernReview`はrequirementsエントリ側に持たせる
-      「そのアプリでは実際にどう解決したか」という個別記録で、`{concernId, matchedBecause,
-      resolution}`を該当した件数分配列で残す。今後の同種の要件定義検討のナレッジとして
-      再利用する狙い
+      「そのアプリの相談で実際に出てきた懸念と解決内容」という個別記録。`concerns`と照合して
+      該当したものは`{concernId, matchedBecause, resolution}`、`concerns`にまだ無い新規の
+      懸念がその場で出てきた場合も`{concernId: null, description, resolution}`として漏らさず
+      記録する。今後の同種の検討のナレッジとして再利用する狙い
     - **既知の制約**: 既存の自動実装Routine(`session_01DDATKE77mbQxkj4HUZ91Gt`)自身のプロンプトに
       「実装前にrequirements.json/knowledge-index.jsonを参照する」というルールはまだ入っていない
       (このマネージャールームから他セッションのプロンプトを直接書き換えることはできないため、
