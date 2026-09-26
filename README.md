@@ -363,30 +363,44 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       したい」)。アプリ名(仮)/目的・解決したい課題/きっかけ/PC・iPhone対応/費用面の制約/
       主要機能/使うデータ/技術選定/優先度・着手時期/progress-tracker-dashboardでの管理要否、
       の10項目を1つずつ順に確認する(`data/requirements.json`の`interviewChecklist`が正本)。
-      各項目の確認時には、`data/tasks.json`のissues・`data/concept-log.json`・
-      `gurii-gabreh/servicenow-sub-agent`の`data/research-items.json`・過去の
-      `requirements`配列と照合し、関連する過去のトラブル・バグ事例が見つかれば指摘した上で
-      代替案を提示する(該当があれば`reusedKnowledge`フィールドへ記録)。claude-voice-bridgeの
-      new-app-kickoffスキルも同じ聞き取り項目・手順を使う(内容が乖離しないよう、変更時は
-      dashboard.html・SKILL.md・data/requirements.jsonのinterviewChecklistを同時に更新すること)
+      claude-voice-bridgeのnew-app-kickoffスキルも同じ聞き取り項目・手順を使う(内容が
+      乖離しないよう、変更時はdashboard.html・SKILL.md・data/requirements.jsonの
+      interviewChecklistを同時に更新すること)
+    - **聞き取りは「10項目を全て確認→まとめて懸念点と照合」の2段階**(2026-09-26変更、
+      ユーザー指示「すべての項目確認してからでないと、また新たな懸念が出たりする」)。当初は
+      1問ずつ過去のトラブル事例と照合していたが、後の項目の回答で初めて見えてくる懸念を
+      見落とすため、10項目全ての回答が揃った後にまとめて照合する方式へ変更した。照合対象は
+      `data/requirements.json`の`concerns`(下記)・`data/tasks.json`のissues・
+      `data/concept-log.json`・`gurii-gabreh/servicenow-sub-agent`の`data/research-items.json`・
+      過去の`requirements`配列。該当する事例が見つかれば指摘した上で代替案を提示する
+      (`reusedKnowledge`フィールドへ記録)
     - **`requirements.json`のスキーマ**: `progress-tracker-dashboard`の`data/requirements.json`に
       ひな形を用意した(`requirements`配列、1件ごとに`id`/`repo`/`title`/`status`/`background`/
-      `goals`/`nonGoals`/`openQuestions`/`reusedKnowledge`/`decisions`/`approvedAt`を持つ想定。
-      詳細キーはこのファイル内の実例を参照)。Knowledge-Dashboardが完成すれば、
-      `data/tasks.json`と同様にプル型で取得・集約する対象に加える想定(KND-002参照)
-    - **`userProfile`(ユーザー自身の思考パターン・癖のナレッジ)も同じ`requirements.json`に
-      同居させた**。プロジェクトの要件知識(`requirements`配列)とは別軸で、依頼者自身の
-      「間違いやすい傾向・無意識の思い込み」を蓄積し、新規相談の聞き取り時にAI側が
-      事前に正せるようにする狙い。**ユーザー自身が「確かにそうだ」と認めたものだけを
-      `confirmedByUser: true`として記録し、AI側が一方的に決めつけて追加しない**
-      (勝手なプロファイリングを避けるための歯止め)。1件目の実例(`UP-001`、思いつきの
-      機能追加が複雑化・不具合につながりやすい傾向)は本人確認済みとして記録済み
+      `goals`/`nonGoals`/`openQuestions`/`reusedKnowledge`/`decisions`/`approvedAt`/
+      `concernReview`を持つ想定。詳細キーはこのファイル内の実例を参照)。Knowledge-Dashboardが
+      完成すれば、`data/tasks.json`と同様にプル型で取得・集約する対象に加える想定(KND-002参照)
+    - **`concerns`(陥りやすい問題の一覧)も同じ`requirements.json`に同居させた**
+      (2026-09-26、`userProfile`から改称・拡充。旧名は「ユーザー自身の思考パターン」という
+      個人の傾向に限定した名前だったが、ユーザー指摘により、CLAUDE.mdルールの追加経緯や
+      README記載の繰り返し違反から来る「実装・進め方そのものの陥りやすいパターン」も含む、
+      より広い概念として`concerns`に改称した)。プロジェクトの要件知識(`requirements`配列)
+      とは別軸で、新規相談の聞き取り時にAI側が事前に正せるようにする狙い。**ユーザー自身が
+      「確かにそうだ」と認めたもの、またはCLAUDE.mdの既存ルールとして既に明文化されている
+      もの(追加時点で既にユーザー確認済み)だけを`confirmedByUser: true`として記録し、AI側が
+      一方的に決めつけて追加しない**(勝手なプロファイリングを避けるための歯止め、旧
+      `userProfile`から継続)。現在6件(`CN-001`〜`CN-006`)を記録済み
     - **蓄積するだけでなく、要所で能動的にアドバイスする**(2026-08-08、本人からの明確な要望)。
-      `userProfile.patterns`(`confirmedByUser: true`のもの)に該当しそうな場面では、
-      「これまでの傾向からすると、こういう間違い・進み方になりやすいです」と、AI側から
-      先回りして一言添える。新規相談ルーム・マネージャールームいずれの依頼文テンプレートにも
-      この指示を明記済み。指摘は過去の実例に基づくものに限り、押し付けがましい決めつけには
-      しない
+      `concerns`(`confirmedByUser: true`のもの)に該当しそうな場面では、「これまでの傾向・
+      経緯からすると、こういう間違い・進み方になりやすいです」と、根拠(`source`・
+      `observedIn`)を添えてAI側から先回りして一言添える。新規相談ルーム・マネージャールーム
+      いずれの依頼文テンプレートにもこの指示を明記済み。指摘は過去の実例に基づくものに限り、
+      押し付けがましい決めつけにはしない
+    - **相談した結果は`concernReview`として個別に記録する**(2026-09-26追加、ユーザー指示
+      「懸念点については、相談した結果の最終的な回答も明記する仕様に」)。`concerns`は
+      「一般化された問題の一覧」、`concernReview`はrequirementsエントリ側に持たせる
+      「そのアプリでは実際にどう解決したか」という個別記録で、`{concernId, matchedBecause,
+      resolution}`を該当した件数分配列で残す。今後の同種の要件定義検討のナレッジとして
+      再利用する狙い
     - **既知の制約**: 既存の自動実装Routine(`session_01DDATKE77mbQxkj4HUZ91Gt`)自身のプロンプトに
       「実装前にrequirements.json/knowledge-index.jsonを参照する」というルールはまだ入っていない
       (このマネージャールームから他セッションのプロンプトを直接書き換えることはできないため、
