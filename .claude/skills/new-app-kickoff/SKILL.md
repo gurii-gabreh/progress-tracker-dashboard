@@ -93,11 +93,11 @@ README運用ルール31)を起動するための**自動化された別入口**(
       - a: 聞き取りが十分固まったらシートの下書きを提示し、確定を得てから
         progress-tracker-dashboardの`data/requirements.json`の`requirements`配列へ1件追加して
         commit・push(**ユーザー指示により、聞き取った内容は必ずJSONデータへ記録しナレッジ化する**)。
-        上記10項目は既存スキーマのフィールドへ次のように対応付けて格納する:
-        `title`←1、`background`←2+3、`goals`←6、`nonGoals`←(対象外と判明した点)、
-        `decisions`←4+5+7+8+9+10、`openQuestions`←(未確定のまま残った点)、
-        `reusedKnowledge`←手順3で照合した過去事例・servicenow-sub-agentの調査結果・
-        提示した代替案。**`concernReview`←手順3で実際に浮かび上がった懸念を1件ずつ配列で
+        `answers`←10項目それぞれの回答をそのまま`{n, question, answer}`の配列として格納する
+        (2026-09-26変更。以前はbackground/goals/decisions等の複数フィールドへ合成していたが、
+        画面がJSONをそのまま映すだけで済むよう、interviewChecklistの項目と1対1対応する形に
+        変更した。対象外・未確定の話が出た場合は、該当するnの`answer`内に書き添える)。
+        **`concernReview`←手順3で実際に浮かび上がった懸念を1件ずつ配列で
         記録する**(2026-09-26追加、ユーザー指示「懸念点については、相談した結果の最終的な
         回答も明記する仕様に」「相談途中に出てくる懸念は、全てJSON側に記録しナレッジとして
         使用できるように」)。`concerns`(既存の懸念点マスタ)と照合して該当したものは

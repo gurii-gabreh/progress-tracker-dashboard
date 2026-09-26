@@ -375,10 +375,13 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
       過去の`requirements`配列。該当する事例が見つかれば指摘した上で代替案を提示する
       (`reusedKnowledge`フィールドへ記録)
     - **`requirements.json`のスキーマ**: `progress-tracker-dashboard`の`data/requirements.json`に
-      ひな形を用意した(`requirements`配列、1件ごとに`id`/`repo`/`title`/`status`/`background`/
-      `goals`/`nonGoals`/`openQuestions`/`reusedKnowledge`/`decisions`/`approvedAt`/
-      `concernReview`を持つ想定。詳細キーはこのファイル内の実例を参照)。Knowledge-Dashboardが
-      完成すれば、`data/tasks.json`と同様にプル型で取得・集約する対象に加える想定(KND-002参照)
+      ひな形を用意した(`requirements`配列、1件ごとに`id`/`repo`/`title`/`status`/`answers`/
+      `concernReview`/`approvedAt`を持つ。`answers`は`interviewChecklist`の10項目と1対1対応する
+      `{n, question, answer}`の配列で、2026-09-26変更(以前はbackground/goals/nonGoals/
+      openQuestions/decisions/reusedKnowledgeという複数フィールドへ合成する方式だったが、
+      画面がJSONをそのまま映すだけで済むよう単純化した)。詳細キーはこのファイル内の実例を参照)。
+      Knowledge-Dashboardが完成すれば、`data/tasks.json`と同様にプル型で取得・集約する対象に
+      加える想定(KND-002参照)
     - **`concerns`(陥りやすい問題の一覧)も同じ`requirements.json`に同居させた**
       (2026-09-26、`userProfile`から改称・拡充。旧名は「ユーザー自身の思考パターン」という
       個人の傾向に限定した名前だったが、ユーザー指摘により、CLAUDE.mdルールの追加経緯や
