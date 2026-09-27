@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/answers/concernReview/approvedAtを持つ(2026-09-26、ユーザー指示によりbackground/goals/nonGoals/openQuestions/decisions/reusedGoalsのような複数項目を1つのフィールドへ合成する方式から、interviewChecklistの10項目それぞれに1対1で対応する answers 配列(各要素は{n, question, answer})へ変更した。表示画面がJSONをそのまま映すだけで済むようにする狙い)。",
+  "description": "新規リポジトリ立ち上げ時の要件定義シート集。新規相談ルーム(dashboard.htmlの「🆕 新規相談 依頼文」ボタン、またはclaude-voice-bridgeのnew-app-kickoffスキル)での聞き取りが確定した際に、このファイルへ1件追加する。将来的にはgurii-gabreh/Knowledge-Dashboardが本ファイルをプル型で取得・集約する想定(README運用ルール31参照)。1件のrequirementsエントリはid/repo/title/status/answers/concernReview/approvedAtを持つ(2026-09-26、ユーザー指示によりbackground/goals/nonGoals/openQuestions/decisions/reusedGoalsのような複数項目を1つのフィールドへ合成する方式から、interviewChecklistの10項目それぞれに1対1で対応する answers 配列(各要素は{n, question, answer})へ変更した。表示画面がJSONをそのまま映すだけで済むようにする狙い)。\n\n2026-09-27追加: 既存12リポジトリ(tasks.jsonのknownRepos全件)の要件定義シートを、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に遡及的に作成した(ユーザー指示。新規相談の聞き取りではなく事後の記録のため、各エントリのapprovedAtはnull、backfilledAtに作成日を記録)。根拠のない項目は『不明(記録なし)』と明記している(CLAUDE.mdルール5)。",
   "interviewChecklist": {
     "description": "2026-09-25追加、ユーザー指示「確認する項目を統一したい」。新規相談の聞き取りで必ず1つずつ確認する標準10項目(2026-09-26、requirementsエントリのanswers配列とn番号で1対1対応するよう変更)。聞き取りのたびにこの並び・項目名を変えないこと(ブレ防止が目的)。",
     "items": [
@@ -47,7 +47,775 @@
     ],
     "note": "対象外・未確定など、10項目にきれいに収まらない話が出た場合もanswers配列の該当するnの回答テキスト内に書き添えてよい(例:「(対象外)◯◯はやらない」)。10項目全ての回答が揃った後、data/tasks.jsonのissues・concept-log.json・servicenow-sub-agentのresearch-items.json・過去のrequirements配列・concernsと照合し、該当する過去のトラブル・懸念が見つかったらconcernReviewへ記録する。"
   },
-  "requirements": [],
+  "requirements": [
+    {
+      "id": "REQ-KIZ-001",
+      "repo": "kizashi",
+      "title": "結(ゆい)/Yui",
+      "status": "開発中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "結(ゆい)/Yui(kizashi-app/README.md 1行目、企画整理.md 51行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "土砂災害の現場で待機する家族・関係者向けに、情報伝達の遅れ(同じ質問の重複聞き取り・人づて伝言による遅延・誤伝達)と二次災害リスクを減らし、司令官(現場指揮者)の負担も軽減する。主役は「現場で待機する被災者家族・関係者」(README.md 9〜13行目、企画整理.md 55〜65行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "開発者本人の親戚が土砂災害に遭い消息不明となり、本人も現場に徹夜で立ち会った実体験。家族は何も手伝えず待つだけで、間取り・行方不明者情報の聞き取りに司令官の手が取られ捜索が止まっていた経験が原点(README.md 11行目、企画整理.md 58〜59行目)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "モバイルファースト設計。まずWebブラウザで完結させ、将来的にPWA化してiPhone対応を段階的に強化する方針(企画整理.md 432〜436行目)。iPhoneネイティブアプリ化は将来展望として最下位優先で言及(企画整理.md 476行目)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "永久無料前提。費用は完全無料の範囲(Cloudflare Workers/D1/Pages、LINE Messaging APIの無料枠等)に収める方針で、実際に費用は一切発生していない(README.md 47行目、submission/entry-form-draft.md 52行目)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "現場ルーム(6桁コード・ログイン不要)、危険/待機可能エリアの地図可視化、事前問診フォーム(暗号化保存)、間取り手書き共有(Canvas)、前兆現象共有モード(国交省チェックリスト準拠)、危機感を伝えるUX設計、音声ガイド付き事前問診、傾聴AIチャット「そっと話す」(README.md 15〜24行目、src/README.md 22〜44行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "東京都建設局河川部の土砂災害危険度情報関連データ(CC BY 4.0)、気象庁防災情報XML・土砂キキクル(リンクのみ)、国交省/首相官邸の前兆現象チェックリストを使用。ユーザー入力(事前問診・前兆現象報告・間取り画像)はAES-GCM暗号化してCloudflare D1に保存し事案終了後30日で自動削除。傾聴AIチャットの会話内容は一切保存しない(企画整理.md 136〜167行目、src/README.md 84〜113行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "HTML/CSS/JS(フレームワーク不使用)+Leaflet.js、Cloudflare Workers+D1(無料枠)、Cloudflare Workers AI(@cf/meta/llama-3.1-8b-instruct)、Web Push優先+LINE Messaging API補助(オプトイン)。Claude Codeを実装パートナーとして活用(README.md 39〜49行目、src/README.md 92〜96行目)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "都知事杯オープンデータ・ハッカソン2026(東京都主催)への提出を目指して開発中。2026-08-01時点で音声問診・傾聴AIチャット追加分はローカル検証済み、本番デプロイ未実施。提出物はドラフト段階(README.md 5行目、企画整理.md 3行目・537〜544行目、src/README.md 127〜176行目)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(CLAUDE.md 8行目)"
+        }
+      ],
+      "concernReview": [
+        {
+          "concernId": "CN-001",
+          "matchedBecause": "concerns.items(CN-001)のobservedInに『kizashi(結)の企画整理.mdの変遷(前兆現象共有の再優先度付け、間取り共有の統合など、後出しの仕様変更が複数回発生)』と明記されており、CN-001自体がkizashiの実例から一般化されたパターンである",
+          "resolution": "2026-08-08、要件定義シートの仕組み自体を新設し、新規性の高い相談は実装前に聞き取り・要件定義を挟むようにした(CN-001のmitigationとして既に運用中)。kizashi自体は企画整理.mdという単一の要件文書を都度更新する運用により、後出し変更の影響範囲を1ファイルで追える状態を維持している"
+        }
+      ],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-SPT-001",
+      "repo": "supermarket-price-tracker",
+      "title": "KAKAKU(価格比較トラッカー)",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "KAKAKU(価格比較トラッカー)/チラシ価格トラッカー。統一名の宣言は見当たらない(index.html 6・21〜22行目、Code.gs 1〜4行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "近隣スーパー・ドラッグストアのチラシ価格を自動収集し店舗間で価格を比較・履歴管理することで、食品の節約(最安値の把握)を助ける。「誰のために」の明文化は無い(home.html「⚡リアルタイム価格取得」カード説明、js/ui.js 193〜215行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし。README・企画文書が存在しない)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "方針を明言した文書は無いが、2026-09-12「携帯画面でレイアウトが崩れる」というユーザー報告への対応でハンバーガーメニュー化(@media max-width:640px)を実装し、375×700/1280×800双方でPlaywright検証済み(実質両対応、commit 42e8831)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "明示の方針文書は無いが、Gemini APIの無料枠(1000リクエスト/日、gemini-2.5-flash-lite)を前提に65秒間隔でレート制限を調整する設計(Code.gs 11〜21・36行目)。CLAUDE.mdルール9(永久無料)適用対象"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "デモモード、リアルタイム価格取得(近隣チラシ収集・価格比較)、価格一覧(店舗・日付・品目絞り込み)、設定(スプレッドシートURL・住所・自動収集スケジュール)、節約額計算・ランキング表示(home.html、Code.gs 128〜168行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "トクバイのチラシ検索結果とGemini API画像解析価格データをGoogleスプレッドシート(価格履歴/サマリー/スーパー一覧)に保存。ユーザー設定はブラウザのlocalStorage(chirashi_tracker_config)。APIキーはGASスクリプトプロパティで管理(Code.gs 9〜17・27〜29行目、js/config.js 8〜24行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "Google Apps Script(doGetルーティング)+Googleスプレッドシート(DB代わり)+Gemini API(gemini-2.5-flash/flash-lite)+トクバイスクレイピング(UrlFetchApp)。ビルドステップ・バンドラー無しの静的HTML/CSS/JS構成(Code.gs 1〜33・128〜153行目、commit 42e8831)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "直近コミット2026-09-12(ユーザー報告への対応)でアクティブに保守中。優先度の明言は無い"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(CLAUDE.md 8行目)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-GEM-001",
+      "repo": "gemini-monitor",
+      "title": "Gemini API 混雑モニター",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "Gemini API 混雑モニター(README.md 1行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "Gemini APIの時間帯別混雑状況(モデル別成功率など)を自動測定・可視化するWebアプリ。「誰のために」は不明(記録なし)(README.md 3行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "明示的記載なし。index.htmlにviewportメタタグ+グラフresponsive:true設定があり両対応を意図した実装と推測される(断定ではなく、CLAUDE.mdルール8共通方針の反映と見られる、index.html 5・948・993行目)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "明示の無料宣言は無いが、対象モデルの無料RPM/RPDを測定対象として一覧化しており無料枠内運用が前提と読み取れる(README.md 75〜85行目)。CLAUDE.mdルール9(永久無料)適用対象"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "小/中/大3種プロンプトでの自動測定、時間帯別ヒートマップ・時系列成功率・平均レイテンシ・規模別成功率・エラー種別分布グラフ(24時間/7日/月/年切替)、測定対象モデルON/OFF・測定規模・間隔設定(README.md 67〜107行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "Googleスプレッドシート(measurements/settingsシート)にGAS経由保存。フロントエンド(GitHub Pages)がGAS Webアプリ(doGet)経由で取得・表示(README.md 5〜13・31〜64行目、gas/Code.gs 9〜10行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "静的HTML(GitHub Pages)+Google Apps Script(Webアプリ)+Googleスプレッドシート+Gemini API(README.md 5〜13・17〜56行目、gas/Code.gs 1〜13・37〜45行目)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "固有の優先度・ステータス記載は無い。直近可視コミットは2026-09-06の許可リスト反映のみ"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(CLAUDE.md 8行目)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-PTD-001",
+      "repo": "progress-tracker-dashboard",
+      "title": "progress-tracker-dashboard",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "progress-tracker-dashboard(README.md冒頭)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "複数リポジトリ(kizashi・supermarket-price-tracker・gemini-monitor等)の実装状況・進捗を一覧化する自立型トラッカーアプリ。CLAUDE.mdの運用ルール・AI基本設定・要件定義シート等のナレッジも一元管理する(README.md冒頭、CLAUDE.md冒頭)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし。README/CLAUDE.mdに明示的な『きっかけ』の記述は見つからなかった)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "両対応。dashboard.htmlにviewportメタタグがあり、GitHub Pages(deploy-pages.yml)で公開されている。本セッションでもモバイル幅の表示崩れを複数回修正済み"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "無料。Google Sheets・GAS・GitHub Actions等いずれも無料枠の範囲で運用(CLAUDE.mdルール9が全リポジトリ共通の前提)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "タスク一覧(進捗管理)、AI基本設定タブ(運用ルール・許可リスト・JSONデータ一覧等)、アプリ基本設計(2026-09-26追加)、新規相談テンプレート生成、コメントスレッド機能(README.md「目標アーキテクチャ」)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "スプレッドシート「実装進捗管理シート」が唯一の正本(README.md)。加えてリポジトリ内のdata/tasks.json・requirements.json・concept-log.json・ai-config.json・policy.json等のJSONファイル群"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "静的HTML(dashboard.html)+GAS(Sheetsへの書き込み中継)+GitHub Actions(定期処理・自動デプロイ)+GitHub Pages"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "稼働中・継続改修中(全管理対象リポジトリの進捗管理・運用ルール変更を日常的に実施)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(このリポジトリ自体がtasks.jsonでの管理基盤)"
+        }
+      ],
+      "concernReview": [
+        {
+          "concernId": "CN-005",
+          "matchedBecause": "concerns.items(CN-005)のobservedInに『README「ルームマッピング」記載、2026-08-12〜13にgas/Code.gsの変更・別リポジトリへのGitHub Actionsワークフロー追加を直接実装してしまい、繰り返し指摘された』とあり、これはprogress-tracker-dashboard自身(manager-room)での実例",
+          "resolution": "CLAUDE.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。『実装作業をしているセッションはworker-role』という前提を明文化(CLAUDE.md最重要ルール)"
+        },
+        {
+          "concernId": "CN-006",
+          "matchedBecause": "concerns.items(CN-006)のobservedInに『claude-core-rules.md ルール18の2026-09-06追記(方針転換の理由として記載)』とあり、progress-tracker-dashboard自身の運用ルール変更の経緯そのものが根拠",
+          "resolution": "大きな実装・並行運用が必要な場合は事前に役割分担と調整方法を明確にする方針とし、worker-room方式の段階的廃止・サブエージェント/Codex連携への移行を決定した(ルール18)"
+        }
+      ],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-ARR-001",
+      "repo": "ai-research-radar",
+      "title": "ai-research-radar",
+      "status": "廃止済み",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "ai-research-radar(README.md 1行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "キーワードを与えるとGemini APIが最新のAI技術情報・活用事例を自動調査して一覧化するアプリ。自分自身の情報収集用途と読み取れる(README.md 22・26〜27行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "明示的記載なし。index.htmlにviewportメタタグがあり両対応を意図した実装と推測される(index.html 5行目)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "明示の費用宣言は無いが、Gemini APIレート制限(429)対応(実行時刻自動最適化、Claudeフォールバック)が無料枠を前提とした設計。構成要素もGAS・Googleスプレッドシート・GitHub Pagesのみ(README.md 75〜103行目)。CLAUDE.mdルール9適用対象"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "依頼タスクのキーワードをGemini API(検索グラウンディング付き)で日次自動調査、収集ログスプレッドシート+data/research-log.jsonへミラー、index.htmlでの検索・絞り込み表示、gemini-monitorの混雑データを使った実行時刻自動最適化、Geminiレート制限時のClaudeフォールバック収集(README.md 24〜156行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "「AI技術情報・活用事例 収集ログ」スプレッドシートが正本、data/research-log.jsonが自動ミラー、data/claude-fallback-results.json。gemini-monitorの混雑計測用スプレッドシートも直接読み取る(README.md 26〜42行目、gas/Code.gs 1〜33行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "コンテナバインドGAS(gas/Code.gs)+Gemini API(検索グラウンディング、gemini-3.5-flash)+静的HTML(GitHub Pages)+GitHub Contents API(gas/Code.gs 1〜27行目、README.md 57〜73行目)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "廃止済み(2026-08-26)。progress-tracker-dashboardのdata/ai-research-feed.json(Claude+WebSearchによる日次調査Routine)に統合され、今後の日次AI技術調査はそちらに一本化。廃止理由は、収集ログ実データ32件の「使うAI」列が全件Claudeで、本来の本番経路(Gemini経路)が一度も実行されていなかったと判明したため(README.md 3〜20行目)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "方針上は管理対象(CLAUDE.md 8行目)だが、廃止済みのため実質的な運用は終了している"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-UST-001",
+      "repo": "usage-tracker",
+      "title": "使用量分析ダッシュボード(仮)",
+      "status": "未着手",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "使用量分析ダッシュボード(仮、tasks.json UST-001)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "Claude Codeでの1日あたりの作業量と利用上限の相関を実測データから把握し、記録・予測・アドバイスにつなげる(tasks.json UST-001/UST-002)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "公式の換算指標が無いため、自前でデータを積み上げて相関を見る方針にした(tasks.json UST-002 detail)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "不明(記録なし。まだ専用リポジトリ・実装に着手していないため未確定)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "不明(記録なし。他リポジトリ同様に無料前提と推測されるが、tasks.jsonに明示的な記述は無い)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "使用量ログ(Repo/Task/着手日時/完了日時/所要時間/規模感/PR差分行数/推定トークン数)、利用上限ログ(任意記録)、将来的な記録UI・予測・アドバイス機能(tasks.json UST-003/UST-006)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "実装進捗管理シートへの新タブ追加(使用量ログ・利用上限ログ)を予定。将来的には専用リポジトリでの可視化サイト構築も想定(tasks.json UST-003/UST-005)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "不明(記録なし。UST-005で『専用リポジトリ・可視化サイト構築』と書かれているが、具体的な技術選定はまだ無い)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "未着手(tasks.json UST-001 status)。優先度は中。UST-002のみ完了、UST-003以降は着手前"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(tasks.jsonのUST-001で管理中。ただしnoteに『新しいリポジトリ・専用ルームを作ってユーザーまたは専用ルームが構築する想定』とあり、実装自体はこのリポジトリの管理外)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-KND-001",
+      "repo": "Knowledge-Dashboard",
+      "title": "Knowledge Dashboard",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "Knowledge Dashboard(README.md)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "Google Driveに蓄積してきたナレッジ用スプレッドシートの一覧と、複数リポジトリの実装ナレッジ・要件知見を横断集約したダッシュボード(README.md冒頭)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "両対応。dashboard.htmlにviewportメタタグがあり、GitHub Pages(deploy-pages.yml)で公開されている"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "無料。Google Apps Script・GitHub Actionsいずれも無料枠の範囲(README.md「デプロイ手順」、CLAUDE.mdルール9)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "スプレッドシート一覧(検索・カテゴリ絞り込み・並び替え)、実装ナレッジ一覧(横断集約・検索・絞り込み)、アプリ一覧、アプリ基本設計(2026-09-27追加)(README.md「構成」)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "data/spreadsheets.json(Drive自動収集)、data/knowledge-index.json(progress-tracker-dashboardのtasks.json/requirements.jsonを集約)、data/spreadsheet-labels.json"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "静的HTML(dashboard.html)+Node.jsスクリプト(generate-knowledge-index.js)+GitHub Actions(update-knowledge-index.yml)+Google Apps Script(Drive自動収集)+GitHub Pages"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "稼働中・継続改修中"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(tasks.jsonのKnowledge-Dashboard関連タスクで管理中)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-STU-001",
+      "repo": "study-app",
+      "title": "Study App",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "study-app(GitHubリポジトリ名)。画面タイトルは「Study App」(CLAUDE.md 1行目、index.html 6行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "問題集・学習コンテンツ(基本情報技術者試験等の過去問)を扱う学習用アプリ。クイズ形式で問題を解き、履歴・メモ・進捗を端末間で共有する。誰のためかは明記されておらず本人の資格学習用と推測される(明記なし)(CLAUDE.md 3行目、gas/README.md 5行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし。tasks.json STU-001のnoteはトラッカーへの追加理由であり、アプリ発案の経緯ではない)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "両対応。携帯幅(375px)でヘッダータブ・サイドバーをハンバーガーメニュー化する改修が実施済み(commit c891acc)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "永久無料前提。CLAUDE.mdルール9に明記。GitHub Pages(静的サイト)+GAS(無料枠)構成"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "クイズ出題・採点、レッスン単位の要約/問題/復習/苦手問題/履歴タブ表示、問題文への画像添付、メモ(コメント)機能、クイズ途中経過の端末間同期(gas/README.md、tasks.json STU-001)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "学習コンテンツ本体はdata/lessons.json、学習履歴はdata/history.json、クイズ途中経過はdata/progress.json(いずれもリポジトリ内JSON、GitHub Pagesから直接fetch)。書き込みはGAS中継経由でGitHub PATを使いコミット(gas/README.md 5〜11行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "フレームワーク無しの静的HTML/CSS/バニラJS(単一index.html)、GitHub Pages、GAS中継(gas/code.gs)。旧Googleスプレッドシート連携は2026-08-26に全廃止、2026-09-13にGitHub JSON書き込み専用GAS中継として復活(CLAUDE.md 72〜77行目、commit e3eb30c)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "稼働中・継続改修中。直近コミット(2026-09-13)はクイズ進捗の端末間同期バグ修正。tasks.json STU-001は優先度「低」・状態「完了」"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(STU-*タスクIDで管理中)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-SSC-001",
+      "repo": "Study-Schedule",
+      "title": "Study Schedule",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "Study Schedule(README.md)。tasks.json上は「Study-Schedule」表記"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "学習タスクをレベル1(目標)〜レベル4(実行タスク)のWBS(階層構造)で管理し、1日1列のカレンダー(ガントチャート形式)で進捗・遅延を可視化するダッシュボード。誰のためかの明記は無い(本人の学習計画管理用と推測、明記なし)(README.md 3行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "2026-08-13、ユーザーとの相談から新規発足。progress-tracker-dashboard側での学習進捗管理の必要性から専用アプリとして切り出され、progress-tracker-dashboardの『学習スケジュール』タブにiframe埋め込みで参照する構成にした(tasks.json SSC-001 note)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "viewportメタタグでレスポンシブ対応の実装だが、『両対応』を明記した記述自体は不明(記録なし)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "GitHub Pages(無料)で公開する構成。有料要素の記述は無い。CLAUDE.md自体がリポジトリに存在しないため永久無料方針の明記は不明(記録なし)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "index.htmlによるWBSツリー閲覧・進捗可視化、today.htmlによる今日/全体ビュー、タスクの開始日・完了予定日・実績・ステータス・優先度表示、中間ノードでの子タスク自動集計。追加・更新はClaude Codeのチャット経由で依頼する運用(README.md 5〜12行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "学習タスクのWBSデータ(data/tasks.json)にツリー構造(root/children)で保存。葉ノードのみstart/plannedEnd/actualEnd/status/priorityを持つ。index.htmlはfetchのみでデータをHTMLに埋め込まない(README.md 7・10〜12行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "フレームワーク無しの静的HTML/CSS/バニラJS、GitHub Pages(deploy-pages.ymlで自動デプロイ)、バックエンドサーバーなし"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "稼働中。ローカルgit logの直近コミットは2026-09-05(プラグイン追加)のみ確認できる(浅いクローン)。tasks.json SSC-005記録では2026-08-16にmainへコミット・push済みで、以後もWBS構成の改修が続いている"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(SSC-*タスクIDで管理中、progress-tracker-dashboardの学習スケジュールタブにiframe埋め込みで統合)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-SNA-001",
+      "repo": "servicenow-sub-agent",
+      "title": "servicenow-sub-agent",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "servicenow-sub-agent(README.md 1行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "ServiceNow PDI上でAI・アプリ開発に関わる6観点(技術/アーキテクチャ、AI技術動向、技術組合せ、AI活用分野、AI流行、世の中のニーズ)を無料の外部情報源から定期収集し1テーブルに蓄積するリサーチパイプライン。今後のアプリ開発の着想・技術選定用の調査ナレッジ蓄積が目的(README.md 3行目)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "明示的な発案経緯の記述なし。tasks.json PTD-046に『ユーザーが無料のServiceNow PDIを作成完了。既存のai-research-radarには組み込まず独立した新規リポジトリとして構築する方針』という着手記録のみで、一次動機は不明(記録なし)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "不明(記録なし)。バックエンド的リサーチパイプラインでユーザー直接操作UIの端末対応記載はない"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "CLAUDE.mdルール9(永久無料)が方針。情報源選定も『無料・認証不要の公開API/RSS』『有料の開発者APIは使わない』方針。将来検討中の埋め込み検索も有料API不使用で$0にできる見込みと明記(README.md 16・154行目)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "ServiceNow Scheduled Jobが日次で各情報源(arXiv・Hacker News・9種ブログRSS)をREST Message経由でGET、正規化、u_dedup_keyで重複チェック、新規分のみu_ai_research_itemテーブルへinsert(README.md 50〜59・65〜131行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "category/title/summary/source_url/source_name/published_at/fetched_at/dedup_keyをServiceNow PDIのu_ai_research_itemテーブルに保存。GitHub側にexportされたdata/research-items.json(2481件・約1.67MB)。ServiceNow認証情報はコミットしない方針(README.md 65〜78・150行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "ServiceNow PDI(REST Message+Scheduled Job、正規表現ベースXML/RSS/Atom解析)、単一テーブル+category列のDB設計、GitHub Actions(Table API経由セットアップ自動化)。ServiceNow側コードはGitHubと自動連携せず手動コピペが必要な制約あり(README.md 50〜61・119行目)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "progress-tracker-dashboard側PTD-046は『完了』(2026-09-18更新)。情報源は計11件が稼働中。埋め込み検索によるセマンティック検索は将来の拡張(検討中、未実装、PTD-061)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(README.md 3行目・CLAUDE.md 8行目)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-ELR-001",
+      "repo": "English-LevelUp-Reader",
+      "title": "English LevelUp Reader",
+      "status": "開発中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "English LevelUp Reader(README.md 1行目)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "日常会話レベルから徐々にレベルアップしていく英語読解・リスニング・発音練習アプリ。日本語と英文混在表示+読み上げ(TTS)+発音チェック(音声認識)。ユーザーからの相談が背景(README.md 3〜4行目、tasks.json ELR-001)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "発音チェック方式(ブラウザ内Whisper/WASM)採用の直接のきっかけは、姉妹アプリEnglish-Speaking-AppのwebkitSpeechRecognitionがiPhone Safariで認識精度が悪いというユーザー指摘。アプリ自体の発案経緯自体は記載なし(README.md 24行目、prototype/README.md 9〜11行目)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "PC専用(ユーザーが明示的に選択した今回限りの例外。CLAUDE.mdルール8の標準方針は今回は適用しないとユーザーが選択したと記録)(README.md 26行目、tasks.json ELR-001 note)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "明示的に無料構成。読み上げはブラウザ標準SpeechSynthesis(無料・APIキー不要)、発音チェックもクラウドAPI不使用でブラウザ内WASM実行、ホスティングもGitHub Pages(バックエンドサーバーなし)(README.md 22〜23・28行目)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "レベル一覧→トピック一覧→文単位読解の導線、SpeechSynthesisでの読み上げ(速度調整可)、localStorageでの完了記録管理、10段階レベル設計(現状レベル1のみ完成、2-10はプレースホルダー)、発音チェック機能(ブラウザ内Whisper、現在は準備中表示のみで未組み込み)(README.md 12〜18行目)"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "data/lessons.jsonが正データ(levels>topics>lessonsの3階層)。進捗・スコア等のユーザー個別データはlocalStorageのみでGitHub同期しない(README.md 27行目)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "ブラウザ標準SpeechSynthesis API、ブラウザ内Whisper系モデルをWebAssemblyで実行(クラウドAPI不使用)、GitHub Pages(バックエンドサーバーなし)。制約: WhisperのCDN(huggingface.co・cdn.jsdelivr.net)へのアクセスが開発セッションのネットワークポリシーでブロックされ、精度・速度検証はユーザー自身のPCブラウザで行う運用(README.md 22〜28行目、prototype/README.md 16〜26行目)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "進行中(tasks.json ELR-001、2026-09-06更新、優先度「中」)。次のアクションはユーザーによるprototype/whisper-test.htmlの実機検証待ち。レベル2-10のコンテンツ作成・本実装・最終動作確認も未完(README.md 14〜18行目)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(README.md 8〜10行目でELR-001参照と明記)"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    },
+    {
+      "id": "REQ-CVB-001",
+      "repo": "claude-voice-bridge",
+      "title": "AI開発情報一覧(旧Claude Voice Bridge)",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "Claude Voice Bridge(表示名は2026-09-26に「AI開発情報一覧」へ変更。README.md/manifest.json)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "claude.ai/Gemini(ブラウザ版)との会話を音声で行うためのChrome拡張機能。サイドパネルのオーブに話しかけると入力欄へ自動入力・送信し、応答を読み上げる。あわせて、会話ルーム内の未解決の相談・未完了作業を一覧化する機能も持つ(README.md冒頭・「未解決の相談・進行中タスクの見逃し防止」節)"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし。README上に『なぜ作ったか』の明示的な記述は見つからなかった)"
+        },
+        {
+          "n": 4,
+          "question": "PC専用/iPhone専用/両対応(CLAUDE.mdルール8で必須確認)",
+          "answer": "両対応。Chrome拡張機能(PC、sidepanel.html)と、GitHub Pagesでのモバイル向けWeb版(webapp/index.html)の両方を提供(README.md「モバイル(iPhone等)向けWeb版タスク一覧」)"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "完全無料。音声認識(Web Speech API)・読み上げ(SpeechSynthesis)はブラウザ標準機能のみを使用し追加のAPI契約・料金は発生しない(README.md「できること・できないこと」)"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "音声での自動入力・送信・読み上げ、AI切替(Claude/Gemini)、ルームタスク監査(room-task-auditスキルによる未解決の相談・作業の自動抽出)、GitHub同期(data/tracker.json)、定例文・スキル呼び出しボタン、(2026-09-26追加)アプリ基本設計タブ"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "chrome.storage.local(トラッカー・全発言ログ)に加え、GitHub上のdata/tracker.json・data/room-log.json・data/knowledge-log.json・data/weekly-digest.json・data/templates.jsonへ同期(README.md各節)"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "Chrome拡張機能(Manifest V3)、Web Speech API、Google Apps Script(GitHubへの書き込み中継)、GitHub Pages(モバイル版ホスティング)"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "稼働中・継続改修中(このセッションでも表示名統一・タスク一覧更新の数珠つなぎ化・タスクID起点修正等を実施済み。tasks.json CVB-001参照)"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "はい(tasks.jsonのCVB-001で管理中)"
+        }
+      ],
+      "concernReview": [
+        {
+          "concernId": "CN-005",
+          "matchedBecause": "concerns.items(CN-005)のobservedInに『claude-voice-bridgeの音声入出力の実装・デバッグも同様に直接行ってしまった(2026-08-25)』と明記されており、このリポジトリ自体がmanager-room直接実装の実例として記録されている",
+          "resolution": "claude-core-rules.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。以後の実装は『実装作業をしているセッションはworker-role』という前提で行う運用に変更"
+        }
+      ],
+      "approvedAt": null,
+      "backfilledAt": "2026-09-27",
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+    }
+  ],
   "concerns": {
     "description": "新規アプリ構想の聞き取り(標準10項目)を終えた後、その回答内容と照らし合わせてチェックする「陥りやすい問題」の一覧(2026-09-26、ユーザー指示で userProfile から改称・拡充)。ユーザー自身の思考の癖だけでなく、過去の実績(CLAUDE.mdルールの追加経緯・README記載の繰り返し違反)から判明した、実装・進め方そのものの陥りやすいパターンも含む。ユーザー自身が「確かにそうだ」と認めたもの、またはCLAUDE.mdの既存ルールとして既に明文化されているもの(=追加時点で既にユーザー確認済み)だけを記録し、AI側が新たに一方的に決めつけて追加しない(この安全策自体は旧 userProfile.patterns から継続)。",
     "items": [
