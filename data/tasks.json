@@ -4030,6 +4030,32 @@
           "summary": "PTD-046の拡張としてcategory 6(世の中のニーズ)を実装し、ServiceNowへ反映完了。本タスクはPTD-020(方向性相談)・KIZ-046(ハッカソン結果)・PTD-046(パイプライン本体)を横断する追跡用タスクとして起票。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-066",
+      "task": "既存12リポジトリの要件定義シート(標準10項目)をrequirements.jsonへ遡及的に作成",
+      "title": "既存アプリ要件定義シートの遡及作成",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-09-27",
+      "category": "manual",
+      "note": "2026-09-27、ユーザー指示「基本設計タブで表示する用に、今存在する全アプリをまとめて10項目の内容や、懸念点を全てまとめて」への対応。アプリ基本設計タブ(Knowledge-Dashboard/claude-voice-bridgeへ追加予定、未実装)で表示するデータの元になる。",
+      "content": [
+        "対象範囲(全12リポジトリ、メタツール含む)と、根拠が無い項目の扱い(「不明」と明記、推測で埋めない)は、事前にAskUserQuestionでユーザーに確認して進めた。",
+        "kizashi・supermarket-price-tracker・gemini-monitor・ai-research-radar・study-app・Study-Schedule・servicenow-sub-agent・English-LevelUp-Readerの8リポジトリは、Exploreサブエージェント4体を並列起動し、各リポジトリのREADME/CLAUDE.md/git log/企画ドキュメント等を実際に読んで調査(各項目に引用元ファイル・行番号を明記)。claude-voice-bridge・progress-tracker-dashboard・Knowledge-Dashboardはこのセッション自身の既存知識+README再確認、usage-tracker(専用リポジトリ未作成)はtasks.jsonのUST-*タスクのみを根拠に作成した。",
+        "concerns(陥りやすい問題マスタ、CN-001〜CN-006)と照合し、observedInが実際にそのリポジトリ自身を指している場合のみconcernReviewへ記録(kizashi→CN-001、progress-tracker-dashboard→CN-005・CN-006、claude-voice-bridge→CN-005)。根拠の無い新規懸念は追加していない。",
+        "各エントリはapprovedAtをnull、backfilledAtに作成日を記録し、通常の新規相談による聞き取り(承認済み)とは区別できるようにした。"
+      ],
+      "nextAction": "この要件定義シートを実際に表示するKnowledge-Dashboard/claude-voice-bridgeの「📐 基本設計」タブ本体(PTD-066とは別タスク、未実装)を実装する",
+      "output": "gurii-gabreh/progress-tracker-dashboard (data/requirements.json, commit 304c2ab)",
+      "checkHistory": [
+        {
+          "date": "2026-09-27",
+          "summary": "全12リポジトリの要件定義シートをrequirements.jsonへ追加しcommit・push・main反映まで完了。"
+        }
+      ]
     }
-  ]
+  ],
+  "updatedAt": null
 }
