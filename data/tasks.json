@@ -4066,6 +4066,10 @@
         {
           "date": "2026-09-27",
           "summary": "ジャーナル面談機能の実装(data/journal.jsonスキーマ・gas/code.gs拡張・PC版/モバイル版の最上位タブ再構成・Gemプロンプト埋め込み)が完了し、commit・push(main直push)まで完了。Playwrightでタブ切替・保存POST・過去エントリ表示をモックデータで検証済み(コンソールエラー無し)。実際のGAS再デプロイ(ユーザー側作業)・実機でのGemini Live連携動作確認はまだ"
+        },
+        {
+          "date": "2026-09-27",
+          "summary": "ユーザー指示でアプリの最上位タイトルを「AI開発情報一覧」から「AIサポートアプリ」へ変更(manifest.jsonのname/default_title、sidepanel.html・webapp/index.htmlの<title>・見出し)。ジャーナル面談タブ追加により単一機能アプリでなくなったための改称。「📋 AI開発情報一覧」タブ自体の表示名は据え置き。commit・push(main直push)まで完了"
         }
       ]
     },
