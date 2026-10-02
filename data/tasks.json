@@ -4165,6 +4165,10 @@
         {
           "date": "2026-10-02",
           "summary": "ユーザーから「画像から問題文・回答文を抽出してstudy-appのJSONへ保存する対応はスキル化できているか」と質問を受け、過去ログ(2026-09-09のアドホック実行)を実際に確認した結果、スキル化されていないギャップを発見。exam-question-importをPart A/B構成に改修し、ユーザー指定の固定起動フレーズ2件(Part A実行時はPart Bも自動続行)をclaude-voice-bridgeのdata/templates.jsonへ登録してcommit・push完了。"
+        },
+        {
+          "date": "2026-10-02",
+          "summary": "ユーザーから「tex-image-extractionは不要になったのでは」と確認があり、TEX-001〜003の実績を確認した結果、その出力(スプレッドシート)は毎回study-appのlessons.jsonへ最終的に転記されており、exam-question-import Part Aがこれを直接代替することを確認。ユーザー指示により、スキルファイル自体は削除せず残し、progress-tracker-dashboardのdata/ai-config.jsonのweb.customSkills.table(🤖AI基本設定タブの表示)からのみ除外し、ai.customSkills.registry側には\"status\": \"superseded\"を付けて記録を残した。経緯の詳細はstudy-appのexam-question-import/SKILL.mdに記録。"
         }
       ]
     }
