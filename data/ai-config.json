@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-09-13",
+  "updatedAt": "2026-10-02",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -133,6 +133,18 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "summary": "既存の「🆕 新規相談」フロー(dashboard.htmlの依頼文テンプレート)の自動化された別入口。固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動し、progress-tracker-dashboard自身をsource_urlにした新規ルームをcreate_sessionで自動作成(手動コピペを省くだけ)。中身(確認するナレッジ・聞き取り形式・userProfile.patterns確認・a/b/c/d分類)はdashboard.htmlのbuildNewConsultationPromptText()と完全に同一で、独自の手順は持たない(2026-09-25、当初別手順として設計したが既存フローとの重複が判明し作り直した)。",
           "triggerType": "user"
+        },
+        {
+          "name": "exam-question-import",
+          "repo": "gurii-gabreh/study-app",
+          "summary": "study-appのdata/lessons.jsonへ試験問題を追加する作業。Part A(2026-10-02追加)はDrive画像フォルダを並列サブエージェントでテキスト抽出し、clean/要目視確認/再撮影待ちの3区分に分類してcleanな問題をlessons.jsonへ直接書き込む(図表要の問題は同じ実行内でPart Bへ自動続行)。Part B(2026-09-08作成)は図表を画像のまま残す必要がある問題を、画像バイトを自分で扱わずGitHub raw URL経由で安全に配置する手順。",
+          "triggerType": "user"
+        },
+        {
+          "name": "hackathon-winner-curation",
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "summary": "servicenow-sub-agentのdata/research-items.jsonのcategory 7(ハッカソン情報)のうち、開催終了・入賞発表済みのものについて、Devpostのプロジェクトギャラリーページを実際に読み、入賞作品の傾向・注目作品・次の自作ハッカソンへの活かし方を日本語で要約してcurated:trueにする手順。research-item-curationと同じ『AIが直接読んで理解する』方式をcategory 7向けに特化させたもの。",
+          "triggerType": "ai"
         }
       ]
     },
@@ -561,6 +573,22 @@
           "createdAt": "2026-09-25",
           "summary": "既存の「🆕 新規相談」フロー(dashboard.htmlの依頼文テンプレート)の自動化された別入口。固定フレーズ「【新規アプリ構想】new-app-kickoffスキルを呼び出して実行してください。」で起動し、progress-tracker-dashboard自身をsource_urlにした新規ルームをcreate_sessionで自動作成(手動コピペを省くだけ)。中身(確認するナレッジ・聞き取り形式・userProfile.patterns確認・a/b/c/d分類)はdashboard.htmlのbuildNewConsultationPromptText()と完全に同一で、独自の手順は持たない(2026-09-25、当初別手順として設計したが既存フローとの重複が判明し作り直した)。",
           "triggerType": "user"
+        },
+        {
+          "name": "exam-question-import",
+          "repo": "gurii-gabreh/study-app",
+          "path": ".claude/skills/exam-question-import/SKILL.md",
+          "createdAt": "2026-09-08",
+          "summary": "study-appのdata/lessons.jsonへ試験問題を追加する作業。Part A(2026-10-02追加)はDrive画像フォルダを並列サブエージェントでテキスト抽出し、clean/要目視確認/再撮影待ちの3区分に分類してcleanな問題をlessons.jsonへ直接書き込む(図表要の問題は同じ実行内でPart Bへ自動続行)。Part B(2026-09-08作成)は図表を画像のまま残す必要がある問題を、画像バイトを自分で扱わずGitHub raw URL経由で安全に配置する手順。",
+          "triggerType": "user"
+        },
+        {
+          "name": "hackathon-winner-curation",
+          "repo": "gurii-gabreh/servicenow-sub-agent",
+          "path": ".claude/skills/hackathon-winner-curation/SKILL.md",
+          "createdAt": "2026-09-29",
+          "summary": "servicenow-sub-agentのdata/research-items.jsonのcategory 7(ハッカソン情報)のうち、開催終了・入賞発表済みのものについて、Devpostのプロジェクトギャラリーページを実際に読み、入賞作品の傾向・注目作品・次の自作ハッカソンへの活かし方を日本語で要約してcurated:trueにする手順。research-item-curationと同じ『AIが直接読んで理解する』方式をcategory 7向けに特化させたもの。",
+          "triggerType": "ai"
         }
       ],
       "note": "新しく定型作業をスキル化した場合は、このregistry配列にエントリを追記すること(SKILL.md本体は各リポジトリ側で管理し、ここへ複製しない)。加えて、そのスキルがチャット文言による固定の起動フレーズを持つ場合は、claude-voice-bridgeリポジトリのdata/templates.jsonにも\"type\": \"skill\"付きで追記すること(サイドパネルの「🔧 スキル呼び出し文言」の折りたたみに反映させるため。claude-core-rules.mdルール27、2026-09-19追加)。 triggerTypeフィールド: \"user\"はチャットへの固定フレーズでユーザーが能動的に呼び出すスキル(claude-voice-bridgeのdata/templates.jsonにも登録)、\"ai\"は依頼内容・状況をAIが判断して自分で適用するスキル(2026-09-19追加)。"
