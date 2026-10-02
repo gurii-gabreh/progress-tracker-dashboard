@@ -4133,6 +4133,44 @@
           "summary": "全12リポジトリの要件定義シートをrequirements.jsonへ追加しcommit・push・main反映まで完了。"
         }
       ]
+    },
+    {
+      "repo": "study-app",
+      "id": "STU-002",
+      "task": "gurii-gabreh/study-app: Drive画像フォルダ→data/lessons.json直書きの手順をスキル化(exam-question-import改修)",
+      "title": "問題画像抽出のスキル化(exam-question-import Part A/B化)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-02",
+      "category": "manual",
+      "note": "2026-10-02、マネージャールームでの相談。2026-09-09にこのルームでアドホックに行った「Drive画像84枚(平成30年春期)→study-appのdata/lessons.json直書き」作業(53/80問反映、残り27問は図表目視確認/再撮影待ちのまま追跡タスク未作成で放置)が、既存スキル(tex-image-extraction=Text-Extraction側でスプレッドシート出力止まり、exam-question-import=画像バイト埋め込み失敗の回避策のみ)のどちらにも手順として残っていないと判明。exam-question-importをPart A(Drive画像→lessons.json直書き、3区分分類、図表要の問題は同じ実行内でPart Bへ自動続行、完了時はSTU-NNN追跡タスク登録を必須化)/Part B(旧内容、GitHub raw URL経由の図表配置)の2部構成に改修した。ユーザー指示で固定起動フレーズ2件を割当て、claude-voice-bridgeのdata/templates.jsonへtype:skill付きで登録(CLAUDE.mdルール27)。",
+      "content": [
+        "study-appのexam-question-importスキル(.claude/skills/exam-question-import/SKILL.md)を、Part A(Drive画像フォルダ→並列サブエージェントでテキスト抽出→clean/要目視確認/再撮影待ちの3区分→cleanをdata/lessons.jsonへ直接書き込み)とPart B(図表が必要な問題の、GitHub raw URL経由での安全な配置)の2部構成に改修",
+        "固定起動フレーズを割当て: 「【Study App問題文抽出】画像から問題文・選択肢・正解を抽出してください」=Part A(+図表要の問題があれば同じ実行内でPart Bも自動実行)、「【Study App問題文抽出 図表抽出用】画像から問題文・選択肢の図表を抽出してください」=Part B単独(既知の図表問題のみ再処理する場合用)"
+      ],
+      "completedItems": [
+        {
+          "item": "study-app .claude/skills/exam-question-import/SKILL.md をPart A/B構成に改修・commit・push(main、commit 6d52f64)",
+          "date": "2026-10-02"
+        },
+        {
+          "item": "claude-voice-bridge data/templates.json へ起動フレーズ2件をtype:skill付きで追記・commit・push(main、commit c95f5eb)",
+          "date": "2026-10-02"
+        }
+      ],
+      "detail": "過去の精査で判明した問題: (1)tex-image-extraction(Text-Extraction repo)は画像→Googleスプレッドシート出力が本流で、study-appのJSONへは繋がっていない。(2)exam-question-import(study-app)の元の内容は、2026-09-08の画像埋め込み障害(Drive画像のBase64埋め込みで黒画像化・Claude自身の生成でBase64反復文字列が欠落)の再発防止策(画像バイトを扱わずGitHub raw URL+ユーザー手動配置)のみで、「Drive画像→study-appのJSON直書き」という2026-09-09に実際に行った作業そのものはどちらのスキルにも書かれていなかった。対応: exam-question-importをPart A(新規、2026-09-09の実際の手順を明文化。バッチ分割・サブエージェント並列抽出・qnum単位のマージ/重複排除・clean/needs_image_verify/needs_recaptureの3分類・data/lessons.jsonへの直接書き込み・STU-NNN追跡タスク登録の必須化)/Part B(旧内容、改名)の2部構成へ改修した。Part Aの図表要判定からPart Bへは、ユーザー指示により同一実行内で自動的に継続する仕様とした(Part Bの起動フレーズは単独再実行用)。",
+      "issues": "2026-09-09に平成30年春期で残った27問(17問=図表・正解欄の目視確認待ち、10問=元画像が空白で再撮影待ち)は、本改修でもまだ未解消(スキル化はこの残作業の再発防止が目的で、既存の27問の後処理は別件)。再度依頼があれば新スキルのPart Bで対応可能。",
+      "output": "gurii-gabreh/study-app commit 6d52f64 (.claude/skills/exam-question-import/SKILL.md); gurii-gabreh/claude-voice-bridge commit c95f5eb (data/templates.json)",
+      "checkHistory": [
+        {
+          "date": "2026-10-02",
+          "summary": "ユーザーから「画像から問題文・回答文を抽出してstudy-appのJSONへ保存する対応はスキル化できているか」と質問を受け、過去ログ(2026-09-09のアドホック実行)を実際に確認した結果、スキル化されていないギャップを発見。exam-question-importをPart A/B構成に改修し、ユーザー指定の固定起動フレーズ2件(Part A実行時はPart Bも自動続行)をclaude-voice-bridgeのdata/templates.jsonへ登録してcommit・push完了。"
+        },
+        {
+          "date": "2026-10-02",
+          "summary": "ユーザーから「tex-image-extractionは不要になったのでは」と確認があり、TEX-001〜003の実績を確認した結果、その出力(スプレッドシート)は毎回study-appのlessons.jsonへ最終的に転記されており、exam-question-import Part Aがこれを直接代替することを確認。ユーザー指示により、スキルファイル自体は削除せず残し、progress-tracker-dashboardのdata/ai-config.jsonのweb.customSkills.table(🤖AI基本設定タブの表示)からのみ除外し、ai.customSkills.registry側には\"status\": \"superseded\"を付けて記録を残した。経緯の詳細はstudy-appのexam-question-import/SKILL.mdに記録。"
+        }
+      ]
     }
   ],
   "updatedAt": null

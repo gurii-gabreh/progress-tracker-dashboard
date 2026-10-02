@@ -81,12 +81,6 @@
       "overview": "skill-creatorスキルを使って、繰り返し発生する定型作業を各リポジトリの.claude/skills/<スキル名>/SKILL.mdとして固定化したもの一覧です。保存場所はGitHub上の各リポジトリ(git管理・レビュー可能)で、この一覧はそのインデックスに過ぎません。次回以降は短い一言でこの手順を自動的に呼び出せます。チャット文言で呼び出す固定の起動フレーズを持つスキルの場合は、claude-voice-bridgeのdata/templates.jsonにも同時に追記し、サイドパネルの「🔧 スキル呼び出し文言」に反映させること(2026-09-19追加、ユーザー指示)。",
       "table": [
         {
-          "name": "tex-image-extraction",
-          "repo": "gurii-gabreh/Text-Extraction",
-          "summary": "Googleドライブの問題画像フォルダ(TEX-001〜003で確立した手順)をスプレッドシートへ書き起こす一連の作業。図表の切り抜き判定、分割問題の統合判定、スプレッドシート作成、progress-tracker-dashboardのdata/tasks.jsonへの登録までを含む。",
-          "triggerType": "ai"
-        },
-        {
           "name": "plugin-rollout",
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "summary": "Claude Codeプラグイン(例: superpowers@claude-plugins-official)のenabledPlugins設定を、管理対象の全リポジトリの.claude/settings.jsonへ展開してcommit・pushする手順。",
@@ -492,7 +486,9 @@
           "path": ".claude/skills/tex-image-extraction/SKILL.md",
           "createdAt": "2026-09-05",
           "summary": "Googleドライブの問題画像フォルダ(TEX-001〜003で確立した手順)をスプレッドシートへ書き起こす一連の作業。図表の切り抜き判定、分割問題の統合判定、スプレッドシート作成、progress-tracker-dashboardのdata/tasks.jsonへの登録までを含む。",
-          "triggerType": "ai"
+          "triggerType": "ai",
+          "status": "superseded",
+          "statusNote": "2026-10-02、ユーザー指示。TEX-001〜003の実績を確認したところ、このスキルの出力(スプレッドシート)は毎回最終的にstudy-appのdata/lessons.jsonへ人力転記されていた(他の用途は確認できず)。study-appのexam-question-import Part A(gurii-gabreh/study-app)がDrive画像フォルダ→lessons.json直書きを担うようになったため、study-app向けの実質的な役割は不要になったと判断。ユーザー指示により、スキルファイル自体(Text-Extraction repoの.claude/skills/tex-image-extraction/SKILL.md)は削除せず残し、このregistryエントリも『存在する』ことを示すため削除しないが、ダッシュボードの🤖AI基本設定タブ(web.customSkills.table)からは一覧表示を外した。詳しい経緯はgurii-gabreh/study-appのexam-question-import/SKILL.mdに記録。"
         },
         {
           "name": "plugin-rollout",
