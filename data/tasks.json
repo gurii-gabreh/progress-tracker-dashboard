@@ -4171,6 +4171,44 @@
           "summary": "ユーザーから「tex-image-extractionは不要になったのでは」と確認があり、TEX-001〜003の実績を確認した結果、その出力(スプレッドシート)は毎回study-appのlessons.jsonへ最終的に転記されており、exam-question-import Part Aがこれを直接代替することを確認。ユーザー指示により、スキルファイル自体は削除せず残し、progress-tracker-dashboardのdata/ai-config.jsonのweb.customSkills.table(🤖AI基本設定タブの表示)からのみ除外し、ai.customSkills.registry側には\"status\": \"superseded\"を付けて記録を残した。経緯の詳細はstudy-appのexam-question-import/SKILL.mdに記録。"
         }
       ]
+    },
+    {
+      "repo": "study-app",
+      "id": "STU-003",
+      "task": "gurii-gabreh/study-app: 基本情報 平成31年春期の問題画像(Drive、80枚)をexam-question-import Part Aで取り込み",
+      "title": "平成31年春期(80枚)のJSON取り込み",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-02",
+      "category": "manual",
+      "note": "2026-10-02、ユーザーから「【Study App問題文抽出】」相当の依頼(Driveフォルダhttps://drive.google.com/drive/u/0/folders/1mbiK-19BxlndYnC40DALspeZLabrP6eA)。exam-question-import Part Aで3並列サブエージェントがDrive画像80枚からテキスト抽出。79問をdata/lessons.jsonへ直接反映(commit 96a7def)。",
+      "content": [
+        "対象: Googleドライブ「平成31年春期」フォルダ、画像80枚(過去問道場サイトのスクリーンショット)",
+        "出力先: study-appのdata/lessons.jsonへ新規コース「平成31年春期」として直接追加(スプレッドシート経由なし)"
+      ],
+      "detail": "80枚を3バッチ(27/27/26枚)に分割し並列サブエージェントでmcp__Google_Drive__read_file_contentによるテキスト抽出を実施。初回結果は73問成功・7問エラー(うち1問は正解欄OCR崩れ、6問はread_file_content空応答)。空応答だった6問+2問(第5問・第7問、選択肢/問題自体が図)をClaude自身が直接ページを再読み込みして確認したところ、実は全て読み取り可能なページだった(本当の空白スクリーンショットは0枚)。うち1枚(screenshot_2026-08-11T04-58-24)は第19問の重複スクリーンショットと判明し除外。最終的に79問(第1〜80問のうち第53問のみ画像が1枚も存在せず欠番)を取り込んだ。\n第5問(2分探索木、選択肢自体が4種類の二分木図)と第7問(ユークリッドの互除法の流れ図)は図自体が問題の本質のため、該当領域を切り抜き・パレット量子化(16色、約95%軽量化)した上でimages/kihon-jouhou-h31-haru/へ配置。切り抜きはstudy-appのローカルクローンへファイル→ファイルで直接配置してcommitしており、Base64等のバイト列を生成テキストとして扱っていない(Driveへの一時退避を経由しない、2026-10-02時点のexam-question-import Part Bの標準手順よりも安全・簡潔な方式。このリポジトリ自身がローカルにクローン済みの場合に限り使える)。\n第22問は、ページの「正解」欄表示(イ=OR回路)が設問・解説の内容(2入力が共に1の時だけ出力が0になる回路=NAND)と矛盾していたため、検証可能なデジタル回路の論理に基づき正解をウ(NAND回路)に訂正した(CLAUDE.mdルール5)。",
+      "issues": "第53問は、このDriveフォルダに該当する画像が1枚も存在しない(空白画像ですらない、純粋な欠番)。今回のデータからは補完不可能で、ユーザーに新規スクリーンショットの追加撮影を依頼する必要がある。",
+      "output": "gurii-gabreh/study-app commit 96a7def (data/lessons.json, images/kihon-jouhou-h31-haru/*)",
+      "completedItems": [
+        {
+          "item": "79問(第53問を除く第1〜80問)をdata/lessons.jsonへ「平成31年春期」コースとして追加",
+          "date": "2026-10-02"
+        },
+        {
+          "item": "第5問・第7問の図を切り抜き、images/kihon-jouhou-h31-haru/へ配置・commit",
+          "date": "2026-10-02"
+        },
+        {
+          "item": "第22問の正解誤り(イ→ウ)をデジタル回路の論理に基づき訂正",
+          "date": "2026-10-02"
+        }
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-02",
+          "summary": "ユーザー依頼(Driveフォルダ指定)を受けexam-question-import Part Aを実行。3並列サブエージェントでテキスト抽出、7件のエラー・空応答を全てClaude自身の直接確認で解消(真の空白は0件、重複1件を除外)。79問をmain直push。第53問のみ画像自体が存在せず未解決(issuesに記載、ユーザーへの再撮影依頼が必要)。"
+        }
+      ]
     }
   ],
   "updatedAt": null
