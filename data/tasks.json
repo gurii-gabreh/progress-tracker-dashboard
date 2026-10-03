@@ -4217,6 +4217,32 @@
           "summary": "ユーザー依頼(Driveフォルダ指定)を受けexam-question-import Part Aを実行。3並列サブエージェントでテキスト抽出、7件のエラー・空応答を全てClaude自身の直接確認で解消(真の空白は0件、重複1件を除外)。79問をmain直push。第53問のみ画像自体が存在せず未解決(issuesに記載、ユーザーへの再撮影依頼が必要)。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-067",
+      "task": "マネージャールーム(CCRセッション、ブラウザ拡張機能を介さないルーム)の未解決事項を毎日tasks.jsonへ記録するRoutineを新設",
+      "title": "マネージャールーム日次タスク抽出Routine",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-03",
+      "category": "operation",
+      "note": "2026-10-03、ユーザー指摘により判明: claude-voice-bridgeのroom-log.json方式(週次要約)はブラウザ拡張機能が有効なタブ限定で、このマネージャールームのようなCCRセッションは最初から対象外(ai-config.jsonのroomHistoryCapture参照、2026-09-19に既に確認済みだった事項)。CLAUDE.md定期確認Routine(trig_0134aaUtfW6p6HGFZ7HzaDMN)はこのセッションに毎日発火するが、CLAUDE.mdの変更確認と別Routineの健全性チェックのみで、ルーム内容の記録はしていなかった。この抜けを埋めるため、ユーザー指示で新規Routineを作成した。",
+      "content": [
+        "毎日JST 0:00に、このマネージャールーム(session_019rBhvzqA7o5g8MjBA6dyCg)へ自己発火する",
+        "前日分の会話をroom-task-audit基準(未解決の相談・完了未確認の作業)で判断する",
+        "抽出した項目のうち、tasks.jsonにまだ記録されていないものがあれば追記する(全件記録済みなら無処理)",
+        "変更があればprogress-tracker-dashboardのdesignated branch→mainへcommit・push・マージまで行う"
+      ],
+      "detail": "create_trigger(trig_01KWsnPeW7QcgTBKjUZYnDZV、cron '0 15 * * *' UTC = JST 0:00、persistent_session_id=session_019rBhvzqA7o5g8MjBA6dyCg、自己bind方式)で作成。weekly-log-digest-routineスキルの③(判断・要約)の考え方を踏襲しつつ、①②(生ログを別ファイルへ溜める段階)を省略し、自己bindセッションが自身の会話を直接振り返る設計にした(このルーム自身が対象のため、外部の生ログファイルを経由する必要がない)。出力先も新規のroom-log.json相当ファイルではなく、既存のtasks.json(各タスクのcontent/note/checkHistory)へ直接統合する方式をユーザー指示で採用した(新しいJSONファイルを増やさず、既存の仕組みに一本化)。\n作成の過程で、最初の試み(create_trigger)が権限確認で拒否される現象が発生したが、settings.jsonの許可リストを確認したところ旧形式・内部ID形式とも既に登録済みであることが判明しており、原因はCLAUDE.mdルール19に記載の既知の未解決事項(内部IDが環境により変わる可能性、未検証)である可能性が高い。2回目の試行では成功した。",
+      "issues": "1回目のcreate_trigger呼び出しが原因不明のまま拒否された(ルール19の既知の未解決事項が再現した可能性があるが未確定)。再試行で成功したため実害はないが、根本原因は未解決のまま。",
+      "output": "trig_01KWsnPeW7QcgTBKjUZYnDZV",
+      "checkHistory": [
+        {
+          "date": "2026-10-03",
+          "summary": "ユーザーとの長いやり取りの末、マネージャールーム向けの日次タスク抽出・tasks.json記録Routineを新設。1回目のcreate_trigger呼び出しは原因不明の拒否、2回目で作成成功(trig_01KWsnPeW7QcgTBKjUZYnDZV)。"
+        }
+      ]
     }
   ],
   "updatedAt": null
