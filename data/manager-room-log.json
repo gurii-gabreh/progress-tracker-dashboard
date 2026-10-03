@@ -1,0 +1,6 @@
+{
+  "schema": "progress-tracker-dashboard manager-room daily log v1",
+  "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
+  "lastProcessedAt": null,
+  "entries": []
+}
