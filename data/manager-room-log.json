@@ -1,6 +1,0 @@
-{
-  "schema": "progress-tracker-dashboard manager-room daily log v1",
-  "description": "このマネージャールーム(CCRセッション、claude-voice-bridgeの拡張機能を介さない)自身の会話内容を、毎日1回Routine(PTD-xxx参照)が自己判断で要約して追記する記録。claude-voice-bridgeのdata/room-log.json→weekly-digest.jsonの3段構成(①ローカル保存→②GitHub生ログ集約→③週次AI要約)がこのルームには対象外(2026-09-19にユーザー確認の上でscope外と明記、ai-config.jsonのroomHistoryCapture参照)だったため、2026-10-03に代わりの仕組みとして新設した。",
-  "lastProcessedAt": null,
-  "entries": []
-}
