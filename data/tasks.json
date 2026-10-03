@@ -3678,7 +3678,7 @@
         "小さめのタスクで実際に委任・レビューのフローが機能するか動作確認する",
         "自動レビューゲート(--enable-review-gate)は利用枠を早く消費するため、常時ONにはせず、大事な仕上げの時だけ使う運用にする"
       ],
-      "nextAction": "(1) 当面はこのルーム内で`codex exec`を直接使う運用で進める(プラグインのスラッシュコマンドが読み込まれない原因は未解決、必要になったら別途調査する)。(2) セッション再作成時にCodex CLI・ログイン状態が消える問題への対処(環境のセットアップスクリプトへのnpm installの追加、ログイン永続化の方法)は未着手、今後の検討課題。(3) 役割分担ルール(依頼受領→プラン作成→Codexへ実装委任→レビュー→報告)のCLAUDE.md化は未着手。",
+      "nextAction": "(1) 当面はこのルーム内で`codex exec`を直接使う運用で進める(プラグインのスラッシュコマンドが読み込まれない原因は未解決、必要になったら別途調査する)。(2) 【2026-10-03完了】環境のSetup scriptへ`npm install -g @openai/codex`を追加・保存済み(ユーザー操作)。これにより新規セッション起動時にCodex CLI本体は自動インストールされるようになった。ただし**ログイン状態(`~/.codex/auth.json`)の永続化はまだ未着手**で方針検討中(API認証情報欄=OPENAI_API_KEY方式は「API契約はしない」というユーザー方針により使用しない。auth.jsonの中身を環境変数として保存しSetup scriptで書き戻す案を提示済みだが、refresh_tokenが長期的に機能し続けるかは未実証、ユーザーの最終方針待ち)。(3) 委任判断基準はルール18(claude-core-rules.md)へ明文化済み(2026-10-03、commit 66b58bf/main 8594e43)。役割分担の具体的な実行フロー(依頼受領→プラン作成→Codexへ実装委任→レビュー→報告)の細部はまだ運用で揉んでいる段階。",
       "checkHistory": [
         {
           "date": "2026-08-30",
@@ -3691,6 +3691,10 @@
         {
           "date": "2026-10-03",
           "summary": "Codex連携の初回実運用として、ユーザー依頼によりAIの最新ニュース収集をcodex exec経由で実行。Codexが実際にWeb検索し、2026/10/3時点の直近ニュース6件(Google Gemini 4 Argon、Google DeepMind SynthID Bio、Tavus Griffin、Suno Speech、Ai2 AstaBrief 8B、ServiceNow AutoSynthData)を出典付きで収集・報告した。CCX-001の目指す「Claudeが司令塔、Codexが実働」というフローが実際に機能することを確認した最初の実例。"
+        },
+        {
+          "date": "2026-10-03",
+          "summary": "Codexへの委任基準をルール18(claude-core-rules.md)へ明文化し、ai-config.jsonにもミラーしてmain反映(commit 66b58bf/8594e43)。続けてCLIの永続化に着手し、環境のSetup scriptへnpm install -g @openai/codexを追加・保存(ユーザー操作で確認済み)。ログイン状態の永続化は未着手、API認証情報欄(OPENAI_API_KEY方式)は使わない方針を確認し、auth.json退避案の是非はユーザーの最終判断待ち。"
         }
       ]
     },
