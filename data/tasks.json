@@ -4221,8 +4221,8 @@
     {
       "repo": "progress-tracker-dashboard",
       "id": "PTD-067",
-      "task": "マネージャールーム(CCRセッション、ブラウザ拡張機能を介さないルーム)の未解決事項を毎日tasks.jsonへ記録するRoutineを新設",
-      "title": "マネージャールーム日次タスク抽出Routine",
+      "task": "マネージャールーム(CCRセッション)の全履歴(相談・完了作業含む)を毎日JSON(manager-room-log.json)へ記録するRoutineを新設",
+      "title": "マネージャールーム日次ログ(全履歴)Routine",
       "priority": "中",
       "status": "完了",
       "updated": "2026-10-03",
@@ -4230,11 +4230,12 @@
       "note": "2026-10-03、ユーザー指摘により判明: claude-voice-bridgeのroom-log.json方式(週次要約)はブラウザ拡張機能が有効なタブ限定で、このマネージャールームのようなCCRセッションは最初から対象外(ai-config.jsonのroomHistoryCapture参照、2026-09-19に既に確認済みだった事項)。CLAUDE.md定期確認Routine(trig_0134aaUtfW6p6HGFZ7HzaDMN)はこのセッションに毎日発火するが、CLAUDE.mdの変更確認と別Routineの健全性チェックのみで、ルーム内容の記録はしていなかった。この抜けを埋めるため、ユーザー指示で新規Routineを作成した。",
       "content": [
         "毎日JST 0:00に、このマネージャールーム(session_019rBhvzqA7o5g8MjBA6dyCg)へ自己発火する",
-        "前日分の会話をroom-task-audit基準(未解決の相談・完了未確認の作業)で判断する",
-        "抽出した項目のうち、tasks.jsonにまだ記録されていないものがあれば追記する(全件記録済みなら無処理)",
+        "前日分の会話を、未解決事項だけでなく解決済みの相談・完了した実装作業も含めて全体を振り返る",
+        "data/manager-room-log.jsonのentries配列へ、その日1日の流れが分かる日本語要約を1件追記する(別のルームからこのJSONを見れば過去の経緯を辿れるようにするのが目的)",
+        "tasks.json/concept-log.json側にまだ記録されていない実装・決定事項があれば、従来どおりそちらにも追記する(役割分担: tasks.jsonはタスク単位の構造化記録、manager-room-log.jsonは時系列の全体記録)",
         "変更があればprogress-tracker-dashboardのdesignated branch→mainへcommit・push・マージまで行う"
       ],
-      "detail": "create_trigger(trig_01KWsnPeW7QcgTBKjUZYnDZV、cron '0 15 * * *' UTC = JST 0:00、persistent_session_id=session_019rBhvzqA7o5g8MjBA6dyCg、自己bind方式)で作成。weekly-log-digest-routineスキルの③(判断・要約)の考え方を踏襲しつつ、①②(生ログを別ファイルへ溜める段階)を省略し、自己bindセッションが自身の会話を直接振り返る設計にした(このルーム自身が対象のため、外部の生ログファイルを経由する必要がない)。出力先も新規のroom-log.json相当ファイルではなく、既存のtasks.json(各タスクのcontent/note/checkHistory)へ直接統合する方式をユーザー指示で採用した(新しいJSONファイルを増やさず、既存の仕組みに一本化)。\n作成の過程で、最初の試み(create_trigger)が権限確認で拒否される現象が発生したが、settings.jsonの許可リストを確認したところ旧形式・内部ID形式とも既に登録済みであることが判明しており、原因はCLAUDE.mdルール19に記載の既知の未解決事項(内部IDが環境により変わる可能性、未検証)である可能性が高い。2回目の試行では成功した。",
+      "detail": "create_trigger(trig_01KWsnPeW7QcgTBKjUZYnDZV、cron '0 15 * * *' UTC = JST 0:00、persistent_session_id=session_019rBhvzqA7o5g8MjBA6dyCg、自己bind方式)で作成。weekly-log-digest-routineスキルの③(判断・要約)の考え方を踏襲しつつ、①②(生ログを別ファイルへ溜める段階)を省略し、自己bindセッションが自身の会話を直接振り返る設計にした(このルーム自身が対象のため、外部の生ログファイルを経由する必要がない)。出力先も新規のroom-log.json相当ファイルではなく、既存のtasks.json(各タスクのcontent/note/checkHistory)へ直接統合する方式をユーザー指示で採用した(新しいJSONファイルを増やさず、既存の仕組みに一本化)。\n作成の過程で、最初の試み(create_trigger)が権限確認で拒否される現象が発生したが、settings.jsonの許可リストを確認したところ旧形式・内部ID形式とも既に登録済みであることが判明しており、原因はCLAUDE.mdルール19に記載の既知の未解決事項(内部IDが環境により変わる可能性、未検証)である可能性が高い。2回目の試行では成功した。\n\n【2026-10-03追記】当初は「未解決事項のみtasks.jsonへ追記」という狭い設計で作成したが、ユーザーから「相談した内容や完了した内容も全てJSONに記録しろ、目的は別のルームに行ってもこのJSONデータを見れば過去の全てを辿れるようにすることだ」との指摘を受け、update_triggerでプロンプトを全面的に書き換えた。出力先もtasks.jsonへの差分追記のみから、data/manager-room-log.jsonへの日次の時系列要約(解決済み・未解決問わず全体)に変更。tasks.jsonへの構造化記録は役割分担として残しつつ、manager-room-log.jsonが「その日1日に何があったか」を辿れる主たる記録先になる設計にした。",
       "issues": "1回目のcreate_trigger呼び出しが原因不明のまま拒否された(ルール19の既知の未解決事項が再現した可能性があるが未確定)。再試行で成功したため実害はないが、根本原因は未解決のまま。",
       "output": "trig_01KWsnPeW7QcgTBKjUZYnDZV",
       "checkHistory": [
