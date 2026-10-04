@@ -390,6 +390,15 @@
         }
       ],
       "note": "新しいJSONファイルを追加した場合は、この一覧にも追記すること。kizashi/supermarket-price-tracker/gemini-monitorはJSONデータファイルを持たない(未確認・別データ層の可能性)。"
+    },
+    "creditLog": {
+      "title": "💳 クレジットログの運用ルール",
+      "overview": "タスクを完了するたびにdata/credit-log.jsonへ1行追記する運用。2026-08-20〜10-03の約1ヶ月半、このルールがCLAUDE.mdに無く記録が止まっていたため、2026-10-03にルール化・遡及backfillを実施した。",
+      "points": [
+        "タスク完了のたびにdate/repo/task/note(可能ならtime/usage/rateLimitResetsAt)を追記する",
+        "2026-08-20〜10-03分は、tasks.jsonの完了日・repo・taskを元に遡及backfill済み(正確な時刻・トークン使用量は当時未記録のため復元不可)",
+        "再発防止として、毎日の日次Routine(manager-room-log.json担当)が記録漏れの有無も毎回チェックする"
+      ]
     }
   },
   "ai": {
@@ -930,6 +939,15 @@
         }
       ],
       "note": "新しいJSONファイルを追加した場合は、この一覧にも追記すること。kizashi/supermarket-price-tracker/gemini-monitorはJSONデータファイルを持たない(未確認・別データ層の可能性)。"
+    },
+    "creditLog": {
+      "description": "data/credit-log.jsonの運用ルール。クレジットタブ(dashboard.html)の表示元データ。",
+      "rule": "タスクを完了させたら、credit-log.jsonのentriesへdate/repo/task/noteを1行追記する(可能ならtime/usage/rateLimitResetsAtも)。",
+      "incident": {
+        "date": "2026-10-03",
+        "summary": "このルールがCLAUDE.mdやpolicy.jsonに明記されておらず、credit-log.json自身のdescriptionとdashboard.htmlの説明文にしか書かれていなかったため、2026-08-20〜10-03の約1ヶ月半、どのセッションもルールの存在に気づけず記録が完全に止まっていた。ユーザー指摘により発覚し、claude-core-rules.mdへルールを明記、tasks.jsonの完了日・repo・taskを元に遡及backfillした。"
+      },
+      "preventionMechanism": "毎日JST 0:00のRoutine(trig_01KWsnPeW7QcgTBKjUZYnDZV、data/manager-room-log.json担当)が、credit-log.jsonの最終記録日以降に完了したタスクが未反映のまま残っていないかも毎回チェックする。"
     }
   }
 }
