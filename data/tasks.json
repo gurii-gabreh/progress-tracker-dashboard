@@ -12,7 +12,8 @@
     "Study-Schedule",
     "servicenow-sub-agent",
     "English-LevelUp-Reader",
-    "claude-voice-bridge"
+    "claude-voice-bridge",
+    "mirai-journal"
   ],
   "tasks": [
     {
@@ -4097,6 +4098,10 @@
         {
           "date": "2026-09-27",
           "summary": "ユーザー指示でアプリの最上位タイトルを「AI開発情報一覧」から「AIサポートアプリ」へ変更(manifest.jsonのname/default_title、sidepanel.html・webapp/index.htmlの<title>・見出し)。ジャーナル面談タブ追加により単一機能アプリでなくなったための改称。「📋 AI開発情報一覧」タブ自体の表示名は据え置き。commit・push(main直push)まで完了"
+        },
+        {
+          "date": "2026-10-04",
+          "summary": "mirai-journal(MJ-001)の全面改修に伴い、「ジャーナル面談」タブに、保存後「Claude Codeへ貼り付けて分析を依頼してください」という案内と依頼文コピーボタンを追加(PC版widget-journal.html/js・モバイル版webapp/index.html両方)。既存のGAS保存(claude-voice-bridge側data/journal.json)は変更なし。"
         }
       ]
     },
@@ -4256,7 +4261,28 @@
           "summary": "ユーザーとの長いやり取りの末、マネージャールーム向けの日次タスク抽出・tasks.json記録Routineを新設。1回目のcreate_trigger呼び出しは原因不明の拒否、2回目で作成成功(trig_01KWsnPeW7QcgTBKjUZYnDZV)。"
         }
       ]
+    },
+    {
+      "repo": "mirai-journal",
+      "id": "MJ-001",
+      "task": "mirai-journalを全面改修: localStorage+API直呼び出し → JSON正本+ビューアー構成へ移行",
+      "title": "mirai-journal全面改修(JSON正本化)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-04",
+      "category": "feature",
+      "note": "2026-10-04、ユーザーから「過去に作ったmirai-journal(ジャーナル+目標管理アプリ)に、ジャーナル面談(CVB-002)で取得した情報を格納できるか」と相談を受けたことから着手。やり取りを重ねる中で、GeminiAPI/OpenRouter APIの直接呼び出し(APIキー管理・課金リスク)をやめ、ChatGPT/Codexでの分析→Claude Codeによる直接JSON書き込みへ切り替える方針に発展し、最終的にmirai-journal自体を他アプリ(claude-voice-bridge等)と同じ「JSON正本+GitHub管理+ビューアー」構成へ全面改修することになった。本タスクはその全面改修自体を記録する。",
+      "detail": "【背景・経緯】当初の相談は単純で、「過去に作ったmirai-journal(目標管理+AI分析アプリ、localStorage+Gemini/OpenRouter API直接呼び出し構成)に、CVB-002で録った音声面談のトランスクリプトを入れられるか」というものだった。調査の結果、mirai-journalはGitHubとの連携が一切無い純粋なブラウザ内完結アプリと判明。\n\nここから設計方針を何度も相談し直す形で以下のように発展した。\n1. まずGemini API呼び出しをやめ「プロンプト生成→ChatGPTに貼り付け→結果を貼り付けて取り込む」方式への変更を検討(API課金回避、ルール9永久無料と衝突する懸念から)。\n2. ジャーナル本文の取り込み元としてclaude-voice-bridgeのjournal.jsonから一覧選択する方式に決定。\n3. 分析結果の記録先JSONを、claude-voice-bridgeの既存journal.json拡張ではなくmirai-journal専用の新規JSONとする方針に転換、集計データ(目標・強み・キャリア・トレンド)も含めて全てJSON化する方針に拡大。\n4. 「ChatGPTへの手動コピペ・新規GASデプロイ(設定画面が必要で面倒)」という懸念から、最終的に「ユーザーがGemini面談結果をClaude Codeへ直接貼り付け→Claudeがcodex execで分析委任→Claudeが結果をレビュー→Claudeが直接JSONへcommit」という、ルール18/CCX-001のCodex委任基準に沿った方式に確定。この過程で、新規GASデプロイ(ユーザー側の設定作業が必要で面倒)を回避できる案として、Webhook自動転送(session限定の制約あり)も検討したが見送り、手動コピペ+Claude側書き込みに落ち着いた。\n5. JSONファイルの分割粒度について相談を受け、更新頻度・GAS書き込み方式との相性・破損時の被害範囲・git差分の見やすさを基準に、journals.json(高頻度ログ)とprofile.json(低頻度集計)の2分割を提案・採用。これはclaude-core-rules.mdルール29として一般原則化された。\n\n【実装内容】\n- `data/journals.json`: ジャーナル本文(rawTranscript)+AI分析結果(summary/goodPoints/problems/goalProgress/coaching/tags/trends/strengths/careers/deepAnalysis)を1エントリにまとめたスキーマで新設。entrySchemaフィールドで構造を文書化。\n- `data/profile.json`: 目標(goals、履歴付き)・強み・キャリア候補・トレンド・週次レポート(weeklyReport)・自己分析(selfAnalysis)の集計データを新設。\n- `js/data.js`: raw.githubusercontent.comから2つのJSONをfetchし読み取り専用でキャッシュする新モジュール。既存ページの関数名(getJournals等)を踏襲し書き換え範囲を最小化。\n- `js/storage.js`(localStorage)・`js/gemini.js`(Gemini API)・`js/openrouter.js`(OpenRouter API)・`js/sheets.js`(スプレッドシート連携)・`js/journal.js`(旧パイプライン)を削除。\n- 全ページ(index.html/journal.html/goals.html/goal-detail.html/weekly.html/analysis.html/career.html/trends.html)から保存・分析実行・追加編集削除のUIを撤去し、Claude Codeへの依頼を促す案内文に置き換えて閲覧専用化。\n- `pages/settings.html`: API設定ページから「このアプリについて」(新しい記録フローの説明)ページへ全面書き換え。\n- `README.md`新設(ルール24、改修の経緯を対象リポジトリ自身にも記録)。\n- claude-voice-bridgeの`widget-journal.js`/`widget-journal.html`/`webapp/index.html`に、ジャーナル保存後「この内容をコピーしてClaude Codeに貼り付けてください」という案内と、依頼文(日付+トランスクリプト)をコピーするボタンを追加(PC版・モバイル版両方)。\n\n【検証】ローカルで静的サーバーを立て、Playwrightで全8ページを実機確認。タイトルが正しく表示され、JSのuncaught例外(pageerror)はゼロだった。表示されたconsole.errorは検証環境のプロキシがcdn.jsdelivr.net・raw.githubusercontent.com等への接続を拒否したことによるもので、コード側の不具合ではない(本番ではGitHub Pages等から配信されるため発生しない想定)。",
+      "issues": [],
+      "output": "gurii-gabreh/mirai-journal (commit 410ac92)、gurii-gabreh/claude-voice-bridge (commit dd8b5a8→455a638)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-04",
+          "summary": "mirai-journalを全面改修し、JSON正本(data/journals.json・data/profile.json)+ビューアー構成へ移行。localStorage・Gemini/OpenRouter API直接呼び出しを廃止。claude-voice-bridgeのジャーナル面談タブにClaude Codeへの引き継ぎ案内を追加。両リポジトリともcommit・main push完了。"
+        }
+      ]
     }
   ],
-  "updatedAt": null
+  "updatedAt": "2026-10-04"
 }
