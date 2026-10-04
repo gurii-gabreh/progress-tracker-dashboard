@@ -1,6 +1,6 @@
 {
   "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/time/repo/task/noteを1行ずつ自動追記する(timeはJST・HH:MM形式)。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。【2026-08-20(1)】1日にどれだけ作業したか見た目で分からないという指摘を受け、time列と日別/直近5時間の自動集計を追加。2026-08-19以前の6件は時刻を記録していなかったため、time欄は空(直近5時間の集計には含めない。日別集計には含める)。【2026-08-20(2)】mcp__Claude_Code_Remote__get_sessionが実測の累積トークン数(usage: inputTokens/outputTokens/cacheReadTokens/cacheWriteTokens/costUsd)と、5時間レート制限の正確なリセット時刻(rateLimitResetsAt)を返すことが判明したため、以後のエントリにこの2つを追加。前の行のusageとの差分でタスクごとの消費量を表示し、rateLimitResetsAtが変わった箇所には実測ベースで自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要になった。申告ベースのtype:\"boundary\"も引き続き手動追加は可能)。usage/rateLimitResetsAtが無い過去のエントリは、差分計算・自動仕切りの対象外として「—」表示になる。",
-  "updatedAt": "2026-08-20",
+  "updatedAt": "2026-10-04",
   "entries": [
     {
       "date": "2026-08-19",
@@ -59,6 +59,90 @@
         "costUsd": 40.30094595
       },
       "rateLimitResetsAt": "2026-08-20T04:30:00Z"
+    },
+    {
+      "date": "2026-08-23",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-044: ナレッジ(tasks.json・concept-log.json・ai-list.json・research-log.json等)の整備",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-08-29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-051: 作業ルーム環境のネットワークegressポリシーによる特定ドメインブロック問題への対応",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-08-29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-052: 休止中(IDLE)の既存worker-roomセッションへ追加指示が届かない問題への対応",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-08-30",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-053: sc_cat_item更新時にname/sys_updated_onをログ出力するBusiness Ruleの新規作成",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-04",
+      "repo": "text-extraction",
+      "task": "TEX-001: 画像の文字起こし処理を作業ルームで直接実行する(今回分)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-05",
+      "repo": "text-extraction",
+      "task": "TEX-003: 画像の文字起こし処理を作業ルームで直接実行する(基本情報_平成分)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-05",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-060: AI基本設定タブの「正本を編集→GitHub Actionsで自動同期」方式の整備(親タスク)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-12",
+      "repo": "複数",
+      "task": "PTD-064: 携帯画面でのレイアウト崩れ対策(メニューのハンバーガー/プルダウン化)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-18",
+      "repo": "kizashi",
+      "task": "KIZ-046: 都知事杯オープンデータ・ハッカソン2026への応募(一次審査結果、不通過で終了)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-18",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-046: ServiceNow PDIを使った5観点自動リサーチパイプラインの新規構築",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-09-27",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-066: 既存12リポジトリの要件定義シート(標準10項目)をrequirements.jsonへ遡及的に作成",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-10-02",
+      "repo": "study-app",
+      "task": "STU-002: exam-question-importスキルのPart A/B構成化(Drive画像→lessons.json直書き)",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-10-02",
+      "repo": "study-app",
+      "task": "STU-003: 基本情報 平成31年春期の問題画像(Drive、80枚)をexam-question-import Part Aで取り込み",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-10-03",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-067: マネージャールームの全履歴(相談・完了作業含む)を毎日JSON(manager-room-log.json)へ記録するRoutineを新設",
+      "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
     }
   ]
 }
