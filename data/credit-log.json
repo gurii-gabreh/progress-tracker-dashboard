@@ -143,6 +143,12 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-067: マネージャールームの全履歴(相談・完了作業含む)を毎日JSON(manager-room-log.json)へ記録するRoutineを新設",
       "note": "【遡及記録、2026-10-03】data/tasks.jsonの完了日(updated)・repo・taskを元に事後反映。正確な時刻・トークン使用量(usage/rateLimitResetsAt)は当時記録されておらず復元不可。"
+    },
+    {
+      "date": "2026-10-04",
+      "repo": "mirai-journal",
+      "task": "MJ-001: mirai-journal全面改修(localStorage+API直呼び出し→JSON正本+ビューアー構成)",
+      "note": ""
     }
   ]
 }

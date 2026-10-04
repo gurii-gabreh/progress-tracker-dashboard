@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-03T10:11:46.383667+00:00",
+  "lastProcessedAt": "2026-10-04T15:42:29.705415+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -20,6 +20,16 @@
         "Codex CLIのログイン状態・インストールがこのセッション(コンテナ)限定で、恒久化(セットアップスクリプトへの追加等)が未着手",
         "study-appの平成31年春期・第53問は、Driveに画像が1枚も存在せず、再スクリーンショットが必要なまま未解決",
         "session_01Qg8AMd6VC7CvhzbQ93sjTtの履歴記録・一本化判断が未完了のまま(create_trigger配信3回とも拒否)"
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "generatedAt": "2026-10-04T15:42:29.705362+00:00",
+      "summary": "【Codexへの委任基準の明文化】\n「Claudeが必要があればCodexへ自動で作業依頼する仕様になっているか」との質問に、現状はこのルームが手動でcodex execを叩ける実証段階に過ぎないと回答。ユーザーの「すすめろ」を受け、ルール18へ委任基準(独立した視点が有効な分析・レビューはCodexに、リポジトリの経緯理解が必要な実装はClaude側)を明文化し、ai-config.jsonにもミラーした(commit 66b58bf/main 8594e43)。続けてCCX-001のCLI永続化に着手し、環境のSetup scriptへnpm install -g @openai/codexを追加・保存(ユーザー操作で確認済み)。ログイン状態の永続化(auth.jsonの環境シークレット化)は、refresh_tokenの長期動作や環境の「API認証情報」欄の仕様が未確認なままだったため方針確認したところ、ユーザーから「やらなくてよい」との回答。今後も新規セッションでは都度ログインが必要という前提で運用することに決定(commit d078290)。\n\n【実装ナレッジ・クレジットログの記録漏れ発覚と是正】\nマネージャーアプリでクレジットタブと実装ナレッジが記録されていないとの指摘を受け調査。credit-log.jsonは2026-08-20を最後に約1ヶ月半記録が完全に止まっており(運用ルールがcredit-log.json自身の説明文にしかなくCLAUDE.mdに無かったことが根本原因)、tasks.jsonの完了済みタスク9件でdetailが空欄のまま(うち3件は2026-08-31のdetail必須ルール制定後の違反)だったことが判明。9件のdetailを既存記録から書き起こして埋め、credit-logをtasks.jsonの完了日から14件backfillし、claude-core-rules.mdへ運用ルールを明記、日次Routine(trig_01KWsnPeW7QcgTBKjUZYnDZV)にも記録漏れの自動チェック機能を追加した(commit ad4b677/main 5c2bdc9、ルール28末尾に追記)。\n\n【mirai-journal全面改修(本日最大のテーマ)】\n過去に作成していた個人用ジャーナル+目標管理アプリ「mirai-journal」に、CVB-002(ジャーナル面談機能)で取得した面談記録を格納できるか、という相談から着手。Gemini LiveとChatGPTの精度比較の相談もあったが、根拠不十分として従来通りGemini Liveを継続する結論に。\nmirai-journalの設計は何度も方針転換しながら相談を重ねた: ①Gemini API直接呼び出しをやめプロンプト貼り付け方式へ → ②分析結果の記録先をmirai-journal専用の新規JSONとし集計データ(目標・強み・キャリア・トレンド)も全てJSON化する方針に拡大 → ③ChatGPTへの手動コピペ・新規GASデプロイ(設定画面が必要で面倒)を避けるため、「ユーザーがGemini面談結果をClaudeへ直接貼り付け→Claudeがcodex execで分析委任→Claudeが結果をレビュー→Claudeが直接JSONへcommit」という、ルール18のCodex委任基準に沿った最終フローに確定。\nJSON分割の設計相談では、更新頻度・GAS書き込み方式との相性・破損時の被害範囲・git差分の見やすさを基準に、journals.json(高頻度ログ)とprofile.json(低頻度集計)の2分割を提案・採用し、これを一般原則としてclaude-core-rules.mdルール29に新設した(commit 467421d/main 3292773)。\n実装: mirai-journalからlocalStorage・Gemini/OpenRouter API直接呼び出し・GAS連携を全廃し、data/journals.json・data/profile.json(新設)をJSON正本、全ページを閲覧専用のビューアーへ全面改修(commit 410ac92)。claude-voice-bridgeの「ジャーナル面談」タブにも、保存後「Claude Codeへ貼り付けて分析依頼してください」という案内を追加(PC版・モバイル版両方、commit 455a638)。progress-tracker-dashboard側でmirai-journalを13番目の管理対象リポジトリとして登録し、MJ-001に経緯を記録(commit fd53649→main 7a381b1)。その後、標準10項目の聞き取りも実施しユーザー承認を得てrequirements.jsonへREQ-MJ-001として記録した(commit 451363e→main 0122e07、他12件と異なり実承認を経たためapprovedAtを設定)。\n\n【room-task-audit不具合の調査・解決】\nclaude-voice-bridgeサイドパネルの「🔍 ルームタスク一覧を抽出」ボタンを押しても何も起きないとの報告を受け調査。content.jsのgetActiveTabId()が、サイドパネル上部の「Claude/Gemini」切替設定(mode)に応じてアクティブタブのURLがSITE_ORIGINS[mode]で始まるかを厳密チェックしており、モードが「Gemini」側になっているとclaude.ai/codeのタブが対象外とみなされ処理が実行されないことが原因と判明。ユーザーがモードを「Claude」側へ切り替えたところ解決し、実際にroom-task-auditスキルが2回正常に呼び出された(いずれも未解決項目なし)。\n\n【Task-WBS(旧Study-Schedule)の同期停止発覚・是正】\n「マネージャーアプリのWBSにも反映されているか」との質問に、当初dashboard.html自体の「🧭 マネージャーアプリ」サブタブ(tasks.jsonを直接fetch)のことだけを答え「反映済み」と回答したが、「🗓 タスクスケジュール」サブタブ(別リポジトリTask-WBSのiframe)についてユーザーから「各アプリ作成欄があるだろ、きちんと見ているのか」と指摘を受け、確認不足を認めて謝罪。実際にTask-WBSのdata/tasks.jsonを調べたところ、「各アプリ作成」root(progress-tracker-dashboard側のタスクIDをそのまま踏襲して追跡する、最初から用意されていた仕組み)が2026-09-03を最後に1ヶ月以上更新停止しており、AIR-001はリポジトリ自体が廃止済みなのに「未対応」のまま、UST-003〜006は現存しないID、TEX-001・KIZ-046は完了済みのまま放置、というcredit-logと同じ「ルールはあるが運用が止まっていた」パターンが発覚。ユーザーの「２で進めろ」(新規タスクも含め一括追加、日付は暫定)を受け、progress-tracker-dashboard側の未完了タスク29件で「各アプリ作成」を完全に再構築した。実装時、plannedEndにnullを使うとindex.html/today.htmlのカレンダー描画がCannot read properties of null (reading 'getMonth')でクラッシュするバグをPlaywright実機検証で発見し、暫定日程(開始日・1週間後の仮期限)を明示的な日付にすることで回避(commit 9019c23、progress-tracker-dashboard側SSC-001にもcheckHistory記録、main d3a2ff5)。\nこの発見を受け、「今後の見逃し防止として、日次Routineのタスク抽出にタスクスケジュールとマネージャーアプリの更新チェックを組み込めないか」との提案があり、技術的に可能(ルール71と同じパターン、このセッションが既にTask-WBSへの書き込みアクセスを持っているため次回以降のRoutine発火でも引き継げる)と回答し、実装の最終確認を取ったところで日付が切り替わった(実装はまだ着手していない)。",
+      "unresolvedCarriedOver": [
+        "Codex公式プラグイン(/codex:*コマンド)がこのセッション・新規セッションいずれにも読み込まれない原因は未解決",
+        "study-appの平成31年春期・第53問は、Driveに画像が1枚も存在せず、再スクリーンショットが必要なまま未解決",
+        "Task-WBS「各アプリ作成」の再発防止策(日次Routineへの差分チェック組み込み・claude-core-rules.mdへのルール追記)の実装がユーザー最終承認待ちのまま未着手"
       ]
     }
   ]
