@@ -389,6 +389,20 @@
               "purpose": "英語学習レッスンデータ"
             }
           ]
+        },
+        {
+          "repo": "gurii-gabreh/mirai-journal",
+          "appName": "mirai-journal(ジャーナル+目標・キャリア管理)",
+          "files": [
+            {
+              "path": "data/journals.json",
+              "purpose": "日々のジャーナル本文+AI分析結果(高頻度・追記型)。書き込みは常にClaude Code側が担当"
+            },
+            {
+              "path": "data/profile.json",
+              "purpose": "目標・強み・キャリア候補・トレンド・週次レポート・自己分析の集計データ(低頻度)"
+            }
+          ]
         }
       ],
       "note": "新しいJSONファイルを追加した場合は、この一覧にも追記すること。kizashi/supermarket-price-tracker/gemini-monitorはJSONデータファイルを持たない(未確認・別データ層の可能性)。"
@@ -956,6 +970,20 @@
             {
               "path": "data/lessons.json",
               "purpose": "英語学習レッスンデータ"
+            }
+          ]
+        },
+        {
+          "repo": "gurii-gabreh/mirai-journal",
+          "appName": "mirai-journal(ジャーナル+目標・キャリア管理)",
+          "files": [
+            {
+              "path": "data/journals.json",
+              "purpose": "日々のジャーナル本文+AI分析結果(高頻度・追記型)。書き込みは常にClaude Code側が担当"
+            },
+            {
+              "path": "data/profile.json",
+              "purpose": "目標・強み・キャリア候補・トレンド・週次レポート・自己分析の集計データ(低頻度)"
             }
           ]
         }
