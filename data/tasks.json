@@ -4108,6 +4108,10 @@
         {
           "date": "2026-10-04",
           "summary": "mirai-journal(MJ-001)の全面改修に伴い、「ジャーナル面談」タブに、保存後「Claude Codeへ貼り付けて分析を依頼してください」という案内と依頼文コピーボタンを追加(PC版widget-journal.html/js・モバイル版webapp/index.html両方)。既存のGAS保存(claude-voice-bridge側data/journal.json)は変更なし。"
+        },
+        {
+          "date": "2026-10-04",
+          "summary": "保存ボタンを押すと「保存エラー: unknown action」が出て保存できない不具合が発覚。調査の結果、GAS Webアプリの本番デプロイが2026-09-18時点のままで、saveJournalアクション追加(2026-09-27)より前のバージョンだったことが原因と判明。ユーザーがGAS側を再デプロイして解消し、実際にclaude-voice-bridge/data/journal.jsonへの保存(1791130479407)を確認した。"
         }
       ]
     },
@@ -4286,6 +4290,10 @@
         {
           "date": "2026-10-04",
           "summary": "mirai-journalを全面改修し、JSON正本(data/journals.json・data/profile.json)+ビューアー構成へ移行。localStorage・Gemini/OpenRouter API直接呼び出しを廃止。claude-voice-bridgeのジャーナル面談タブにClaude Codeへの引き継ぎ案内を追加。両リポジトリともcommit・main push完了。"
+        },
+        {
+          "date": "2026-10-04",
+          "summary": "MJ-001で設計したフロー(Gemini面談→claude-voice-bridge→Claudeへ貼り付け→codex execで分析委任→Claudeがレビュー→JSON直接commit)の実運用1件目を実施。ユーザーの実際の面談内容(CodexとClaudeを掛け合わせたアプリ制作について)をcodex execで分析し、内容をレビューした上でmirai-journalのjournals.json・profile.jsonへ記録(commit c05357b)。フロー全体が実際に機能することを確認した。"
         }
       ]
     }
