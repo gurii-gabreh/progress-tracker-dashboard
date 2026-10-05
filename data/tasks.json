@@ -4329,6 +4329,30 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "English-Speaking-App",
+      "id": "ESA-002",
+      "task": "ChatGPTレッスンレポートのJSON記録・閲覧機能を追加",
+      "title": "レッスンレポートのJSON記録化",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-05",
+      "category": "feature",
+      "note": "2026-10-05、ユーザーから「ChatGPTでのレッスン終了後にレポートを出させ、それをClaudeに登録させたい(いつもの通りの記録フロー)」「その結果をアプリ画面上で見えるようにしたい」という依頼。実装前にAskUserQuestionで(1)記録先(English-Speaking-App自体に新設/English-LevelUp-Readerへ合流/その他)(2)プロンプト内の「レポート帳」「単語帳」の扱い(既存スプレッドシートを残すか、JSONへ一本化するか)の2点を確認し、ユーザーはそれぞれ「English-Speaking-App自体に新設」「スプレッドは廃止しJSONに一本化」を選択した。",
+      "detail": "【背景】ESA-001で追加したchatgpt.html(ChatGPT英会話レッスンの使い方ガイド)には、添付プロンプトの■6節に「レッスンレポート」出力の仕様が既にあり、レポート本文(表現5つ・訂正された文・宿題)に続けて、縦線「|」区切り9項目(日付/コース・教材/表現1〜5/訂正/宿題)の1行を出力する指示も含まれていた。この1行は元々「レポート帳」という個人用スプレッドシートへの貼り付け用だったが、ユーザーはこのスプレッドシート運用自体を廃止し、JSONへ一本化することを選んだ。\n\n【実装内容】\n- `data/lessons.json`(新規): schemaVersion/description/entrySchema/entriesを持つJSON。各entryは id/date/courseMaterial/expressions([{en,ja}])/corrections([{said,fixed}])/homework/rawReport/recordedAtのフィールドを持つ。書き込みは常にClaude Codeが直接commitする(mirai-journal・claude-voice-bridgeと同じ「JSON正本+ビューアー」方式を踏襲、ルール23)。\n- `lessons.html`(新規): data/lessons.jsonを読み込んで一覧表示するだけの閲覧専用ページ。日付の新しい順に並べ、各カードに表現・訂正・宿題を表示、元のレポート全文は折りたたみで表示。既存ページ(index.html/app.html/chatgpt.html)と同じ配色・フォントを踏襲。\n- `chatgpt.html`: ①手順に新しいステップ6(レッスン終了後「レポートを出して」と伝える→レポート+縦線1行をコピーしてClaude Codeに貼り付けて記録を依頼する→lessons.htmlで確認できる)を追加。ページ上部に「📖 レッスン記録を見る」リンクを追加。\n- 埋め込みプロンプト文内の該当行を、「レポート帳の「貼り付け」シートに貼る1行」→「記録用の1行(Claude Codeに貼り付けてdata/lessons.jsonへ記録してもらうために使う)」という説明に書き換え。縦線区切り9項目の構造自体は変更していない(これにより、スプレッドシート運用の廃止後もコース・教材等の構造化情報を失わずに済む)。\n- `README.md`に今回の変更内容・経緯を追記(ルール24)。\n\n【未対応・既知の残課題】プロンプト■4節末尾の「連携モジュール」(行頭+の指示でレポート帳/単語帳へ転記する01_02/01_03という別モジュール)は、今回のユーザー指示の対象外だったため変更していない。レポート帳が廃止された今、この「+」コマンドの説明がプロンプト内に残っている状態だが、ユーザーからの具体的な指示が無い限りプロンプト本体のこの部分には手を入れない(ルール11、勝手な解釈での実装変更をしない)。\n\n【検証】ローカル静的サーバー+Playwrightで、(1)lessons.htmlの空状態表示、(2)chatgpt.htmlにステップ6・リンクが追加されていること、(3)リンククリックでlessons.htmlへ遷移すること、(4)サンプルデータを一時投入してのカード表示・元レポート折りたたみ表示、を確認。検証後はdata/lessons.jsonを初期状態(entries: [])に戻した。pageerrorはゼロ。main直push完了(commit 7c3ef52)。",
+      "issues": [],
+      "output": "gurii-gabreh/English-Speaking-App (commit 7c3ef52)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-05",
+          "summary": "English-Speaking-Appにdata/lessons.json(新規)・lessons.html(新規、閲覧専用)を追加し、ChatGPTのレッスンレポートをClaude Code経由でJSONへ記録できるようにした。chatgpt.htmlにレポート記録手順(ステップ6)とlessons.htmlへのリンクを追加、埋め込みプロンプトの「レポート帳」説明も記録用に書き換え。Playwright検証後main直push(commit 7c3ef52)。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
