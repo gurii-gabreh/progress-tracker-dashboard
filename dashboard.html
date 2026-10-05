@@ -3136,7 +3136,7 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "messageFormatting", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "jsonDataIndex"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "messageFormatting", "seciModel", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "jsonDataIndex"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -3159,6 +3159,17 @@
             <div class="ai-diagram-caption">例外的に「今すぐ直接」と<br>頼まれた場合のみ実行</div>
           </div>
         </div>
+      </div>`,
+    seciModel: `
+      <div class="ai-diagram">
+        <div class="ai-diagram-node highlight">🗣 ①共同化(面談・レッスンという経験)</div>
+        <div class="ai-diagram-arrow">↓ 文字化・分析(実装済み)</div>
+        <div class="ai-diagram-node highlight">📝 ②表出化(journals.json / lessons.json / history.json)</div>
+        <div class="ai-diagram-arrow">↓ 過去の記録と組み合わせる(現状: 弱い・無い)</div>
+        <div class="ai-diagram-node">🔗 ③結合(傾向分析・集計)</div>
+        <div class="ai-diagram-arrow">↓ 次回へ提示する(現状: 無い)</div>
+        <div class="ai-diagram-node">🌱 ④内面化(行動が変わる、ユーザー次第)</div>
+        <div class="ai-diagram-arrow">↻ 新しい経験として再び①へ</div>
       </div>`,
     secondOpinionCheck: `
       <div class="ai-diagram">
