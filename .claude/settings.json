@@ -114,5 +114,19 @@
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/concept-log-reminder.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
