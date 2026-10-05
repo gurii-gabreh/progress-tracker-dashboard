@@ -130,6 +130,13 @@
           "context": "2026-10-03、CCX-001(Codex連携)の実機検証中、`/codex:setup`等のプラグインコマンドがクラウドセッション(このマネージャールームを含む)に読み込まれない問題を調査していたが、実際の根本原因はプラグインの話ではなく、**環境のネットワークアクセス設定(デフォルトはTrusted)が`auth.openai.com`等の外部ドメインへの接続自体を拒否していたこと**だった(`connect_rejected`、agent-proxyのエラーで確定)。",
           "note": "教訓: クラウドセッションから初めて使う外部サービス(Codex、その他のSaaS API等)が原因不明の失敗をする時は、まずログイン方式やプラグインの仕様を疑う前に、**Claude Codeの環境設定(cloud environments)のNetwork access(デフォルトTrusted)がそもそも対象ドメインを許可しているか**を確認する。確認・対処の手順:\n1. 実際にその外部サービスのCLI/コマンドを動かしてエラーメッセージを見る(`connect_rejected`/`agent-proxy`云々の文言が出れば、これがネットワークポリシー由来の証拠)\n2. 環境選択メニュー(画面上部の雲アイコン)→使用中の環境→編集→Network accessを「Custom」にし、「Allowed domains」に必要なドメインを追記する\n3. 変更は約1分で同一環境を使う全セッションに反映される(セッション再作成は不要)\nさらに、こうして外部CLIをセッション内に手動でnpm install等した場合、**その内容はそのセッションのコンテナ限定で、VMが再作成されると消える**。恒久化したい場合は環境の「セットアップスクリプト」に追加する必要がある(未実施、CCX-001のnextActionに記録)。",
           "date": "2026-10-03"
+        },
+        {
+          "id": "CL-033",
+          "concept": "SECIモデル(ナレッジマネジメント理論)による『蓄積のみで活用されないナレッジ』の診断と、機械的リマインド(PreToolUseフック)による結合段階の見落とし防止",
+          "context": "2026-10-05、ユーザーとの相談(English-Speaking-AppのChatGPTレッスン機能にSECI化を適用できないかという話から発展)で、concept-log.json自体が表出化(蓄積)のみで結合(活用)されていないという課題が発覚",
+          "note": "SECIモデルの4段階(共同化→表出化→結合→内面化)に当てはめると、mirai-journal・English-Speaking-App(lessons.json)・study-app(history.json)はいずれも①②(体験→記録)までしか実装されておらず、③結合(過去記録の横断分析)・④内面化(次回への反映)が無い。このprogress-tracker-dashboard自身のdata/concept-log.jsonも同じ課題を抱えていた: ルールとして『実装前にconcept-log.jsonを見る』と書くだけでは、ルール数が増えるほどAIが見落とすリスクが残る(本リポジトリ自身がmanager-room/worker-room役割分担を翌日に自ら破った前例がある)。対策として、(a)claude-core-rules.mdルール23に『実装前にconcept-log.jsonを確認し活かした/活かさなかった理由を明記する』を追記、(b).claude/settings.jsonにPreToolUseフック(matcher: Edit|Write、.claude/hooks/concept-log-reminder.shでhookSpecificOutput.additionalContextを注入)を設定し、AIの判断に依存せずharness側で機械的にリマインドする、という2段構えを採用した。フックは『いつ確認するか』を保証するだけで『確認した結果どう活かすか』の判断自体はAI側に残るため、活かした/活かさなかった理由を明記する運用とセットにしている。なお④内面化(知識を使って実際に行動が変わること)はアプリの実装だけでは完結せず、最終的にユーザー自身の行動に依存する、という限界も合わせて整理した。",
+          "date": "2026-10-05"
         }
       ]
     },
