@@ -4353,6 +4353,30 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-068",
+      "task": "SECI化(ナレッジの結合)のためのconcept-log確認フックとAI基本設定ウィジェットを追加",
+      "title": "concept-log.json結合フック・SECI化ウィジェット",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-05",
+      "category": "governance",
+      "note": "2026-10-05、English-Speaking-AppのレッスンレポートJSON化(ESA-002)の相談から発展し、ユーザーと「SECI化」(ナレッジマネジメント理論)について対話を重ねた結果、mirai-journal・English-Speaking-App・study-appだけでなく、このprogress-tracker-dashboard自身のconcept-log.jsonも『蓄積(表出化)のみで活用(結合)されない』という同じ課題を抱えていることが判明し着手。",
+      "detail": "【経緯】English-Speaking-Appの新機能相談の中で「過去のナレッジを他の実装・考察にも活かせないのか、今はただ参照して取り入れるだけになっている」という指摘を受け、concept-log.jsonの実態を確認したところ、蓄積(policy.json POL-004による自動追記)のみで、実装・考察のたびに過去の記録を組み合わせて活かす処理が行われていないことが判明した。ルールに明記するだけでは見落としリスクが残るとの懸念から、「①固定フレーズのスキル」「②候補スキルを全部呼ぶ」等の案を検討した上で、harness側のフック(update-configスキル使用)が『呼び出すタイミング』を機械的に保証する最も確実な手段と判断、ユーザーの提案(活かした/活かさなかった理由を回答に明記させる)と組み合わせて実装した。\n\n【実装内容】\n- `.claude/hooks/concept-log-reminder.sh`(新規): PreToolUseイベント用のリマインダースクリプト。hookSpecificOutput.additionalContextとしてconcept-log.json確認を促す文言を出力する。\n- `.claude/settings.json`: `hooks.PreToolUse`に`matcher: \"Edit|Write\"`のフックを追加。\n- `data/claude-core-rules.md`ルール23に2026-10-05追記として、実装・提案前のconcept-log.json確認・理由明記のルールを追加。\n- `data/ai-config.json`: `web/ai.consultationFormat`に同ルールの要約を追記、新規`web/ai.seciModel`セクションを新設(SECIモデルの4段階説明、mirai-journal/English-Speaking-App/study-appの現状、本フックの位置づけ)。\n- `dashboard.html`: `AI_CONFIG_SECTIONS`に`seciModel`を追加、`AI_CONFIG_DIAGRAMS`に4段階の循環図を追加。\n\n【検証】設定直後に実際にEdit/Writeツールを使用し、`PreToolUse:Edit/Write hook additional context`としてリマインダー文言が実際に注入されることをシステムリマインダー上で確認(センチネルファイルによる検証はサンドボックス境界の都合で別経路になったため使わず、実際の注入そのものを証拠とした)。PlaywrightでAI基本設定タブのseciModelセクション・4段階図が正しく表示されることを確認(pageerrorゼロ)。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard (commit ce38f87 → main 51968eb)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-05",
+          "summary": "PreToolUseフック(.claude/hooks/concept-log-reminder.sh)・claude-core-rules.mdルール23追記・ai-config.jsonのseciModelウィジェット・dashboard.htmlの表示対応を実装し、動作確認・Playwright検証の上main反映済み(commit 51968eb)。concept-log.jsonへCL-033として記録。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
