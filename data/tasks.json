@@ -13,7 +13,8 @@
     "servicenow-sub-agent",
     "English-LevelUp-Reader",
     "claude-voice-bridge",
-    "mirai-journal"
+    "mirai-journal",
+    "English-Speaking-App"
   ],
   "tasks": [
     {
@@ -4296,6 +4297,30 @@
           "summary": "MJ-001で設計したフロー(Gemini面談→claude-voice-bridge→Claudeへ貼り付け→codex execで分析委任→Claudeがレビュー→JSON直接commit)の実運用1件目を実施。ユーザーの実際の面談内容(CodexとClaudeを掛け合わせたアプリ制作について)をcodex execで分析し、内容をレビューした上でmirai-journalのjournals.json・profile.jsonへ記録(commit c05357b)。フロー全体が実際に機能することを確認した。"
         }
       ]
+    },
+    {
+      "repo": "English-Speaking-App",
+      "id": "ESA-001",
+      "task": "ChatGPT英会話レッスン用の説明ページとトップ選択ページを追加",
+      "title": "ChatGPT利用ガイドページの新設",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-05",
+      "category": "feature",
+      "note": "2026-10-05、ユーザーから新規依頼。既存の自作英会話練習アプリ(index.html単体、Groq APIで発音/ニュアンス判定)に加え、ChatGPTへプロンプトを貼って英会話レッスンを受ける使い方を案内するだけのページを追加したいという依頼。実装着手前にAskUserQuestionでPC/iPhone対応方向(ルール8)・ページ内容の範囲・レッスンブックファイルの扱い・URL構成の4点を確認し、いずれも推奨案(両対応/手順説明も含める/ファイルの扱いも説明に含める/新トップページをindex.htmlにし旧アプリをapp.htmlへ移動)で合意した上で実装した。",
+      "detail": "【背景】English-Speaking-Appはこれまでprogress-tracker-dashboardの管理対象(knownRepos)に入っておらず、index.html単体(Groq APIキーをユーザー自身が入力・localStorage保存、発音/ニュアンス判定付きの音声英会話練習アプリ、タブは「英会話」「復習」の2つ)のみだった。\n\n【実装内容】\n- 旧`index.html`を`app.html`へ改名(自作アプリ本体としてそのまま維持、内部にindex.html自己参照リンクは無かったため移動による影響なし)。\n- 新しい`index.html`: トップ選択ページ。「自作アプリで練習」(app.htmlへ)と「ChatGPTで英会話レッスン」(chatgpt.htmlへ)の2枚のカードに振り分ける、PC/iPhone両対応のレスポンシブレイアウト(既存アプリの配色・フォント(Nunito/Lora、ティール/オレンジ系)を踏襲)。\n- 新規`chatgpt.html`: ユーザーが添付したChatGPT用「オンライン英会話講師」システムプロンプト(オンライン英会話スクールの講師プロンプト、レッスンブックA〜F(日常会話初級/中級・ビジネス・旅行・スキマ英会話・デイリーニュース)の構成、進行コマンド(次へ/スキップ/終わり/台本どおりに/ブロックN から/続きから/フリートーク/ネイティブモード/レポート等)を定義)を元に作成。実際のレッスンはChatGPT画面上で行うため、このページ自体はAPIを呼ばず、(1)ChatGPTでの始め方の手順(プロジェクト作成→レッスンブックファイルをナレッジにアップロード→プロンプトを指示欄に貼付→【 】設定値の書き換え→レッスン呼び出し方)、(2)レッスンブックA〜Fの構成表、(3)進行コマンドの早見表、(4)プロンプト全文(コピー機能付きtextarea、HTMLエスケープ済み)を掲載。レッスンブックファイル本体(各冊の実際の本文)はユーザーから提供されていないため配布せず、「ご自身で用意してChatGPT側にアップロードする」旨を明記。\n- `README.md`新設(このリポジトリに初めてドキュメントを追加。ページ構成と経緯を記録、ルール24対応)。\n\n【検証】ローカルで静的サーバーを立て、Playwrightでindex.html/app.html/chatgpt.htmlの3ページをPC(1280x800)・iPhone相当(390x844)の両ビューポートで実機確認。JSのuncaught例外(pageerror)はゼロ。トップページのカードクリックでapp.html・chatgpt.htmlへ正しく遷移し、chatgpt.htmlの「トップへ戻る」リンクでindex.htmlへ戻ることも確認。プロンプト全文がtextarea内に欠落・文字化けなく埋め込まれていること(文字数照合、HTML特殊文字「&」のエスケープ)も確認済み。表示されたconsole.errorはサンドボックスのプロキシがGoogle Fonts等の外部CDNへの接続を拒否したことによるもので、コード側の不具合ではない。",
+      "issues": [],
+      "output": "gurii-gabreh/English-Speaking-App (commit 4bc4085)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-05",
+          "summary": "English-Speaking-Appにトップ選択ページ(index.html)とChatGPT利用ガイドページ(chatgpt.html)を新設、旧index.htmlをapp.htmlへ改名。Playwrightで3ページ・PC/モバイル両方の実機確認済み。main直push完了(commit 4bc4085)。progress-tracker-dashboardへ新規登録(knownRepos追加、ESA-001起票)。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
