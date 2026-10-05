@@ -149,6 +149,24 @@
       "repo": "mirai-journal",
       "task": "MJ-001: mirai-journal全面改修(localStorage+API直呼び出し→JSON正本+ビューアー構成)",
       "note": ""
+    },
+    {
+      "date": "2026-10-05",
+      "repo": "English-Speaking-App",
+      "task": "ESA-001: ChatGPT英会話レッスン用の説明ページとトップ選択ページを追加",
+      "note": ""
+    },
+    {
+      "date": "2026-10-05",
+      "repo": "English-Speaking-App",
+      "task": "ESA-002: ChatGPTレッスンレポートのJSON記録・閲覧機能を追加",
+      "note": ""
+    },
+    {
+      "date": "2026-10-05",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-068: SECI化(ナレッジの結合)のためのconcept-log確認フックとAI基本設定ウィジェットを追加",
+      "note": ""
     }
   ]
 }
