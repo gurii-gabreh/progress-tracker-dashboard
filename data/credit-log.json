@@ -167,6 +167,12 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-068: SECI化(ナレッジの結合)のためのconcept-log確認フックとAI基本設定ウィジェットを追加",
       "note": ""
+    },
+    {
+      "date": "2026-10-07",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-069: 要件定義に市場分析7ステップ(PEST〜カスタマージャーニー)を組み込む",
+      "note": ""
     }
   ]
 }

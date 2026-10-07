@@ -4377,6 +4377,30 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-069",
+      "task": "要件定義に市場分析7ステップ(PEST〜カスタマージャーニー)を組み込む",
+      "title": "市場分析7ステップのrequirements.json統合",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-07",
+      "category": "governance",
+      "note": "2026-10-05〜06に市場調査フレームワーク(PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニー)の順番・各ステップの意味をユーザーと相談した流れから、2026-10-07、「前にやった分析を要件定義時に盛り込めるか、結果はrequirements.jsonに一緒にまとめたい」という依頼を受けて着手。AskUserQuestionで(1)適用範囲(毎回必ず・全アプリ共通に決定、ハッカソン等限定ではない)、(2)保存先(requirements.json内、新フィールドとして追加)、(3)生成方法(AIが調査・Web検索して下書き→ユーザー確認・修正)を確認した上で実装した。",
+      "detail": "【実装内容】\n- `data/requirements.json`に`marketAnalysisFramework`(新規トップレベルキー)を追加。7ステップ(pest/fiveForces/threeC/swot/stp/fourP/customerJourney)の順番・各ステップの狙い・順番の根拠(3CとSWOTの順は一般的な解説記事では3Cが先であることを2026-10-05にWebSearchで確認済み)を記録。\n- `dashboard.html`の「🆕 新規相談」依頼文テンプレート(`buildNewConsultationPromptText()`)と`.claude/skills/new-app-kickoff/SKILL.md`の両方(両者は同一内容を保つ既存の同期ルールがあるため同時更新)に、標準10項目の聞き取り確定後、新規リポジトリ(分岐a)の場合は7ステップの市場分析を毎回必ず実施し、同じrequirementsエントリの`marketAnalysis`フィールド({pest, fiveForces, threeC, swot, stp, fourP, customerJourney}、各ステップの結論を文章で格納)へ記録する手順を追加。\n- 既存13件の遡及作成requirementsエントリには適用していない(実際には行っていない分析を遡及で創作するのはルール5「根拠のない情報は含めない」に反するため、意図的に対象外とした)。\n\n【検証】Playwrightでdashboard.htmlの「🧭 マネージャーアプリ」サブタブ→「📋 依頼文作成」ドロップダウン→「🆕 新規相談」を実際に操作し、生成されたテンプレート本文にmarketAnalysisFrameworkの参照・7ステップの順番・marketAnalysisフィールドの格納方法が正しく含まれていることを確認(pageerrorゼロ)。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard (commit 9aa28b2 → main a67b838)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-07",
+          "summary": "data/requirements.jsonへmarketAnalysisFrameworkを新設、dashboard.htmlの新規相談テンプレート・new-app-kickoffスキルの両方に市場分析7ステップの実施・記録手順を追加。Playwright検証後main反映(commit a67b838)。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
