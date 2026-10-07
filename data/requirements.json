@@ -1020,5 +1020,45 @@
         "source": "claude-core-rules.md ルール18"
       }
     ]
+  },
+  "marketAnalysisFramework": {
+    "description": "新規リポジトリの要件定義(interviewChecklistの標準10項目)が固まった後、社会的価値・妥当性・ハッカソン等の対外発表にも耐える裏付けを持たせるため、毎回必ず実施する市場分析の7ステップ(2026-10-07追加、ユーザー指示「前にやった分析を要件定義時に盛り込めるか」「毎回必ず・全アプリ共通」「結果はrequirements.jsonに一緒にまとめたい」)。順番はPEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニー(standard order; 3CとSWOTの順は一般的な解説記事では3Cが先なので、この順を正本とする。出典: media.bizmake.jp・mktg.xfader.jp等、2026-10-05にWebSearchで確認)。AIが調査・Web検索して各ステップの下書きを作成し、ユーザーが確認・修正した上で、各requirementsエントリの`marketAnalysis`フィールドへ格納する。既存13件の遡及作成エントリには適用しない(当時この分析を行った事実がなく、遡及で内容を創作することはルール5「根拠のない情報は含めない」に反するため)。",
+    "steps": [
+      {
+        "key": "pest",
+        "label": "①PEST分析",
+        "focus": "政治・経済・社会・技術というマクロ環境の動きを確認する"
+      },
+      {
+        "key": "fiveForces",
+        "label": "②ファイブフォース分析",
+        "focus": "業界内の競争の激しさ(既存競合・新規参入・代替品・供給者/買い手の交渉力)を確認する"
+      },
+      {
+        "key": "threeC",
+        "label": "③3C分析",
+        "focus": "自社(Company)・顧客(Customer)・競合(Competitor)を具体的に見る"
+      },
+      {
+        "key": "swot",
+        "label": "④SWOT分析",
+        "focus": "①②③で集めた事実を強み・弱み・機会・脅威に整理する"
+      },
+      {
+        "key": "stp",
+        "label": "⑤STP分析",
+        "focus": "セグメンテーション・ターゲティング・ポジショニングで、誰に・どう戦うかを決める"
+      },
+      {
+        "key": "fourP",
+        "label": "⑥4P分析",
+        "focus": "製品・価格・流通・販促という具体策に落とし込む"
+      },
+      {
+        "key": "customerJourney",
+        "label": "⑦カスタマージャーニー",
+        "focus": "ターゲット顧客が実際にどう気づき・使い・継続するかを時系列で描く"
+      }
+    ]
   }
 }
