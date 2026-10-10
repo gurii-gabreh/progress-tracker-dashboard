@@ -137,6 +137,13 @@
           "context": "2026-10-05、ユーザーとの相談(English-Speaking-AppのChatGPTレッスン機能にSECI化を適用できないかという話から発展)で、concept-log.json自体が表出化(蓄積)のみで結合(活用)されていないという課題が発覚",
           "note": "SECIモデルの4段階(共同化→表出化→結合→内面化)に当てはめると、mirai-journal・English-Speaking-App(lessons.json)・study-app(history.json)はいずれも①②(体験→記録)までしか実装されておらず、③結合(過去記録の横断分析)・④内面化(次回への反映)が無い。このprogress-tracker-dashboard自身のdata/concept-log.jsonも同じ課題を抱えていた: ルールとして『実装前にconcept-log.jsonを見る』と書くだけでは、ルール数が増えるほどAIが見落とすリスクが残る(本リポジトリ自身がmanager-room/worker-room役割分担を翌日に自ら破った前例がある)。対策として、(a)claude-core-rules.mdルール23に『実装前にconcept-log.jsonを確認し活かした/活かさなかった理由を明記する』を追記、(b).claude/settings.jsonにPreToolUseフック(matcher: Edit|Write、.claude/hooks/concept-log-reminder.shでhookSpecificOutput.additionalContextを注入)を設定し、AIの判断に依存せずharness側で機械的にリマインドする、という2段構えを採用した。フックは『いつ確認するか』を保証するだけで『確認した結果どう活かすか』の判断自体はAI側に残るため、活かした/活かさなかった理由を明記する運用とセットにしている。なお④内面化(知識を使って実際に行動が変わること)はアプリの実装だけでは完結せず、最終的にユーザー自身の行動に依存する、という限界も合わせて整理した。",
           "date": "2026-10-05"
+        },
+        {
+          "id": "CL-034",
+          "concept": "情報源選定は「公式に機械読み取り用のRSS/APIを提供しているか」を基準にし、スクレイピングは採用しない",
+          "context": "2026-10-10、manager-roomでの個人キャリア実績作り相談から、SEOキーワード経由の世の中の動向調査・働き方の調査が可能か検討した(servicenow-sub-agent category 8/9追加、PTD-071)。",
+          "note": "Google Trendsの検索ボリューム指数は魅力的なデータだが、公式・無料のAPIが存在せず、無料の代替手段(pytrends等)はいずれもGoogle Trendsの画面を裏からスクレイピングする方式で、Googleの利用規約が明示的に禁止する「automated queries」に抵触するグレーゾーンだった。AI自身がスクレイピングする場合も、スクショ+OCRで画像解析する場合も、本質的に「プログラムが自動でアクセス・データ収集している」という点は変わらず、規約上の立場は改善しない(検出回避の手法として知られているだけで合法化はされない)と判断し、いずれも見送った。代わりに、サイト側が自動取得を前提に正式に提供しているRSS/Atomフィードのみを採用した(Search Engine Journal/Moz Blog/Fast Company/Allwork.Space/The Guardian/EPI、全て実地検証済み)。なお、Google Trendsの生データが本当に必要な場合は「ユーザー自身が人間として手動でブラウザから見て、スクリーンショットを貼り付ける」のが唯一クリーンな方法と結論した(自動化ではなく人間の通常利用のため規約上の問題が生じない)。実装自体は既存の\"AI Research - Blog RSS\" REST Messageへの新規HTTPメソッド追加という、2026-08-30のPTD-048拡張(CL-xxx、ByteByteGo/InfoQ等5件追加)と同じパターンを再利用し、新規REST Message/Scheduled Jobの重複を作らなかった。",
+          "date": "2026-10-10"
         }
       ]
     },
