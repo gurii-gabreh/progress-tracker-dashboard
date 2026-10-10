@@ -4401,6 +4401,25 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-070",
+      "task": "市場分析7ステップ(PTD-069)の実運用での初回検証待ち",
+      "title": "市場分析7ステップの初回実運用トラッキング",
+      "priority": "低",
+      "status": "未着手",
+      "updated": "2026-10-10",
+      "category": "governance",
+      "note": "PTD-069で要件定義に市場分析7ステップを組み込んだが、2026-10-10時点でdata/requirements.jsonの既存14件(ESA-001含む)のいずれも実際にmarketAnalysisフィールドを記録しておらず、まだ一度も実運用で使われていない。ユーザーから『実装は完了しているが試されていない状態をタスク化して追いかけたい』という依頼を受けて起票。『スキルかRoutineのどちらかに自動検知を組み込む必要がある』という整理の結果、実際に市場分析が記録される場面(新規相談フロー)自体がnew-app-kickoffスキル・dashboard.htmlテンプレートの中にしかないため、日次Routineでの事後チェックではなくスキル側に直接組み込むことにした。",
+      "detail": null,
+      "issues": [],
+      "output": null,
+      "steps": null,
+      "checkHistory": [],
+      "nextAction": "次回の新規相談(要件定義)フローで市場分析7ステップが実際にrequirements.jsonへ記録された際、dashboard.html/new-app-kickoffスキルの手順(2026-10-10追記分)により自動でこのタスクが`完了`に更新される想定。人手での更新は原則不要。",
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"

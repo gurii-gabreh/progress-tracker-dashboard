@@ -106,7 +106,12 @@ README運用ルール31)を起動するための**自動化された別入口**(
         画面がJSONをそのまま映すだけで済むよう、interviewChecklistの項目と1対1対応する形に
         変更した。対象外・未確定の話が出た場合は、該当するnの`answer`内に書き添える)。
         `marketAnalysis`←市場分析7ステップの結論を`{pest, fiveForces, threeC, swot, stp, fourP,
-        customerJourney}`としてそれぞれ文章で格納する(2026-10-07追加)。
+        customerJourney}`としてそれぞれ文章で格納する(2026-10-07追加)。このとき、
+        `data/requirements.json`の`requirements`配列の他のエントリに`marketAnalysis`を持つものが
+        まだ1件も無かった場合(今回が初めての記録)は、あわせて`data/tasks.json`のPTD-070
+        (「市場分析7ステップの実運用での初回検証待ち」)を`status: 完了`に更新し、`checkHistory`に
+        今回のrepoとエントリIDを記録する(2026-10-10追加、ユーザー指示。すでに他のエントリで
+        記録済みなら何もしない)。
         **`concernReview`←手順3で実際に浮かび上がった懸念を1件ずつ配列で
         記録する**(2026-09-26追加、ユーザー指示「懸念点については、相談した結果の最終的な
         回答も明記する仕様に」「相談途中に出てくる懸念は、全てJSON側に記録しナレッジとして
