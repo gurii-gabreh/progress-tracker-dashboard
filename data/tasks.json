@@ -4420,6 +4420,30 @@
       "nextAction": "次回の新規相談(要件定義)フローで市場分析7ステップが実際にrequirements.jsonへ記録された際、dashboard.html/new-app-kickoffスキルの手順(2026-10-10追記分)により自動でこのタスクが`完了`に更新される想定。人手での更新は原則不要。",
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-071",
+      "task": "category 8(SEO/マーケティング業界動向)・category 9(働き方の動向)の追加",
+      "title": "SEO・働き方動向の情報収集カテゴリ追加",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-10",
+      "category": "architecture",
+      "note": "manager-roomでの個人キャリア実績作り相談(37歳の節目、資格試験の勉強と並行して仕事以外の場での実績作りを増やしたい)から、情報収集手段を広げられないか検討した一部。「SEOキーワードから世の中の動向を調査したい」「働き方(最先端/一般的/近未来的)を調査したい」という要望に対応。Google Trendsの検索ボリューム指数は無料・利用規約上クリーンな取得手段が無く(非公式スクレイパーのみでGoogleのautomated queries禁止に抵触するグレーゾーン)見送り、代わりに公式RSSを提供している業界メディアのみを採用した。",
+      "detail": "category 8(世の中の動向・SEO/マーケティング業界): Search Engine Journal (https://www.searchenginejournal.com/feed/)、Moz Blog (https://feedpress.me/mozblog、moz.com/blog/feedのリダイレクト先をhttps直接指定)。\ncategory 9(働き方の動向): Fast Company Work Life (https://www.fastcompany.com/work-life/rss、最先端)、Allwork.Space (https://allwork.space/feed/、最先端)、The Guardian Work & Careers (https://www.theguardian.com/money/work-and-careers/rss、一般的)、Economic Policy Institute (https://www.epi.org/feed/、近未来的・労働市場の研究機関)。\n実装は既存の\"AI Research - Blog RSS\" REST Messageへの新規HTTPメソッド追加という、2026-08-30のPTD-048拡張と同じパターンを再利用し、新規REST Message/Scheduled Jobは作らなかった(concept-log.jsonのCL-034参照)。全6件、このセッションでcurl実地検証済み(HTTP 200・<item>形式)、かつGitHub Actionsのverify-source-urlsジョブでも実地検証成功。\n見送った候補: HBR/BBC Worklife/HR Executive/SHRMは404、WEFはWAFによる403で取得できず採用しなかった(架空のURLを使わない方針)。\n変更ファイル: servicenow/scheduled_job_ai_research_fetch.js(CATEGORY.SEO_TREND=8/WORK_STYLE=9追加、fetchBlogRss呼び出し追加)、servicenow/scripts/setup_rest_messages.mjs・verify_source_urls.mjs(新規6メソッド追加)、README.md(観点表7→9、情報源表、「SEO/働き方の動向」セクション追加)。",
+      "issues": "u_categoryフィールドのChoice値(8・9)は、category 6/7の追加時と同様にServiceNow Studio側での手動追加が別途必要(このリポジトリのスクリプトはsys_rest_message/sys_rest_message_fnのみを自動化しており、u_ai_research_itemのChoice定義automationは対象外)。追加するまでは、Scheduled Job実行時にcategory 8/9のアイテムが正しく分類されない可能性がある。",
+      "output": "gurii-gabreh/servicenow-sub-agent commit bfc688e",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-10",
+          "summary": "SEO/マーケティング業界(category 8)・働き方(category 9)の情報源を調査・実地検証し、servicenow-sub-agentへ実装・push。GitHub Actions(servicenow-setup.yml、dry_run=false、run 38051806804)を実行し、REST Message作成・Scheduled Job同期・情報源URL実地検証の3ジョブ全て成功を確認。"
+        }
+      ],
+      "nextAction": "ユーザーがServiceNow Studio側でu_categoryフィールドのChoiceリストに8(世の中の動向・SEO)・9(働き方の動向)を手動追加する。それまではcategory 8/9のアイテムが正しく保存されない可能性がある。",
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"

@@ -173,6 +173,18 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-069: 要件定義に市場分析7ステップ(PEST〜カスタマージャーニー)を組み込む",
       "note": ""
+    },
+    {
+      "date": "2026-10-10",
+      "repo": "English-Speaking-App",
+      "task": "ESA-002: ChatGPTレッスンレポート記録(E-1 Morning Routine)",
+      "note": "data/lessons.jsonへ記録、lessons.htmlで表示確認済み。"
+    },
+    {
+      "date": "2026-10-10",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-071: category 8/9(SEO・働き方の動向)追加",
+      "note": "RSS 6件を実地検証・実装・push。GitHub Actions(dry_run=false)実行、3ジョブ全て成功。"
     }
   ]
 }
