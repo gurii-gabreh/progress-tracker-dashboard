@@ -14,7 +14,8 @@
     "English-LevelUp-Reader",
     "claude-voice-bridge",
     "mirai-journal",
-    "English-Speaking-App"
+    "English-Speaking-App",
+    "PROMPT-MANAGER"
   ],
   "tasks": [
     {
@@ -4446,6 +4447,34 @@
         }
       ],
       "nextAction": "完了。u_categoryのChoice値(8・9)もServiceNow Studio側で追加済み(ユーザー確認済み、2026-10-10)。",
+      "subtasks": null,
+      "goal": null
+    },
+    {
+      "repo": "PROMPT-MANAGER",
+      "id": "PMG-001",
+      "task": "claude-voice-bridgeへの表示統合・ローカルサーバー不要の半自動生成方式の追加",
+      "title": "PROMPT-MANAGER × claude-voice-bridge 統合",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-10-11",
+      "category": "architecture",
+      "note": "2026-10-10〜11、manager-roomでの相談「コンテキストエンジニアリングをプロンプト生成アプリに組み込んだ方がいいのでは」から着手。該当アプリはgurii-gabreh/PROMPT-MANAGER(chapro.jpから収集したプロンプトを基に、目的のAI向けプロンプトを生成するツール。データ正本はGoogleスプレッドシート+専用GAS、他アプリのJSON+GitHub管理とは異なる構成)。議論の過程で一度専用の構想ルーム(session_011RSVofQcEJBLSFWDpZwRbw)を作成したが、ユーザーの判断でこれを削除し、『今まで通り、manager-room自身が必要に応じて直接実装してよい』という方針を明示的に確認した上で、以降の実装はこのmanager-room自身で行っている(README記載の「manager-roomは実装せず作業ルームへ依頼する」という原則の、この案件限定での明示的な例外運用)。",
+      "detail": "①claude-voice-bridge側(commit 1c1801d): サイドパネルに新タブ「✨ プロンプト生成」を追加し、既存の公開ページ(https://gurii-gabreh.github.io/prompt-manager/、ユーザー確認済みで実際に公開されている)をそのままiframe表示するだけの最小構成にした(既存のwidget-design.html等と同じ「表示だけ切り出す」設計方針を踏襲、UIの複製はしない)。他のウィジェットと違い外部オリジンを直接iframe表示する初めてのケースのため、専用のwidget-*.htmlは作らず#prompt-mode-panel直下に直接iframeを置いた(固定高さ600px、高さ自動調整は未対応)。Playwrightでタブ切り替え・iframe表示を実機確認済み。\n②PROMPT-MANAGER側(commit 55f777f): ユーザー指示『今のローカル仕様(Mac限定・claude CLI)は残しつつ、新たにAIの回答を貼り付けて記録する方式を追加し、画面上に両方残す』を受けて実装。buildMetaPromptClient/parseClaudeOutputClientという、local-server/server.jsのbuildMetaPrompt/parseClaudeOutputと同じロジックのブラウザ側移植版を追加し、「📋 AIに貼り付ける依頼文を作成」→自分の使っているAIに貼り付け→「✅ 貼り付けた回答を反映する」という半自動フローを、既存のローカルサーバー方式と並べて選べるようにした。出力形式・パース結果の構造を揃えることで、下流の表示(🔎参考プロンプト補足)・履歴記録処理をローカルサーバー方式と完全に共通化している。Playwrightで依頼文作成→回答貼り付け→反映までの一連の流れを実機確認済み。\n携帯(claude-voice-bridgeはChrome拡張機能のため動作しない)でも使えることを見越し、ローカルサーバー・AI呼び出し前提の質問ウィザード/プレビュー機能をroom-task-audit方式で代替する案は見送り、PC・携帯どちらでも同じ体験になる半自動方式を優先する方針とした。",
+      "issues": [
+        "claude-voice-bridge側のタブ配置・iframe高さは暫定(固定600px)。高さ自動調整はPROMPT-MANAGER側がwidget-common.jsのreportHeightToParent相当の対応を持たないため未対応。",
+        "生成履歴のJSON化(data/history.json、過去データの一度限りの移行含む)はまだ未着手。",
+        "質問ウィザード・プレビュー機能(ローカルサーバー前提)の扱いは最終的に未決定のまま(廃止するかどうかの明示的な結論は出していない)。"
+      ],
+      "output": "gurii-gabreh/claude-voice-bridge commit 1c1801d、gurii-gabreh/PROMPT-MANAGER commit 55f777f(branch: claude/upbeat-cori-cus3xa)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-11",
+          "summary": "claude-voice-bridgeに✨プロンプト生成タブ(PROMPT-MANAGERのiframe埋め込み)を追加し、PROMPT-MANAGER側にローカルサーバー不要の半自動生成方式(依頼文コピー→貼り付け→反映)を既存方式と並べて追加した。両方実機(Playwright)で動作確認済み、commit・push完了。"
+        }
+      ],
+      "nextAction": "生成履歴のJSON化(data/history.json)・過去データの移行・質問ウィザード/プレビューの最終的な扱いについて、ユーザーと詰めて次の実装に進める。",
       "subtasks": null,
       "goal": null
     }
