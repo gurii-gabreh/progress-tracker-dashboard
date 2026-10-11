@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "description": "ルーティン・自動収集処理ごとの「今現在、正常に動いているか」を○✗で一覧化したもの(2026-10-11追加、ユーザー指示「毎日報告されているが結果的に埋もれている可能性があるので一覧化したい」。manager-room-log.jsonは時系列の日次ログで過去を遡らないと状態が分からなかったが、こちらは常に最新状態のみを保持する現在状態スナップショット)。日次Routine(trig_01KWsnPeW7QcgTBKjUZYnDZV)が毎回このファイル全体を最新状態に更新する。dashboard.htmlの「🔄 ルーティン」タブ内「✅ 実行結果」サブタブで表示する。",
+  "updatedAt": "2026-10-11T03:10:00+09:00",
+  "checks": [
+    {
+      "id": "servicenow-export-research",
+      "label": "ServiceNow research-items.json 日次エクスポート",
+      "repo": "servicenow-sub-agent",
+      "kind": "GitHub Actions(日次09:30 JST)",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T02:35:08Z",
+      "consecutiveFailures": 0,
+      "detail": "2026-09-28〜10-11、GitHub Push ProtectionによりHacker News(Ask HN)投稿内の実在OpenAIキー形式文字列が原因で14回連続失敗していたが、export_research_items.mjsに自動マスク処理(redactSecrets)を追加し2026-10-11に復旧(PTD-058参照)。"
+    },
+    {
+      "id": "servicenow-setup",
+      "label": "ServiceNow REST Message/Scheduled Job 設定同期",
+      "repo": "servicenow-sub-agent",
+      "kind": "GitHub Actions(手動実行)",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-10T12:24:12Z",
+      "consecutiveFailures": 0,
+      "detail": "category 8/9(SEO・働き方の動向)追加に伴い2026-10-10に実行、REST Message作成・Scheduled Job同期・情報源URL実地検証の3ジョブ全て成功(PTD-071参照)。"
+    },
+    {
+      "id": "credit-log-recency",
+      "label": "credit-log.json 記録漏れ",
+      "repo": "progress-tracker-dashboard",
+      "kind": "日次Routineでのチェック",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T03:10:00+09:00",
+      "consecutiveFailures": 0,
+      "detail": "2026-08-20〜10-03に約1ヶ月半記録が止まっていた前例があるため日次チェック対象にしている(claude-core-rules.mdルール28参照)。2026-10-11時点、最終記録は当日分まで反映済み。"
+    },
+    {
+      "id": "tasks-detail-gap",
+      "label": "tasks.json 完了タスクのdetail空欄チェック",
+      "repo": "progress-tracker-dashboard",
+      "kind": "日次Routineでのチェック",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T03:10:00+09:00",
+      "consecutiveFailures": 0,
+      "detail": "2026-10-03に完了タスク9件のdetail空欄放置が発覚した前例があるため日次チェック対象にしている。2026-10-11時点、空欄のまま完了になっているタスクは無し。"
+    },
+    {
+      "id": "task-wbs-sync",
+      "label": "Task-WBS「各アプリ作成」ノード同期",
+      "repo": "Task-WBS",
+      "kind": "日次Routineでのチェック",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T03:10:00+09:00",
+      "consecutiveFailures": 0,
+      "detail": "2026-09-03を最後に1ヶ月以上未更新・廃止済みタスクが残っていた前例があるため日次チェック対象にしている。2026-10-11、PTD-070の差分を検出し追加済み。"
+    },
+    {
+      "id": "manager-room-daily-log",
+      "label": "マネージャールーム日次ログ",
+      "repo": "progress-tracker-dashboard",
+      "kind": "Routine(毎日JST 0:00)",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T00:06:45Z",
+      "consecutiveFailures": 0,
+      "detail": "trig_01KWsnPeW7QcgTBKjUZYnDZV。2026-10-11、2026-10-10分を記録済み。"
+    },
+    {
+      "id": "claude-md-check",
+      "label": "CLAUDE.md定期確認",
+      "repo": "progress-tracker-dashboard",
+      "kind": "Routine(平日0時/休日祝日12時間毎)",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-11T03:01:09Z",
+      "consecutiveFailures": 0,
+      "detail": "trig_0134aaUtfW6p6HGFZ7HzaDMN。2026-10-11、0時・12時(日曜のため2回)とも確認済み、問題なし。"
+    },
+    {
+      "id": "weekly-room-log-digest",
+      "label": "週次ルームログ要約(claude-voice-bridge)",
+      "repo": "claude-voice-bridge",
+      "kind": "Routine(毎週日曜JST 0:00・常駐セッション)",
+      "status": "ok",
+      "lastCheckedAt": "2026-10-11T03:10:00+09:00",
+      "lastSuccessAt": "2026-10-10T15:16:15Z",
+      "consecutiveFailures": 0,
+      "detail": "trig_014m74QVPT6f46eGJWraZ5x8、常駐セッションsession_01DTRNY4tA8x34WyJvQYF9D7。コンテキスト使用率17.0%(2026-10-11時点、70%の切り替え閾値未到達)。"
+    }
+  ]
+}

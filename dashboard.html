@@ -291,6 +291,19 @@
   .credit-summary-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
   .credit-summary-chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
 
+  /* 🔄 ルーティン「実行結果」タブ(2026-10-11追加)。health-checks.jsonの各項目を○✗で一覧表示する。 */
+  .health-check-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .health-check-row:last-child { border-bottom: none; }
+  .health-check-icon { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
+  .health-check-icon.ok { background: #1f9d55; color: #fff; }
+  .health-check-icon.failing { background: #d64545; color: #fff; }
+  .health-check-icon.unknown { background: var(--text-muted); color: #fff; }
+  .health-check-body { flex: 1 1 auto; min-width: 0; }
+  .health-check-label { font-weight: 700; font-size: 13.5px; }
+  .health-check-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .health-check-detail { font-size: 12.5px; color: var(--text); margin-top: 6px; line-height: 1.6; }
+  .health-check-summary-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+
   /* 📚 学習ログタブ(2026-08-11追加)。 */
   .concept-cat-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
   .concept-item {
@@ -874,6 +887,7 @@
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
+    <button class="top-tab-btn" id="top-tab-routine" data-view="routine">🔄 ルーティン</button>
   </div>
   <div class="view-panel-area">
   <div id="hub-view" class="view-panel">
@@ -1173,6 +1187,39 @@
         <div class="policy-meta" id="credit-meta">読み込み中…</div>
         <div id="credit-summary"></div>
         <div id="credit-table-wrap"></div>
+      </div>
+    </div>
+  </div>
+  <!-- 2026-10-11追加、ユーザー指示「自動収集処理やルーティン処理のタブを作り、処理一覧と
+       実行結果(○✗)の2タブ構成にしたい」。「処理一覧」は元々AI基本設定タブに混在していた
+       serviceNowResearch/taskListJsonSync/roomHistoryCapture/creditLogと、新規追加した
+       managerRoomDailyLog/claudeMdCheckを、自動処理専用タブへ移設・一本化したもの
+       (AI基本設定タブからはこれらを除去、jsonDataIndexのみ残す)。「実行結果」は新規の
+       data/health-checks.json(現在状態のみを保持するスナップショット、manager-room-log.json
+       のような時系列ログとは別物)を○✗で表示する。 -->
+  <div id="routine-view" class="view-panel">
+    <div class="manager-subview-toggle">
+      <button type="button" class="manager-subview-btn active" id="routine-subtab-list" data-subview="list">📋 処理一覧</button>
+      <button type="button" class="manager-subview-btn" id="routine-subtab-results" data-subview="results">✅ 実行結果</button>
+    </div>
+    <div id="routine-subview-list" class="manager-subview active">
+      <div class="policy-scroll">
+        <div class="policy-wrap">
+          <div class="tab-page-title">🔄 ルーティン・自動処理一覧</div>
+          <p class="tab-page-overview">クレジット記録・ナレッジ化・収集処理等、JSONデータへの書き込みを伴う自動処理・定期実行(Routine)の一覧です。各処理が「何を」「いつ」「どこへ」書き込んでいるかをまとめています。実行結果(正常/異常)は隣の「✅ 実行結果」タブを参照してください。</p>
+          <div class="policy-meta" id="routine-list-meta">読み込み中…</div>
+          <div id="routine-list-body"></div>
+        </div>
+      </div>
+    </div>
+    <div id="routine-subview-results" class="manager-subview">
+      <div class="policy-scroll">
+        <div class="policy-wrap">
+          <div class="tab-page-title">✅ 実行結果一覧</div>
+          <p class="tab-page-overview">各ルーティン・自動処理の「今現在の状態」のスナップショットです(data/health-checks.json、毎日の日次Routineが更新)。manager-room-log.jsonのような時系列ログとは異なり、常に最新状態のみを保持します。✗の場合は何が問題かを明記します。</p>
+          <div class="policy-meta" id="routine-results-meta">読み込み中…</div>
+          <div id="routine-results-body"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -3028,6 +3075,7 @@
       },
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
+      routine: { btn: document.getElementById("top-tab-routine"), panel: document.getElementById("routine-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -3067,6 +3115,22 @@
     }
     Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
     document.getElementById("schedule-iframe").src = SCHEDULE_URL;
+  })();
+
+  // 🔄ルーティンタブ内のサブ切り替え(処理一覧/実行結果、2026-10-11追加)。
+  (function setupRoutineSubviewToggle() {
+    const subviews = {
+      list: { btn: document.getElementById("routine-subtab-list"), panel: document.getElementById("routine-subview-list") },
+      results: { btn: document.getElementById("routine-subtab-results"), panel: document.getElementById("routine-subview-results") },
+    };
+    function activateSubview(key) {
+      Object.entries(subviews).forEach(([k, { btn, panel }]) => {
+        const active = k === key;
+        btn.classList.toggle("active", active);
+        panel.classList.toggle("active", active);
+      });
+    }
+    Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
   })();
 
   // 🎓学習タブ内のサブ切り替え(学習資料/学習記録、2026-08-19。当初タスクWBS内のサブタブだったが
@@ -3147,7 +3211,13 @@
   // ダッシュボードはdata.webの箇条書きだけを表示する(長文の詳細説明は見づらいというユーザー指摘を受けて、
   // 2026-08-11に旧schemaVersion 1のプレーンテキスト表示から切り替えた)。
   let aiConfigData = null;
-  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "messageFormatting", "seciModel", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "jsonDataIndex"];
+  const AI_CONFIG_SECTIONS = ["orchestration", "consultationFormat", "messageFormatting", "seciModel", "informationSourcing", "aiDirectory", "routing", "secondOpinionCheck", "management", "customSkills", "jsonDataIndex"];
+  // 2026-10-11追加: serviceNowResearch/taskListJsonSync/roomHistoryCapture/creditLogは
+  // 「🔄 ルーティン」タブの「📋 処理一覧」へ移設した(AI基本設定タブには残さない。ユーザー指摘
+  // 「自動収集処理やルーティン処理はAI基本設定タブに混在していて埋もれている」への対応)。
+  // jsonDataIndexは個別の「自動処理」ではなく全リポジトリのJSON一覧という参照資料のため、
+  // AI基本設定タブ側に残した。
+  const ROUTINE_SECTIONS = ["serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "managerRoomDailyLog", "claudeMdCheck"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -3244,12 +3314,16 @@
     return null;
   }
 
-  function renderAiConfigView() {
-    const bodyEl = document.getElementById("ai-config-body");
-    if (!aiConfigData) return;
+  // 2026-10-11リファクタ: AI基本設定タブ・ルーティンタブ(処理一覧)の両方で同じ
+  // セクション描画ロジックを使うため、対象セクション配列とbodyEl idを引数化した
+  // (元はrenderAiConfigView専用のハードコードだったものを汎用化。CLAUDE.mdルール23に
+  // 基づき、新規に別の描画ロジックを書くのではなく既存のものを再利用する形にした)。
+  function renderConfigSections(sectionsArray, bodyElId) {
+    const bodyEl = document.getElementById(bodyElId);
+    if (!aiConfigData || !bodyEl) return;
     const web = aiConfigData.web || {};
 
-    bodyEl.innerHTML = AI_CONFIG_SECTIONS.map((key) => {
+    bodyEl.innerHTML = sectionsArray.map((key) => {
       const section = web[key] || {};
       const points = section.points || [];
       const overviewHtml = section.overview
@@ -3291,6 +3365,19 @@
     }).join("");
   }
 
+  function renderAiConfigView() {
+    renderConfigSections(AI_CONFIG_SECTIONS, "ai-config-body");
+  }
+
+  // 🔄ルーティンタブ「処理一覧」サブタブ(2026-10-11追加)。ai-config.jsonは既に
+  // loadAiConfigData()で読み込み済みのものをそのまま使い回す(再fetchしない)。
+  function renderRoutineListView() {
+    const metaEl = document.getElementById("routine-list-meta");
+    if (!aiConfigData) return;
+    if (metaEl) metaEl.textContent = `最終更新: ${aiConfigData.updatedAt}`;
+    renderConfigSections(ROUTINE_SECTIONS, "routine-list-body");
+  }
+
   function loadAiConfigData() {
     const metaEl = document.getElementById("ai-config-meta");
     const bodyEl = document.getElementById("ai-config-body");
@@ -3303,6 +3390,7 @@
         aiConfigData = data;
         metaEl.textContent = `最終更新: ${data.updatedAt}`;
         renderAiConfigView();
+        renderRoutineListView();
       })
       .catch((err) => {
         console.error(err);
@@ -3537,4 +3625,53 @@
       });
   }
   loadCreditLogData();
+
+  // 🔄ルーティンタブ「実行結果」サブタブ(2026-10-11追加)。data/health-checks.jsonは
+  // 日次Routineが毎回上書き更新する「現在状態のみ」のスナップショット(manager-room-log.jsonの
+  // ような時系列ログとは別物。rule29のJSON粒度原則に基づき別ファイルにした)。
+  function loadHealthChecksData() {
+    const metaEl = document.getElementById("routine-results-meta");
+    const bodyEl = document.getElementById("routine-results-body");
+    return fetch("data/health-checks.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/health-checks.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        metaEl.textContent = `最終更新: ${data.updatedAt}`;
+        const checks = Array.isArray(data.checks) ? data.checks : [];
+        if (!checks.length) {
+          bodyEl.innerHTML = `<div class="empty">まだチェック項目がありません。</div>`;
+          return;
+        }
+        const okCount = checks.filter((c) => c.status === "ok").length;
+        const failingCount = checks.filter((c) => c.status === "failing").length;
+        const summaryHtml = `
+          <div class="health-check-summary-row">
+            <span class="credit-summary-chip">✅ 正常: ${okCount}件</span>
+            ${failingCount ? `<span class="credit-summary-chip" style="background:#fbe2e2;color:#d64545;">✗ 異常: ${failingCount}件</span>` : ""}
+          </div>`;
+        const rowsHtml = checks.map((c) => {
+          const status = c.status === "ok" ? "ok" : c.status === "failing" ? "failing" : "unknown";
+          const icon = status === "ok" ? "○" : status === "failing" ? "✗" : "?";
+          const failNote = c.consecutiveFailures ? `・連続${c.consecutiveFailures}回失敗` : "";
+          return `
+            <div class="health-check-row">
+              <div class="health-check-icon ${status}">${icon}</div>
+              <div class="health-check-body">
+                <div class="health-check-label">${escapeHtml(c.label || c.id || "")}</div>
+                <div class="health-check-meta">${escapeHtml(c.repo || "")} ・ ${escapeHtml(c.kind || "")}${failNote} ・ 最終確認: ${escapeHtml(c.lastCheckedAt || "-")}</div>
+                ${c.detail ? `<div class="health-check-detail">${escapeHtml(c.detail)}</div>` : ""}
+              </div>
+            </div>`;
+        }).join("");
+        bodyEl.innerHTML = summaryHtml + rowsHtml;
+      })
+      .catch((err) => {
+        console.error(err);
+        metaEl.textContent = "";
+        bodyEl.innerHTML = `<div class="empty">data/health-checks.json を読み込めませんでした。(${escapeHtml(err.message)})</div>`;
+      });
+  }
+  loadHealthChecksData();
 </script>
