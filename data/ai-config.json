@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-10-11T03:09:19.979039+00:00",
+  "updatedAt": "2026-10-11T14:59:24.778237+00:00",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -688,6 +688,14 @@
           "path": ".claude/skills/hackathon-winner-curation/SKILL.md",
           "createdAt": "2026-09-29",
           "summary": "servicenow-sub-agentのdata/research-items.jsonのcategory 7(ハッカソン情報)のうち、開催終了・入賞発表済みのものについて、Devpostのプロジェクトギャラリーページを実際に読み、入賞作品の傾向・注目作品・次の自作ハッカソンへの活かし方を日本語で要約してcurated:trueにする手順。research-item-curationと同じ『AIが直接読んで理解する』方式をcategory 7向けに特化させたもの。",
+          "triggerType": "ai"
+        },
+        {
+          "name": "obsidian-canvas-flow",
+          "repo": "gurii-gabreh/Obsidian-App",
+          "path": ".claude/skills/obsidian-canvas-flow/SKILL.md",
+          "createdAt": "2026-10-11",
+          "summary": "Obsidian互換のJSON Canvas(.canvas)ファイルを、左→右のツリーレイアウト(根→構成要素→細分化→さらに細分化)で生成するスキル。放射状マインドマップ形式を何度か試した結果、見づらいというユーザー指摘を受けてこの形式に確定した。列=x座標・行=y座標を機械的に計算して重なりを防ぎ、枝ごとに色分けする。「今後のキャリア実績作り相談ルーム」のハッカソン選定Canvasで初適用。",
           "triggerType": "ai"
         }
       ],
