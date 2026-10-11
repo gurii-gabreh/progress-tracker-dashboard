@@ -302,6 +302,16 @@
   .health-check-label { font-weight: 700; font-size: 13.5px; }
   .health-check-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
   .health-check-detail { font-size: 12.5px; color: var(--text); margin-top: 6px; line-height: 1.6; }
+
+  /* 🔗 連関図タブ(2026-10-11追加)。data/tasks.jsonのrelatedTasksからMermaidで自動描画する。 */
+  .relations-controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin: 10px 0 14px; }
+  .relations-controls label { font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .relations-controls select { font-size: 13px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  .relations-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .relations-legend-chip { font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); display: flex; align-items: center; gap: 5px; }
+  .relations-legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .relations-diagram-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow-x: auto; }
+  .relations-diagram-box .empty { color: var(--text-muted); font-size: 13px; padding: 20px 4px; }
   .health-check-summary-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
 
   /* 📚 学習ログタブ(2026-08-11追加)。 */
@@ -888,6 +898,7 @@
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
     <button class="top-tab-btn" id="top-tab-routine" data-view="routine">🔄 ルーティン</button>
+    <button class="top-tab-btn" id="top-tab-relations" data-view="relations">🔗 連関図</button>
   </div>
   <div class="view-panel-area">
   <div id="hub-view" class="view-panel">
@@ -1223,11 +1234,44 @@
       </div>
     </div>
   </div>
+
+  <!-- 🔗 連関図タブ(2026-10-11追加、ユーザー相談「表だと前後のつながり・どこで止まっているかが
+       分かりづらい」から)。data/tasks.jsonのrelatedTasksフィールド(README運用ルール36参照)から
+       Mermaidで自動描画する。連関図専用のデータファイルは持たず常にtasks.jsonから生成する
+       (表と図がズレないようにするため、concept-log.json CL-005「1テーブル+category列」の
+       考え方と同じく、別テーブル・別ファイルへ分割しない設計を踏襲)。対象リポジトリが多く
+       全横断だと1枚絵が巨大になるため、リポジトリ別に選択して表示する。 -->
+  <div id="relations-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="tab-page-title">🔗 タスク連関図</div>
+        <p class="tab-page-overview">タスク間の依存・関連を矢印で表示します。data/tasks.jsonの各タスクの<code>relatedTasks</code>フィールドから自動生成するため、図だけを手書きで更新することはありません(2026-10-11時点、関連データは新規タスクから順次記録していく方針のため、既存タスクの多くはまだノードのみ・矢印無しの表示になります)。</p>
+        <div class="relations-controls">
+          <label>リポジトリ: <select id="relations-repo-select"></select></label>
+          <label><input type="checkbox" id="relations-include-completed" /> 完了済みタスクも表示</label>
+        </div>
+        <div class="relations-legend">
+          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#16a34a;"></span>完了</span>
+          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#2563eb;"></span>対応中・進行中</span>
+          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#94a3b8;"></span>未着手</span>
+          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#dc2626;"></span>保留(停滞)</span>
+          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#cbd5e1;"></span>中止・スキップ</span>
+          <span class="relations-legend-chip">点線枠 = 選択中リポジトリ外のタスク</span>
+        </div>
+        <div class="policy-meta" id="relations-meta"></div>
+        <div class="relations-diagram-box" id="relations-diagram"></div>
+      </div>
+    </div>
+  </div>
   </div>
 </div>
 
 <div id="modal-root"></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- 🔗連関図タブ(2026-10-11追加)用。CDNが到達不可の環境でも他タブは壊れないよう、
+     読み込み失敗時はrenderRelationsView側でwindow.mermaid未定義をチェックして案内文を出す。 -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 
 <script>
   // データはRoutine実行のたびにここを更新する(スプレッドシートの内容と同期)
@@ -3076,6 +3120,7 @@
       "ai-config": { btn: document.getElementById("top-tab-ai-config"), panel: document.getElementById("ai-config-view") },
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
       routine: { btn: document.getElementById("top-tab-routine"), panel: document.getElementById("routine-view") },
+      relations: { btn: document.getElementById("top-tab-relations"), panel: document.getElementById("relations-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -3192,6 +3237,8 @@
         renderStats();
         renderFilters();
         renderFeed();
+        populateRelationsRepoSelect();
+        renderRelationsView();
         // ページを開いた時点で、他の人やRoutineが書き込んだ最新のコメント・新規タスクを静かに取り込む
         refreshFromSheet(true);
       })
@@ -3201,6 +3248,193 @@
       });
   }
   loadTasksData();
+
+  // 🔗連関図タブ(2026-10-11追加)。data/tasks.jsonの各タスクのrelatedTasksフィールド
+  // (README運用ルール36参照)から、選択中リポジトリを中心にMermaidのflowchartを組み立てて描画する。
+  // 連関図専用のデータは持たず、常にTASKS(tasks.jsonの内容)から生成する(表と図がズレないように
+  // するための方針、concept-log.json CL-005の「1テーブル+category列、別ファイルへ分割しない」
+  // 考え方を踏襲)。
+  if (window.mermaid) {
+    window.mermaid.initialize({ startOnLoad: false, theme: "default", securityLevel: "loose" });
+  }
+
+  function populateRelationsRepoSelect() {
+    const sel = document.getElementById("relations-repo-select");
+    if (!sel) return;
+    const prevValue = sel.value;
+    const presentRepos = new Set(TASKS.map((t) => t.repo).filter(Boolean));
+    const known = KNOWN_REPOS.filter((r) => presentRepos.has(r));
+    const extra = Array.from(presentRepos).filter((r) => !KNOWN_REPOS.includes(r)).sort();
+    sel.innerHTML = "";
+    known.forEach((r) => {
+      const opt = document.createElement("option");
+      opt.value = r; opt.textContent = r;
+      sel.appendChild(opt);
+    });
+    if (extra.length) {
+      const group = document.createElement("optgroup");
+      group.label = "その他";
+      extra.forEach((r) => {
+        const opt = document.createElement("option");
+        opt.value = r; opt.textContent = r;
+        group.appendChild(opt);
+      });
+      sel.appendChild(group);
+    }
+    if (prevValue && Array.from(sel.options).some((o) => o.value === prevValue)) {
+      sel.value = prevValue;
+    } else if (known.length) {
+      sel.value = known.includes("progress-tracker-dashboard") ? "progress-tracker-dashboard" : known[0];
+    }
+  }
+
+  function relationsStatusClass(status) {
+    if (status === "完了") return "done";
+    if (status === "対応中" || status === "進行中") return "active";
+    if (status === "保留") return "blocked";
+    if (status === "未着手") return "todo";
+    return "other";
+  }
+
+  function mermaidNodeId(taskId) {
+    return "T_" + String(taskId).replace(/[^A-Za-z0-9]/g, "_");
+  }
+
+  function mermaidSafeText(s) {
+    return String(s || "").replace(/["<>]/g, "").slice(0, 26);
+  }
+
+  // 選択中リポジトリのタスクを起点に、relatedTasksで参照している/されている他リポジトリの
+  // タスクも拾い集める(双方向。相手側が一方的に関連を宣言しているケースも拾うため全件スキャンする)。
+  function buildRelationsGraph(repo, includeCompleted) {
+    const base = TASKS.filter((t) => t.repo === repo && (includeCompleted || t.status !== "完了"));
+    const nodeMap = new Map(base.map((t) => [t.id, t]));
+    const edges = [];
+    const edgeSeen = new Set();
+
+    function addEdge(fromId, toId, type) {
+      const key = fromId + ">" + toId + ">" + type;
+      if (edgeSeen.has(key)) return;
+      edgeSeen.add(key);
+      edges.push({ from: fromId, to: toId, type: type || "relates_to" });
+    }
+
+    base.forEach((t) => {
+      (t.relatedTasks || []).forEach((rel) => {
+        const target = TASKS.find((x) => x.id === rel.id);
+        if (!target) return;
+        if (!nodeMap.has(target.id)) nodeMap.set(target.id, target);
+        addEdge(t.id, target.id, rel.type);
+      });
+    });
+
+    TASKS.forEach((t) => {
+      if (nodeMap.has(t.id)) return;
+      (t.relatedTasks || []).forEach((rel) => {
+        if (nodeMap.has(rel.id)) {
+          nodeMap.set(t.id, t);
+          addEdge(t.id, rel.id, rel.type);
+        }
+      });
+    });
+
+    return { nodes: Array.from(nodeMap.values()), edges };
+  }
+
+  const RELATIONS_CLASS_DEFS = [
+    "classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d;",
+    "classDef active fill:#dbeafe,stroke:#2563eb,color:#1e3a8a;",
+    "classDef todo fill:#f1f5f9,stroke:#94a3b8,color:#334155;",
+    "classDef blocked fill:#fee2e2,stroke:#dc2626,color:#7f1d1d,stroke-width:3px;",
+    "classDef other fill:#f1f5f9,stroke:#cbd5e1,color:#64748b,stroke-dasharray: 2 2;",
+    "classDef doneext fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-dasharray: 4 2;",
+    "classDef activeext fill:#dbeafe,stroke:#2563eb,color:#1e3a8a,stroke-dasharray: 4 2;",
+    "classDef todoext fill:#f1f5f9,stroke:#94a3b8,color:#334155,stroke-dasharray: 4 2;",
+    "classDef blockedext fill:#fee2e2,stroke:#dc2626,color:#7f1d1d,stroke-width:3px,stroke-dasharray: 4 2;",
+    "classDef otherext fill:#f1f5f9,stroke:#cbd5e1,color:#64748b,stroke-dasharray: 4 2;",
+  ].join("\n");
+
+  function buildMermaidDefinition(repo, nodes, edges) {
+    const lines = ["flowchart LR"];
+    lines.push(`  subgraph main["${mermaidSafeText(repo)}"]`);
+    nodes.filter((n) => n.repo === repo).forEach((n) => {
+      const label = `${mermaidSafeText(n.id)}<br/>${mermaidSafeText(n.title || n.task || "")}`;
+      lines.push(`    ${mermaidNodeId(n.id)}["${label}"]:::${relationsStatusClass(n.status)}`);
+    });
+    lines.push("  end");
+
+    const externalByRepo = new Map();
+    nodes.filter((n) => n.repo !== repo).forEach((n) => {
+      if (!externalByRepo.has(n.repo)) externalByRepo.set(n.repo, []);
+      externalByRepo.get(n.repo).push(n);
+    });
+    let extIdx = 0;
+    externalByRepo.forEach((list, r) => {
+      lines.push(`  subgraph ext${extIdx}["${mermaidSafeText(r)}(関連)"]`);
+      list.forEach((n) => {
+        const label = `${mermaidSafeText(n.id)}<br/>${mermaidSafeText(n.title || n.task || "")}`;
+        lines.push(`    ${mermaidNodeId(n.id)}["${label}"]:::${relationsStatusClass(n.status)}ext`);
+      });
+      lines.push("  end");
+      extIdx += 1;
+    });
+
+    edges.forEach((e) => {
+      const a = mermaidNodeId(e.from);
+      const b = mermaidNodeId(e.to);
+      if (e.type === "blocks") lines.push(`  ${a} -->|ブロック| ${b}`);
+      else if (e.type === "depends_on") lines.push(`  ${b} -->|依存元| ${a}`);
+      else lines.push(`  ${a} -.->|関連| ${b}`);
+    });
+
+    lines.push(RELATIONS_CLASS_DEFS);
+    return lines.join("\n");
+  }
+
+  function renderRelationsView() {
+    const container = document.getElementById("relations-diagram");
+    const sel = document.getElementById("relations-repo-select");
+    const metaEl = document.getElementById("relations-meta");
+    if (!container || !sel) return;
+    const repo = sel.value;
+    if (!repo) {
+      container.innerHTML = `<div class="empty">data/tasks.json を読み込み中、またはリポジトリが見つかりません。</div>`;
+      return;
+    }
+    const includeCompleted = document.getElementById("relations-include-completed").checked;
+    const { nodes, edges } = buildRelationsGraph(repo, includeCompleted);
+    if (!nodes.length) {
+      container.innerHTML = `<div class="empty">このリポジトリには表示対象のタスクがありません(完了済みタスクのみの場合は「完了済みタスクも表示」にチェックしてください)。</div>`;
+      if (metaEl) metaEl.textContent = "";
+      return;
+    }
+    if (!window.mermaid) {
+      container.innerHTML = `<div class="empty">Mermaid.js(図の描画ライブラリ)の読み込みに失敗しました。ネットワーク状況を確認してください。</div>`;
+      return;
+    }
+    const def = buildMermaidDefinition(repo, nodes, edges);
+    container.innerHTML = "";
+    const pre = document.createElement("pre");
+    pre.className = "mermaid";
+    pre.textContent = def;
+    container.appendChild(pre);
+    window.mermaid.run({ nodes: [pre] }).catch((err) => {
+      console.error(err);
+      container.innerHTML = `<div class="empty">図の描画に失敗しました: ${err.message}</div>`;
+    });
+    if (metaEl) {
+      metaEl.textContent = edges.length
+        ? `ノード${nodes.length}件・関連${edges.length}件`
+        : `ノード${nodes.length}件(このリポジトリの関連データはまだ登録されていません。新規タスクからrelatedTasksを記録していきます)`;
+    }
+  }
+
+  (function setupRelationsControls() {
+    const sel = document.getElementById("relations-repo-select");
+    const chk = document.getElementById("relations-include-completed");
+    if (sel) sel.addEventListener("change", renderRelationsView);
+    if (chk) chk.addEventListener("change", renderRelationsView);
+  })();
 
   // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
   // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、
