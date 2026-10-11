@@ -4501,6 +4501,25 @@
       "nextAction": "ユーザーから再開の指示があったら、修正済みのSVGレイアウトをArtifactへ再publishする。",
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-073",
+      "task": "リポジトリ単位の連関図(アプリ間の依存・連携関係)を作成する",
+      "title": "リポジトリ単位の連関図",
+      "priority": "低",
+      "status": "保留",
+      "updated": "2026-10-11",
+      "category": "documentation",
+      "note": "2026-10-11、PTD-072(タスク単位の連関図、🔗連関図タブ)を実装した相談の中で、ユーザーから追加の依頼。あちらはdata/tasks.jsonの個々のタスク(relatedTasks)間の関連を描く図だったが、こちらは粒度が異なり、「リポジトリ(アプリ)単位」でどのアプリがどのアプリと連携・依存しているかを俯瞰する図を指す(例: PROMPT-MANAGER⇄claude-voice-bridgeのiframe埋め込み連携、各アプリ⇄progress-tracker-dashboardへのタスク記録、servicenow-sub-agent⇄ServiceNow PDI等)。ユーザーから「あとで、時間のある時に」「タスクとして残しておいて」との明示的な指示があり、今は着手せず記録のみ。",
+      "detail": null,
+      "issues": [],
+      "output": null,
+      "steps": null,
+      "checkHistory": [],
+      "nextAction": "ユーザーから再開の指示があったら、まず各リポジトリのREADME/HANDOFF等から既知の連携関係を洗い出し、PTD-072と同じくMermaidでの自動描画(どのデータを正本にするか含め)を検討する。knownRepos一覧(data/tasks.json)を母集団の起点にする想定。",
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
