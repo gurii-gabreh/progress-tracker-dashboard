@@ -185,6 +185,18 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-071: category 8/9(SEO・働き方の動向)追加",
       "note": "RSS 6件を実地検証・実装・push。GitHub Actions(dry_run=false)実行、3ジョブ全て成功。"
+    },
+    {
+      "date": "2026-10-11",
+      "repo": "claude-voice-bridge / PROMPT-MANAGER",
+      "task": "PMG-001: プロンプト生成タブの追加・ローカルサーバー不要の半自動生成方式の追加",
+      "note": "claude-voice-bridgeに✨プロンプト生成タブ(PROMPT-MANAGER iframe埋め込み)、PROMPT-MANAGER側に依頼文コピー→貼り付け方式を追加。"
+    },
+    {
+      "date": "2026-10-11",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-058: research-items.json push失敗(14回連続)の原因究明・対処",
+      "note": "Ask HN投稿内の実在OpenAIキー形式文字列が原因と特定、export_research_items.mjsに自動マスク処理を追加しpush復旧。"
     }
   ]
 }

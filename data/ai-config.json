@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-11T03:09:19.979039+00:00",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -437,6 +437,25 @@
         "このprogress-tracker-dashboard自身のdata/concept-log.json(実装ナレッジの蓄積)も同じ課題を抱えていた。②表出化(蓄積)のみで、実装・提案のたびに過去の記録を組み合わせて活かす③結合の処理が行われていなかった。",
         "対策として、claude-core-rules.mdルール23に『実装・提案前にconcept-log.jsonの関連エントリを確認し、活かした/活かさなかった理由を回答に明記する』を追記。見落とし防止のため、progress-tracker-dashboardの.claude/settings.jsonにPreToolUseフック(Edit|Write発火、.claude/hooks/concept-log-reminder.sh)を設定し、実装・編集のたびに機械的にリマインドする(2026-10-05追加)。",
         "④内面化はアプリの実装だけでは完結せず、最終的にユーザー自身がその知識を使って行動を変えるかどうかに依存する。アプリ側でできるのは、結合された知識を適切なタイミングで提示するところまで。"
+      ]
+    },
+    "managerRoomDailyLog": {
+      "title": "📅 マネージャールーム日次ログ",
+      "overview": "毎日JST 0:00に発火するRoutine(trig_01KWsnPeW7QcgTBKjUZYnDZV)が、前日分のこのルームでの会話全体(未解決・解決済み問わず)をdata/manager-room-log.jsonへ時系列で要約・追記する仕組み(2026-10-03追加、ユーザー指示)。新規セッション・他のルームへ引き継ぐ際はまずこのファイルを確認する。",
+      "points": [
+        "対象はこのマネージャールーム(CCRセッション)自身の会話。claude-voice-bridge経由のroom-log.json/weekly-digest.jsonとは別物",
+        "要約に加えて、毎回3つの記録漏れチェックも行う: ①tasks.jsonで完了なのにdetail空欄のタスクが無いか、②credit-log.jsonの記録漏れが無いか、③Task-WBSの「各アプリ作成」ノードとPTD側の未完了タスクに差分が無いか",
+        "差分・漏れが見つかった場合はその場で埋め、health-checks.json(🔄ルーティンタブ「実行結果」参照)の該当チェックを更新する",
+        "対象の会話が無かった日は「(この日は対象の会話なし)」の1件だけ追記して終了する(エラーではない)"
+      ]
+    },
+    "claudeMdCheck": {
+      "title": "📄 CLAUDE.md定期確認",
+      "overview": "平日は日本時間0時に1回、土日祝日は0時・12時の12時間おきに発火するRoutine(trig_0134aaUtfW6p6HGFZ7HzaDMN)が、CLAUDE.md(正本data/claude-core-rules.md)を読み直し、見落とし・矛盾が無いか確認する仕組み(2026-09-13追加、ユーザー指示)。",
+      "points": [
+        "祝日判定はWebSearch等で信頼できる情報源から毎回確認する(平日/休日の発火頻度が変わるため)",
+        "問題が無ければ「確認済み、問題なし」とだけ簡潔に報告する",
+        "あわせて、週次ルームログ要約Routine(claude-voice-bridge常駐セッション)のコンテキスト使用率も確認し、70%を超えていたら新しい常駐セッションへ自動的に切り替える"
       ]
     }
   },
@@ -1033,6 +1052,22 @@
     "seciModel": {
       "ref": "data/claude-core-rules.md ルール23(2026-10-05追記)",
       "summary": "SECIモデル(共同化→表出化→結合→内面化)の観点で、mirai-journal・English-Speaking-App・study-appは①②(体験の記録)までしか実装されておらず、③結合(過去記録の横断分析)・④内面化(次回への反映)の仕組みが無い。progress-tracker-dashboard自身のdata/concept-log.jsonも同様に②表出化のみで③結合が無く、実装・提案前にconcept-log.jsonを確認し活かした/活かさなかった理由を明記する運用と、.claude/settings.jsonのPreToolUseフック(.claude/hooks/concept-log-reminder.sh)による機械的なリマインドを導入した。④内面化はユーザー自身の行動変化に依存するため、実装側で完結させられない点に注意。"
+    },
+    "managerRoomDailyLog": {
+      "repo": "gurii-gabreh/progress-tracker-dashboard",
+      "triggerId": "trig_01KWsnPeW7QcgTBKjUZYnDZV",
+      "schedule": "毎日JST 0:00",
+      "description": "前日分のmanager-room会話全体を要約し、data/manager-room-log.jsonのentries配列へ追記する。tasks.json detail空欄・credit-log記録漏れ・Task-WBS同期の3点も毎回チェックする。",
+      "incident": {
+        "date": "2026-10-03",
+        "summary": "この記録ルール自体がCLAUDE.mdに無く、credit-log.jsonが約1ヶ月半(2026-08-20〜10-03)止まっていたことが発覚した。再発防止のため日次チェックへ組み込んだ。"
+      }
+    },
+    "claudeMdCheck": {
+      "repo": "gurii-gabreh/progress-tracker-dashboard",
+      "triggerId": "trig_0134aaUtfW6p6HGFZ7HzaDMN",
+      "schedule": "平日0時/休日祝日0時・12時",
+      "description": "claude-core-rules.mdを読み直し見落とし・矛盾を確認する。あわせて週次ルームログ要約Routine(session_01DTRNY4tA8x34WyJvQYF9D7)のコンテキスト使用率(70%閾値)も確認する。"
     }
   }
 }
