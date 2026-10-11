@@ -4477,6 +4477,25 @@
       "nextAction": "生成履歴のJSON化(data/history.json)・過去データの移行・質問ウィザード/プレビューの最終的な扱いについて、ユーザーと詰めて次の実装に進める。",
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-072",
+      "task": "ServiceNow収集フロー図の微調整(枠はみ出し修正の確認)",
+      "title": "ServiceNow収集フロー図のレイアウト微調整",
+      "priority": "低",
+      "status": "保留",
+      "updated": "2026-10-11",
+      "category": "documentation",
+      "note": "ユーザー依頼でArtifact(https://claude.ai/artifact/EnQ52PiunSDB88RNYY6nq6)としてServiceNow情報収集フローの図を作成した。ユーザー指摘により、右側のservicenow-setup.yml注記ボックス内でテキストが重なり枠からはみ出て見える不具合を発見。修正版のSVGはローカルの作業ファイルに用意済みだが、ユーザーから『図はまた今度でいい、タスクとして残しておいて』との指示を受け、Artifactへの再publishは保留にした。",
+      "detail": null,
+      "issues": [],
+      "output": "https://claude.ai/artifact/EnQ52PiunSDB88RNYY6nq6(修正版は未反映)",
+      "steps": null,
+      "checkHistory": [],
+      "nextAction": "ユーザーから再開の指示があったら、修正済みのSVGレイアウトをArtifactへ再publishする。",
+      "subtasks": null,
+      "goal": null
     }
   ],
   "updatedAt": "2026-10-04"
