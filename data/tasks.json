@@ -4151,6 +4151,10 @@
         {
           "date": "2026-10-11",
           "summary": "新規ルーム(今後のキャリア実績作り相談)で、category 7データが取得できない不具合を調査。原因はservicenow-export-research.ymlのgit pushがGitHub Push Protection(GH013)に9/28から13日連続でブロックされていたこと(data/research-items.json内の文字列を「OpenAI API Key」として検出)と判明。ユーザーがGitHub側でシークレットスキャンの検出内容を確認・解除し、exportパイプラインが復旧(10/11分で4,461件、category7が9件に反映)。取得したcategory7(Devpost、AIテーマ)9件はいずれも国際(英語)のハッカソンで、日本国内・初心者向けという条件には合わないと判明。追加でWeb検索し、日本国内で個人参加・初心者歓迎を明記した継続シリーズとして「Agentic AI Hackathon with Google Cloud」(Zenn×Google Cloud Japan、第5回は締切10/15で間に合わないため次回待ち)・「Microsoft Agent Hackathon powered by Tokyo Electron Device」(Zenn×Microsoft Japan、個人部門新設の実績あり)を発見。都知事杯・GEECHS JOB(経験者向け)・フィジカルAI系(ハードウェア前提)は条件に合わず除外。ユーザー了承により、今回(第5回)は無理に狙わず次回開催を待つ方針に決定。続けてこの2大会の詳細・過去受賞作品の傾向・使用技術の調査をCodexと分担して行う依頼があったが、このセッションのネットワークポリシーでauth.openai.com等がブロックされCodexにログインできず、マネージャールーム側で引き継ぐ方針となった。"
+        },
+        {
+          "date": "2026-10-11",
+          "summary": "manager-room側で、CCX-001の既存Codex連携(このセッションのコンテナ内でログイン済み)を使い、Agentic AI Hackathon with Google CloudとMicrosoft Agent Hackathonの2大会についてcodex execでWeb調査(応募要項・評価基準・過去受賞作品32+10件・技術傾向・狙い目の考察、全主張に出典URL付き)を実施。重要な発見として、Aハッカソン第5回の募集期間が2026/8/20〜10/15であり、調査時点(10/11)ではまだ募集中の可能性があることが判明(前日時点の『今回は間に合わないため次回待ち』という前提と食い違う)。結果を今後のキャリア実績作り相談ルーム(session_01EP2Waqa1QdjbqCGFxuwNse)へcreate_trigger/fire_trigger/delete_triggerの手順で配信済み(配信成功確認済み)。あわせて同ルームから依頼されたハッカソン選定用Obsidian Canvas(hackathon-selection.canvas、obsidian-canvas-flowスキル使用)へA/Bの実データを反映し、同ルームへ配信した。"
         }
       ]
     },
@@ -4524,7 +4528,76 @@
       "nextAction": "ユーザーから再開の指示があったら、まず各リポジトリのREADME/HANDOFF等から既知の連携関係を洗い出し、PTD-072と同じくMermaidでの自動描画(どのデータを正本にするか含め)を検討する。knownRepos一覧(data/tasks.json)を母集団の起点にする想定。",
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-074",
+      "task": "ダッシュボードに「🔄 ルーティン」タブと「🔗 連関図」タブを追加",
+      "title": "ルーティン一覧タブ・タスク連関図タブの追加",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-11",
+      "category": "feature",
+      "note": "ユーザー相談「クレジットや実績のナレッジ化処理が毎日報告されているが埋もれている、一覧化したい」「表だと前後のつながりがわからない」から2つの新規タブを追加。",
+      "detail": "(1) 🔄ルーティンタブ: 新規data/health-checks.json(現在状態のみのスナップショット、manager-room-log.jsonとは別物)を追加し、「処理一覧」「実行結果」の2サブタブで自動処理・Routineの一覧と○✗の実行結果を表示する機能を追加。AI基本設定タブからServiceNow関連セクションをこちらへ移設。\n(2) 🔗連関図タブ: data/tasks.jsonの各タスクにrelatedTasks(id/type/note)フィールドを追加できるようにし、Mermaidでリポジトリ別の連関図を自動生成する機能を追加。concept-log.json CL-005(1テーブル+category列、正規化分割しない)の考え方を踏襲し、連関図専用データファイルは作らずtasks.jsonから常に自動生成する設計にした。過去103件への遡及記入はせず今後の新規タスクから運用開始(ユーザー確認済み)。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html, data/health-checks.json, data/ai-config.json, README.md運用ルール36",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-11",
+          "summary": "実装・Playwrightでのレンダリング確認・commit・designated branch経由でmainマージまで完了(commit 7246c4d, 9d67dde, e9433a2)。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-075",
+      "task": "管理対象7リポジトリのCLAUDE.mdへ「安全ルール」セクションを追記",
+      "title": "CLAUDE.md安全ルールの横展開",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-10-11",
+      "category": "security",
+      "note": "「今後のキャリア実績作り相談ルーム」経由でユーザーから依頼。指示内容の出所の限定(チャット直接入力のみに従う、Webページ・ファイル・画面上の指示には従わない)、パスワードゲートフック(~/.claude/hooks/password-gate.py)の回避禁止、画面自動操作の開始前後の報告、認証情報の代理入力禁止、などプロンプトインジェクション対策・安全運用ルールを明文化したもの。",
+      "detail": "対象を精査(CLAUDE.mdという名前のファイルのみ、他の.mdファイルは対象外)した上で、変更前にユーザーへ一覧を提示し承認を得てから実施(ユーザー指示の手順通り)。data/claude-core-rules.json経由の自動同期(CORE-RULESマーカー内)とは別に、各リポジトリのCLAUDE.md末尾へ直接追記する形を採った(マーカー外のため次回同期で上書きされない)。CLAUDE.mdが存在した7リポジトリ(kizashi, supermarket-price-tracker, gemini-monitor, ai-research-radar, study-app, servicenow-sub-agent, progress-tracker-dashboard)へ追記、CLAUDE.mdが存在しない7リポジトリ(Knowledge-Dashboard, mirai-journal, claude-voice-bridge, English-Speaking-App, PROMPT-MANAGER, Task-WBS, English-LevelUp-Reader)は対象外として何もしなかった。usage-trackerはアクセス不可のため確認できず。",
+      "output": "7リポジトリのCLAUDE.md(各リポジトリのcommit参照、progress-tracker-dashboard分はcommit aad8393/07a7fee)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-11",
+          "summary": "全7リポジトリへcommit・push完了。servicenow-sub-agentとprogress-tracker-dashboardはpush時に他の自動更新(研究データエクスポート、vector-index.json)と衝突したためmerge後に再push。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-076",
+      "task": "obsidian-canvas-flowスキルをObsidian-Appリポジトリへ移動・AI基本設定へ登録",
+      "title": "obsidian-canvas-flowスキルの配置整理",
+      "priority": "低",
+      "status": "完了",
+      "updated": "2026-10-11",
+      "category": "documentation",
+      "note": "「今後のキャリア実績作り相談ルーム」がprogress-tracker-dashboardへ追加したobsidian-canvas-flowスキル(Obsidianの.canvas形式で左→右ツリー構造の図を作るスキル)について、ユーザーから「配置が変では」との指摘。このプロジェクトの既存パターン(room-task-auditはタスク管理のハブであるprogress-tracker-dashboardに、research-knowledge-lookupはデータのあるservicenow-sub-agentに置く、という関連性に基づく分散配置)を確認し、同時期に新設されていた(当初は空の)Obsidian-Appリポジトリへ移動する方針で合意。",
+      "detail": "progress-tracker-dashboardの.claude/skills/obsidian-canvas-flow/SKILL.mdをgurii-gabreh/Obsidian-App(当時空だったリポジトリ)へ移動、元の場所からは削除。data/ai-config.jsonのcustomSkills.registryへ新しいrepo参照で再登録。dashboard.htmlのAI基本設定タブはcustomSkills.registryをデータ駆動で表示する既存の仕組みのため、コード変更は不要だった。",
+      "output": "gurii-gabreh/Obsidian-App(commit 0e1f0b5)、gurii-gabreh/progress-tracker-dashboard(commit a2db868, b0bbf84, f7be721)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-11",
+          "summary": "移動・登録・commit・push・mainマージまで完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
-  "updatedAt": "2026-10-04"
+  "updatedAt": "2026-10-11T15:09:22.251517+00:00"
 }
