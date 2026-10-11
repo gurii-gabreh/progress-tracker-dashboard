@@ -4129,7 +4129,7 @@
       "title": "ハッカソン向け情報収集強化",
       "priority": "中",
       "status": "進行中",
-      "updated": "2026-09-29",
+      "updated": "2026-10-11",
       "category": "feature",
       "note": "2026-09-18、都知事杯オープンデータ・ハッカソン2026(KIZ-046)の一次審査不通過を受け、ユーザーから「情報量が足りない、もう少し情報が必要」との指摘。PTD-020(AIエンジニアとしての方向性相談、ハッカソン等で実績を作る方針)の実行を支える取り組みとして、ダッシュボードで追跡できるタスクとして起票した。",
       "content": [
@@ -4147,6 +4147,10 @@
         {
           "date": "2026-09-29",
           "summary": "マネージャールームでの「次のハッカソン準備」相談を受け、Devpostハッカソン一覧APIを実地検証(ユーザー確認)。category 7として実装し、入賞作品の日本語要約は新スキル(hackathon-winner-curation)でAIが直接ページを読んで書く方式に決定。commit・push(main直push)まで完了。ServiceNow PDIへの反映(手動workflow実行)はまだ。"
+        },
+        {
+          "date": "2026-10-11",
+          "summary": "新規ルーム(今後のキャリア実績作り相談)で、category 7データが取得できない不具合を調査。原因はservicenow-export-research.ymlのgit pushがGitHub Push Protection(GH013)に9/28から13日連続でブロックされていたこと(data/research-items.json内の文字列を「OpenAI API Key」として検出)と判明。ユーザーがGitHub側でシークレットスキャンの検出内容を確認・解除し、exportパイプラインが復旧(10/11分で4,461件、category7が9件に反映)。取得したcategory7(Devpost、AIテーマ)9件はいずれも国際(英語)のハッカソンで、日本国内・初心者向けという条件には合わないと判明。追加でWeb検索し、日本国内で個人参加・初心者歓迎を明記した継続シリーズとして「Agentic AI Hackathon with Google Cloud」(Zenn×Google Cloud Japan、第5回は締切10/15で間に合わないため次回待ち)・「Microsoft Agent Hackathon powered by Tokyo Electron Device」(Zenn×Microsoft Japan、個人部門新設の実績あり)を発見。都知事杯・GEECHS JOB(経験者向け)・フィジカルAI系(ハードウェア前提)は条件に合わず除外。ユーザー了承により、今回(第5回)は無理に狙わず次回開催を待つ方針に決定。続けてこの2大会の詳細・過去受賞作品の傾向・使用技術の調査をCodexと分担して行う依頼があったが、このセッションのネットワークポリシーでauth.openai.com等がブロックされCodexにログインできず、マネージャールーム側で引き継ぐ方針となった。"
         }
       ]
     },
