@@ -4597,7 +4597,29 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "id": "PTD-077",
+      "task": "Obsidian-App/ChatGPT配下の2つのCanvasマップをタスク連関図タブから閲覧可能にする",
+      "title": "Obsidian Canvas版マップのダッシュボード連携",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-12",
+      "category": "feature",
+      "note": "ユーザーから「Obsidian-App/ChatGPT配下の2つのファイル(最終仕様マップ・課題対応履歴マップ)をタスク連関図タブ内で、既存のCanvas Viewerアーティファクトで見られるようにして」と依頼。渡された2ファイルは画像ではなく実体はJSON Canvas形式(obsidian-app-mindmapスキルで生成されたもの、obsidian-canvas-flowスキルとは別物)だったため、まず中身を読んで構造を確認した。",
+      "detail": "Canvas Viewerアーティファクト(https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp )に、(1) raw.githubusercontent.comからfetchでCanvas JSONを直接読み込むloadFromUrl()、(2) プリセット選択セレクト(最終仕様マップ/課題・対応履歴マップ)、(3) ?src=<raw URL>&title=<表示名> のクエリパラメータによるディープリンク読み込み、を追加。raw.githubusercontent.comは公開リポジトリに対しAccess-Control-Allow-Origin: *を返すため、アーティファクトが動くclaude.aiドメインからのクライアント側fetchで直接取得できる(このマネージャールームのコンテナ自体のegressポリシーとは無関係。CL-032で学んだ『外部ドメイン呼び出しはまずネットワークポリシーを疑う』教訓は、サーバ側コンテナからの呼び出しの話であり、閲覧者ブラウザで動くアーティファクト側コードには適用対象が異なることを確認した上で活かした)。dashboard.htmlの🔗連関図タブ(既存のMermaid自動生成セクションの下)に『📘 Obsidian Canvas版』の見出しと、2つのCanvasへのリンクボタンを追加。両プリセットとも?src=ディープリンクでの読み込みをPlaywrightで構造確認(ノード数・グループ数)と実際のスクリーンショットの両方で検証済み(最終仕様マップ: 57ノード/6グループ、課題・対応履歴マップ: 98ノード/10グループ)。Canvas自体は閲覧専用(編集は元リポジトリのスクリプトで再生成する運用のため、このビューアからの書き戻しは行わない)。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html(連関図タブへのリンク追加)、Canvas Viewerアーティファクト(プリセット・URL読込機能の追加、Version 2)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-12",
+          "summary": "Obsidian-App/ChatGPT配下2ファイルの内容確認→ビューア機能追加→Playwrightで構造・視覚の両面を検証→dashboard.htmlへのリンク追加まで完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null
     }
   ],
-  "updatedAt": "2026-10-11T15:09:22.251517+00:00"
+  "updatedAt": "2026-10-12T14:32:24.733720+00:00"
 }
