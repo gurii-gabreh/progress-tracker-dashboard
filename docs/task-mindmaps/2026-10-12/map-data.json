@@ -1,0 +1,716 @@
+{
+  "title": "マネージャアプリ｜課題・対応・結論",
+  "repo": "progress-tracker-dashboard",
+  "ref": "main ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62",
+  "asOf": "2026-10-11の記録",
+  "scope": "前回の会話で整理した代表18タスク。全件一覧ではありません。",
+  "limitations": [
+    "外部稼働は未再検証"
+  ],
+  "selectedTask": "PTD-009",
+  "categories": [
+    {
+      "key": "data",
+      "label": "データ構造",
+      "ids": [
+        "PTD-018",
+        "PTD-032"
+      ]
+    },
+    {
+      "key": "ui",
+      "label": "画面・操作",
+      "ids": [
+        "PTD-033",
+        "PTD-064",
+        "PTD-074",
+        "PTD-073"
+      ]
+    },
+    {
+      "key": "security",
+      "label": "セキュリティ・権限",
+      "ids": [
+        "PTD-045",
+        "PTD-059",
+        "PTD-063",
+        "PTD-075"
+      ]
+    },
+    {
+      "key": "sync",
+      "label": "連携・同期",
+      "ids": [
+        "PTD-009",
+        "PTD-010",
+        "PTD-011",
+        "PTD-006"
+      ]
+    },
+    {
+      "key": "knowledge",
+      "label": "ナレッジ・運用",
+      "ids": [
+        "PTD-044",
+        "PTD-067",
+        "PTD-068",
+        "PTD-041"
+      ]
+    }
+  ],
+  "tasks": {
+    "PTD-018": {
+      "label": "タスクの重複表示",
+      "status": "完了",
+      "problem": "シート更新時、同じリポジトリに複数の親タスクがあると、2件目以降の配下を見落として同名タスクを重複追加していた。",
+      "history": [
+        "2026-08-05：gemini-monitorで幽霊タスクの重複表示を確認。",
+        "原因はTASKS.find()による「同じrepoの最初の1件だけ」の照合。",
+        "同じrepoの全トップレベルタスクと配下の子タスクを照合するよう修正。"
+      ],
+      "policy": "同じリポジトリに属する全親タスクを対象に重複を判定する。",
+      "result": "重複判定を修正済み。備考の旧番号PTD-017と、このタスクPTD-018の取り違えも記録されている。",
+      "files": [
+        "dashboard.html"
+      ],
+      "summary": {
+        "issue": "同じタスクが重複して表示される",
+        "action": "同じrepoの全親タスクと子を照合",
+        "outcome": "最初の1件だけを見る判定を修正"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-018",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-032": {
+      "label": "人向け／AI向けの分離",
+      "status": "完了",
+      "problem": "AI基本設定を長文のまま表示すると読みにくく、人が読む説明とAIが従う詳細が混ざっていた。",
+      "history": [
+        "2026-08-11：ユーザーがWeb表示とAI用データの分離を依頼。",
+        "ai-config.jsonをschemaVersion 2へ更新し、webとaiの2階層に再構成。",
+        "画面にはwebの短い箇条書きを表示。編集内容は追加指示コメントとして反映を依頼。"
+      ],
+      "policy": "1つのJSON内で、人向け表示(web)とAI向け詳細(ai)を分離する。画面編集は依頼を送り、実際のcommitは後続セッションが行う。",
+      "result": "表示・編集依頼は実装済み。共有Routineの起動時読み込み指示については、古い未解決メモが残るため現在の反映状況は未確認。",
+      "files": [
+        "data/ai-config.json",
+        "dashboard.html"
+      ],
+      "summary": {
+        "issue": "人向け説明とAI用の長文が混在",
+        "action": "JSON内をweb／aiに分離",
+        "outcome": "画面は短い説明、AIは詳細を参照"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-032",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-033": {
+      "label": "タブが画面外に出る",
+      "status": "完了",
+      "problem": "720px幅・折り返しなしの上部タブバーで、5個目のタブが画面外へ押し出され操作できなかった。",
+      "history": [
+        "2026-08-11：Playwrightによる確認中に不具合を発見。",
+        "overflow-x: autoで横スクロールを可能にした。",
+        "その後、携帯向け上部メニューはPTD-064でハンバーガー化。"
+      ],
+      "policy": "このタスクでは横スクロールで解消。携帯メニューの後続方針はPTD-064を参照する。",
+      "result": "当時のはみ出しは修正済み。画面対応は後続タスクでさらに改善されている。",
+      "files": [
+        "dashboard.html"
+      ],
+      "summary": {
+        "issue": "5個目のタブが画面外で押せない",
+        "action": "タブバーを横スクロール化",
+        "outcome": "当時の不具合を解消。携帯は064で改善"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-033",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-064": {
+      "label": "携帯メニューの崩れ",
+      "status": "完了",
+      "problem": "携帯幅で各アプリのメニューが崩れる、または画面を大きく圧迫していた。",
+      "history": [
+        "2026-09-12：ユーザーが携帯メニューを「押したときだけ表示」にするよう依頼。",
+        "5リポジトリを調査。崩れるものを640px以下でハンバーガー／プルダウン化。",
+        "375px・1280pxでPlaywright確認。progress-tracker-dashboardは上部メニューを変更し、詳細サブタブは横スクロールを採用。"
+      ],
+      "policy": "携帯幅では必要時にメニューを開く。既に正常な画面は変更しない。",
+      "result": "メニュー対応は完了。Knowledge-DashboardのSheets表の携帯表示は別問題として報告のみ。",
+      "files": [
+        "dashboard.html"
+      ],
+      "commits": [
+        "fea9066",
+        "7620959"
+      ],
+      "summary": {
+        "issue": "携帯のメニューが崩れ、場所を取る",
+        "action": "携帯幅でハンバーガーメニュー化",
+        "outcome": "メニュー修正済み。別アプリの表は残件"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-064",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-074": {
+      "label": "タスク連関図・Routine一覧",
+      "status": "完了",
+      "problem": "日々の処理報告が埋もれ、表だけではタスクの前後関係が見えにくかった。",
+      "history": [
+        "2026-10-11：Routine一覧とタスク連関図の2タブを追加。",
+        "tasks.jsonのrelatedTasksから、リポジトリ別にMermaidを自動生成。",
+        "Playwrightで描画を確認しmainへ反映。"
+      ],
+      "policy": "図専用データを増やさず、tasks.jsonから生成する。既存103件は遡及記入せず、新規タスクから関連を登録する。",
+      "result": "機能は完了。過去タスクの関係が十分に表示されない場合は、関連データが未登録という設計上の理由がある。",
+      "files": [
+        "dashboard.html",
+        "data/health-checks.json",
+        "README.md"
+      ],
+      "commits": [
+        "7246c4d",
+        "9d67dde"
+      ],
+      "summary": {
+        "issue": "処理報告が埋もれ、前後関係が不明",
+        "action": "Routine一覧とタスク連関図を追加",
+        "outcome": "tasks.jsonから図を生成。過去の関連は未入力"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-074",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-073": {
+      "label": "アプリ間の連関図",
+      "status": "保留",
+      "problem": "個々のタスクの図とは別に、アプリ同士の連携・依存を俯瞰したい。",
+      "history": [
+        "2026-10-11：タスク連関図の相談から、リポジトリ単位の図を追加依頼。",
+        "ユーザーが「後で、時間のある時に」と指定。",
+        "着手せず、再開時の調査方法をタスクに記録。"
+      ],
+      "policy": "最終設計は未確定。再開指示後に各README等から連携を洗い出し、正本データと描画方式を検討する。",
+      "result": "保留。タスク単位の図(PTD-074)とは粒度が異なる。備考中のPTD-072参照は、現在のタスク名と食い違っている。",
+      "files": [
+        "data/tasks.json"
+      ],
+      "commits": [
+        "e9433a2"
+      ],
+      "summary": {
+        "issue": "アプリ同士の連携が俯瞰できない",
+        "action": "後日対応として記録し、着手を保留",
+        "outcome": "未解決。再開指示後に調査・設計"
+      },
+      "methodLabel": "対応",
+      "sources": [
+        {
+          "label": "tasks.json PTD-073",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-045": {
+      "label": "承認待ちで止まる",
+      "status": "対応中",
+      "problem": "別の作業ルームへ依頼すると、閲覧等で承認待ちになり処理が止まる。",
+      "history": [
+        "2026-08-29：Drive閲覧の再現調査を依頼したが、そのworker環境では再現せず。",
+        "別原因のネットワーク遮断はPTD-051として分離。許可ツール名の不一致の是正・横展開も履歴に記録。",
+        "2026-09-06：ai-config.jsonにworker-room方式の段階的廃止を決定した記録。移行先・時期は未確定。"
+      ],
+      "policy": "承認、ネットワーク、セッション到達性を別問題として扱う。許可リストの是正を暫定対策とし、worker-room方式は段階的に見直す。",
+      "result": "JSONの状態は対応中。一部の権限問題には改善記録があるが、全体の再現条件・移行完了は確認できない。",
+      "files": [
+        "data/ai-config.json",
+        "data/claude-core-rules.md"
+      ],
+      "commits": [
+        "ba2b26e",
+        "9990bf6"
+      ],
+      "summary": {
+        "issue": "別ルームへの依頼が承認待ちで停止",
+        "action": "原因を分離し、許可設定を是正・横展開",
+        "outcome": "一部改善。全体は未解決・方式見直し中"
+      },
+      "methodLabel": "対応",
+      "sources": [
+        {
+          "label": "tasks.json PTD-045",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-059": {
+      "label": "許可リストの一元管理",
+      "status": "完了",
+      "problem": "許可設定が各リポジトリに分散し、承認停止の是正を横展開しにくかった。",
+      "history": [
+        "2026-09-05：data/claude-permissions.jsonを正本として新設。",
+        "同期スクリプトとGitHub Actionsを追加。",
+        "対象を全8リポジトリへ拡張し、設定内容を画面から確認できるようにした。"
+      ],
+      "policy": "正本JSONを編集して既存settings.jsonへ自動同期する。破壊的操作等を許可対象から外し、設定ファイル未作成のリポジトリはスキップする。",
+      "result": "仕組みは実装済み。横断同期はCROSS_REPO_PATを使うため、PTD-063の未完了記録に注意。",
+      "files": [
+        "data/claude-permissions.json",
+        "scripts/sync_claude_permissions.py",
+        ".github/workflows/sync-claude-permissions.yml"
+      ],
+      "commits": [
+        "d9dd65b",
+        "3a7ca05"
+      ],
+      "summary": {
+        "issue": "各repoの許可設定が分散していた",
+        "action": "正本JSONからActionsで自動同期",
+        "outcome": "一元管理を実装。PATの残件は063"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-059",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-063": {
+      "label": "同期用PATの失効",
+      "status": "未着手",
+      "problem": "CROSS_REPO_PATの失効により、核心ルールの横断同期が正常に進まないと記録されている。",
+      "history": [
+        "2026-09-12：ルール追加の反映確認中に発覚。",
+        "PATの再発行・Secrets再登録をユーザー作業タスクとして起票。",
+        "取得時点のtasks.jsonでは未着手。"
+      ],
+      "policy": "ユーザーがPATを再発行・再登録し、その後にsync-claude-md.ymlの実行結果を確認する。",
+      "result": "未着手の記録。GitHub Secretsや現在のワークフロー実行結果は今回未確認。",
+      "files": [
+        ".github/workflows/sync-claude-md.yml",
+        ".github/workflows/sync-claude-permissions.yml"
+      ],
+      "commits": [
+        "15cf670"
+      ],
+      "summary": {
+        "issue": "同期用PATの失効が記録されている",
+        "action": "ユーザーによる再発行・再登録を待つ",
+        "outcome": "未解決。再登録後に同期を再確認"
+      },
+      "methodLabel": "対応",
+      "sources": [
+        {
+          "label": "tasks.json PTD-063",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-075": {
+      "label": "安全ルールの横展開",
+      "status": "完了",
+      "problem": "外部ページ等の指示の扱い、認証情報、画面操作について安全運用を明文化する必要があった。",
+      "history": [
+        "2026-10-11：対象のCLAUDE.md一覧を確認。",
+        "ユーザーの承認を得て、存在する7リポジトリの末尾へ安全ルールを追記。",
+        "自動同期マーカーの外に配置し、既存の核心ルール同期で上書きされないようにした。"
+      ],
+      "policy": "外部コンテンツの指示を実行指示として扱わず、認証情報の代理入力等を禁止する安全ルールを維持する。",
+      "result": "対象7リポジトリは追記完了の記録。CLAUDE.mdなしの7件は対象外、usage-trackerはアクセス不可で未確認。",
+      "files": [
+        "CLAUDE.md"
+      ],
+      "commits": [
+        "aad8393",
+        "07a7fee"
+      ],
+      "summary": {
+        "issue": "外部の指示・認証情報の扱いが不明確",
+        "action": "対象7repoへ安全ルールを追記",
+        "outcome": "同期マーカー外で保持。対象分は完了"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-075",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-009": {
+      "label": "GASへの通信遮断",
+      "status": "完了",
+      "problem": "Routine環境からscript.google.comへのPOSTが403で拒否され、シートへ書き込めなかった。",
+      "history": [
+        "2026-08-01：直接POSTの遮断を確認。ネットワーク許可変更は設定画面を開けず断念。",
+        "同期の向きを反転し、GASのsyncFromGithub()がGitHubのtasks.jsonを取得する方式へ変更。",
+        "即時同期ボタンと、タスク名のNFKC正規化・チルダ統一も追加。"
+      ],
+      "policy": "直接POSTできなくても、GitHubに記録した内容をGAS側が定期取得して反映するPull型を採用する。",
+      "result": "回避策は完了。通信遮断そのものは未解決。コメントの実際の反映確認はPTD-006に残っている。",
+      "files": [
+        "gas/Code.gs",
+        "README.md"
+      ],
+      "summary": {
+        "issue": "Routine→GASのPOSTが403で遮断",
+        "action": "GASがGitHubを取りに行くPull型へ変更",
+        "outcome": "回避策は完了。遮断そのものは残る"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-009",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-010": {
+      "label": "GASの再デプロイ",
+      "status": "完了",
+      "problem": "GitHubのgas/Code.gsを変更しても、稼働中のGAS Webアプリへ自動では反映されない。",
+      "history": [
+        "同期・照合・完了予約・コメント対応列の変更をまとめた最新版を準備。",
+        "2026-08-05：ユーザーから再デプロイ完了の報告。",
+        "Routineからの直接POSTは依然遮断されるため、本人報告ベースで完了。"
+      ],
+      "policy": "Apps Scriptに最新版を保存し、Webアプリを「新しいバージョン」で再デプロイする。",
+      "result": "本人報告ベースで完了。保存だけではWebアプリへ反映されない。",
+      "files": [
+        "gas/Code.gs"
+      ],
+      "summary": {
+        "issue": "GitHubのGAS修正が実環境に届かない",
+        "action": "Apps Scriptへ貼付し、新版を再デプロイ",
+        "outcome": "本人報告で完了。保存だけでは反映されない"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-010",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-011": {
+      "label": "1時間ごとの同期",
+      "status": "完了",
+      "problem": "Pull同期の関数があっても、時間主導トリガーが未設定では自動実行されない。",
+      "history": [
+        "2026-08-05：クォータ消費とのバランスから1時間おきに決定。",
+        "急ぎの反映は「今すぐ同期」で補う運用に整理。",
+        "2026-08-06：ユーザーからトリガー設定完了の報告。"
+      ],
+      "policy": "syncFromGithubを1時間おきに実行し、即時反映が必要なときは手動同期を使う。",
+      "result": "本人報告ベースで完了。PTD-006の反映テストを実施できる前提が揃った。",
+      "files": [
+        "gas/Code.gs"
+      ],
+      "summary": {
+        "issue": "同期関数が自動では実行されない",
+        "action": "1時間おきのトリガーを設定",
+        "outcome": "本人報告で完了。急ぎは手動同期"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-011",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-006": {
+      "label": "コメント反映の確認",
+      "status": "対応中",
+      "problem": "Pull型同期でRoutineコメントが実際にシートへ届くか、最終確認が残っている。",
+      "history": [
+        "直接POSTの再テストはPTD-009の遮断調査を援用し不要と判断。",
+        "2026-08-06：再デプロイ(PTD-010)とトリガー設定(PTD-011)が揃ったと確認。",
+        "テストコメントをcommitし、同期後のコメントタブを実地確認する手順を記録。"
+      ],
+      "policy": "設定完了だけで完了扱いにせず、テストコメントがシートへ反映された証拠をcheckHistoryへ残してから完了にする。",
+      "result": "対応中。取得したJSONには反映確認完了の記録がない。",
+      "files": [
+        "data/tasks.json",
+        "gas/Code.gs"
+      ],
+      "summary": {
+        "issue": "Pull同期のコメント反映が未確認",
+        "action": "再デプロイ・トリガー設定まで完了",
+        "outcome": "未解決。テストコメントの実地確認が残る"
+      },
+      "methodLabel": "対応",
+      "sources": [
+        {
+          "label": "tasks.json PTD-006",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-044": {
+      "label": "ナレッジのベクトル検索",
+      "status": "完了",
+      "problem": "tasks.json等に蓄積したナレッジを、意味で検索できる形にしたい。",
+      "history": [
+        "2026-08-21：チャンク分割・ベクトル化の方針に合意。",
+        "当初のGemini API利用は事前確認がなかったと指摘され、ローカルモデルへ変更。",
+        "GitHub Actionsでモデル取得・157チャンク／384次元の生成・commitを実機確認した記録。"
+      ],
+      "policy": "外部AI APIを使わずfastembedで埋め込みを生成。正本JSONから検索用vector-index.jsonへ一方向で派生させる。",
+      "result": "パイプライン実装は完了。後続の検索拡張PTD-061は別タスクで検討中。",
+      "files": [
+        "scripts/knowledge/build_vector_index.py",
+        "scripts/knowledge/search_knowledge.py"
+      ],
+      "commits": [
+        "286431b",
+        "64d54d1"
+      ],
+      "summary": {
+        "issue": "蓄積した知識を意味で検索したい",
+        "action": "外部API案からローカル埋め込みへ変更",
+        "outcome": "正本を保ち、検索用JSONへ一方向で生成"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-044",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-067": {
+      "label": "相談・作業の全履歴",
+      "status": "完了",
+      "problem": "CCRのマネージャールームがブラウザ拡張のログ収集対象外で、引き継ぎ時に経緯が抜けていた。",
+      "history": [
+        "2026-10-03：日次Routineを新設。当初は未解決事項をtasks.jsonへ追記する設計。",
+        "ユーザーが「相談も完了作業も全て記録」を要求。",
+        "Routineのプロンプトを改め、manager-room-log.jsonに日次の時系列要約を保存する方式へ変更。"
+      ],
+      "policy": "manager-room-log.jsonを日々の経緯の記録先、tasks.jsonをタスクの構造化記録先として併用する。",
+      "result": "全履歴の記録方式は設定済み。初回のtrigger作成拒否の根本原因は未解決メモが残る。",
+      "files": [
+        "data/manager-room-log.json",
+        "data/claude-core-rules.md"
+      ],
+      "commits": [
+        "134ec1c",
+        "048daf7"
+      ],
+      "summary": {
+        "issue": "CCRルームの相談・作業履歴が残らない",
+        "action": "未解決のみの記録を、全経緯の要約へ拡張",
+        "outcome": "日次履歴JSONとタスクJSONで役割を分担"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-067",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-068": {
+      "label": "蓄積ナレッジを再利用",
+      "status": "完了",
+      "problem": "concept-log.jsonが蓄積中心で、次の実装や考察に結び付いていなかった。",
+      "history": [
+        "2026-10-05：英語アプリの相談からSECI化の話へ発展。",
+        "固定フレーズのスキル等を検討し、Edit／Write前のPreToolUseフックを選択。",
+        "確認を促す文言の注入と、AI基本設定の循環図を動作確認。"
+      ],
+      "policy": "実装・提案前に過去のconcept-logを確認し、活かした／活かさなかった理由を示す。フックで確認を促す。",
+      "result": "フックと表示を実装済み。確認を促す仕組みであり、ナレッジが自動的に結合・活用されることまで保証するものではない。",
+      "files": [
+        ".claude/hooks/concept-log-reminder.sh",
+        "data/ai-config.json"
+      ],
+      "commits": [
+        "51968eb",
+        "e2f2cbf"
+      ],
+      "summary": {
+        "issue": "ナレッジを蓄積しても次に活かせない",
+        "action": "実装前フックで過去知識の確認を促す",
+        "outcome": "再利用の理由を明記。自動活用の保証はない"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-068",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    "PTD-041": {
+      "label": "核心ルールの編集入口",
+      "status": "完了",
+      "problem": "各リポジトリへ同期する核心ルールの正本を、画面から確認・編集依頼したい。",
+      "history": [
+        "2026-08-13：AI基本設定内へルール表示・編集ウィジェットを追加。",
+        "編集内容はGAS経由でPTD-041へのコメントとして送信。",
+        "後続セッションが正本をcommitし、既存Actionsが各CLAUDE.mdへ反映する方式を採用。"
+      ],
+      "policy": "画面は正本を直接更新せず編集依頼の入口にする。実際の反映は正本commitと既存の自動同期に集約する。",
+      "result": "ウィジェットは完了。同期用PATの未完了記録(PTD-063)は別途残る。",
+      "files": [
+        "dashboard.html",
+        "data/claude-core-rules.md",
+        ".github/workflows/sync-claude-md.yml"
+      ],
+      "summary": {
+        "issue": "核心ルールを画面から確認・編集したい",
+        "action": "表示と編集依頼の入口を追加",
+        "outcome": "正本commit→自動同期に集約。PATは別残件"
+      },
+      "methodLabel": "解決",
+      "sources": [
+        {
+          "label": "tasks.json PTD-041",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "title": "連携・同期：回避策の実装と、反映検証は別タスク",
+      "kind": "solid",
+      "columns": [
+        [
+          "PTD-009"
+        ],
+        [
+          "PTD-010",
+          "PTD-011"
+        ],
+        [
+          "PTD-006"
+        ]
+      ],
+      "labels": [
+        "GASへ反映・自動実行を準備",
+        "両方が検証の前提"
+      ],
+      "sources": [
+        {
+          "label": "タスク記録・設計資料",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    {
+      "title": "権限管理：部分改善から、横断同期の運用へ",
+      "kind": "solid",
+      "columns": [
+        [
+          "PTD-045"
+        ],
+        [
+          "PTD-059"
+        ]
+      ],
+      "labels": [
+        "許可設定の管理を整備"
+      ],
+      "sources": [
+        {
+          "label": "タスク記録・設計資料",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    {
+      "title": "認証情報：横断同期を再開するための条件",
+      "kind": "solid",
+      "columns": [
+        [
+          "PTD-063"
+        ],
+        [
+          "PTD-041",
+          "PTD-059"
+        ]
+      ],
+      "labels": [
+        "両同期workflowがCROSS_REPO_PATを参照"
+      ],
+      "sources": [
+        {
+          "label": "タスク記録・設計資料",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    {
+      "title": "画面改善：当時の修正から、携帯向けの後続対応へ",
+      "kind": "loose",
+      "columns": [
+        [
+          "PTD-033"
+        ],
+        [
+          "PTD-064"
+        ]
+      ],
+      "labels": [
+        "後続の画面改善（直接の依存ではない）"
+      ],
+      "sources": [
+        {
+          "label": "タスク記録・設計資料",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    },
+    {
+      "title": "ナレッジ：記録・検索と、実装時の活用",
+      "kind": "loose",
+      "columns": [
+        [
+          "PTD-067",
+          "PTD-044"
+        ],
+        [
+          "PTD-068"
+        ]
+      ],
+      "labels": [
+        "蓄積・検索と再利用という関連"
+      ],
+      "sources": [
+        {
+          "label": "タスク記録・設計資料",
+          "url": "https://github.com/gurii-gabreh/progress-tracker-dashboard/blob/ddd4cf4ca846df7b7e80f40f0bb6dae70afacb62/data/tasks.json"
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-10-12"
+}
