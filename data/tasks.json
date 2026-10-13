@@ -310,7 +310,7 @@
               "updated": "2026-08-06",
               "category": "manual",
               "note": "相談ルームで間隔を1時間おきに確定(2026-08-05)。クォータ消費を抑えつつ、急ぎの反映は既存の「⏩ 今すぐ同期」ボタンで代替できるための判断。2026-08-06、本人よりApps Scriptエディタでのトリガー設定完了の報告あり。",
-              "detail": "",
+              "detail": "GASのsyncFromGithub関数を1時間おきに自動実行するよう、Apps Scriptエディタの時間主導トリガーを設定するタスク。2026-08-05の相談でクォータ消費とのバランスから間隔を1時間おきに決定し、急ぎの反映は既存の「⏩ 今すぐ同期」ボタンで代替できることを根拠とした。2026-08-06、本人からApps Scriptエディタでの設定完了の報告を受けて完了とした(実機のトリガー設定自体はユーザー作業)。",
               "completedItems": [
                 {
                   "item": "Apps Scriptエディタで syncFromGithub 関数の時間主導トリガー(1時間おき)を設定した",
@@ -2079,7 +2079,7 @@
               "date": "2026-08-09"
             }
           ],
-          "detail": "",
+          "detail": "Knowledge-Dashboardのスプレッドシート一覧・知見一覧(knowledge-index.json)を自動更新する仕組みを用意するタスク。progress-tracker-dashboardと同様のGitHub Actions方式を採用し、.github/workflows/update-knowledge-index.ymlを追加して毎日21:00 UTC(06:00 JST)にgenerate-knowledge-index.jsを実行、差分があればgithub-actions[bot]としてmainへ直接コミットする設計にした(差分が無ければgeneratedAtも据え置き、空コミットを避ける)。spreadsheets.json側(Google Drive検索・認証が絡む)は自動化の対象外とし、README記載の通り引き続き手動更新(Claudeへの依頼)のままとした。",
           "issues": "data/spreadsheets.json(Google Drive検索・認証が絡む方)はGitHub Actionsでの自動化対象外。README記載の通り引き続き手動更新(Claudeへの依頼)のまま。",
           "output": "https://github.com/gurii-gabreh/Knowledge-Dashboard/blob/main/.github/workflows/update-knowledge-index.yml",
           "steps": [
@@ -3362,7 +3362,8 @@
               "date": "2026-08-29",
               "summary": "ユーザーがServiceNow PDI上でu_ai_research_itemテーブルを作成完了(u_dedup_keyへのUnique制約を含む)。「Unique」チェックボックスが標準フォームに表示されない問題は、manager-roomがWeb検索で現行のServiceNow UI仕様を確認し、Form Layoutのパーソナライズ手順を追加提示して解決した。"
             }
-          ]
+          ],
+          "detail": "ServiceNow PDI上にu_ai_research_itemテーブルを作成するタスク。フィールド型・長さはservicenow-sub-agent/README.mdで事前に設計済みで、ユーザー自身がPDI上で作成(u_dedup_keyへのUnique制約含む)。「Unique」チェックボックスが標準フォームに表示されない問題が発生したが、manager-roomがWeb検索で現行のServiceNow UI仕様を確認し、Form Layoutのパーソナライズ手順を追加提示して解決した。"
         },
         {
           "repo": "servicenow-sub-agent",
@@ -3435,7 +3436,7 @@
               "updated": "2026-08-31",
               "category": "manual",
               "note": "経緯: PTD-048(REST Message作成)の追加候補6件の1つとしてArchitecture Weeklyが挙がったが、候補URLが2通り(独自ドメイン版architecture-weekly.com/feed、Substack版softwarearchitectureweekly.substack.com/feed)あり、どちらが正しいか未確定だった。現在: worker-roomが2026-08-30にGitHub Actions経由で両方を実地検証したところ、独自ドメイン版は接続失敗(fetch failed、DNS/接続不可)、Substack版はHTTP 403(Cloudflareのbot対策による「Just a moment...」チャレンジページ)で、いずれも有効なフィードを取得できなかった。これから: CL-009の教訓(URLの実在は推測せず実地検証する。実際にAnthropicBlogは公式RSS不在と判明し除外した過去がある)に従い、いずれの候補URLを採用すべきか、あるいは別の正しいURL(例: ブラウザで手動確認した実際のフィード配信元)があるかを推測で決めず、ユーザーに確認したい。懸念点: (1) Substack版の403はCloudflareのbot対策によるもののため、ブラウザでは正常に見えている可能性があり「URLが存在しない」とは言い切れず、このパイプライン(サーバーサイドの単純なGETリクエスト)からは今後も継続的に取得できない可能性がある。(2) 独自ドメイン版の接続失敗は、ドメイン自体が現存しない可能性もある。(3) いずれかを無理に採用せず、Architecture Weeklyという情報源自体を諦める(候補5件のみで運用する)という選択肢も、Anthropic Blog除外時(CL-009)と同じ考え方として妥当と考えている。",
-              "detail": "",
+              "detail": "PTD-048のREST Message追加候補だったArchitecture Weeklyについて、候補URLが2通りあり正しいフィード配信元が未確定だった相談事項。推測で決めず(CL-009の教訓)ユーザーに確認したところ、Web検索で運営者(Oskar Dudycz)と正しい配信ドメイン(www付きのwww.architecture-weekly.com、Substackカスタムドメイン)を特定、実地検証でHTTP 200・RSS 2.0を確認しPTD-048へ反映して解決した。",
               "steps": [
                 "ブラウザ等で実際にArchitecture Weeklyの正しいRSS/AtomフィードURLを確認する(architecture-weekly.com/feedかsoftwarearchitectureweekly.substack.com/feedか、あるいは別のURLか)",
                 "正しいURLが判明した場合はそのURLを、判明しない/取得できないと判断した場合はその旨をコメントで伝える",
@@ -3449,7 +3450,8 @@
               ],
               "output": "正しいURLは`https://www.architecture-weekly.com/feed`(www付き、Substackカスタムドメイン)。実地検証でHTTP 200・RSS 2.0を確認し、PTD-048側へ反映済み(commit 4858c47)。"
             }
-          ]
+          ],
+          "detail": "ServiceNow PDIにAI研究情報源(arXiv/Hacker News/Blog RSS)のREST Messageを作成・拡張するタスク。当初の4情報源(arXiv/Hacker News/OpenAI Blog/Hugging Face Blog)に加え、追加候補6件(MIT Technology Review AI/MarkTechPost/ByteByteGo/InfoQ/Martin Fowler blog/Architecture Weekly)を実地検証した上で拡張し、最終的に11情報源体制とした。Atom形式のリンク抽出で全件スキップになる潜在バグ(CL-013)の発見・修正、Anthropic Blog(公式RSS不在、CL-009)の除外判断、Architecture Weekly(PTD-056で正しいURLを確定)など複数の実装判断を経ている。2026-09-01にdry_run=falseでServiceNow PDIへ実際に反映済み(2026-09-06にAnthropic向け2情報源をさらに追加)。"
         },
         {
           "repo": "servicenow-sub-agent",
@@ -3478,7 +3480,8 @@
               "date": "2026-08-30",
               "summary": "ユーザーから「ワークフロー実行までworker-room自身にやってほしい」との依頼を受け、GitHub Actions MCPツール(actions_run_trigger)でservicenow-setup.ymlをdry_run=falseで直接起動(手作業でのRun workflowクリック不要)。実行結果をget_job_logsでログ確認し、sync-scheduled-jobジョブで実際に\"AI Research Fetcher\"(sys_id=56529fb4938fcb10043532edfaba10e9)のscriptフィールドが更新されたことを確認した(u_published_at修正版が反映済み)。あわせてユーザーから、今後Business Rule/Catalog Client Script/Flow Designer等のServiceNow側更新が必要になった場合も、コード実装だけでなくGitHub Actions実行(ServiceNowへの実反映)までworker-room側で完結させる、という標準運用の合意を得た(concept-log.jsonのCL-011に追記)。"
             }
-          ]
+          ],
+          "detail": "ServiceNow PDIにScheduled Job(AI Research Fetcher)を作成し、収集スクリプトを貼り付けるタスク。新規作成はUI操作の手間・Table API経由での誤設定リスクを踏まえ意図的に手動のまま残したが、作成済みジョブのscript本文のみを最新化する部分更新はservicenow/scripts/sync_scheduled_job.mjsで自動化した。ユーザーがPDI上でジョブを作成・保存し、以降のスクリプト更新はGitHub Actions経由でworker-roomが直接反映する運用を確立した。"
         },
         {
           "repo": "servicenow-sub-agent",
@@ -3508,7 +3511,8 @@
               "date": "2026-08-29",
               "summary": "「軽微な既知制限」としていたu_published_at空欄問題を、ユーザーの要望(いつのデータか判別する必要がある)を受けて追加調査。GitHub Actions上の一時診断スクリプトでOpenAI/Hugging Face Blogの実際のRSS生データを取得したところ、pubDateタグ自体は正しく存在しており(例: `Fri, 28 Aug 2026 06:00:00 GMT`)、抽出処理は正常だったと判明。真因はServiceNowのDate/Time型フィールドへ、情報源ごとに異なる形式(RFC822/ISO8601)の日付文字列をそのまま代入すると、形式不一致時にエラーも出さず黙って空欄になるという挙動だった。scheduled_job_ai_research_fetch.jsにtoGlideDateTimeString()を追加し、Dateオブジェクト経由で\"yyyy-MM-dd HH:mm:ss\"(UTC)形式に変換してから代入するよう修正(commit 18b0977)。既存2039件のうち空欄だった分は1回限りのバックフィルスクリプト(servicenow/backfill_published_at.js)をユーザーがBackground Scriptsで実行し、2009件を正しく更新(alreadyHadDate=10・noMatch=20は想定通りで異常なし、errors=[])。詳細な原因分析・教訓はconcept-log.jsonのCL-010参照。"
             }
-          ]
+          ],
+          "detail": "ServiceNow PDI上で情報源URL・レスポンス形式を実機検証するタスク(worker-room環境自体はネットワーク制約で直接検証不可のため)。GitHub Actionsのverify-source-urlsジョブで情報源URLの生存確認を行い、ServiceNow PDI上のBackground Scriptsでの手動実行によりu_ai_research_itemへ実データ2039件が正しく書き込まれることを確認した。u_published_atが空欄になる既知の不具合(日付形式の不一致でServiceNow側が無言で空欄にする挙動)も原因判明・修正・既存データのバックフィルまで完了させた(concept-log.jsonのCL-010参照)。"
         },
         {
           "id": "PTD-057",
@@ -3519,7 +3523,7 @@
           "updated": "2026-09-01",
           "category": "manual",
           "note": "経緯: ユーザーから「ChatGPTの公式サイトも毎日確認してほしいから、APIで連携して情報を取得して」「Claude、Gemini」も、という依頼があった。ヒアリングの結果、(1) 既存のServiceNowパイプライン(RSS方式・5観点分類)への追加でよい、(2) 各社の有料開発者APIではなく無料のRSS/Atomフィードで統一する、という2点をユーザーに確認済み。現在: 3社を個別に調査した。Gemini(Google)は単独の公式Geminiブログ専用RSSは見当たらなかったが、Google DeepMind Blog(Geminiモデルの発表を含むAI研究ニュース、https://deepmind.google/blog/rss.xml)の公式RSSを実地検証(HTTP 200・RSS 2.0)の上で採用した。Claude(Anthropic)は、CL-009(2026-08-29)で公式RSS/Atom不在と確認済みの状態が2026-08-31のWeb検索でも変わっていないことを再確認し、非公式ミラー不採用の方針を維持して見送った。ChatGPT(OpenAI)は、既存のopenaiメソッド(OpenAIの公式発表チャネル、ChatGPT関連発表も含む)で実質的にカバー済みと判断し、専用のRelease Notesフィードの追加は見送った(正確な配信URLをWeb検索・実地検証のいずれでも特定できず、worker-roomセッション自身がopenai.comへ直接アクセスできないためページ内のRSSリンクも確認不可)。これから: Geminiの追加はservicenow-sub-agent側に実装・push済み(commit 4795c3f)。PTD-048同様、ServiceNow PDIへの実際の反映(dry_run=false)は本人の実行待ち。Claude・ChatGPT専用フィードについては、正確なURLの手がかりが得られれば再検討の余地がある。",
-          "detail": "",
+          "detail": "ユーザー依頼(Claude/Gemini/ChatGPT公式サイトの情報もServiceNowパイプラインへ追加してほしい)を受けて3社を個別調査したタスク。Geminiは単独のGeminiブログ専用RSSが無かったためGoogle DeepMind Blog(Geminiモデル発表を含む)の公式RSSを採用・実装・ServiceNow PDIへ反映済み。Claude(Anthropic)は公式RSS/Atom不在を確認済み(CL-009)のため見送り、ChatGPT(OpenAI)は既存のopenaiメソッドで実質カバー済みと判断し専用フィード追加を見送った。",
           "checkHistory": [
             {
               "date": "2026-08-31",
