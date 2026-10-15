@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-13T15:08:19.854141+00:00",
+  "lastProcessedAt": "2026-10-15T15:07:41.633419+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -105,6 +105,17 @@
         "ハッカソンは出場見送り・情報収集のみの方針に転換。次回開催時期(A・Bとも)は不明のまま、PTD-065で動向収集を継続する。",
         "PMG-001(PROMPT-MANAGER × claude-voice-bridge統合)は対応中のまま。iframe高さ自動調整・生成履歴JSON化・質問ウィザードの扱いが未対応。",
         "ChatGPT/README.mdに記載の再生成スキル名「obsidian-app-mindmap」の所在確認は、マインドマップ関連作業のクローズに伴い保留。"
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "generatedAt": "2026-10-15T15:07:41.633419+00:00",
+      "summary": "この日はユーザーからの会話・依頼は無く、定期Routineの発火のみだった。CLAUDE.md定期確認Routineが2回発火(0時・12時)。0時分は正本(data/claude-core-rules.md)を読み直し「確認済み、問題なし」(変更・矛盾なし)。12時分は平日・祝日でない(10月の祝日は10/12のスポーツの日のみ、内閣府等の情報源で確認)ためルール通りスキップ(スキップ自体の報告は不要というルールのため省略)。週次ルームログ要約Routineの常駐セッションの健康確認は行っていない(0時分のB作業はこの日実施していない)。tasks.json/credit-log.json/Task-WBSへの変更は無し。",
+      "unresolvedCarriedOver": [
+        "PTD-072(ServiceNow収集フロー図のレイアウト微調整)は保留のまま。ユーザーから再開指示があれば対応。",
+        "PTD-058: 残り約2,340件の日本語要約のバックフィル、GitHub PagesのSource設定(ユーザー作業)が未完了のまま。",
+        "ハッカソンは出場見送り・情報収集のみの方針。次回開催時期(A・Bとも)は不明のまま、PTD-065で動向収集を継続する。",
+        "PMG-001(PROMPT-MANAGER × claude-voice-bridge統合)は対応中のまま。iframe高さ自動調整・生成履歴JSON化・質問ウィザードの扱いが未対応。"
       ]
     }
   ]
