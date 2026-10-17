@@ -1,0 +1,605 @@
+{
+  "schemaVersion": 1,
+  "description": "ハッカソン実績作り(PTD-020・PTD-065)のための調査資料。狙っている/検討中のハッカソン候補と、各ハッカソンの過去入賞作品をまとめる。マネージャーアプリの「🔍 調査資料」タブ→「🏆 ハッカソン」ページで表示する。候補(candidates)と入賞作品(winners)は別配列で管理し、候補カード→入賞作品カードの順にUI表示する(2026-10-18、ユーザー指示「1に狙っているハッカソン名と内容、前回の時期を一つのカードにまとめて、次のカードに入賞作品をまとめて」)。",
+  "updatedAt": "2026-10-18",
+  "note": "4本の並行Web調査(バックグラウンドエージェント)の結果を反映済み。各ハッカソンの運営サイト(zenn.dev等)はこのセッションのネットワークポリシーで直接アクセスできず、WebSearchの検索結果経由の情報のため、確認できなかった項目は推測で埋めず「不明(確認できず)」と明記している。",
+  "candidates": [
+    {
+      "id": "hack-a-google-cloud",
+      "name": "Agentic AI Hackathon with Google Cloud(旧: AI Agent Hackathon with Google Cloud)",
+      "organizer": "Zenn × Google Cloud Japan",
+      "status": "情報収集中(現在は出場を見送り、第6回の告知待ち。PTD-065で継続監視)",
+      "content": "自律的に考え行動するAIエージェントを、Google Cloud(Gemini・Vertex AI・ADK等)で構築するハッカソン。2024年12月の第1回(当時は「AI Agent Hackathon」、初心者歓迎)から継続し、第4回(2025/12-2026/2)で「Agentic AI Hackathon」に改称。回を追うごとに「参加しやすさ」から「実運用への耐性」へ重点がシフトしている。",
+      "lastPeriod": "第5回: エントリー期間2026/08/20〜10/15(終了済み)。ファイナリスト発表2026/10/28予定、最終ピッチ・表彰式2026/12/1(渋谷ストリーム)。2026-10-18時点でまだ結果未確定。",
+      "theme": "第5回: 「本当に使えるもの」―ガバナンス・セキュリティまで含めた実運用に耐えるエージェント",
+      "nextEdition": "不明(第6回の告知は未確認、2026-10-18時点)",
+      "sources": [
+        {
+          "title": "第5回 Agentic AI Hackathon(Zenn)",
+          "url": "https://zenn.dev/hackathons/google-cloud-japan-ai-hackathon-vol5"
+        },
+        {
+          "title": "the 4th agentic ai hackathon is now accepting participants(Google Cloud公式)",
+          "url": "https://cloud.google.com/blog/ja/products/ai-machine-learning/the-4th-agentic-ai-hackathon-is-now-accepting-participants?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "hack-b-microsoft",
+      "name": "Microsoft Agent Hackathon powered by Tokyo Electron Device",
+      "organizer": "クラスメソッド主催 × 日本マイクロソフト協力 × 東京エレクトロンデバイス協賛",
+      "status": "情報収集中(現在は出場を見送り、次回告知待ち。PTD-065で継続監視)",
+      "content": "Azure/Copilot Studio等を使ったAIエージェント開発ハッカソン。2026年開催が初回(Zenn初の企業対抗ハッカソン)で、個人部門を新設。前身イベント(同主催者による過去回)は調査の結果確認できなかった。",
+      "lastPeriod": "2026年回(初回): 開催期間2026/4/7〜6/18(決勝ピッチ&表彰式6/18、品川、企業部門5チーム+個人部門5チームの計10チームが決勝進出)。エントリー数350・提出106とする集計と、参加チーム240とする集計の2通りがあり内訳は未確認。",
+      "theme": "「業務改革につながるAgentic AIを作ろう」",
+      "nextEdition": "不明(2027年以降の告知は未確認、2026-10-18時点)",
+      "sources": [
+        {
+          "title": "Microsoft Agent Hackathon powered by Tokyo Electron Device(Zenn)",
+          "url": "https://zenn.dev/hackathons/microsoft-agent-hackathon-2026"
+        }
+      ]
+    },
+    {
+      "id": "hack-c-tokyo-opendata",
+      "name": "都知事杯オープンデータ・ハッカソン",
+      "organizer": "東京都",
+      "status": "2026年度にkizashiで応募・一次審査(First Stage)不通過(KIZ-046)。2026年度のFinal Stageは本日(2026/10/17)開催されたばかりで結果はまだ未発表。再挑戦の可否はPTD-020で検討中、未決定",
+      "content": "東京都のオープンデータを活用し社会課題を解決するアプリを競うハッカソン。都民からの意見募集を踏まえテーマを毎年度選定する仕組みがあり、部門構成・賞の名称も年度ごとに変化している(2023年度にアイデア提案部門新設、2024年度にビジュアライズ部門新設、2026年度は賞を個人・分野特化型の8賞に再編)。",
+      "lastPeriod": "2026年度(第6回相当): 募集期間2026/6/12〜7/27。First Stage 8/26〜30、Final Stage 2026/10/17(本日、結果未発表)、Demo Day 2027/3/27予定。",
+      "theme": "都民意見募集の結果を踏まえて選定(2026年度の確定テーマ名称は未確認)",
+      "nextEdition": "例年6月頃に次年度募集が開始される傾向(2025・2026年度の募集時期から推測。公式な次回告知ではない)",
+      "sources": [
+        {
+          "title": "都知事杯オープンデータ・ハッカソン2026募集(東京都プレスリリース)",
+          "url": "https://www.metro.tokyo.lg.jp/information/press/2026/09/2026091813"
+        },
+        {
+          "title": "都知事杯オープンデータ・ハッカソン2026トップページ",
+          "url": "https://odhackathon.metro.tokyo.lg.jp/"
+        }
+      ]
+    },
+    {
+      "id": "hack-d-ai-hack",
+      "name": "AI HACK",
+      "organizer": "AIHACK運営事務局(法人名・代表者は未確認。清水亮氏主催という情報は誤りの可能性が高く、今回の調査では裏付けを得られなかった)",
+      "status": "新候補(2026-10-18発見)。第3回(12月開催)が直近の応募対象だが、20代限定という参加資格の制約を公式ページで要再確認",
+      "content": "個人応募可・参加費無料の国内AIハッカソン。2026年8月に第1回、9月に第2回、12月に第3回を開催する高頻度シリーズ。公式サイトの説明では「対象は20代の方ならどなたでも」と年齢条件がある可能性が高い。",
+      "lastPeriod": "第2回: 2026/9/19〜23(5日間、ハイブリッド開催)。第3回: 2026/12/11〜13開催予定、応募締切2026/12/9。",
+      "theme": "第1回「LLM活用」「AI×業務自動化」「AI×新規プロダクト」から選択制。第2回「業務を自律化するAIエージェント」。第3回は不明(確認できず)。",
+      "nextEdition": "第3回が直近(開催予定、2026/12/11〜13)",
+      "sources": [
+        {
+          "title": "AI HACK公式サイト",
+          "url": "https://aihackathon.jp/"
+        },
+        {
+          "title": "AI HACK 第2回ページ",
+          "url": "https://aihackathon.jp/past/vol2/"
+        }
+      ]
+    },
+    {
+      "id": "hack-e-zennihon-ai",
+      "name": "全日本AIハッカソン(旧: 24時間AIハッカソン)",
+      "organizer": "THIRDWAVE(ドスパラ)",
+      "status": "新候補(2026-10-18発見)。参加費無料だがドスパラ会員登録が必要で、個人での新規応募しやすさは要確認",
+      "content": "2023年の「24時間AIハッカソン」(東京単独開催)から始まり、2024年に複数都市展開、2025年に「全日本AIハッカソン」へ改称して地方予選5都市+決勝という規模に拡大した、国内では開催実績の長いAIハッカソンシリーズ。",
+      "lastPeriod": "2026年度: 予選全6ラウンド(3月〜8月、東京・大阪・オンライン)+敗者復活戦(9月)。決勝は2026/11/7、「AIフェスティバル2026」内で開催予定(2026-10-18時点で未開催)。優勝賞金10万円。",
+      "theme": "年度ごとに1文字のテーマ記号が割り当てられる(2023年度「楽」、2024年度「超」、2025年度「井」)。2026年度のテーマ記号は未確認。",
+      "nextEdition": "2026年度決勝が直近(2026/11/7、未開催)",
+      "sources": [
+        {
+          "title": "全日本AIハッカソン2026 エントリー受付開始(note、shi3zblog)",
+          "url": "https://note.com/shi3zblog/n/nde6ed07140f8"
+        },
+        {
+          "title": "AIハッカーの頂点を決める「全日本AIハッカソン2026」(Impress Watch)",
+          "url": "https://forest.watch.impress.co.jp/docs/news/2081191.html"
+        }
+      ]
+    }
+  ],
+  "winners": [
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第1回(2024/12〜2025/02)",
+      "rank": "1位",
+      "title": "eCoino",
+      "team": "セイゾウギョウのチカラ",
+      "summary": "サプライチェーンの計画と現実のズレ(想定外のギャップ)を対話型AIエージェントで即座に修正し、シナリオ比較・対策立案を支援するシステム。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第1回受賞紹介)",
+          "url": "https://x.com/zenn_dev/status/1912339763870462144"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第1回(2024/12〜2025/02)",
+      "rank": "2位",
+      "title": "ManabiyaAI",
+      "team": "不明",
+      "summary": "新人・ベテラン問わず教師の負担軽減と教育の質向上を目指すAIエージェント。授業準備から採点、フィードバックまでをAIが支援。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第1回受賞紹介)",
+          "url": "https://x.com/zenn_dev/status/1912668028426186923"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第1回(2024/12〜2025/02)",
+      "rank": "3位",
+      "title": "社内のぞき見新聞 ～The Internal Times～",
+      "team": "不明",
+      "summary": "社内チャットや議事録をもとに週報を新聞形式で自動生成するAIエージェント。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第1回受賞紹介)",
+          "url": "https://x.com/zenn_dev/status/1914188319203942406"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第2回(2025/04〜06)",
+      "rank": "1位",
+      "title": "FlatJam",
+      "team": "IBUKI",
+      "summary": "創造性を育む音楽教育ツール。作曲プロセスをリアルタイムに解析し、文脈に合った知見・技法を提示。",
+      "tech": "Flutter、Gemini、BigQuery、Cloud Run",
+      "sources": [
+        {
+          "title": "Zenn公式X(第2回結果)",
+          "url": "https://x.com/zenn_dev/status/1952924117386314162"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第2回(2025/04〜06)",
+      "rank": "2位",
+      "title": "学校だよりAI",
+      "team": "不明",
+      "summary": "不明(確認できず)",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第2回結果)",
+          "url": "https://x.com/zenn_dev/status/1952924117386314162"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第2回(2025/04〜06)",
+      "rank": "3位",
+      "title": "Vibe Planning",
+      "team": "不明",
+      "summary": "不明(確認できず)",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第2回結果)",
+          "url": "https://x.com/zenn_dev/status/1952924117386314162"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第3回(2025/08〜09)",
+      "rank": "最優秀賞",
+      "title": "フクシア",
+      "team": "不明",
+      "summary": "社会福祉士の業務を支援し、支援が必要な人たちの生活をより豊かにすることを目指すAIエージェント。",
+      "tech": "ADK(Agent Development Kit)推奨構成",
+      "sources": [
+        {
+          "title": "Google Cloud Japan公式X(第3回最優秀賞)",
+          "url": "https://x.com/googlecloud_jp/status/1984232639658643734"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第3回(2025/08〜09)",
+      "rank": "優秀賞(5件・順位なし)",
+      "title": "PawMate / 添削AI「言の葉」/ RouteKeeperAI / 魔法の天秤 with Gemini / FutureRun",
+      "team": "不明",
+      "summary": "各作品の詳細概要は不明(確認できず)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Zenn公式X(第3回結果)",
+          "url": "https://x.com/zenn_dev/status/1985636901290983533"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第4回(2025/12〜2026/02)",
+      "rank": "最優秀賞",
+      "title": "Anatom-AI",
+      "team": "現役医師4名(青山竜平氏・有里勇気氏・伊藤直樹氏・酒井祐介氏)",
+      "summary": "自然言語で操作できる3D人体解剖モデル。症状を尋ねると関連する臓器・血管を表示。言語理解・構造認識・レンダリングを分離して表示誤りを低減。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Google Cloud Japan公式X(第4回最優秀賞)",
+          "url": "https://x.com/googlecloud_jp/status/2037424379202617409"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第4回(2025/12〜2026/02)",
+      "rank": "優秀賞(3件・順位なし)",
+      "title": "Bananacraft / BrickQuest / KOTOWARI Link",
+      "team": "不明",
+      "summary": "Bananacraft: 2D画像と自然言語からMinecraft上の建築を自動生成。BrickQuest: 手元のブロックから組立説明書を自動生成。KOTOWARI Link: ARで科学法則を現実の風景に重ねて学習(※この作品が第4回所属である確証はやや弱い)。",
+      "tech": "Gemini 3 Pro(Bananacraft)、Vertex AI・Unity・ARCore・Cloud Run(KOTOWARI Link)",
+      "sources": [
+        {
+          "title": "Google Gemini公式note記事(第4回受賞紹介)",
+          "url": "https://note.com/google_gemini/n/n03128c3d873a"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第4回(2025/12〜2026/02)",
+      "rank": "奨励賞",
+      "title": "ARTESTERISM(アーテステリズム)",
+      "team": "NRI入社2年目4名(福岡康大氏・村上隆太氏・渕上正浩氏・立見有氏)",
+      "summary": "ART(美術)とASTERISM(星群)を組み合わせ、美術作品を起点に美術館・職員・鑑賞者をつなぐアプリケーション。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "atlax blogs(NRI、第4回奨励賞)",
+          "url": "https://atlaxblogs.nri.co.jp/entry/20260428"
+        }
+      ]
+    },
+    {
+      "hackathon": "Agentic AI Hackathon with Google Cloud",
+      "edition": "第5回(2026、進行中)",
+      "rank": "未確定",
+      "title": "(ファイナリスト発表は2026/10/28予定、最終審査2026/12/1)",
+      "team": "",
+      "summary": "2026-10-18時点でファイナリストも未発表のため、受賞作品は存在しない(推測で埋めない)。",
+      "tech": "",
+      "sources": [
+        {
+          "title": "第5回 Agentic AI Hackathon(Zenn)",
+          "url": "https://zenn.dev/hackathons/google-cloud-japan-ai-hackathon-vol5"
+        }
+      ]
+    },
+    {
+      "hackathon": "Microsoft Agent Hackathon",
+      "edition": "2026年回(初回、2026/4〜6)",
+      "rank": "企業部門 最優秀賞",
+      "title": "越見波(エツミナミ)エージェント",
+      "team": "DATA IMPACT JOINT STOCK COMPANY(ヘッドウォータースグループ、ベトナム拠点)",
+      "summary": "半導体製造工場向けの自律型AI予知保全ソリューション。従来のしきい値監視から、教師なし学習によるライン異常の事前検知へ移行。",
+      "tech": "Microsoft Azure、Azure Databricks",
+      "sources": [
+        {
+          "title": "ヘッドウォータース プレスリリース",
+          "url": "https://www.headwaters.co.jp/news/Microsoft_Agent_Hackathon_DATA_IMPACT_JOINT_STOCK_COMPANY.html"
+        }
+      ]
+    },
+    {
+      "hackathon": "Microsoft Agent Hackathon",
+      "edition": "2026年回(初回、2026/4〜6)",
+      "rank": "企業部門 奨励賞",
+      "title": "不明(確認できず)",
+      "team": "不明",
+      "summary": "参加者のnoteブログで「企業部門で奨励賞を受賞した」との報告はあるが、具体的な作品名・社名は特定できなかった。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "note.com(3682tw、受賞報告)",
+          "url": "https://note.com/3682tw/n/n602cc9273b27"
+        }
+      ]
+    },
+    {
+      "hackathon": "Microsoft Agent Hackathon",
+      "edition": "2026年回(初回、2026/4〜6)",
+      "rank": "個人部門(各賞)",
+      "title": "不明(確認できず)",
+      "team": "不明",
+      "summary": "個人部門の受賞者名・作品名を報じる記事・プレスリリースは発見できなかった。Zenn公式ページの「プロジェクト」タブに掲載されているとみられるが、本環境からzenn.devへ直接アクセスできず未確認。",
+      "tech": "",
+      "sources": [
+        {
+          "title": "Microsoft Agent Hackathon powered by Tokyo Electron Device(Zenn)",
+          "url": "https://zenn.dev/hackathons/microsoft-agent-hackathon-2026"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2026年度(第6回相当)",
+      "rank": "未発表",
+      "title": "(Final Stageは2026/10/17開催、結果はまだ未発表)",
+      "team": "",
+      "summary": "本日開催されたばかりで、本調査時点では受賞結果の公式発表はまだ見つからなかった。",
+      "tech": "",
+      "sources": [
+        {
+          "title": "東京都報道発表(2026/09/18)",
+          "url": "https://www.metro.tokyo.lg.jp/information/press/2026/09/2026091813"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2025年度",
+      "rank": "都知事杯(最優秀賞)",
+      "title": "YORUMICHI",
+      "team": "Aliss",
+      "summary": "夜間光データや犯罪(治安)情報を統合し、街灯の有無・人通りなども加味して「安全な夜道」を地図上でスコア化・提案するWebサービス。不審者遭遇時の即時対応機能も備える。",
+      "tech": "夜間光データ、犯罪発生情報",
+      "sources": [
+        {
+          "title": "CodeZine",
+          "url": "https://codezine.jp/news/detail/22489"
+        },
+        {
+          "title": "東京都報道発表(2025年度受賞者決定)",
+          "url": "https://www.metro.tokyo.lg.jp/information/press/2025/10/2025102806"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2025年度",
+      "rank": "部門賞(サービス開発/ビジュアライズ/アイデア提案)",
+      "title": "CareHub / Tree Debuggers / IceBreaker",
+      "team": "不明",
+      "summary": "各作品の概要は不明(確認できず)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "東京都報道発表(2025年度受賞者決定)",
+          "url": "https://www.metro.tokyo.lg.jp/information/press/2025/10/2025102806"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2025年度",
+      "rank": "オーディエンス賞",
+      "title": "Urban Resource Link",
+      "team": "データファーストの会Z",
+      "summary": "騒音問題を価値に変え、住民・事業者・行政をつなぐ循環を目指す提案。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "CodeZine",
+          "url": "https://codezine.jp/news/detail/22489"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2025年度",
+      "rank": "審査委員特別賞 技術賞",
+      "title": "北風と太陽サイクリング",
+      "team": "CESM",
+      "summary": "不明(確認できず、作品概要の詳細記事は未確認)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "日建設計総合研究所",
+          "url": "https://www.nikken-ri.com/news/publicity/20251029h.html"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2024年度",
+      "rank": "都知事杯(最優秀賞)・オーディエンス賞(同時受賞)",
+      "title": "リアルタイム高解像度 熱中症リスクダッシュボード",
+      "team": "HITS(日建設計総合研究所 研究員4名: 齋藤悠宇氏・鶴見隆太氏・本多久美子氏・今枝秀二郎氏)",
+      "summary": "3D都市モデル(PLATEAU)を用いて5mメッシュで都市の日影をシミュレーションし、気象情報(気温・日射量・風速・湿度)と組み合わせてリアルタイム・高空間解像度で熱中症リスクを評価。審査委員から「命を守る技術」として高評価。",
+      "tech": "3D都市モデル(PLATEAU)、気象データ",
+      "sources": [
+        {
+          "title": "日建設計総合研究所",
+          "url": "https://www.nikken-ri.com/news/publicity/20241030.html"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2024年度",
+      "rank": "部門賞(サービス開発/ビジュアライズ/アイデア提案)",
+      "title": "activecore / 4689 / MINKAI",
+      "team": "不明",
+      "summary": "各作品の概要は不明(確認できず、事務局公式Xの速報投稿のみで裏付け)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "都知事杯事務局 公式X",
+          "url": "https://x.com/Tokyo_ODH"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2023年度",
+      "rank": "都知事杯(最優秀賞)",
+      "title": "支援みつもりヤドカリくん",
+      "team": "proj-inclusive × 一般社団法人防窮研究所(代表 白取耕一郎氏〈大谷大学講師〉、森本大樹氏、Amy氏)",
+      "summary": "社会的支援制度に関するChatBotと、支援制度により受けられる可能性のある助成金等の金額を試算するシミュレーターを実装。当事者や支援者が必要な支援に迅速にアクセスできることを目的とした。",
+      "tech": "東京都福祉局「社会福祉施設等一覧」等のオープンデータ",
+      "sources": [
+        {
+          "title": "大谷大学",
+          "url": "https://www.otani.ac.jp/news/2023/sfpjr70000019600.html"
+        }
+      ]
+    },
+    {
+      "hackathon": "都知事杯オープンデータ・ハッカソン",
+      "edition": "2023年度",
+      "rank": "審査委員特別賞 技術賞",
+      "title": "不明(確認できず)",
+      "team": "BuTTER(代表 羽田野湧太氏)",
+      "summary": "作品概要は不明(確認できず)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "都知事杯事務局 公式X",
+          "url": "https://x.com/Tokyo_ODH/status/1798273953888395727"
+        }
+      ]
+    },
+    {
+      "hackathon": "AI HACK",
+      "edition": "第1回(2026/8/8〜16)",
+      "rank": "1位(最優秀賞)",
+      "title": "Okaeri(後日Omodoriへ改称、事業化)",
+      "team": "J(株式会社EDA社員3名)",
+      "summary": "賃貸退去時に受け取る精算書を撮影すると、国土交通省のガイドライン(173ページ)に照らして請求の適否をAIが診断するWebアプリ。賞金総額100万円。",
+      "tech": "不明(確認できず、画像解析+LLMによるガイドライン照合と推測されるが明記記事は未確認)",
+      "sources": [
+        {
+          "title": "EDA社プレスリリース",
+          "url": "https://eda-inc.jp/post-11072/"
+        }
+      ]
+    },
+    {
+      "hackathon": "AI HACK",
+      "edition": "第2回(2026/9/19〜23)",
+      "rank": "1位(最優秀賞)",
+      "title": "ごはん執事",
+      "team": "WWW(ママ2人組)",
+      "summary": "家庭の暮らしを学習し先回りして提案するAI執事アプリ。好みの執事(男女8人から選択可)を選べ、登録後にAI執事から電話で確認が入る体験設計。",
+      "tech": "OrcaRouter(LLM呼び出し)",
+      "sources": [
+        {
+          "title": "X(@chomado、受賞紹介)",
+          "url": "https://x.com/chomado/status/2102617475397599353"
+        }
+      ]
+    },
+    {
+      "hackathon": "AI HACK",
+      "edition": "第2回(2026/9/19〜23)",
+      "rank": "受賞(順位不明)",
+      "title": "NetWalker",
+      "team": "社会人と学生の2人",
+      "summary": "ネットワーク障害を業務再開まで追跡するAIエージェント。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "Qiita(Shibata-1273352)",
+          "url": "https://qiita.com/Shibata-1273352/items/14a08bef83be01ac7ec9"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "第1回/2023(24時間AIハッカソン、テーマ「楽」)",
+      "rank": "1位",
+      "title": "B8",
+      "team": "エムニ(京都大学大学院所属メンバーによるAIスタートアップ)",
+      "summary": "議論中の音声からリアルタイムにマインドマップを生成し、話し合いが行き詰まるとAIが関連する新しい案を提示するブレスト支援アプリ。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "AIフェスティバル公式",
+          "url": "https://www.aifestival.jp/first"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "2024年(東京24時間AIハッカソン、テーマ「超」)",
+      "rank": "1位(東京大会)",
+      "title": "超未来の付喪神ジェネレータ",
+      "team": "異業種データサイエンス研究会(関東)",
+      "summary": "不明(確認できず、作品概要の詳細記事は未確認)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "AIフェスティバル公式(結果報告)",
+          "url": "https://www.aifestival.jp/news/「東京24時間aiハッカソン-2024」結果報告"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "2025年 決勝(テーマ記号「井」)",
+      "rank": "1位",
+      "title": "ASI DIVE",
+      "team": "たい焼きテクノロジーズ(代表 三上典秀氏)",
+      "summary": "ASI(人工超知能)に支配された世界で、ASIの破壊に挑むゲーム。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "3up-tec.jp",
+          "url": "https://3up-tec.jp/2025/11/10/6504/"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "2025年 決勝(テーマ記号「井」)",
+      "rank": "2位",
+      "title": "(作品名不明)",
+      "team": "クロスジェネレーション",
+      "summary": "テーマを「マス目」と捉え、ナンプレを人間と量子コンピューターで対戦させるゲーム。",
+      "tech": "量子コンピューター(対戦相手として使用)",
+      "sources": [
+        {
+          "title": "Impress Watch",
+          "url": "https://forest.watch.impress.co.jp/docs/special/2067831.html"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "2025年 地方予選(参考)",
+      "rank": "東日本大会 一般部門優勝",
+      "title": "マブダチラップバトル",
+      "team": "囲碁将棋部",
+      "summary": "不明(確認できず、作品概要の詳細記事は未確認)。",
+      "tech": "不明(確認できず)",
+      "sources": [
+        {
+          "title": "AIフェスティバル公式(東日本大会結果)",
+          "url": "https://www.aifestival.jp/news/2025east-result"
+        }
+      ]
+    },
+    {
+      "hackathon": "全日本AIハッカソン",
+      "edition": "2026年(決勝2026/11/7、未開催)",
+      "rank": "未確定",
+      "title": "(決勝は2026/11/7開催予定、2026-10-18時点で未開催)",
+      "team": "",
+      "summary": "予選全6ラウンド+敗者復活戦を終え決勝待ちの段階。各予選ラウンドの個別勝者は断片的にしか確認できず網羅はできなかった。",
+      "tech": "",
+      "sources": [
+        {
+          "title": "Impress Watch",
+          "url": "https://forest.watch.impress.co.jp/docs/news/2081191.html"
+        }
+      ]
+    }
+  ]
+}
