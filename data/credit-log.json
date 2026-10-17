@@ -310,6 +310,21 @@
         "costUsd": 1750.3177701
       },
       "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "16:12",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-082: 開発資料タブのサブタブ分割+段階別フロー図の開発段階タグ追加",
+      "note": "要件定義/段階別フロー図を既存のmanager-subview-toggle方式でサブタブ分割。段階別フロー図に①要件・計画〜⑥不具合対応のタグ+実装のサブカテゴリを追加、キーワード判定の誤判定2件を発見・修正してCL-041に記録。",
+      "usage": {
+        "inputTokens": 3895543,
+        "outputTokens": 9519842,
+        "cacheReadTokens": 5324337241,
+        "cacheWriteTokens": 124016505,
+        "costUsd": 1756.6364655
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
     }
   ]
 }
