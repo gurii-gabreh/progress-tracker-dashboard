@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-17T03:13:17.157552+00:00",
+  "lastProcessedAt": "2026-10-17T15:10:40.842+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -134,6 +134,18 @@
       "generatedAt": "2026-10-17T03:13:17.157552+00:00",
       "summary": "この日もユーザーからの会話・依頼は無く、定期Routineの発火のみだった。CLAUDE.md定期確認Routineが2回発火(0時・12時)。0時分は正本を読み直し変更・矛盾なしを確認。12時分は平日・祝日でないためスキップ。日次ログRoutine自体も0時分に発火し前日(10/15)分の処理を行った。tasks.json/credit-log.json/Task-WBSへの変更は無し。",
       "unresolvedCarriedOver": [
+        "PTD-072(ServiceNow収集フロー図のレイアウト微調整)は保留のまま。ユーザーから再開指示があれば対応。",
+        "PTD-058: 残り約2,340件の日本語要約のバックフィル、GitHub PagesのSource設定(ユーザー作業)が未完了のまま。",
+        "ハッカソンは出場見送り・情報収集のみの方針。次回開催時期(A・Bとも)は不明のまま、PTD-065で動向収集を継続する。",
+        "PMG-001(PROMPT-MANAGER × claude-voice-bridge統合)は対応中のまま。iframe高さ自動調整・生成履歴JSON化・質問ウィザードの扱いが未対応。"
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "generatedAt": "2026-10-17T15:10:40.842+00:00",
+      "summary": "【Canvas Viewerの不具合修正(PTD-079・080)】\nユーザーから「リンク先にアクセスすると全てハッカソンの頭になる」との報告を受けた連関図タブのCanvas Viewerアーティファクトを調査。まず?srcディープリンクの仕組みから疑ったが、Artifactはサンドボックス用の別オリジンiframe(*.frame.claudeusercontent.com)内で動作するため、外側のclaude.ai/artifact/<id>?src=...というURLのクエリ文字列はページ自身のlocation.searchに一切渡らないことが、ユーザー自身が貼ったデバッグ出力から判明した(CL-039として記録)。この根本原因により?src方式を廃止し、プリセット選択+動的取得方式へ切り替えようとしたが、api.github.com・raw.githubusercontent.comのどちらへのfetch()も同一の「Failed to fetch」で失敗。原因はドメイン固有のCORS/CSP問題ではなく、Artifactには汎用の外部fetch機能自体が無いことだと判明した(CL-040)。唯一の正規手段である`db`capability(ArtifactDataツールで作成者セッション側が外部データを取得しアーティファクト専用DBへ書き込み、ページ側はclaude.use(\"db\")経由で読むだけ)へ全面移行し(Version 7)、実際にObsidian-Appリポジトリの4つのCanvasデータをDBへ書き込んで動作確認、ユーザーに「確認した」と承認された。\n\n【📄開発資料タブの新設(PTD-081〜084)】\nユーザーから「要件一覧作成時のマインドマップを一直線上に並べ、今どの段階にいるか・各段階で出た内容と最終方針を箇条書きで縦スクロール表示したい」という相談があり、まずサンプルアーティファクトを作成して方向性を確認(承認)。その後本実装として、既存の🧭タスクWBSタブの隣に📄開発資料タブを新設し、要件定義(requirements.json表示)と段階別フロー図(tasks.jsonのcheckHistoryから全アプリ自動生成)を、既存のサブタブパターン(.manager-subview-toggle)を再利用して2画面に分割した(PTD-081・082)。\n続けてユーザーから「段階名をわかりやすくしてほしい(①〇〇のような形)」との要望があり、工程(要件/設計/実装/テスト/公開/不具合対応)と、実装工程内のさらに細かいカテゴリー(画面/セキュリティ/認証/データ構造/データ通信)の2階層分類を追加。当初キーワードマッチングで一部誤判定(KIZ-015のセキュリティ修正が不具合対応に誤分類される等)が発生し、titleフィールドを優先する・あいまいな単語キーワード(「相談」単体等)を避けるなどの修正を行い教訓をCL-041として記録した。「各カードのタグは外さなくていい」との指摘を受けグループヘッダー追加後もカード個別のタグ表示は維持。さらに完了/未完了フィルタ、工程→カテゴリーの折りたたみ(<details>/<summary>)グループ化を追加し、ユーザーから「いいよ、この感じにして」と承認を得て全アプリ分のフロー図生成まで完了させた(PTD-083)。\n最後に、new-app-kickoffスキルとdashboard.htmlの新規相談テンプレートの両方に、requirements.json記録が開発資料タブへ自動反映される旨を明記し、2026-09-27の遡及backfill後に追加されながら要件定義シートが無かったPROMPT-MANAGER・text-extractionの2リポジトリについて、background agentによる実調査(README/HANDOFF.md/git log確認)に基づきREQ-PMG-001・REQ-TEX-001を追加した(PTD-084)。\n\n【claude-voice-bridge週次ログdigestの拡張案、ユーザー判断で撤回】\n「サイドアプリの週次ログ要約Routineに、その日に追加となった課題を明記する機能を追加できるか」という相談があり、一度実装に着手したが、ユーザーが途中で「同じ事をしているのに、わざわざ別管理する意味ないよね？」と気づき、既存のtasks.json管理と並行する冗長な仕組みになることを理由に撤回した。update_triggerの呼び出しがユーザーにより拒否され、それ以上の実装は行わなかった。\n\n【Task-WBS日次同期ロジックの完全化(当日完結タスクの欠落修正)】\n「タスクWBSへの書き込みは毎日動いているか」「完了済みのタスクも取得しているか」という一連の確認の中で、既存の日次Routine(trig_01KWsnPeW7QcgTBKjUZYnDZV)の同期ロジックが「未完了タスクのみを新規追加対象にする」設計だったため、Task-WBSに一度も登録される前に同日中に完了してしまったタスクが永久に反映されない抜け穴があることが判明した。ユーザーから「とにかくタスクは全て残す方向でJSONデータ内には」との指示を受け、PTD側の全タスク(statusを問わず)をTask-WBS側と突き合わせる方式へRoutineを更新(update_trigger、2回目の呼び出しで成功)。完了タスクも削除せずstatus:完了+actualEndで残す(Task-WBS内「勉強」ルートの既存表現を踏襲)。「JSONから削除していないよね?」との確認にも、削除対象はPTD側で実際にタスクが削除された場合のみである旨を回答した。\n\n【ルール30新設: タスク完了前のユーザー確認を必須化】\n「今後は、タスクが完了したと思ったら、完了でよろしいか質問するようにして」との指示を受け、governance-config-syncスキムに沿ってdata/claude-core-rules.md(ルール30)・data/ai-config.json(web/ai.taskCompletionConfirm)の両方へ追記し、designated branch→main反映を完了した(commit 688a4c8→main 98835e0)。日次Routine(trig_01KWsnPeW7QcgTBKjUZYnDZV)自身の手順にも、Routine自身がstatusを新たに完了へ変更する場合はこの確認の対象となる旨を手順12として追加済み(Task-WBS同期自体はPTD側のstatusを変更しないため対象外)。\n\n【0時Routine発火(本記録自身)での対応】\n本Routine自身の実行として、記録漏れチェック(手順7〜9)を行い、tasks.jsonの完了タスクはdetail欠落0件、credit-log.jsonも2026-10-17付のPTD-078〜084まで全て記録済みで漏れ無しを確認した。\n手順10のTask-WBS同期では、従来の比較ロジックがtasks.jsonのトップレベル配列のみを対象にしており、ネストされたsubtasks(例: AIE-003配下のAIE-012〜021等)を比較対象から漏らしていたことに気づき、トップレベル+ネストされたsubtasksすべて(206件)を対象に再比較した。その結果、Task-WBS側に無い143件(主に7月・8月の完了済み履歴タスクが、従来「未完了のみ追加」方式だったため一度も登録されていなかったもの)を発見し、新しい葉ノードとして一括追加(新規グループ7件: ai-research-radar, gemini-monitor, Knowledge-Dashboard, mirai-journal, study-app, English-Speaking-App, 複数)。Task-WBS側にのみ存在しPTD側に実体が無い「削除候補」は0件だった(当初の単純比較では30件が削除候補に見えたが、全て実際にはPTD側のsubtaskとして現存しており誤検知と判明)。Task-WBSリポジトリのmainへ直接commit・push済み(32e24a7→78ab8a3)。",
+      "unresolvedCarriedOver": [
+        "CVB-002(ジャーナル面談機能)を完了としてよいか、ユーザーへ質問済みで未回答のまま(ルール30により、回答が無い限りstatusは変更しない)。",
         "PTD-072(ServiceNow収集フロー図のレイアウト微調整)は保留のまま。ユーザーから再開指示があれば対応。",
         "PTD-058: 残り約2,340件の日本語要約のバックフィル、GitHub PagesのSource設定(ユーザー作業)が未完了のまま。",
         "ハッカソンは出場見送り・情報収集のみの方針。次回開催時期(A・Bとも)は不明のまま、PTD-065で動向収集を継続する。",
