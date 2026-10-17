@@ -944,6 +944,130 @@
       "approvedAt": null,
       "backfilledAt": "2026-10-05",
       "note": "2026-10-05、ユーザーからの新規依頼に基づく実装。実装着手前にAskUserQuestionで4点(対応方向PC/iPhone/両対応・ページ内容の範囲・レッスンブックファイルの扱い・URL構成)を確認しユーザーの明示的な回答を得たが、これはdata/policy.jsonの標準10項目チェックリスト全体をなぞったものではないため、他の答えは依頼内容・添付ファイル・既存リポジトリの構造から記入した遡及的な整理という位置づけ。approvedAtはnull(標準10項目としての明示承認は得ていないため)。内容に誤り・補足があればご指摘ください。"
+    },
+    {
+      "id": "REQ-PMG-001",
+      "repo": "PROMPT-MANAGER",
+      "title": "PROMPT MANAGER",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "「PROMPT MANAGER」(index.html 6行目`<title>PROMPT MANAGER</title>`、HANDOFF.md 1行目見出しと一致)"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "chapro.jp(プロンプト共有サイト)から全プロンプトデータを取得してGoogleスプレッドシートに保存し、目的のAI(Gemini/ChatGPT/Claude等)向けの最適なプロンプトを生成するツール(HANDOFF.md 10〜11行目)。「誰のために」の明文化は無く、開発者本人の利用を前提にした記述のみ。"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし)。HANDOFF.md 1〜3行目に「Claude(chat)で設計・実装してきたPROMPT MANAGERをClaude Codeで追加実装するための引継ぎ資料」とあるのみで、企画の発端自体はこのリポジトリ内に記載が無い。"
+        },
+        {
+          "n": 4,
+          "question": "使用する機器(PC専用/iPhone専用/両対応、CLAUDE.mdルール8で必須確認とされている項目)・提供形態(Webアプリ/ローカル/ブラウザ拡張機能など)・既存の他アプリと組み合わせて使うか",
+          "answer": "GitHub Pages上の単一HTML(index.html)+ GAS Web App(Code.gs)という基本構成はPC/iPhone両対応を想定したレスポンシブ実装。ただし生成機能(ローカル生成サーバー方式)は「Macでの利用が前提」と明記され実機確認は未了(HANDOFF.md 4.4節)。2026-10-11のコミット(55f777f)でMac不要の半自動方式(ブラウザでAIに貼り付け→結果を貼り付け)を追加しPC/モバイル問わず使える設計に拡張。既存の他アプリとの組み合わせ: claude-voice-bridgeのサイドパネルに既存の公開ページをiframe表示する形で統合済み(data/tasks.json PMG-001)。"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "「費用：完全無料」(GAS無料枠+GitHub Pages+Googleスプレッドシート、HANDOFF.md 24〜25行目)。Gemini API等の有料APIは使用しない方針。ローカル生成サーバー方式は開発者個人が既に契約済みのClaude Proプランの範囲内(claude CLIヘッドレス実行)で追加課金を発生させない設計(HANDOFF.md 184〜190行目)。"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "①プロンプト一覧タブ(キーワード検索・カテゴリ絞込・ページネーション・詳細モーダル)、②プロンプト生成タブ(対象AI選択→やりたいこと入力→参考プロンプト選択→生成→履歴記録の5ステップ)、③生成履歴タブ(HANDOFF.md 4.1節)。追加機能として定型文ボタン、専門性/詳細度/出力ボリュームスライダー、AIによるレベル判定質問ウィザード、回答プレビュー+要望反映ループがある(HANDOFF.md 4.2・4.7〜4.10節)。"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "chapro.jpから取得したプロンプト本文・メタデータと生成履歴を、Googleスプレッドシート3シート構成(プロンプト一覧/生成履歴/設定、HANDOFF.md 111〜117行目)に保存。ユーザー設定(GAS URL、ローカルサーバーURL、ページサイズ、定型文)はブラウザのlocalStorageに保存(HANDOFF.md 166〜173行目)。"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "Google Apps Script(Code.gs、UrlFetchAppでchapro.jpのJSON APIを取得)+ Googleスプレッドシート + GitHub Pages上の単一HTML(ビルドステップ無し)+ Node.js(local-server/server.js、外部npm依存なしの素のNode)+ claude CLIのヘッドレス実行(claude -p)。"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "不明(明記なし)。ただし直近コミットは2026-10-11(55f777f)で、2026-07以降継続的に機能追加されており活発に保守中(git log)。"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "管理対象。data/tasks.jsonにPMG-001(「PROMPT-MANAGER × claude-voice-bridge 統合」、priority:中、status:対応中)として個別タスク管理されている。例外的にmanager-room自身が直接実装する運用で進行中。"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-10-17",
+      "note": "2026-10-17、ユーザー指示「他のアプリも同様に全て作成して」により、要件定義シート未登録だった既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/HANDOFF.md/SKILL.md/git logを根拠に記入、general-purposeサブエージェントによる実リポジトリ調査結果に基づく)。approvedAtはnull(実際のインタビュー承認を経ていないため)。根拠のない項目(きっかけ・優先度等)は『不明(記録なし)』と明記している(CLAUDE.mdルール5)。"
+    },
+    {
+      "id": "REQ-TEX-001",
+      "repo": "text-extraction",
+      "title": "Text Extraction",
+      "status": "稼働中",
+      "answers": [
+        {
+          "n": 1,
+          "question": "アプリ名(仮)",
+          "answer": "「Text Extraction」(README.md 1行目)。リポジトリ自体は後に「Text-Extraction」(大文字)へ改名されている(data/tasks.json TEX-001ノート参照)。"
+        },
+        {
+          "n": 2,
+          "question": "目的・解決したい課題(何を・誰のために)",
+          "answer": "「基本情報技術者試験 過去問道場」のスクリーンショット画像から、問題番号・問題文・選択肢ア〜エ・正解をテキストとして抽出し、Googleスプレッドシートに記録するツール(README.md 3〜6行目)。「誰のために」の明文化は無いが、資格試験の過去問整理を目的とした個人利用と推測される(明記なしのため推測の域)。"
+        },
+        {
+          "n": 3,
+          "question": "きっかけ(なぜ今このアイデアが出てきたか)",
+          "answer": "不明(記録なし)。README.md・SKILL.mdともに企画の発端についての記載はない。"
+        },
+        {
+          "n": 4,
+          "question": "使用する機器(PC専用/iPhone専用/両対応、CLAUDE.mdルール8で必須確認とされている項目)・提供形態(Webアプリ/ローカル/ブラウザ拡張機能など)・既存の他アプリと組み合わせて使うか",
+          "answer": "当初の実装はPython/FlaskによるローカルWebアプリ+cronバッチという、PC上での常駐・定期実行を前提とした構成(README.md 41〜71行目)。しかしこの方式は「全画像で原因不明のcode=1エラーが発生し失敗するようになった」ため撤回され(コミット48e1fe7)、現在の実運用はClaude Codeの.claude/skills/tex-image-extraction/SKILL.mdに定義されたスキルが、クラウドの作業ルーム上でGoogleドライブの画像を直接読み取ってスプレッドシートへ出力する方式に統一されている(SKILL.md「no local Python/CLI pipeline, no GAS」)。この方式はクラウド処理のため機器(PC/iPhone)への依存は無い。既存アプリとの連携: progress-tracker-dashboardのタスク管理(TEX-NNN)、my-dashboardの「文字起こし処理」カードの依頼文テンプレートと連動。"
+        },
+        {
+          "n": 5,
+          "question": "費用面での制約(ルール9「永久無料」が大前提)",
+          "answer": "README.md「今回はVision APIを使わないため、請求先アカウント(クレジットカード)の登録は基本的に不要」(README.md 26〜27行目)。現行のスキル方式もサービスアカウント等の認証情報を一切使わずClaude Code自身の画像読み取り能力とGoogleドライブ既存共有権限のみで完結するため追加コストは発生しない。"
+        },
+        {
+          "n": 6,
+          "question": "主要機能(MVP・最初に欲しい機能の一覧)",
+          "answer": "①対象フォルダ内画像の一覧取得、②claude -p(旧方式)またはClaude自身(現行スキル方式)による構造化抽出(問題番号・問題文・選択肢ア〜エ・正解)、③スプレッドシートへの1行追記、④処理済み画像のGoogleドライブ「処理済み」フォルダへの移動(README.md 73〜81行目)。現行スキル方式では追加で図表(論理回路図・UML図・PERT図等)の判定・切り抜き・軽量化・アップロード機能がある(SKILL.md)。"
+        },
+        {
+          "n": 7,
+          "question": "使うデータ(何を、どこに保存するか)",
+          "answer": "Googleドライブ上の処理対象フォルダの画像(処理後は「処理済み」フォルダへ移動)を読み取り、Googleスプレッドシートへ記録(README.md 73〜79行目)。旧方式ではconfig.json(サービスアカウントJSON・ルートフォルダID・出力先スプレッドシートID等)で設定を保持していたが、現行方式ではサービスアカウント認証情報を使わず新規スプレッドシートを都度作成する。"
+        },
+        {
+          "n": 8,
+          "question": "技術選定の希望・制約",
+          "answer": "旧方式はPython 3.9+ / Flask 3.0.3 / google-api-python-client・google-auth等によるGoogle Drive API・Sheets API連携 / claude -pのサブプロセス呼び出し(requirements.txt、app.py)。この旧方式は不安定で撤回され、現行の実運用はこれらPython/GASコードを一切使わず、Claude Codeの.claude/skills/tex-image-extraction/SKILL.mdスキル(Claude自身がReadツールで画像を直接読む)に完全移行している(コミットbc3aa7e「claude_pipeline(旧GAS方式)を削除」)。"
+        },
+        {
+          "n": 9,
+          "question": "優先度・着手時期の希望",
+          "answer": "明記はないが、data/tasks.json上でTEX-001(優先度:高、完了)・TEX-003(優先度:高、完了)・TEX-002(優先度:中、未着手)という優先度付けが実在する。"
+        },
+        {
+          "n": 10,
+          "question": "progress-tracker-dashboardでの管理要否",
+          "answer": "管理対象。data/tasks.jsonにTEX-001(完了)、TEX-002(未着手、定期処理テンプレートとして保留中)、TEX-003(完了、成功80/失敗0の実績記録あり)として個別タスク管理されている。"
+        }
+      ],
+      "concernReview": [],
+      "approvedAt": null,
+      "backfilledAt": "2026-10-17",
+      "note": "2026-10-17、ユーザー指示「他のアプリも同様に全て作成して」により、要件定義シート未登録だった既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/HANDOFF.md/SKILL.md/git logを根拠に記入、general-purposeサブエージェントによる実リポジトリ調査結果に基づく)。approvedAtはnull(実際のインタビュー承認を経ていないため)。根拠のない項目(きっかけ・優先度等)は『不明(記録なし)』と明記している(CLAUDE.mdルール5)。"
     }
   ],
   "concerns": {
