@@ -265,6 +265,21 @@
         "costUsd": 1737.4216426
       },
       "rateLimitResetsAt": "2026-10-17T14:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "14:40",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-079: Canvas Viewerの?srcディープリンクがiframe構造上機能しない不具合の調査・修正",
+      "note": "ユーザー報告「リンク先にアクセスすると全てハッカソンの頭になる」を診断用デバッグ行で実機確認し、claude.aiアーティファクトのiframe分離構造(別ドメイン、クエリ文字列非継承)が根本原因と特定。ビューア自身がGitHub Tree APIで動的検索する方式へ変更、concept-log.jsonにCL-039を記録。",
+      "usage": {
+        "inputTokens": 3888721,
+        "outputTokens": 9413972,
+        "cacheReadTokens": 5270903178,
+        "cacheWriteTokens": 123741861,
+        "costUsd": 1743.7787329
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
     }
   ]
 }
