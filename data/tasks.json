@@ -4843,7 +4843,41 @@
           "type": "relates_to"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-085",
+      "task": "🔍調査資料タブ新設(🏆ハッカソン候補+入賞作品)+ 🔗連関図タブの不要UI要素削除",
+      "title": "調査資料タブ(ハッカソン)新設・連関図UI簡素化",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-10-18",
+      "category": "feature",
+      "note": "ユーザー指示「マネージャアプリに調査資料タブを連関図の横に作ってその中にハッカソンのページを作って。1に狙っているハッカソン名と内容、前回の時期を一つのカードにまとめて、次のカードに入賞作品をまとめて」。実装完了・動作確認済みだが、claude-core-rules.mdルール30(タスク完了前にユーザー確認)によりユーザー確認待ちのためstatusは対応中のまま。",
+      "detail": "PTD-020(ハッカソンでの実績作り)・PTD-065(情報収集強化)の一環。ハッカソン候補の整理が会話内で散らばり「ごちゃごちゃしそう」という懸念から、dashboard.htmlに🔗連関図の隣へ🔍調査資料タブを新設し、既存のmanager-subview-toggleサブタブパターン(rule23: 既存の仕組みを優先)を再利用して🏆ハッカソンページを作成した。data/hackathon-research.json(新規)に、現在狙っている/検討中のハッカソン候補5件(Agentic AI Hackathon with Google Cloud・Microsoft Agent Hackathon・都知事杯オープンデータ・ハッカソン・AI HACK・全日本AIハッカソン、各名前/内容/前回開催時期/テーマ/次回情報/出典)と、4本の並行Web調査(バックグラウンドエージェント)で収集した過去の入賞作品33件(1〜3位・各賞の作品名・チーム名・概要・使用技術・出典、確認できない項目は推測で埋めず「不明(確認できず)」と明記)を記録し、候補カード→入賞作品カードの順でUI表示する構成にした。\n\nあわせて、ユーザーがスクリーンショットに赤丸で指摘した🔗連関図タブの「完了済みタスクも表示」チェックボックス・色の凡例・ノード件数テキストを削除してUIを簡素化した(図本体は維持、完了済みタスクは常に含める挙動に変更)。\n\n動作確認: python3 -m http.serverでローカル配信し、Playwrightで🔍調査資料タブの候補カード5件・入賞作品グループ5件(計33カード)の表示、🔗連関図タブからチェックボックス・凡例・メタ情報が消えたこと、図本体(diagram box)は引き続き描画対象であることを確認した(CDN到達不可のサンドボックス環境のためMermaid.js自体は読み込み失敗したが、これは本番環境では発生しない既知のテスト環境固有の制約)。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・data/hackathon-research.json(新規)(designated branch commit e3c8b52; main 99ece03)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-18",
+          "summary": "🔍調査資料タブ(🏆ハッカソンページ)を新設し、ハッカソン候補5件・過去入賞作品33件を記録。🔗連関図タブの不要UI(チェックボックス・凡例・メタ情報)を削除。Playwrightで動作確認後、designated branch→main反映まで完了。"
+        }
+      ],
+      "nextAction": "ユーザーに完了してよいか確認(claude-core-rules.mdルール30)。承認後にstatusを完了へ更新。",
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-020",
+          "type": "relates_to"
+        },
+        {
+          "id": "PTD-065",
+          "type": "relates_to"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-17T13:20:03.031+00:00"
+  "updatedAt": "2026-10-17T17:14:01.699+00:00"
 }
