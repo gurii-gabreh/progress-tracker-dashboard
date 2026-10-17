@@ -314,6 +314,54 @@
   .relations-diagram-box .empty { color: var(--text-muted); font-size: 13px; padding: 20px 4px; }
   .health-check-summary-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
 
+  /* 📄 開発資料タブ(2026-10-17追加)。①要件定義はclaude-voice-bridgeのwidget-design.html/jsの見た目を
+     このダッシュボードの配色トークンへ合わせて移植。②段階別フロー図は段階別フロー図サンプル
+     (https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca)のタイムライン表現を移植。 */
+  .devdocs-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+  .devdocs-stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; text-align: center; }
+  .devdocs-stat-tile .num { font-size: 16px; font-weight: 700; color: var(--accent); }
+  .devdocs-stat-tile .label { font-size: 10.5px; color: var(--text-muted); }
+
+  .devdocs-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 0 0 10px; }
+  .devdocs-head h3 { font-size: 15px; margin: 0; }
+  .devdocs-tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--border); color: var(--text-muted); }
+  .devdocs-tag.repo { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+
+  .devdocs-qa-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 6px; }
+  .devdocs-qa-item { padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+  .devdocs-qa-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .devdocs-qa-item .q { font-size: 11px; font-weight: 700; color: var(--text-muted); margin: 0 0 3px; }
+  .devdocs-qa-item .q .n { display: inline-block; min-width: 18px; color: var(--accent); }
+  .devdocs-qa-item .a { font-size: 12.5px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+
+  .devdocs-section-title { font-size: 12px; font-weight: 700; margin: 16px 0 8px; }
+  .devdocs-concern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; margin-bottom: 8px; }
+  .devdocs-concern-card.novel { border-color: var(--status-running-fg, #d97706); }
+  .devdocs-concern-card .concern-id { font-size: 10px; color: var(--accent); }
+  .devdocs-concern-card .concern-trend { font-size: 12.5px; font-weight: 700; margin: 3px 0 6px; }
+  .devdocs-concern-card dl { margin: 0; }
+  .devdocs-concern-card dt { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-top: 5px; }
+  .devdocs-concern-card dd { margin: 1px 0 0; font-size: 12px; line-height: 1.55; color: var(--text-muted); white-space: pre-wrap; word-break: break-word; }
+
+  .devdocs-timeline { position: relative; margin-top: 10px; }
+  .devdocs-timeline::before { content: ""; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .devdocs-stage { position: relative; padding-left: 42px; margin-bottom: 16px; }
+  .devdocs-stage:last-child { margin-bottom: 0; }
+  .devdocs-stage-dot { position: absolute; left: 6px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); z-index: 1; }
+  .devdocs-stage.is-current .devdocs-stage-dot { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+  .devdocs-stage-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .devdocs-stage.is-current .devdocs-stage-card { border-color: var(--accent); }
+  .devdocs-stage-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .devdocs-stage-id { font-size: 10.5px; color: var(--text-muted); }
+  .devdocs-stage-title { font-size: 13.5px; font-weight: 700; margin: 2px 0 0; }
+  .devdocs-status-chip { font-size: 10px; letter-spacing: 0.02em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+  .devdocs-status-chip.done { color: var(--status-done-fg); border-color: var(--status-done-fg); background: var(--status-done-bg); }
+  .devdocs-status-chip.current { color: var(--status-doing-fg); border-color: var(--status-doing-fg); background: var(--status-doing-bg); }
+  .devdocs-stage ul.bullets { margin: 0; padding-left: 17px; display: flex; flex-direction: column; gap: 3px; }
+  .devdocs-stage ul.bullets li { font-size: 12px; line-height: 1.55; }
+  .devdocs-stage .devdocs-conclusion { margin-top: 8px; padding: 8px 10px; background: color-mix(in srgb, var(--accent) 9%, transparent); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; font-size: 12px; line-height: 1.55; }
+  .devdocs-stage .devdocs-conclusion b { display: block; font-size: 9.5px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+
   /* 📚 学習ログタブ(2026-08-11追加)。 */
   .concept-cat-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 4px 0 -4px; }
   .concept-item {
@@ -892,6 +940,7 @@
   <div class="top-tab-bar" id="top-tab-bar">
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
+    <button class="top-tab-btn" id="top-tab-devdocs" data-view="devdocs">📄 開発資料</button>
     <button class="top-tab-btn" id="top-tab-learning" data-view="learning">🎓 学習</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
@@ -1087,6 +1136,32 @@
   </div>
   </div>
   </div>
+  <!-- 📄 開発資料タブ(2026-10-17追加、ユーザー指示「タスクWBSタブの隣に新規タブを追加し、開発資料タブを作り、
+       そこに各アプリごとに表示する」)。各アプリの①要件定義(data/requirements.json、新規相談スキルで
+       既に収集済み)と②段階別フロー図(data/tasks.jsonのcheckHistoryから自動生成、連関図タブと同じく
+       専用データファイルは持たない)をセットで表示する。①はclaude-voice-bridgeの「📐 基本設計」タブ
+       (widget-design.js)の表示ロジックをそのまま移植(rule23: 既存の仕組みを優先)。②は段階別フロー図
+       サンプル(https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca)のレイアウトを踏襲。 -->
+  <div id="devdocs-view" class="view-panel">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="tab-page-title">📄 開発資料</div>
+        <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)と、タスクの経緯を段階ごとに並べたフロー図をまとめて確認できます。</p>
+        <div class="relations-controls">
+          <label>アプリ: <select id="devdocs-app-select"></select></label>
+        </div>
+        <div id="devdocs-stats" class="relations-legend"></div>
+
+        <div class="tab-page-title" style="margin-top:22px; font-size:15px;">① 要件定義</div>
+        <div id="devdocs-requirements"></div>
+
+        <div class="tab-page-title" style="margin-top:28px; font-size:15px;">② 段階別フロー図</div>
+        <p class="tab-page-overview" style="font-size:11.5px; color:var(--text-muted);">data/tasks.jsonの各タスクを更新日順に並べ、checkHistory(対応経緯)とnote/output(最終方針)を段階として表示します(専用データは持たず、tasks.jsonから毎回生成)。</p>
+        <div id="devdocs-flow" class="devdocs-timeline"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="learning-view" class="view-panel">
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="learning-subtab-materials" data-subview="materials">📖 学習資料</button>
@@ -3120,6 +3195,7 @@
     const tabs = {
       hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
+      devdocs: { btn: document.getElementById("top-tab-devdocs"), panel: document.getElementById("devdocs-view") },
       learning: { btn: document.getElementById("top-tab-learning"), panel: document.getElementById("learning-view") },
       applist: {
         btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
@@ -3253,6 +3329,8 @@
         renderFeed();
         populateRelationsRepoSelect();
         renderRelationsView();
+        populateDevDocsAppSelect();
+        renderDevDocsFlow();
         // ページを開いた時点で、他の人やRoutineが書き込んだ最新のコメント・新規タスクを静かに取り込む
         refreshFromSheet(true);
       })
@@ -3453,6 +3531,210 @@
   // 📘 Obsidian Canvas版(2026-10-17変更): 個別ファイルへの?src=ボタン生成はclaude.aiアーティファクトの
   // iframe構造上機能しないため廃止(詳細はHTML側のコメント、concept-log.json CL-039参照)。
   // ビューア自身がGitHub Tree APIでファイル一覧を取得するため、dashboard.html側の動的処理は不要になった。
+
+  // 📄 開発資料タブ(2026-10-17追加、PTD-081想定)。
+  // ①要件定義: data/requirements.json(新規相談スキルでの聞き取り結果、正本はこのリポジトリ自身)を
+  //   相対パスでfetchする(claude-voice-bridge側はraw.githubusercontent.com経由だったが、
+  //   dashboard.html自身がこのリポジトリ内にあるため他のdata/*.jsonと同じ相対fetchで足りる)。
+  //   表示ロジックはclaude-voice-bridgeのwidget-design.js(「📐 基本設計」タブ)をそのまま移植(rule23)。
+  // ②段階別フロー図: 専用データファイルは持たず、連関図タブと同じ方針でdata/tasks.jsonから毎回生成する。
+  //   選択中リポジトリの全タスクを更新日順に並べ、各タスクのcheckHistory(対応経緯)をそのまま段階の
+  //   「出た内容」箇条書きとして使い、note/outputを「最終方針」として表示する(ユーザー指示「課題や問題と、
+  //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
+  //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
+  //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] } };
+
+  function loadRequirementsData() {
+    return fetch("data/requirements.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/requirements.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        REQUIREMENTS.requirements = data.requirements || [];
+        REQUIREMENTS.concerns = data.concerns || { items: [] };
+        populateDevDocsAppSelect();
+        renderDevDocsRequirements();
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("devdocs-requirements");
+        if (box) box.innerHTML = `<div class="empty">要件定義データを読み込めませんでした(${err.message})</div>`;
+      });
+  }
+
+  function devDocsSelectedRepo() {
+    const sel = document.getElementById("devdocs-app-select");
+    return sel ? sel.value : "";
+  }
+
+  function populateDevDocsAppSelect() {
+    const sel = document.getElementById("devdocs-app-select");
+    if (!sel) return;
+    const prevValue = sel.value;
+    // 要件定義がまだ無いリポジトリも選べるよう、REQUIREMENTSのrepo一覧とKNOWN_REPOSを合わせる
+    const reqRepos = new Map(REQUIREMENTS.requirements.map((r) => [r.repo, r]));
+    const allRepos = Array.from(new Set([...KNOWN_REPOS, ...reqRepos.keys()]));
+    sel.innerHTML = "";
+    allRepos.forEach((repo) => {
+      const req = reqRepos.get(repo);
+      const opt = document.createElement("option");
+      opt.value = repo;
+      opt.textContent = req ? `${repo} — ${req.title}` : `${repo}(要件定義未登録)`;
+      sel.appendChild(opt);
+    });
+    if (prevValue && allRepos.includes(prevValue)) {
+      sel.value = prevValue;
+    } else if (allRepos.length) {
+      sel.value = allRepos.includes("progress-tracker-dashboard") ? "progress-tracker-dashboard" : allRepos[0];
+    }
+  }
+
+  function devDocsFindConcern(id) {
+    return (REQUIREMENTS.concerns.items || []).find((c) => c.id === id);
+  }
+
+  function devDocsConcernCard(review, isReviewEntry) {
+    if (isReviewEntry && review.concernId) {
+      const master = devDocsFindConcern(review.concernId);
+      const trend = master ? master.trend : "(懸念点マスタに見つかりません)";
+      return `<div class="devdocs-concern-card">
+        <span class="concern-id">${escapeHtmlForDevDocs(review.concernId)}</span>
+        <div class="concern-trend">${escapeHtmlForDevDocs(trend || "")}</div>
+        <dl><dt>該当した理由</dt><dd>${escapeHtmlForDevDocs(review.matchedBecause || "")}</dd>
+        <dt>相談した結果・最終的な結論</dt><dd>${escapeHtmlForDevDocs(review.resolution || "")}</dd></dl>
+      </div>`;
+    }
+    if (isReviewEntry) {
+      return `<div class="devdocs-concern-card novel">
+        <span class="concern-id">新規懸念(concerns未登録)</span>
+        <div class="concern-trend">${escapeHtmlForDevDocs(review.description || "")}</div>
+        <dl><dt>相談した結果・最終的な結論</dt><dd>${escapeHtmlForDevDocs(review.resolution || "")}</dd></dl>
+      </div>`;
+    }
+    return `<div class="devdocs-concern-card">
+      <span class="concern-id">${escapeHtmlForDevDocs(review.id)}</span>
+      <div class="concern-trend">${escapeHtmlForDevDocs(review.trend || "")}</div>
+      <dl><dt>対策</dt><dd>${escapeHtmlForDevDocs(review.mitigation || "")}</dd></dl>
+    </div>`;
+  }
+
+  function escapeHtmlForDevDocs(s) {
+    return String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function renderDevDocsRequirements() {
+    const box = document.getElementById("devdocs-requirements");
+    const statsBox = document.getElementById("devdocs-stats");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+
+    if (statsBox) {
+      const statusCounts = {};
+      REQUIREMENTS.requirements.forEach((r) => { const s = r.status || "不明"; statusCounts[s] = (statusCounts[s] || 0) + 1; });
+      const tiles = [{ num: REQUIREMENTS.requirements.length, label: "登録アプリ数" }, ...Object.entries(statusCounts).map(([s, n]) => ({ num: n, label: s }))];
+      statsBox.innerHTML = `<div class="devdocs-stats">${tiles.map((t) => `<div class="devdocs-stat-tile"><div class="num">${t.num}</div><div class="label">${escapeHtmlForDevDocs(t.label)}</div></div>`).join("")}</div>`;
+    }
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリの要件定義シートはまだ登録されていません(data/requirements.jsonにエントリがありません)。</div>`;
+      return;
+    }
+
+    const qaHtml = (req.answers || []).map((a) => `
+      <div class="devdocs-qa-item">
+        <div class="q"><span class="n">${a.n}.</span>${escapeHtmlForDevDocs(a.question || "")}</div>
+        <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
+      </div>`).join("");
+
+    const reviewItems = req.concernReview || [];
+    const reviewHtml = reviewItems.length
+      ? reviewItems.map((r) => devDocsConcernCard(r, true)).join("")
+      : `<p style="font-size:11.5px; color:var(--text-muted); margin:0;">このアプリで該当した懸念点はありません。</p>`;
+    const masterHtml = (REQUIREMENTS.concerns.items || []).map((c) => devDocsConcernCard(c, false)).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">${escapeHtmlForDevDocs(req.status || "不明")}</span>
+      </div>
+      <div class="devdocs-qa-list">${qaHtml}</div>
+      <div class="devdocs-section-title">⚠️ このアプリで該当した懸念点(concernReview)</div>
+      ${reviewHtml}
+      <div class="devdocs-section-title">📖 懸念点マスタ一覧(concerns)</div>
+      ${masterHtml}
+    `;
+  }
+
+  function devDocsBulletsFromCheckHistory(task) {
+    const items = [];
+    (task.checkHistory || []).forEach((c) => {
+      const text = c.summary || c.item || "";
+      if (text) items.push(text);
+    });
+    if (!items.length && task.note) items.push(task.note);
+    return items;
+  }
+
+  function devDocsConclusionText(task) {
+    if (task.detail) return task.detail;
+    if (task.output) return `成果物: ${task.output}`;
+    if (task.nextAction) return `次のアクション: ${task.nextAction}`;
+    return "(最終方針の記録なし)";
+  }
+
+  function renderDevDocsFlow() {
+    const box = document.getElementById("devdocs-flow");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const tasks = TASKS.filter((t) => t.repo === repo).slice().sort((a, b) => String(a.updated || "").localeCompare(String(b.updated || "")));
+
+    if (!tasks.length) {
+      box.innerHTML = `<div class="empty">このアプリのタスク記録がまだありません。</div>`;
+      return;
+    }
+
+    // 「現在地」= 完了以外のステータスを持つ最新のタスク(全て完了済みなら最後のタスクを現在地扱い)
+    let currentId = null;
+    for (let i = tasks.length - 1; i >= 0; i--) {
+      if (tasks[i].status !== "完了") { currentId = tasks[i].id; break; }
+    }
+    if (!currentId) currentId = tasks[tasks.length - 1].id;
+
+    const stagesHtml = tasks.map((t, idx) => {
+      const isCurrent = t.id === currentId;
+      const bullets = devDocsBulletsFromCheckHistory(t);
+      const bulletsHtml = bullets.length
+        ? `<ul class="bullets">${bullets.map((b) => `<li>${escapeHtmlForDevDocs(b)}</li>`).join("")}</ul>`
+        : `<p style="font-size:12px; color:var(--text-muted); margin:0;">(対応経緯の記録なし)</p>`;
+      const statusChipClass = t.status === "完了" ? "done" : (isCurrent ? "current" : "");
+      const statusLabel = isCurrent && t.status !== "完了" ? `現在地 — ${escapeHtmlForDevDocs(t.status || "")}` : escapeHtmlForDevDocs(t.status || "不明");
+      return `
+        <div class="devdocs-stage${isCurrent ? " is-current" : ""}">
+          <div class="devdocs-stage-dot">${idx + 1}</div>
+          <div class="devdocs-stage-card">
+            <div class="devdocs-stage-head">
+              <div><span class="devdocs-stage-id">${escapeHtmlForDevDocs(t.id || "")}</span><div class="devdocs-stage-title">${escapeHtmlForDevDocs(t.title || t.task || "")}</div></div>
+              <span class="devdocs-status-chip ${statusChipClass}">${statusLabel}</span>
+            </div>
+            <div class="devdocs-section-title" style="margin:8px 0 4px;">出た内容(課題・対応経緯)</div>
+            ${bulletsHtml}
+            <div class="devdocs-conclusion"><b>最終方針</b>${escapeHtmlForDevDocs(devDocsConclusionText(t))}</div>
+          </div>
+        </div>`;
+    }).join("");
+
+    box.innerHTML = stagesHtml;
+  }
+
+  (function setupDevDocsControls() {
+    const sel = document.getElementById("devdocs-app-select");
+    if (sel) sel.addEventListener("change", () => { renderDevDocsRequirements(); renderDevDocsFlow(); });
+  })();
+  loadRequirementsData();
 
   // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
   // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、

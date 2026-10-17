@@ -4634,7 +4634,8 @@
       ],
       "nextAction": null,
       "subtasks": null,
-      "goal": null
+      "goal": null,
+      "repo": "progress-tracker-dashboard"
     },
     {
       "repo": "claude-voice-bridge",
@@ -4690,5 +4691,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-17T05:47:42.256+00:00"
+  "updatedAt": "2026-10-17T06:41:14.826+00:00"
 }
