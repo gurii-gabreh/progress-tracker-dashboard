@@ -352,6 +352,20 @@
   .devdocs-stage-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
   .devdocs-stage.is-current .devdocs-stage-card { border-color: var(--accent); }
   .devdocs-stage-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .devdocs-stage-group { margin-bottom: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
+  .devdocs-stage-group:last-child { margin-bottom: 0; }
+  .devdocs-stage-group > summary { cursor: pointer; list-style: none; padding: 10px 14px; font-size: 13px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; user-select: none; }
+  .devdocs-stage-group > summary::-webkit-details-marker { display: none; }
+  .devdocs-stage-group > summary::before { content: "▸"; font-size: 11px; color: var(--text-muted); transition: transform 0.15s; }
+  .devdocs-stage-group[open] > summary::before { transform: rotate(90deg); }
+  .devdocs-stage-group > summary .count { font-size: 10.5px; font-weight: 400; color: var(--text-muted); }
+  .devdocs-stage-group-body { padding: 4px 14px 14px; }
+  .devdocs-subcategory-group { margin: 10px 0; border-left: 2px solid var(--border); padding-left: 10px; }
+  .devdocs-subcategory-group > summary { cursor: pointer; list-style: none; padding: 4px 0; font-size: 11.5px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; user-select: none; }
+  .devdocs-subcategory-group > summary::-webkit-details-marker { display: none; }
+  .devdocs-subcategory-group > summary::before { content: "▸"; font-size: 10px; color: var(--text-muted); transition: transform 0.15s; }
+  .devdocs-subcategory-group[open] > summary::before { transform: rotate(90deg); }
+  .devdocs-subcategory-group > summary .count { font-size: 10px; font-weight: 400; color: var(--text-muted); }
   .devdocs-stage-id { font-size: 10.5px; color: var(--text-muted); }
   .devdocs-stage-title { font-size: 13.5px; font-weight: 700; margin: 2px 0 0; }
   .devdocs-status-chip { font-size: 10px; letter-spacing: 0.02em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
@@ -1173,8 +1187,13 @@
         <p class="tab-page-overview">タスクの経緯を段階ごとに並べたフロー図です。data/tasks.jsonの各タスクを更新日順に並べ、checkHistory(対応経緯)とdetail/output/nextAction(最終方針)を段階として表示します(専用データは持たず、tasks.jsonから毎回生成)。</p>
         <div class="relations-controls">
           <label>アプリ: <select id="devdocs-app-select-flow"></select></label>
+          <span id="devdocs-flow-filter" class="filter-row" style="margin:0;">
+            <button type="button" class="filter-btn active" data-filter="all">すべて</button>
+            <button type="button" class="filter-btn" data-filter="incomplete">未完了のみ</button>
+            <button type="button" class="filter-btn" data-filter="done">完了のみ</button>
+          </span>
         </div>
-        <div id="devdocs-flow" class="devdocs-timeline"></div>
+        <div id="devdocs-flow"></div>
       </div>
     </div>
   </div>
@@ -3777,51 +3796,128 @@
     return null;
   }
 
+  // 2026-10-17追加(ユーザー指示「完了しているか未完了かで表示切り替えできるようにして」)。
+  // "all"(すべて)/"incomplete"(未完了のみ)/"done"(完了のみ)の3択。「現在地」の判定は
+  // フィルタ前の全タスクを基準にする(未完了のみ表示中でも「現在地」の位置づけがブレないように)。
+  let devDocsFlowFilter = "all";
+
+  // 2026-10-17再変更(ユーザー指示「カテゴリー名や工程名は一番先頭部分だけでいい。クリックしたら
+  // 折りたたみできるようにして、工程の下にカテゴリーにして、それぞれ折りたたみできるようにして」)。
+  // 個々のカードへ段階タグを毎回表示するのをやめ、代わりに①〜⑥の工程ごとに<details>でグループ化し、
+  // ③実装の工程だけさらに画面/セキュリティ/認証/データ構造/データ通信のサブカテゴリでネスト
+  // グループ化する。ネイティブの<details>/<summary>を使うことで、クリックでの開閉・デフォルト展開
+  // (open属性)を追加JSなしで実現している。グループの並び順はそのグループ内で最初に出てくる
+  // タスクの時系列順を基準にする(完全な時系列1本の並びではなくなるが、ユーザー指示を優先)。
+  function devDocsGroupByStage(tasks) {
+    const groups = [];
+    const index = new Map();
+    tasks.forEach((t) => {
+      const label = devDocsClassifyStage(t);
+      if (!index.has(label)) {
+        index.set(label, groups.length);
+        groups.push({ label, tasks: [] });
+      }
+      groups[index.get(label)].tasks.push(t);
+    });
+    return groups;
+  }
+
+  function devDocsGroupBySubcategory(tasks) {
+    const groups = [];
+    const index = new Map();
+    tasks.forEach((t) => {
+      const label = devDocsClassifySubcategory(t) || "その他";
+      if (!index.has(label)) {
+        index.set(label, groups.length);
+        groups.push({ label, tasks: [] });
+      }
+      groups[index.get(label)].tasks.push(t);
+    });
+    return groups;
+  }
+
+  function devDocsStageCardHtml(t, idx, currentId) {
+    const isCurrent = t.id === currentId;
+    const bullets = devDocsBulletsFromCheckHistory(t);
+    const bulletsHtml = bullets.length
+      ? `<ul class="bullets">${bullets.map((b) => `<li>${escapeHtmlForDevDocs(b)}</li>`).join("")}</ul>`
+      : `<p style="font-size:12px; color:var(--text-muted); margin:0;">(対応経緯の記録なし)</p>`;
+    const statusChipClass = t.status === "完了" ? "done" : (isCurrent ? "current" : "");
+    const statusLabel = isCurrent && t.status !== "完了" ? `現在地 — ${escapeHtmlForDevDocs(t.status || "")}` : escapeHtmlForDevDocs(t.status || "不明");
+    // ユーザー指示「各カードのタグは外さなくていい、そのまま表示でいい」により、グループ見出しとは別に
+    // カード自身にも段階・サブカテゴリタグを引き続き表示する。
+    const stageLabel = devDocsClassifyStage(t);
+    const subcat = stageLabel === "③実装" ? devDocsClassifySubcategory(t) : null;
+    const stageTagsHtml = `<span class="devdocs-tag">${escapeHtmlForDevDocs(stageLabel)}</span>` + (subcat ? `<span class="devdocs-tag repo">${escapeHtmlForDevDocs(subcat)}</span>` : "");
+    return `
+      <div class="devdocs-stage${isCurrent ? " is-current" : ""}">
+        <div class="devdocs-stage-dot">${idx}</div>
+        <div class="devdocs-stage-card">
+          <div class="devdocs-stage-head">
+            <div><span class="devdocs-stage-id">${escapeHtmlForDevDocs(t.id || "")}</span> ${stageTagsHtml}<div class="devdocs-stage-title">${escapeHtmlForDevDocs(t.title || t.task || "")}</div></div>
+            <span class="devdocs-status-chip ${statusChipClass}">${statusLabel}</span>
+          </div>
+          <div class="devdocs-section-title" style="margin:8px 0 4px;">出た内容(課題・対応経緯)</div>
+          ${bulletsHtml}
+          <div class="devdocs-conclusion"><b>最終方針</b>${escapeHtmlForDevDocs(devDocsConclusionText(t))}</div>
+        </div>
+      </div>`;
+  }
+
   function renderDevDocsFlow() {
     const box = document.getElementById("devdocs-flow");
     if (!box) return;
     const repo = devDocsSelectedRepo();
-    const tasks = TASKS.filter((t) => t.repo === repo).slice().sort((a, b) => String(a.updated || "").localeCompare(String(b.updated || "")));
+    const allTasks = TASKS.filter((t) => t.repo === repo).slice().sort((a, b) => String(a.updated || "").localeCompare(String(b.updated || "")));
 
-    if (!tasks.length) {
+    if (!allTasks.length) {
       box.innerHTML = `<div class="empty">このアプリのタスク記録がまだありません。</div>`;
       return;
     }
 
-    // 「現在地」= 完了以外のステータスを持つ最新のタスク(全て完了済みなら最後のタスクを現在地扱い)
+    // 「現在地」= 完了以外のステータスを持つ最新のタスク(全て完了済みなら最後のタスクを現在地扱い)。
+    // フィルタで一部タスクを隠していても「現在地」の判定自体は全タスク基準のまま変えない。
     let currentId = null;
-    for (let i = tasks.length - 1; i >= 0; i--) {
-      if (tasks[i].status !== "完了") { currentId = tasks[i].id; break; }
+    for (let i = allTasks.length - 1; i >= 0; i--) {
+      if (allTasks[i].status !== "完了") { currentId = allTasks[i].id; break; }
     }
-    if (!currentId) currentId = tasks[tasks.length - 1].id;
+    if (!currentId) currentId = allTasks[allTasks.length - 1].id;
 
-    const stagesHtml = tasks.map((t, idx) => {
-      const isCurrent = t.id === currentId;
-      const bullets = devDocsBulletsFromCheckHistory(t);
-      const bulletsHtml = bullets.length
-        ? `<ul class="bullets">${bullets.map((b) => `<li>${escapeHtmlForDevDocs(b)}</li>`).join("")}</ul>`
-        : `<p style="font-size:12px; color:var(--text-muted); margin:0;">(対応経緯の記録なし)</p>`;
-      const statusChipClass = t.status === "完了" ? "done" : (isCurrent ? "current" : "");
-      const statusLabel = isCurrent && t.status !== "完了" ? `現在地 — ${escapeHtmlForDevDocs(t.status || "")}` : escapeHtmlForDevDocs(t.status || "不明");
-      const stageLabel = devDocsClassifyStage(t);
-      const subcat = stageLabel === "③実装" ? devDocsClassifySubcategory(t) : null;
-      const stageTagsHtml = `<span class="devdocs-tag">${escapeHtmlForDevDocs(stageLabel)}</span>` + (subcat ? `<span class="devdocs-tag repo">${escapeHtmlForDevDocs(subcat)}</span>` : "");
-      return `
-        <div class="devdocs-stage${isCurrent ? " is-current" : ""}">
-          <div class="devdocs-stage-dot">${idx + 1}</div>
-          <div class="devdocs-stage-card">
-            <div class="devdocs-stage-head">
-              <div><span class="devdocs-stage-id">${escapeHtmlForDevDocs(t.id || "")}</span> ${stageTagsHtml}<div class="devdocs-stage-title">${escapeHtmlForDevDocs(t.title || t.task || "")}</div></div>
-              <span class="devdocs-status-chip ${statusChipClass}">${statusLabel}</span>
-            </div>
-            <div class="devdocs-section-title" style="margin:8px 0 4px;">出た内容(課題・対応経緯)</div>
-            ${bulletsHtml}
-            <div class="devdocs-conclusion"><b>最終方針</b>${escapeHtmlForDevDocs(devDocsConclusionText(t))}</div>
-          </div>
-        </div>`;
+    const tasks = allTasks.filter((t) => {
+      if (devDocsFlowFilter === "done") return t.status === "完了";
+      if (devDocsFlowFilter === "incomplete") return t.status !== "完了";
+      return true;
+    });
+
+    if (!tasks.length) {
+      box.innerHTML = `<div class="empty">この絞り込み条件に該当するタスクがありません。</div>`;
+      return;
+    }
+
+    let seq = 0;
+    const stageGroups = devDocsGroupByStage(tasks);
+    const groupsHtml = stageGroups.map((group) => {
+      let bodyHtml;
+      if (group.label === "③実装") {
+        const subGroups = devDocsGroupBySubcategory(group.tasks);
+        bodyHtml = subGroups.map((sg) => {
+          const cardsHtml = sg.tasks.map((t) => { seq += 1; return devDocsStageCardHtml(t, seq, currentId); }).join("");
+          return `<details class="devdocs-subcategory-group" open>
+            <summary>${escapeHtmlForDevDocs(sg.label)} <span class="count">(${sg.tasks.length})</span></summary>
+            <div class="devdocs-timeline">${cardsHtml}</div>
+          </details>`;
+        }).join("");
+      } else {
+        const cardsHtml = group.tasks.map((t) => { seq += 1; return devDocsStageCardHtml(t, seq, currentId); }).join("");
+        bodyHtml = `<div class="devdocs-timeline">${cardsHtml}</div>`;
+      }
+      return `<details class="devdocs-stage-group" open>
+        <summary>${escapeHtmlForDevDocs(group.label)} <span class="count">(${group.tasks.length})</span></summary>
+        <div class="devdocs-stage-group-body">${bodyHtml}</div>
+      </details>`;
     }).join("");
 
-    box.innerHTML = stagesHtml;
+    box.innerHTML = groupsHtml;
   }
 
   (function setupDevDocsControls() {
@@ -3829,6 +3925,17 @@
     const selFlow = document.getElementById("devdocs-app-select-flow");
     if (selReq) selReq.addEventListener("change", (e) => { devDocsSetCurrentRepo(e.target.value); renderDevDocsRequirements(); renderDevDocsFlow(); });
     if (selFlow) selFlow.addEventListener("change", (e) => { devDocsSetCurrentRepo(e.target.value); renderDevDocsRequirements(); renderDevDocsFlow(); });
+
+    const filterRow = document.getElementById("devdocs-flow-filter");
+    if (filterRow) {
+      filterRow.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          devDocsFlowFilter = btn.dataset.filter;
+          filterRow.querySelectorAll(".filter-btn").forEach((b) => b.classList.toggle("active", b === btn));
+          renderDevDocsFlow();
+        });
+      });
+    }
 
     const subviews = {
       requirements: { btn: document.getElementById("devdocs-subtab-requirements"), panel: document.getElementById("devdocs-subview-requirements") },
