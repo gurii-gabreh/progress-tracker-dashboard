@@ -325,6 +325,21 @@
         "costUsd": 1756.6364655
       },
       "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "16:21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-083: 段階別フロー図に完了/未完了フィルタと工程→カテゴリー折りたたみ構造を追加",
+      "note": "filter-btnスタイルで完了/未完了/すべての3択フィルタを追加。段階の区切り表示は区切り線案から、<details>/<summary>によるネスト折りたたみ(工程→実装のみサブカテゴリ)へユーザー指示で作り直し。カードのタグ表示は維持。",
+      "usage": {
+        "inputTokens": 3895647,
+        "outputTokens": 9558856,
+        "cacheReadTokens": 5352385005,
+        "cacheWriteTokens": 124077742,
+        "costUsd": 1762.8813143
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
     }
   ]
 }
