@@ -280,6 +280,36 @@
         "costUsd": 1743.7787329
       },
       "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "15:43",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-080: Canvas ViewerをArtifact db機能へ移行(外部fetch不可のため)",
+      "note": "api.github.com→raw.githubusercontent.com経由の静的JSONと2段階で外部fetchを試みたが同じFailed to fetchで失敗。Artifactはそもそも任意の外部fetchを許可しない設計と判明(CL-040)、db capability+ArtifactDataへ全面移行しユーザー実機で動作確認。",
+      "usage": {
+        "inputTokens": 3894923,
+        "outputTokens": 9481567,
+        "cacheReadTokens": 5296037034,
+        "cacheWriteTokens": 123947839,
+        "costUsd": 1750.3177701
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "15:43",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-081: 📄開発資料タブ新設(要件定義+段階別フロー図)",
+      "note": "タスクWBSタブの隣に新設。要件定義はclaude-voice-bridgeの既存表示ロジックを移植、段階別フロー図はtasks.jsonのcheckHistoryから自動生成。15アプリ分をPlaywrightで動作確認、副次的にPTD-077のrepoフィールド欠落バグも修正。",
+      "usage": {
+        "inputTokens": 3894923,
+        "outputTokens": 9481567,
+        "cacheReadTokens": 5296037034,
+        "cacheWriteTokens": 123947839,
+        "costUsd": 1750.3177701
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
     }
   ]
 }
