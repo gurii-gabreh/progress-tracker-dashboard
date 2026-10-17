@@ -962,6 +962,7 @@
     <button class="top-tab-btn" id="top-tab-credit" data-view="credit">💳 クレジット</button>
     <button class="top-tab-btn" id="top-tab-routine" data-view="routine">🔄 ルーティン</button>
     <button class="top-tab-btn" id="top-tab-relations" data-view="relations">🔗 連関図</button>
+    <button class="top-tab-btn" id="top-tab-research" data-view="research">🔍 調査資料</button>
   </div>
   <div class="view-panel-area">
   <div id="hub-view" class="view-panel">
@@ -1360,17 +1361,7 @@
         <p class="tab-page-overview">タスク間の依存・関連を矢印で表示します。data/tasks.jsonの各タスクの<code>relatedTasks</code>フィールドから自動生成するため、図だけを手書きで更新することはありません(2026-10-11時点、関連データは新規タスクから順次記録していく方針のため、既存タスクの多くはまだノードのみ・矢印無しの表示になります)。</p>
         <div class="relations-controls">
           <label>リポジトリ: <select id="relations-repo-select"></select></label>
-          <label><input type="checkbox" id="relations-include-completed" /> 完了済みタスクも表示</label>
         </div>
-        <div class="relations-legend">
-          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#16a34a;"></span>完了</span>
-          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#2563eb;"></span>対応中・進行中</span>
-          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#94a3b8;"></span>未着手</span>
-          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#dc2626;"></span>保留(停滞)</span>
-          <span class="relations-legend-chip"><span class="relations-legend-dot" style="background:#cbd5e1;"></span>中止・スキップ</span>
-          <span class="relations-legend-chip">点線枠 = 選択中リポジトリ外のタスク</span>
-        </div>
-        <div class="policy-meta" id="relations-meta"></div>
         <div class="relations-diagram-box" id="relations-diagram"></div>
 
         <div class="tab-page-title" style="margin-top:22px; font-size:15px;">📘 Obsidian Canvas版(progress-tracker-dashboard)</div>
@@ -1388,6 +1379,32 @@
         <p class="tab-page-overview" style="font-size:11.5px; color:var(--text-muted);">再生成は同リポジトリのスクリプトで行うため、ここからの編集はできません(閲覧専用)。</p>
       </div>
     </div>
+  </div>
+
+  <!-- 🔍 調査資料タブ(2026-10-18追加)。ユーザー指示「またごちゃごちゃしそうだから、マネージャアプリに
+       調査資料タブを連関図の横に作ってその中にハッカソンのページを作って」。既存の開発資料タブ・学習タブと
+       同じmanager-subview-toggle方式のサブタブ構成(rule23: 既存の仕組みを優先)。現在はハッカソンページ
+       のみだが、将来別の調査テーマが増えてもサブタブを追加するだけで対応できる構成にしている。 -->
+  <div id="research-view" class="view-panel">
+  <div class="manager-subview-toggle">
+    <button type="button" class="manager-subview-btn active" id="research-subtab-hackathon" data-subview="hackathon">🏆 ハッカソン</button>
+  </div>
+
+  <div id="research-subview-hackathon" class="manager-subview active">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="tab-page-title">🏆 ハッカソン調査</div>
+        <p class="tab-page-overview">ハッカソンでの実績作り(PTD-020・PTD-065)に向けた調査資料です。data/hackathon-research.jsonから生成します。まず①狙っている/検討中のハッカソン候補(名前・内容・前回開催時期)、続いて②各ハッカソンの過去の入賞作品をカードで一覧できます。</p>
+        <div class="policy-meta" id="research-hackathon-meta"></div>
+
+        <div class="devdocs-section-title">① 狙っている・検討中のハッカソン</div>
+        <div id="research-hackathon-candidates"></div>
+
+        <div class="devdocs-section-title" style="margin-top:20px;">② 過去の入賞作品</div>
+        <div id="research-hackathon-winners"></div>
+      </div>
+    </div>
+  </div>
   </div>
   </div>
 </div>
@@ -3254,6 +3271,7 @@
       credit: { btn: document.getElementById("top-tab-credit"), panel: document.getElementById("credit-view") },
       routine: { btn: document.getElementById("top-tab-routine"), panel: document.getElementById("routine-view") },
       relations: { btn: document.getElementById("top-tab-relations"), panel: document.getElementById("relations-view") },
+      research: { btn: document.getElementById("top-tab-research"), panel: document.getElementById("research-view") },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
@@ -3529,18 +3547,17 @@
   function renderRelationsView() {
     const container = document.getElementById("relations-diagram");
     const sel = document.getElementById("relations-repo-select");
-    const metaEl = document.getElementById("relations-meta");
     if (!container || !sel) return;
     const repo = sel.value;
     if (!repo) {
       container.innerHTML = `<div class="empty">data/tasks.json を読み込み中、またはリポジトリが見つかりません。</div>`;
       return;
     }
-    const includeCompleted = document.getElementById("relations-include-completed").checked;
-    const { nodes, edges } = buildRelationsGraph(repo, includeCompleted);
+    // 2026-10-18変更: 「完了済みタスクも表示」チェックボックスと凡例・ノード件数表示を削除した
+    // (ユーザー指示、UIの簡素化)。完了済みタスクも常に含める。
+    const { nodes, edges } = buildRelationsGraph(repo, true);
     if (!nodes.length) {
-      container.innerHTML = `<div class="empty">このリポジトリには表示対象のタスクがありません(完了済みタスクのみの場合は「完了済みタスクも表示」にチェックしてください)。</div>`;
-      if (metaEl) metaEl.textContent = "";
+      container.innerHTML = `<div class="empty">このリポジトリには表示対象のタスクがありません。</div>`;
       return;
     }
     if (!window.mermaid) {
@@ -3557,18 +3574,11 @@
       console.error(err);
       container.innerHTML = `<div class="empty">図の描画に失敗しました: ${err.message}</div>`;
     });
-    if (metaEl) {
-      metaEl.textContent = edges.length
-        ? `ノード${nodes.length}件・関連${edges.length}件`
-        : `ノード${nodes.length}件(このリポジトリの関連データはまだ登録されていません。新規タスクからrelatedTasksを記録していきます)`;
-    }
   }
 
   (function setupRelationsControls() {
     const sel = document.getElementById("relations-repo-select");
-    const chk = document.getElementById("relations-include-completed");
     if (sel) sel.addEventListener("change", renderRelationsView);
-    if (chk) chk.addEventListener("change", renderRelationsView);
   })();
 
   // 📘 Obsidian Canvas版(2026-10-17変更): 個別ファイルへの?src=ボタン生成はclaude.aiアーティファクトの
@@ -3606,6 +3616,82 @@
         const box = document.getElementById("devdocs-requirements");
         if (box) box.innerHTML = `<div class="empty">要件定義データを読み込めませんでした(${err.message})</div>`;
       });
+  }
+
+  // 🔍 調査資料タブ→🏆ハッカソン(2026-10-18追加)。data/hackathon-research.jsonを読み込み、
+  // ①狙っている/検討中のハッカソン候補カード→②過去の入賞作品カードの順に描画する。
+  function loadHackathonResearch() {
+    return fetch("data/hackathon-research.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/hackathon-research.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        renderHackathonCandidates(data.candidates || []);
+        renderHackathonWinners(data.winners || [], data.candidates || []);
+        const meta = document.getElementById("research-hackathon-meta");
+        if (meta) meta.textContent = `更新日: ${data.updatedAt || "不明"}${data.note ? " ／ " + data.note : ""}`;
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("research-hackathon-candidates");
+        if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
+      });
+  }
+
+  function hackathonSourcesHtml(sources) {
+    if (!sources || !sources.length) return "";
+    return `<div class="devdocs-concern-card" style="margin-top:8px; padding:6px 10px;"><dt style="margin-top:0;">出典</dt>${sources
+      .map((s) => `<div><a href="${escapeHtmlForDevDocs(s.url)}" target="_blank" rel="noopener" style="font-size:11.5px;">${escapeHtmlForDevDocs(s.title)}</a></div>`)
+      .join("")}</div>`;
+  }
+
+  function renderHackathonCandidates(candidates) {
+    const box = document.getElementById("research-hackathon-candidates");
+    if (!box) return;
+    if (!candidates.length) { box.innerHTML = `<div class="empty">候補データがありません。</div>`; return; }
+    box.innerHTML = candidates.map((c) => `
+      <div class="policy-card" style="margin-bottom:10px;">
+        <div class="devdocs-head">
+          <h3>${escapeHtmlForDevDocs(c.name || "")}</h3>
+          <span class="devdocs-tag repo">${escapeHtmlForDevDocs(c.organizer || "")}</span>
+        </div>
+        <dl style="margin:0;">
+          <dt>内容</dt><dd>${escapeHtmlForDevDocs(c.content || "")}</dd>
+          <dt>前回の開催時期</dt><dd>${escapeHtmlForDevDocs(c.lastPeriod || "不明")}</dd>
+          <dt>直近回のテーマ</dt><dd>${escapeHtmlForDevDocs(c.theme || "不明")}</dd>
+          <dt>次回開催</dt><dd>${escapeHtmlForDevDocs(c.nextEdition || "不明")}</dd>
+          <dt>現在の状況</dt><dd>${escapeHtmlForDevDocs(c.status || "不明")}</dd>
+        </dl>
+        ${hackathonSourcesHtml(c.sources)}
+      </div>`).join("");
+  }
+
+  function renderHackathonWinners(winners, candidates) {
+    const box = document.getElementById("research-hackathon-winners");
+    if (!box) return;
+    if (!winners.length) { box.innerHTML = `<div class="empty">入賞作品データは現在調査中です。調査が完了したら順次反映されます。</div>`; return; }
+    const byHackathon = {};
+    winners.forEach((w) => { (byHackathon[w.hackathon] = byHackathon[w.hackathon] || []).push(w); });
+    box.innerHTML = Object.entries(byHackathon).map(([name, items]) => `
+      <details class="devdocs-stage-group" open>
+        <summary>${escapeHtmlForDevDocs(name)} <span class="count">(${items.length})</span></summary>
+        <div class="devdocs-stage-group-body">
+          ${items.map((w) => `
+            <div class="policy-card" style="margin-bottom:8px;">
+              <div class="devdocs-head">
+                <span class="devdocs-tag">${escapeHtmlForDevDocs(w.edition || "")}</span>
+                <span class="devdocs-tag repo">${escapeHtmlForDevDocs(w.rank || "")}</span>
+              </div>
+              <h3 style="margin:4px 0;">${escapeHtmlForDevDocs(w.title || "")}${w.team ? ` (${escapeHtmlForDevDocs(w.team)})` : ""}</h3>
+              <dl style="margin:0;">
+                <dt>概要</dt><dd>${escapeHtmlForDevDocs(w.summary || "不明")}</dd>
+                ${w.tech ? `<dt>使用技術</dt><dd>${escapeHtmlForDevDocs(w.tech)}</dd>` : ""}
+              </dl>
+              ${hackathonSourcesHtml(w.sources)}
+            </div>`).join("")}
+        </div>
+      </details>`).join("");
   }
 
   function devDocsSelectedRepo() {
@@ -3959,6 +4045,7 @@
     });
   })();
   loadRequirementsData();
+  loadHackathonResearch();
 
   // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
   // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、
