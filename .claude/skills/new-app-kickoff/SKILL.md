@@ -123,7 +123,14 @@ README運用ルール31)を起動するための**自動化された別入口**(
         一般的な傾向だと判断できれば、`concerns`側へ新規追加してもよい)。`concerns`自体は
         一般化された問題の一覧、`concernReview`は「このアプリの相談で実際に出てきた懸念と、
         その解決内容」という個別記録)。
-        あわせて対応するタスクを`data/tasks.json`へ起票する
+        あわせて対応するタスクを`data/tasks.json`へ起票する。
+        **この`requirements.json`への記録だけで、progress-tracker-dashboardの📄開発資料タブ→
+        📋要件定義に自動的に表示される**(2026-10-17追加、PTD-081/082/083。dashboard.html側が
+        `data/requirements.json`を直接fetchして描画するビューアーのため、別途の書き込み・
+        表示用データ作成は不要)。あわせて、実装が進み`data/tasks.json`にこのアプリのタスクと
+        `checkHistory`が積み上がれば、同タブの🔀段階別フロー図にも自動で反映される(専用の
+        フロー図用データファイルは持たず、`tasks.json`から都度生成する設計のため、
+        タスク記録を通常通り`detail`/`note`/`checkHistory`へ埋めていれば追加作業は不要)。
       - b: `data/tasks.json`へ通常通り起票するだけでよい(要件定義シートは不要)
       - c・d: 記録不要。その場で調べて回答・相談に乗って終わってよい
 
