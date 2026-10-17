@@ -4658,7 +4658,37 @@
       "nextAction": null,
       "subtasks": null,
       "goal": null
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-079",
+      "task": "連関図タブのObsidian Canvas版、?src個別リンク方式がiframe構造上機能しない不具合の修正",
+      "title": "Canvas Viewer ?srcディープリンク廃止・動的検索方式へ一本化",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-17",
+      "category": "bugfix",
+      "note": "ユーザー指示で、ハードコードしていた2つのObsidian Canvas版ボタン(最終仕様マップ/課題対応履歴マップ)を削除し、ChatGPT/フォルダ以下を動的検索して.canvasファイルごとにボタンを生成する方式へ変更した直後、ユーザーから「リンク先にアクセスすると全てハッカソンの頭になる」と報告があった。",
+      "detail": "原因調査のため、Canvas Viewerアーティファクト(https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp )の現在の公開内容をArtifact readツールで確認したところ、DEFAULT_CANVAS変数が2026-10-11のハッカソン候補比較用Canvas(hackathon-selection.canvas)のデータのまま残っており、?srcパラメータが読めない場合にこれを表示していたことが判明した。ただし、コード自体(location.searchからsrcを読み取る処理)は正しく見えたため、実機での切り分けが必要と判断し、診断用の表示(location.href/location.search/in_iframeの値を画面上に出すデバッグ行)を一時的に追加してVersion 4として公開、ユーザーに実際にボタンを押した結果を確認してもらった。結果: href=https://5afefcaa-...frame.claudeusercontent.com/_f/<バージョンID>/ 、search=(空)、in_iframe=true。これにより、claude.aiのアーティファクトは公開URL(claude.ai/artifact/<id>)とは別ドメイン・別URLのiframe(frame.claudeusercontent.com、バージョンIDのみで決まるパス)内で実行されており、外側URLのクエリ文字列(?src=...)はこのiframeへ一切渡らないことが確定した。つまり「?srcをURLに付けて個別ファイルへ直接リンクする」という設計はclaude.aiのアーティファクト機構上そもそも実現不可能だった(PTD-077時点の「Playwrightで検証済み」は、ローカルファイルとして開いての確認だったため、本番のiframe分離構造に起因するこの制約を検出できていなかったと考えられる)。\n\n対応として、個別ファイルへの?srcディープリンク方式を廃止し、Canvas Viewerアーティファクト自身がGitHub Tree API(https://api.github.com/repos/gurii-gabreh/Obsidian-App/git/trees/main?recursive=1 )でChatGPT/フォルダ以下を毎回動的検索し、見つかった.canvasファイルをビューア内のプルダウン(プリセット選択)に列挙する方式へ一本化した(Version 5として公開)。あわせて、ハッカソン比較用に差し替わったままだったDEFAULT_CANVASの残骸(無関係なデータをフォールバック表示する設計自体)も削除し、該当なしの場合は空の状態を出すようにした。dashboard.html側は、個別ボタン生成のJS(GitHub Tree API呼び出し含む)を削除し、ビューアを開く単一リンクに簡略化した(これによりPTD-072/078直後に追加した動的ボタン生成ロジックはこのコミットで役目を終えた)。\n\n動作確認: ローカルのdashboard.html・Canvas Viewerアーティファクト両方をPlaywright(file://、--ignore-certificate-errors)で開き、(1) dashboard.htmlの🔗連関図タブに単一リンクが正しく表示されエラーが出ないこと、(2) Canvas Viewer側のプルダウンがGitHub Tree APIから取得した実際の4ファイル(app-architecture-flow / final-spec / task-resolutions / servicenow-system-map)を正しく列挙すること、(3) servicenow-system-map.canvasを選択した際に71個の.canvas-node要素が実際にレンダリングされること、をそれぞれ確認した。claude.ai上での最終表示(フォント・配色等)はこのサンドボックス環境が認証セッションを持たないため直接確認できていない。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard commit a83736c(main: 5e08791)、Canvas Viewerアーティファクト(Version 5、https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp )、concept-log.json CL-039",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-17",
+          "summary": "ハッカソン候補比較用のデフォルトデータが残っていたことを発見、修正。診断用デバッグ行を一時追加してユーザーに実機確認を依頼、結果からclaude.aiアーティファクトのiframe分離構造(別ドメイン、クエリ文字列非継承)が根本原因と特定。?src個別リンク方式を廃止し、ビューア自身がGitHub Tree APIで動的検索する方式へ変更、Playwrightで一覧列挙とレンダリングの両方を確認した上でcommit・push・mainマージまで完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-077",
+          "type": "relates_to"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-17T03:25:07.124685+00:00"
+  "updatedAt": "2026-10-17T05:47:42.256+00:00"
 }
