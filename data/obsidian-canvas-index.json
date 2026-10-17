@@ -1,0 +1,13 @@
+{
+  "description": "gurii-gabreh/Obsidian-App の ChatGPT/フォルダ以下にある JSON Canvas形式(.canvas)ファイルの一覧。Canvas Viewerアーティファクト(https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp)が、起動時にこのファイルをraw.githubusercontent.com経由で読み込み、プリセットのプルダウンを構築するために使う。",
+  "note": "本来はビューア自身がGitHub Tree API(api.github.com)でChatGPT/フォルダ以下を毎回動的検索する設計だったが、claude.aiアーティファクトのサンドボックス(CSP)がapi.github.comへのfetchをブロックすることが2026-10-17にユーザー実機確認(エラー: Failed to fetch)で判明したため、api.github.com呼び出しが可能なこの管理ルーム側で一覧を事前生成し、このJSONとしてコミットする方式に変更した(PTD-080、concept-log.json CL-040参照)。raw.githubusercontent.comへのfetchはPTD-077以降、個別canvasファイルの内容取得で実績があり、アーティファクトのCSPでも許可されている前提でこの方式にしている。Obsidian-App側にファイルが追加・削除・移動された場合は、このJSONを手動または次回関連作業時に再生成する必要がある(自動追従はしない)。",
+  "sourceRepo": "gurii-gabreh/Obsidian-App",
+  "sourceFolder": "ChatGPT",
+  "generatedAt": "2026-10-17T06:10:00+00:00",
+  "files": [
+    "ChatGPT/app-architecture/app-architecture-flow.canvas",
+    "ChatGPT/progress/progress-tracker-final-spec.canvas",
+    "ChatGPT/progress/progress-tracker-task-resolutions.canvas",
+    "ChatGPT/servicenow-sub-agent/servicenow-system-map.canvas"
+  ]
+}
