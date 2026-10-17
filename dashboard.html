@@ -1262,18 +1262,18 @@
         <div class="relations-diagram-box" id="relations-diagram"></div>
 
         <div class="tab-page-title" style="margin-top:22px; font-size:15px;">📘 Obsidian Canvas版(progress-tracker-dashboard)</div>
-        <!-- 2026-10-17変更: 個別ファイルへのボタンをハードコードする方式(最終仕様マップ/課題対応履歴マップの
-             2つのみを決め打ち)から、ChatGPT/フォルダ以下をGitHub Tree APIで毎回動的に検索し、見つかった
-             .canvasファイルごとにボタンを自動生成する方式へ変更(ユーザー指示)。理由: PTD-077完了後に
-             Obsidian-App側がフォルダを再編(ChatGPT/→ChatGPT/progress/+ChatGPT/app-architecture/)した際、
-             ハードコードしていたリンクが404になった実例(CL-037)があり、かつ再編後にapp-architecture-flow.canvas
-             という第3のファイルが追加されても決め打ちリストには反映されなかった。動的検索にすることで、
-             今後ファイルが増えても次回ロード時に自動で拾われ、再編されてもパスの手直しが不要になる。 -->
-        <p class="tab-page-overview">上のMermaid図とは別に、ChatGPT/Codex側で作成されたObsidian Canvas形式のマップ(obsidian-app-mindmapスキル生成、<a href="https://github.com/gurii-gabreh/Obsidian-App/tree/main/ChatGPT" target="_blank" rel="noopener">gurii-gabreh/Obsidian-App の ChatGPT/</a>フォルダ以下が正本)も、下記からブラウザ上のビューアで閲覧できます。Obsidian本体と同じ space+ドラッグ=移動 / スクロール=拡大縮小に対応しています。</p>
-        <div class="relations-controls" id="obsidian-canvas-buttons">
-          <span class="policy-meta">GitHub上の一覧を読み込み中...</span>
+        <!-- 2026-10-17変更: 個別ファイルへ ?src=<raw URL> で直接リンクするボタンを複数生成する方式を廃止。
+             理由: claude.aiのアーティファクトは frame.claudeusercontent.com 上の、バージョンIDだけで決まる
+             別ドメインのiframe内で動作し、外側URL(claude.ai/artifact/<id>?src=...)のクエリ文字列はこの
+             iframeへ一切渡らないことが実機確認(ユーザー報告、location.search=空・in_iframe=true)で判明した。
+             このためdashboard.html側でボタンを個別生成する方式はそもそも機能しえない設計だった。
+             対応: ビューア自身がGitHub Tree APIでChatGPT/フォルダ以下を動的検索し、ビューア内のプルダウンから
+             選ぶ方式に一本化(concept-log.json CL-039参照)。dashboard.html側はビューアへの単一リンクのみ置く。 -->
+        <p class="tab-page-overview">上のMermaid図とは別に、ChatGPT/Codex側で作成されたObsidian Canvas形式のマップ(obsidian-app-mindmapスキル生成、<a href="https://github.com/gurii-gabreh/Obsidian-App/tree/main/ChatGPT" target="_blank" rel="noopener">gurii-gabreh/Obsidian-App の ChatGPT/</a>フォルダ以下が正本)も、ブラウザ上のビューアで閲覧できます。Obsidian本体と同じ space+ドラッグ=移動 / スクロール=拡大縮小に対応しています。ビューアを開いた後、上部のプルダウンからファイルを選んでください(ChatGPT/フォルダ以下の.canvasファイルを毎回自動検索して一覧表示します)。</p>
+        <div class="relations-controls">
+          <a href="https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp" target="_blank" rel="noopener" style="font-size:12.5px; padding:6px 12px; border-radius:7px; border:1px solid var(--border); background:var(--surface); color:var(--text); text-decoration:none;">📘 Canvas Viewerを開く</a>
         </div>
-        <p class="tab-page-overview" style="font-size:11.5px; color:var(--text-muted);">一覧はページ読み込み時にGitHub上のChatGPT/フォルダ(サブフォルダ含む)を検索して自動生成します(ハードコードではありません)。再生成は同リポジトリのスクリプトで行うため、ここからの編集はできません(閲覧専用)。</p>
+        <p class="tab-page-overview" style="font-size:11.5px; color:var(--text-muted);">再生成は同リポジトリのスクリプトで行うため、ここからの編集はできません(閲覧専用)。</p>
       </div>
     </div>
   </div>
@@ -3450,47 +3450,9 @@
     if (chk) chk.addEventListener("change", renderRelationsView);
   })();
 
-  // 📘 Obsidian Canvas版ボタンの動的生成(2026-10-17追加、CL-037の教訓を踏襲)。
-  // ハードコードした個別ファイルへのリンクはフォルダ再編・ファイル追加で404/漏れが発生するため、
-  // GitHub Tree API(1回の呼び出しでリポジトリ全体のパス一覧を取得できる)でChatGPT/以下を毎回検索し、
-  // 見つかった.canvasファイルごとにビューアへのボタンを生成する。
-  const CANVAS_VIEWER_URL = "https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp";
-  function loadObsidianCanvasButtons() {
-    const box = document.getElementById("obsidian-canvas-buttons");
-    if (!box) return;
-    fetch("https://api.github.com/repos/gurii-gabreh/Obsidian-App/git/trees/main?recursive=1")
-      .then((res) => {
-        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        const files = (data.tree || [])
-          .filter((item) => item.type === "blob" && item.path.startsWith("ChatGPT/") && item.path.endsWith(".canvas"))
-          .sort((a, b) => a.path.localeCompare(b.path));
-        if (!files.length) {
-          box.innerHTML = `<span class="policy-meta">ChatGPT/フォルダ内に.canvasファイルが見つかりませんでした。</span>`;
-          return;
-        }
-        box.innerHTML = "";
-        files.forEach((f) => {
-          const rawUrl = `https://raw.githubusercontent.com/gurii-gabreh/Obsidian-App/main/${f.path}`;
-          const viewerUrl = `${CANVAS_VIEWER_URL}?src=${encodeURIComponent(rawUrl)}&title=${encodeURIComponent(f.path)}`;
-          const label = f.path.replace(/^ChatGPT\//, "").replace(/\.canvas$/, "");
-          const a = document.createElement("a");
-          a.href = viewerUrl;
-          a.target = "_blank";
-          a.rel = "noopener";
-          a.style.cssText = "font-size:12.5px; padding:6px 12px; border-radius:7px; border:1px solid var(--border); background:var(--surface); color:var(--text); text-decoration:none;";
-          a.textContent = `${label} を開く`;
-          box.appendChild(a);
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        box.innerHTML = `<span class="policy-meta">GitHub上の一覧取得に失敗しました(${err.message})。<a href="https://github.com/gurii-gabreh/Obsidian-App/tree/main/ChatGPT" target="_blank" rel="noopener">ChatGPT/フォルダを直接開く</a></span>`;
-      });
-  }
-  loadObsidianCanvasButtons();
+  // 📘 Obsidian Canvas版(2026-10-17変更): 個別ファイルへの?src=ボタン生成はclaude.aiアーティファクトの
+  // iframe構造上機能しないため廃止(詳細はHTML側のコメント、concept-log.json CL-039参照)。
+  // ビューア自身がGitHub Tree APIでファイル一覧を取得するため、dashboard.html側の動的処理は不要になった。
 
   // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
   // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、
