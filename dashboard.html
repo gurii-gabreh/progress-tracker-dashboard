@@ -955,7 +955,6 @@
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
     <button class="top-tab-btn" id="top-tab-devdocs" data-view="devdocs">📄 開発資料</button>
-    <button class="top-tab-btn" id="top-tab-learning" data-view="learning">🎓 学習</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
@@ -982,10 +981,10 @@
             <span class="hub-card-desc">このアプリの中心機能。2つのサブタブを切り替えて使います。「🗓 タスクスケジュール」は学習・各アプリ開発・毎日のルーティン作業をWBS(階層タスク)+カレンダーで管理するTask-WBS、「🧭 マネージャーアプリ」は全リポジトリの実装タスク一覧・進捗・GitHub同期をまとめた本体です。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
-          <button type="button" class="hub-card" data-hub-nav="learning">
-            <span class="hub-card-icon">🎓</span>
-            <span class="hub-card-title">学習</span>
-            <span class="hub-card-desc">アーキテクチャ・セキュリティ・AI/LLM等8分野の学習を管理します。「📖 学習資料」(学んだ内容そのもの)・「📝 学習記録」(積極的想起チェックの正誤記録)・「🧭 学習方針」(学習法・深堀りレベル・目指す姿をまとめた、今後の学習判断の基準ページ)の3つのサブタブがあります。</span>
+          <button type="button" class="hub-card" data-hub-nav="devdocs">
+            <span class="hub-card-icon">📄</span>
+            <span class="hub-card-title">開発資料</span>
+            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」の5つのサブタブがあります。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
@@ -1161,10 +1160,15 @@
   <!-- 2026-10-17変更: 要件定義と段階別フロー図を1画面に縦積みしていたが、ユーザー指示「構成としては、
        要件定義の内容と、開発時のフローは別のページにしてほしい。いつもの上部にタブを作り、切り替える
        仕様にして」により、既存の学習タブ(📖学習資料/📝学習記録/🧭学習方針)・タスクWBSタブと同じ
-       manager-subview-toggle方式のサブタブへ分割した(rule23: 既存の仕組みを優先)。 -->
+       manager-subview-toggle方式のサブタブへ分割した(rule23: 既存の仕組みを優先)。
+       2026-10-18追加: ユーザー指示「学習資料、学習記録、学習方針をアプリ開発タブにまとめ、その中で
+       表示しろ」により、独立していた🎓学習タブ(3サブタブ)をこの開発資料タブへ統合した(学習タブ自体は廃止)。 -->
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="devdocs-subtab-requirements" data-subview="requirements">📋 要件定義</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-flow" data-subview="flow">🔀 段階別フロー図</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-materials" data-subview="materials">📖 学習資料</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
   </div>
 
   <div id="devdocs-subview-requirements" class="manager-subview active">
@@ -1198,24 +1202,18 @@
       </div>
     </div>
   </div>
-  </div>
 
-  <div id="learning-view" class="view-panel">
-  <div class="manager-subview-toggle">
-    <button type="button" class="manager-subview-btn active" id="learning-subtab-materials" data-subview="materials">📖 学習資料</button>
-    <button type="button" class="manager-subview-btn" id="learning-subtab-records" data-subview="records">📝 学習記録</button>
-    <button type="button" class="manager-subview-btn" id="learning-subtab-policy" data-subview="policy">🧭 学習方針</button>
-  </div>
-  <div id="learning-subview-materials" class="manager-subview active">
+  <div id="devdocs-subview-materials" class="manager-subview">
     <iframe id="materials-iframe" title="学習資料" loading="lazy"></iframe>
   </div>
-  <div id="learning-subview-records" class="manager-subview">
+  <div id="devdocs-subview-records" class="manager-subview">
     <iframe id="records-iframe" title="学習記録" loading="lazy"></iframe>
   </div>
-  <div id="learning-subview-policy" class="manager-subview">
+  <div id="devdocs-subview-policy" class="manager-subview">
     <iframe id="policy-iframe" title="学習方針" loading="lazy"></iframe>
   </div>
   </div>
+
   <div id="applist-view" class="view-panel">
     <iframe id="applist-iframe" title="アプリ一覧" loading="lazy"></iframe>
   </div>
@@ -3256,7 +3254,6 @@
       hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
       devdocs: { btn: document.getElementById("top-tab-devdocs"), panel: document.getElementById("devdocs-view") },
-      learning: { btn: document.getElementById("top-tab-learning"), panel: document.getElementById("learning-view") },
       applist: {
         btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
         iframeId: "applist-iframe", url: "https://gurii-gabreh.github.io/my-dashboard/",
@@ -3333,40 +3330,6 @@
   // 独立した最上位タブに昇格)。既定で学習資料(App-Development-Infoのmaterials/index.html)を表示
   // するため、ページ読み込み時に即iframeへsrcをセットする。学習記録は他のiframeタブと同じく
   // 初回クリック時にだけsrcをセットする(遅延読み込み)。
-  (function setupLearningSubviewToggle() {
-    const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
-    const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
-    const POLICY_URL = "https://gurii-gabreh.github.io/App-Development-Info/policy.html";
-    const subviews = {
-      materials: {
-        btn: document.getElementById("learning-subtab-materials"), panel: document.getElementById("learning-subview-materials"),
-        iframeId: "materials-iframe", url: MATERIALS_URL,
-      },
-      records: {
-        btn: document.getElementById("learning-subtab-records"), panel: document.getElementById("learning-subview-records"),
-        iframeId: "records-iframe", url: RECORDS_URL,
-      },
-      policy: {
-        btn: document.getElementById("learning-subtab-policy"), panel: document.getElementById("learning-subview-policy"),
-        iframeId: "policy-iframe", url: POLICY_URL,
-      },
-    };
-    function activateSubview(key) {
-      Object.entries(subviews).forEach(([k, { btn, panel }]) => {
-        const active = k === key;
-        btn.classList.toggle("active", active);
-        panel.classList.toggle("active", active);
-      });
-      const sv = subviews[key];
-      if (sv.iframeId) {
-        const iframe = document.getElementById(sv.iframeId);
-        if (!iframe.src) iframe.src = sv.url;
-      }
-    }
-    Object.entries(subviews).forEach(([key, { btn }]) => btn.addEventListener("click", () => activateSubview(key)));
-    document.getElementById("materials-iframe").src = MATERIALS_URL;
-  })();
-
   // data/tasks.json を唯一の正本として読み込む(以前はここにタスク配列を直接埋め込んでいたが、
   // dashboard.html側とdata/tasks.json側の二重管理で更新もれ・相違が起きやすかったため撤廃。
   // 2026-08-07、マネージャールーム設計時に統一)。
@@ -4029,9 +3992,17 @@
       });
     }
 
+    // 2026-10-18追加: 旧🎓学習タブ(学習資料/学習記録/学習方針)をこのタブへ統合したため、
+    // iframeの遅延読み込み(初回クリック時にsrcをセット)にも対応させた(旧setupLearningSubviewToggle相当)。
+    const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
+    const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
+    const POLICY_URL = "https://gurii-gabreh.github.io/App-Development-Info/policy.html";
     const subviews = {
       requirements: { btn: document.getElementById("devdocs-subtab-requirements"), panel: document.getElementById("devdocs-subview-requirements") },
       flow: { btn: document.getElementById("devdocs-subtab-flow"), panel: document.getElementById("devdocs-subview-flow") },
+      materials: { btn: document.getElementById("devdocs-subtab-materials"), panel: document.getElementById("devdocs-subview-materials"), iframeId: "materials-iframe", url: MATERIALS_URL },
+      records: { btn: document.getElementById("devdocs-subtab-records"), panel: document.getElementById("devdocs-subview-records"), iframeId: "records-iframe", url: RECORDS_URL },
+      policy: { btn: document.getElementById("devdocs-subtab-policy"), panel: document.getElementById("devdocs-subview-policy"), iframeId: "policy-iframe", url: POLICY_URL },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
       if (!btn) return;
@@ -4041,6 +4012,11 @@
           b.classList.toggle("active", active);
           p.classList.toggle("active", active);
         });
+        const sv = subviews[key];
+        if (sv.iframeId) {
+          const iframe = document.getElementById(sv.iframeId);
+          if (iframe && !iframe.src) iframe.src = sv.url;
+        }
       });
     });
   })();
