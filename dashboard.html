@@ -3717,6 +3717,66 @@
     return "(最終方針の記録なし)";
   }
 
+  // 2026-10-17追加(ユーザー指示「段階をもう少しわかりやすく、①〇〇みたいな段階名を入れてほしい」)。
+  // タスクの大半は「実装」のカテゴリに集約されてしまうという前提の上で、まず大枠の開発段階
+  // (要件・計画/設計・方針/実装/テスト・検証/公開・運用/不具合対応)へ分類し、実装に分類された
+  // ものだけ画面/セキュリティ/認証/データ構造/データ通信のサブカテゴリも付ける、という2段構成
+  // (ユーザー指示「大枠で分けて、カテゴリに分けられれば実装の中でカテゴリー分けして」)。
+  // 専用データは持たず、タスクのcategoryフィールド・タイトル・task文のキーワードから
+  // その場で機械判定する(約半数のタスクにcategoryが未設定なため、キーワード判定が主体。
+  // 誤判定もあり得る前提の簡易分類であることをユーザーには説明済み)。
+  // 2026-10-17修正: 当初task/title/noteをまとめて1つの文字列にしてキーワード検索していたところ、
+  // 「結(ゆい)MVP実装」(task文中に『セキュリティ修正』という副次的な語を含む)が⑥不具合対応に、
+  // 「AI相談タブの...」(UIラベル名としての『相談』を含むだけ)が①要件・計画に誤判定される実例が
+  // 見つかった。titleの方がnote/checkHistoryより簡潔で主旨を表しやすいため優先的に見る方式へ変更し、
+  // 曖昧で誤爆しやすかった「相談」単体をキーワードから外して「新規相談」「要件定義」等へ具体化、
+  // 判定順序も不具合対応(具体的で誤爆しにくい語が多い)を要件・計画より先に評価するよう入れ替えた。
+  // それでも機械判定である以上、完全な精度は保証できない前提で運用する。
+  const DEV_STAGE_DEFS = [
+    { key: "fix", label: "⑥不具合対応", categories: ["bugfix", "security"], keywords: ["不具合", "バグ", "エラー", "失敗", "遮断", "誤判定", "誤作動"] },
+    { key: "testing", label: "④テスト・検証", categories: [], keywords: ["テスト", "検証", "動作確認", "Playwright", "再現確認", "実機確認"] },
+    { key: "release", label: "⑤公開・運用", categories: ["operation"], keywords: ["公開", "デプロイ", "リリース", "運用開始", "Pages", "再デプロイ"] },
+    { key: "design", label: "②設計・方針", categories: ["architecture"], keywords: ["設計", "方針決定", "アーキテクチャ", "構成案", "データ設計"] },
+    { key: "requirements", label: "①要件・計画", categories: ["governance"], keywords: ["新規相談", "要件定義", "企画書", "きっかけ", "要件整理"] },
+    { key: "impl", label: "③実装", categories: ["feature", "implementation", "code", "app"], keywords: [] }, // デフォルト(該当なしの受け皿)
+  ];
+  const DEV_SUBCATEGORY_DEFS = [
+    { label: "画面(UI)", keywords: ["画面", "UI", "タブ", "表示", "ボタン", "レイアウト", "CSS", "デザイン", "iframe"] },
+    { label: "セキュリティ", keywords: ["セキュリティ", "安全", "暗号化", "マスク"] },
+    { label: "認証", keywords: ["認証", "ログイン", "OAuth", "権限", "トークン", "PAT"] },
+    { label: "データ構造", keywords: ["データ構造", "スキーマ", "JSON", "フィールド", "データベース", "db機能"] },
+    { label: "データ通信", keywords: ["通信", "API", "fetch", "同期", "POST", "GAS", "Webhook"] },
+  ];
+
+  function devDocsMatchStage(text) {
+    const haystack = text.toLowerCase();
+    for (const def of DEV_STAGE_DEFS) {
+      if (def.key === "impl") continue; // 最後にデフォルトとして評価
+      if (def.keywords.some((k) => haystack.includes(k.toLowerCase()))) return def.label;
+    }
+    return null;
+  }
+
+  function devDocsClassifyStage(task) {
+    for (const def of DEV_STAGE_DEFS) {
+      if (def.key === "impl") continue;
+      if (def.categories.includes(task.category)) return def.label;
+    }
+    // categoryで決まらなければ、まずtitle(簡潔で主旨を表しやすい)だけで判定し、
+    // 見つからなければtask/noteも含めた全文で判定する
+    return devDocsMatchStage(task.title || "")
+      || devDocsMatchStage(`${task.task || ""} ${task.note || ""}`)
+      || DEV_STAGE_DEFS.find((d) => d.key === "impl").label;
+  }
+
+  function devDocsClassifySubcategory(task) {
+    const haystack = `${task.title || ""} ${task.task || ""} ${task.note || ""}`.toLowerCase();
+    for (const def of DEV_SUBCATEGORY_DEFS) {
+      if (def.keywords.some((k) => haystack.includes(k.toLowerCase()))) return def.label;
+    }
+    return null;
+  }
+
   function renderDevDocsFlow() {
     const box = document.getElementById("devdocs-flow");
     if (!box) return;
@@ -3743,12 +3803,15 @@
         : `<p style="font-size:12px; color:var(--text-muted); margin:0;">(対応経緯の記録なし)</p>`;
       const statusChipClass = t.status === "完了" ? "done" : (isCurrent ? "current" : "");
       const statusLabel = isCurrent && t.status !== "完了" ? `現在地 — ${escapeHtmlForDevDocs(t.status || "")}` : escapeHtmlForDevDocs(t.status || "不明");
+      const stageLabel = devDocsClassifyStage(t);
+      const subcat = stageLabel === "③実装" ? devDocsClassifySubcategory(t) : null;
+      const stageTagsHtml = `<span class="devdocs-tag">${escapeHtmlForDevDocs(stageLabel)}</span>` + (subcat ? `<span class="devdocs-tag repo">${escapeHtmlForDevDocs(subcat)}</span>` : "");
       return `
         <div class="devdocs-stage${isCurrent ? " is-current" : ""}">
           <div class="devdocs-stage-dot">${idx + 1}</div>
           <div class="devdocs-stage-card">
             <div class="devdocs-stage-head">
-              <div><span class="devdocs-stage-id">${escapeHtmlForDevDocs(t.id || "")}</span><div class="devdocs-stage-title">${escapeHtmlForDevDocs(t.title || t.task || "")}</div></div>
+              <div><span class="devdocs-stage-id">${escapeHtmlForDevDocs(t.id || "")}</span> ${stageTagsHtml}<div class="devdocs-stage-title">${escapeHtmlForDevDocs(t.title || t.task || "")}</div></div>
               <span class="devdocs-status-chip ${statusChipClass}">${statusLabel}</span>
             </div>
             <div class="devdocs-section-title" style="margin:8px 0 4px;">出た内容(課題・対応経緯)</div>
