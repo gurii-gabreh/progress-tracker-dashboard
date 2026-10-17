@@ -4634,7 +4634,8 @@
       ],
       "nextAction": null,
       "subtasks": null,
-      "goal": null
+      "goal": null,
+      "repo": "progress-tracker-dashboard"
     },
     {
       "repo": "claude-voice-bridge",
@@ -4688,7 +4689,71 @@
           "type": "relates_to"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-080",
+      "task": "Canvas ViewerをArtifact db機能へ全面移行(外部fetch不可のため)",
+      "title": "Canvas Viewer: 外部fetch廃止、db機能への移行",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-17",
+      "category": "bugfix",
+      "note": "PTD-079の修正(?src個別リンク廃止、ビューア自身がGitHub Tree API(api.github.com)で動的検索)を公開したところ、ユーザーから『プルダウンが一覧取得に失敗(Failed to fetch)のまま』と報告があった。",
+      "detail": "まずapi.github.comへのfetch失敗を疑い、取得元をprogress-tracker-dashboard側で事前生成した静的JSON(data/obsidian-canvas-index.json)経由でraw.githubusercontent.comから読む方式に変更したが、再度ユーザー確認したところ全く同じ『Failed to fetch』のまま変化しなかった(同一のエラー文言が2つの異なるドメインで再現)。この時点で「特定ドメインの問題ではなく、Artifact自体が任意の外部ドメインへのfetch()を許可していない」という仮説に切り替え、Claude公式のartifact-capabilitiesスキルを読み込んで確認したところ、Artifactページには汎用の外部fetch許可という機能自体が存在せず、外部データを扱う正式な手段は『Claude側が外部から取得したデータをArtifact専用のdbへ書き込み、ページ側はそのdbだけを読む』db capabilityであると判明した(詳細はconcept-log.json CL-040参照)。\n\n対応: Canvas Viewerアーティファクトをdb capability(capabilities:{db:{}})を宣言する形で再公開(Version 7)。4つのcanvasファイル(app-architecture-flow/final-spec/task-resolutions/servicenow-system-map)の内容を、このセッションがGitHubから直接取得し、ArtifactDataツールのbatch writeで「canvases」コレクションへ書き込んだ(各ドキュメント1版、4件)。ビューア側はclaude.use(\"db\")でこのコレクションをlist/getするだけに変更し、外部へのfetch()を完全に削除した。あわせて、前段で作成したdata/obsidian-canvas-index.json(raw.githubusercontent.com経由の静的一覧、結局不要になった)は削除した。\n\n動作確認: ユーザー実機(PC Chrome、claude.ai)でVersion 7を開き、プルダウンに4ファイルが表示され選択すると正しく図が表示されることを確認済み(ユーザー発言「確認できた」)。",
+      "issues": [],
+      "output": "Canvas Viewerアーティファクト(Version 7、capabilities:db、https://claude.ai/artifact/CEirTnuayDL6Lk3YNpCZPp )、gurii-gabreh/progress-tracker-dashboard(data/obsidian-canvas-index.json削除)、concept-log.json CL-040",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-17",
+          "summary": "api.github.com→raw.githubusercontent.com(静的JSON経由)と2段階で外部fetchを試みたが同じFailed to fetchで失敗。artifact-capabilitiesスキルを確認し、Artifactはそもそも任意の外部fetchを許可しない設計であり、db capabilityが正式な手段と判明。Canvas Viewerをdb capability宣言+ArtifactDataでのデータ書き込みへ全面移行し、ユーザー実機で動作確認完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-079",
+          "type": "relates_to"
+        },
+        {
+          "id": "PTD-077",
+          "type": "relates_to"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-081",
+      "task": "📄 開発資料タブを新設(要件定義+段階別フロー図をアプリごとに表示)",
+      "title": "開発資料タブの新設",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-17",
+      "category": "feature",
+      "note": "ユーザー指示「要件一覧作成時に、別資料として、マインドマップを一直線上に並べて、今どの段階にいるかをわかりやすくしてほしい。各段階で出た内容と最終方針を箇条書きにして追加、縦にスクロールして見えるように」。サンプル確認後、「各アプリのアウトプットの資料は、要件吸い出しと段階別フロー図をセットにする方針」「タスクWBSタブの隣に開発資料タブを作り、各アプリごとに表示」「フロー図の作成も全てのアプリを進めて」と方針決定・実装指示。",
+      "detail": "サンプル(https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca )を先に作成しユーザー確認を得た上で本実装。dashboard.htmlの🧭タスクWBSタブの隣に📄開発資料タブを新設し、アプリ選択プルダウンで切り替えながら①要件定義②段階別フロー図を表示する。\n\n①要件定義: data/requirements.jsonを相対fetchし、claude-voice-bridgeの「📐 基本設計」タブ(widget-design.js、2026-09-27実装済み)の表示ロジック(10項目Q&A・concernReview・concerns一覧)をこのダッシュボードの配色トークンへ移植して再利用した(rule23: 既存の仕組みを優先)。\n\n②段階別フロー図: ユーザー判断により生成元はdata/tasks.jsonから直接自動生成する方式を採用(Obsidian Canvas経由の手作業更新ではなく、連関図タブと同じ「専用データファイルを持たない」方針)。選択中アプリの全タスクを更新日(updated)昇順の縦タイムラインとして並べ、各タスクのcheckHistory配列(対応経緯)をそのまま「出た内容」の箇条書きとして使い、detail/output/nextActionのいずれかを「最終方針」として表示する。ステータスが完了以外の最新タスクを「現在地」として枠線・バッジで強調する。\n\n動作確認: Playwright(http.server経由、file://だとdata/*.jsonの相対fetchがCORSで失敗するため)で、(1)15アプリ分のプルダウンが正しく生成されること、(2)kizashiで要件定義10項目・30段階のフロー図が正しくレンダリングされること、(3)要件定義未登録のアプリ(PROMPT-MANAGER等)で適切なフォールバック表示が出ること、(4)JSコンソールエラーが出ないこと、をそれぞれ確認した。あわせて、この検証中にPTD-077のrepoフィールド欠落(null)により既存の上部統計ストリップ(renderStats)がエラーで止まる既存バグを発見し修正した(本タブの新設作業とは独立した副次修正)。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html(📄開発資料タブ追加、PTD-077のrepoフィールド修正)、段階別フロー図サンプルArtifact(https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca )",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-17",
+          "summary": "サンプルArtifactでユーザー確認後、dashboard.htmlに📄開発資料タブを新設。要件定義表示はclaude-voice-bridgeの既存ロジックを移植、段階別フロー図はtasks.jsonのcheckHistoryから自動生成する方式を採用。Playwrightで15アプリ分の動作を確認、副次的にPTD-077のバグも修正。commit・push・mainマージまで完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-077",
+          "type": "relates_to"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-17T05:47:42.256+00:00"
+  "updatedAt": "2026-10-17T06:43:55.023+00:00"
 }
