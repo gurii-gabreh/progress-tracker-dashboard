@@ -340,6 +340,21 @@
         "costUsd": 1762.8813143
       },
       "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-17",
+      "time": "16:29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-084: 新規相談フロー更新 + PROMPT-MANAGER/text-extractionの要件定義シート追加",
+      "note": "new-app-kickoffスキル・依頼文テンプレートに開発資料タブへの自動反映を明記。サブエージェントでPROMPT-MANAGER/text-extractionを実調査しREQ-PMG-001/REQ-TEX-001を追加。",
+      "usage": {
+        "inputTokens": 3897797,
+        "outputTokens": 9603054,
+        "cacheReadTokens": 5385838392,
+        "cacheWriteTokens": 124243019,
+        "costUsd": 1770.5314992
+      },
+      "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
     }
   ]
 }
