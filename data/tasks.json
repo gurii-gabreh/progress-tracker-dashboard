@@ -4813,7 +4813,37 @@
           "type": "relates_to"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-084",
+      "task": "新規相談フローへの開発資料タブ自動反映の明記 + PROMPT-MANAGER/text-extractionの要件定義シート遡及追加",
+      "title": "開発資料タブ連携の仕上げ(新規相談フロー更新・未登録アプリ backfill)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-10-17",
+      "category": "feature",
+      "note": "ユーザー指示2件。(1)『要件定義時のスキルに、このフローと要件定義データを作成してさっきのところに表示できるようにjsonデータに追加するのを追加しておいて』。(2)『あと、他のアプリも同様に全て作成して』。",
+      "detail": "(1)📄開発資料タブ(PTD-081〜083)は、要件定義・段階別フロー図ともに専用の書き込み先を持たず、既存のrequirements.json・tasks.jsonを都度fetchして描画するビューアーのため、新規相談フロー側で新たに書き込む処理を追加する必要はなかった。その代わり、new-app-kickoffスキル(SKILL.md)とdashboard.htmlの「🆕 新規相談」依頼文テンプレート(buildNewConsultationPromptText)の両方に、『requirements.jsonへ記録すれば自動的に📄開発資料タブ→📋要件定義に表示される』『実装が進みtasks.jsonにタスク・checkHistoryが積み上がれば🔀段階別フロー図にも自動反映される』旨を明記した(SKILL.md自身のルール「手順はテンプレートと同一にすること、変更時は両方同時に更新する」に従い両方を同時更新)。\n\n(2)『他のアプリも同様に全て作成して』は、文脈上『要件定義シートが未登録の既存アプリにも要件定義シートを作成して』の意味と解釈した。knownRepos・requirements.json・tasks.jsonの実データを突き合わせ、2026-09-27の遡及backfill(12リポジトリ)以降に追加され、かつ実在するGitHubリポジトリを持つのに要件定義シートが無いものを洗い出した結果、PROMPT-MANAGER・text-extractionの2件が該当した(claude-codex-integration・AIエンジニア方向性・相談事項・複数・設計書テンプレートは、リポジトリを持たない話題/タスクラベルのため対象外と判断)。general-purposeサブエージェントを1体起動し、両リポジトリをadd_repoで取得、README/HANDOFF.md/SKILL.md/git log等の実コードベースを調査させ、標準10項目形式で根拠付きの回答を得た(根拠のない項目は『不明(記録なし)』と明記、推測で埋めない)。結果をREQ-PMG-001・REQ-TEX-001としてrequirements.jsonへ追加した。\n\n動作確認: Playwrightで、📄開発資料タブのアプリ選択プルダウンに両アプリが追加され、選択すると要件定義10項目が正しく表示されることを確認した。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・SKILL.md・data/requirements.json(commit e99fb55, 57da595; main: 712f251)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-17",
+          "summary": "new-app-kickoffスキルとdashboard.html依頼文テンプレートに開発資料タブへの自動反映を明記。サブエージェントでPROMPT-MANAGER/text-extractionを実調査し、要件定義シート(REQ-PMG-001/REQ-TEX-001)をrequirements.jsonへ追加。Playwrightで表示確認後commit・push・mainマージまで完了。"
+        }
+      ],
+      "nextAction": null,
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-083",
+          "type": "relates_to"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-17T07:21:38.485+00:00"
+  "updatedAt": "2026-10-17T13:20:03.031+00:00"
 }
