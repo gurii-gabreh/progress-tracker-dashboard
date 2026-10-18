@@ -11,6 +11,16 @@
     {
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(約320件のコメント、ユーザー貼り付け)",
       "note": "2026-10-18にユーザーがチャットへ貼り付けた、個別コメント内の具体的なプロジェクト名・URL付きの事例。自動生成された議論要約(5カテゴリ)と、個別ユーザーの実例コメントの両方を含む。"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(1ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1wicqhi/show_us_what_youve_created_with_claude/",
+      "note": "最多得票は広告風パロディ農業ゲーム。2026-10-18にユーザーがチャットへ貼り付け。"
+    },
+    {
+      "title": "r/ClaudeAI 「Show me what you've created with Claude」投稿(5ヶ月前、320件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1tcftws/show_me_what_youve_created_with_claude/",
+      "note": "2026-10-18にユーザーがチャットへ貼り付け。重複するURL・内容は既存エントリとの照合により記録から除外。"
     }
   ],
   "categories": [
@@ -90,6 +100,122 @@
           "title": "楽器アプリ(iOS)",
           "description": "ずっと作りたかった楽器アプリをiOS上で実現した個人プロジェクト。",
           "url": "http://naturarum.github.io/apps"
+        },
+        {
+          "title": "exexif",
+          "description": "写真からGPS座標等のメタデータを削除するだけのシンプルなツール。",
+          "url": "https://www.exexif.com"
+        },
+        {
+          "title": "dohflow",
+          "description": "自分専用に特化しすぎた個人向け家計管理アプリ。AIでシステムを開発する学びの場として作成。",
+          "url": "https://www.dohflow.app"
+        },
+        {
+          "title": "MinePrint",
+          "description": "Minecraftのストラクチャーブロックのセーブデータを、学校の3Dプリンタ用STLファイルに変換する無料ツール。教師が8〜15歳の生徒向けに作成。",
+          "url": "http://discoveryclubdec.ch/mineprint"
+        },
+        {
+          "title": "Voice Tutor",
+          "description": "ドキュメントやURLをアップロードし、AIと対話しながら学習できる音声対話型学習エージェント。文書の主張を先に抽出し、最後に『実際にカバーした内容・飛ばした内容』を振り返れる。Pipecat・Deepgram・Cartesia・Claudeで構築。完全無料・利用上限なし。",
+          "url": "https://www.getvoicetutor.com/"
+        },
+        {
+          "title": "Family Quest",
+          "description": "親が子供にミッション(宿題・歯磨き等)をポイント制で与え、貯まったポイントで欲しいものと交換できる家族向けモバイルアプリ。フランス語・英語対応、Supabase+React Native製。"
+        },
+        {
+          "title": "agendaflow",
+          "description": "終日〜複数日にわたるワークショップの企画・計画を支援するプランナー。",
+          "url": "https://agendaflow.com/"
+        },
+        {
+          "title": "Cortex / Synesis",
+          "description": "睡眠不足で記憶・メンタルに悪影響が出た経験から作った、個人の人生を構造化Markdownで記録するプロトコル(健康ログ・意思決定・財務記録等)。出典を追跡可能にし、AIセッションをまたいでコンテキストを保持できる。この個人版(Cortex)を法人・チーム向けに拡張したナレッジボルト版が「Synesis」。",
+          "url": "https://github.com/cordfuse/cortex"
+        },
+        {
+          "title": "Snagr",
+          "description": "父親のビジネスのために、AIが自律的に特定の商品を探し続けるエージェント。条件に合う最安・最適な出品を発見する精度を継続的に改善中。",
+          "url": "https://github.com/oldmoldycake/Snagr"
+        },
+        {
+          "title": "プール管理ログ・グラフ化アプリ",
+          "description": "プールの薬剤投入量や水質検査結果を化学的な相関関係と履歴付きで記録。店舗の水質検査結果(Leslie's)も自動取り込み。"
+        },
+        {
+          "title": "Ladderly",
+          "description": "バドミントンの実力別マッチングを行う、モバイル対応Webアプリ。地元クラブでパイロット運用開始。",
+          "url": "https://www.ladderly.online"
+        },
+        {
+          "title": "getajob.pro(Dreamcartographer)",
+          "description": "求職活動のために作成した求人探しツール。",
+          "url": "https://getajob.pro"
+        },
+        {
+          "title": "cutkit",
+          "description": "無料の動画ツール集。MP3抽出・GIF作成・圧縮・トリミング。",
+          "url": "https://cutkit.fikser.lol"
+        },
+        {
+          "title": "nichelab",
+          "description": "似た作品(マンガ・ビジュアルノベル・本等)を探すレコメンドツール。",
+          "url": "https://nichelab.xyz/"
+        },
+        {
+          "title": "Sunpatch",
+          "description": "複雑な形状のパティオでも日照量を計算できるガーデニング向けツール。既存ツールが複雑すぎたため自作。",
+          "url": "https://sunpatchapp.com/"
+        },
+        {
+          "title": "Curlo",
+          "description": "ChatGPT・Claude・Geminiとのチャットで、コンテキストがどれだけ消費されたかを測定するChrome拡張機能。重要なタイミングで関連コンテキストを収集し、新しいチャット開始時にも文脈を保てるようにする。初めて開発した製品で無料・完全ローカルストレージ。",
+          "url": "https://curlo-pavilion.lovable.app/"
+        },
+        {
+          "title": "算数ワークシート生成ツール",
+          "description": "子供向けに見つけた算数ワークシートに不満があり、自分で手早く作成したツール。",
+          "url": "https://shwyrwrk.com/"
+        },
+        {
+          "title": "Outpost",
+          "description": "特定のファン層向けの『サポーターズバー』(特定チームを応援するバー)を追加・検索・評価できるiOSアプリ。本物のサポーターズバーが見つからずReddit検索に頼っていた経験から開発。",
+          "url": "https://apps.apple.com/app/id6766168619"
+        },
+        {
+          "title": "家事報酬アプリ(Flutter)",
+          "description": "子供が家事や期待以上の行動をした際に、貯められる仮想通貨で好きな景品と交換できる家族向けアプリ。Firebaseでクラウド同期、モバイル・Web両対応。"
+        },
+        {
+          "title": "家庭運営SMSボット",
+          "description": "何を着るか・予定・夕食等を家族がSMSで質問できるボット。在庫・好み・健康・予定に基づいて献立を自動プランニングする機能も搭載。"
+        },
+        {
+          "title": "LabRecon",
+          "description": "VA(退役軍人援護局)での対応に不満を感じ、検査費用をラボ提供機関間で比較できるツールを開発。検査結果を平易な英語で解説し、体調との関連を示すツールも開発中。",
+          "url": "https://labrecon.io/"
+        },
+        {
+          "title": "apfs-excavate(データ復旧・ストレージ管理ツール)",
+          "description": "故障した1TB外付けSSDから850GB以上のデータ復旧に成功したフォレンジックデータ復旧ツール。オープンソース化。現在はローカル/ネットワークドライブのスナップショット取得・重複検出によるストレージ管理ツールや、動画重複検出・結合・字幕管理・メディアカタログ化ツールも開発中。",
+          "url": "https://github.com/arzisxam/apfs-excavate"
+        },
+        {
+          "title": "homescreens.dev",
+          "description": "Raspberry Piで動くセルフホスト型スマートディスプレイ。サブスクリプションサービス解約に貢献。",
+          "url": "https://homescreens.dev/"
+        },
+        {
+          "title": "auditae",
+          "description": "WordPressプラグイン付きの、Claudeベースの SEO管理ツール。",
+          "url": "https://auditae.app"
+        },
+        {
+          "title": "tripSignal",
+          "description": "カナダ(リジャイナ発)からのオールインクルーシブ旅行の価格を追跡するツール。主要旅行会社を1日3回監視し値下がりをメール通知。Geminiで700以上のリゾート情報を収集・拡充し、家族向け・アダルト限定・ウォーターパーク等で絞り込み可能。Next.js+FastAPI+PostgreSQL、VPS上のDocker稼働。開発者はUXデザイナーでエンジニアではない。",
+          "url": "https://tripSignal.ca"
         }
       ]
     },
@@ -133,6 +259,25 @@
           "title": "jelly-ui",
           "description": "UIにぷるぷるとした『揺れ』のエフェクトを加えるツール。",
           "url": "https://jelly-ui.com"
+        },
+        {
+          "title": "システムモニター(HWiNFO64代替)",
+          "description": "グラフが見づらいHWiNFO64・使いにくいRainmeterの代替として作成。レイアウト・透明度・配色・スケーリング・ログ出力をカスタマイズ可能。"
+        },
+        {
+          "title": "optimaizr",
+          "description": "AIの利用状況を分析し、無駄なトークン消費を見つけてコスト削減方法を提案するツール。完全ローカル実行。npmパッケージとしても配布。",
+          "url": "https://optimaizr.com"
+        },
+        {
+          "title": "BeadHive",
+          "description": "Claude Codeで操作できる無料オープンソースの『ソフトウェア工場』。",
+          "url": "https://beadhive.ai/"
+        },
+        {
+          "title": "Vibecarbon",
+          "description": "vibecoder(AIに作らせる開発者)向けの、フルスタックアプリ設計・DevOps自動化・AIセキュリティガードレールを提供するツール。",
+          "url": "https://vibecarbon.com/"
         }
       ]
     },
@@ -161,6 +306,66 @@
           "title": "Too Many Zeros",
           "description": "Claudeが約200人の億万長者の通信簿を作成・採点したエンタメコンテンツ。",
           "url": "https://toomanyzeros.com/"
+        },
+        {
+          "title": "広告風パロディ農業ゲーム",
+          "description": "よくある『広告みたいだけど実際には存在しないゲーム』を実際に遊べる形で作成したパロディ作品。このスレッドで最多得票。進行状況のエクスポート保存に対応、ソースコードは単一HTMLファイルで公開。",
+          "url": "https://white-tree-0f0b12403.5.azurestaticapps.net/"
+        },
+        {
+          "title": "探偵ゲーム(日常の物語を題材に)",
+          "description": "日常にありそうな人々のエピソードを題材にした探偵ゲーム。iOS近日公開、Android版は先行配信。",
+          "url": "https://play.google.com/store/apps/details?id=com.peeked.detective.games"
+        },
+        {
+          "title": "オレゴン・トレイル スピンオフ2種",
+          "description": "「ヒッピー版」と「UFO陰謀論版」の2種類のオレゴン・トレイル風ゲーム。",
+          "url": "https://endlesstrails.vercel.app/theme-engine/index.html"
+        },
+        {
+          "title": "Garenda",
+          "description": "1980年代の名作『Wizardry』のようなレトロなダンジョン探索ゲーム。D&D風のゲームメカニクスを採用し、手描きのモンスターアートと実在アーティストへ発注した音楽を使用。",
+          "url": "https://www.indiedb.com/games/garenda"
+        },
+        {
+          "title": "Tangent",
+          "description": "自作の物理カードゲームのデモ版。2月にKickstarterでの資金調達を計画中。",
+          "url": "https://demo.saytangent.com"
+        },
+        {
+          "title": "Odysseus題材のゲーム",
+          "description": "オデュッセウスの戦友の一人を主人公に、生き延びることを目指すゲーム。映画『ノーランのオデッセイ』公開に合わせて制作。",
+          "url": "https://www.playthenobody.com"
+        },
+        {
+          "title": "SprawlCrawl",
+          "description": "人口1万人以上の町・都市の衛星画像から、どこの都市かを当てるゲーム。プレイする地域や最低人口のしきい値を選択可能。",
+          "url": "https://sprawlcrawl.com/"
+        },
+        {
+          "title": "PerTerra(VRアプリ)",
+          "description": "世界中を見渡し、場所同士の実際の距離・大きさを体感できるVRアプリ。VR対応Webブラウザでダウンロード不要・プラグイン不要で動作。",
+          "url": "https://artofsullivan.com/perterra/"
+        },
+        {
+          "title": "EraGuessr",
+          "description": "GeoGuessrに着想を得た、歴史と地理に基づく当てゲーム。",
+          "url": "https://eraguessr.ai"
+        },
+        {
+          "title": "La Liga Sombra",
+          "description": "スペイン語学習者向けの探偵ストーリーゲーム。Carmen Sandiego風で、使用中の教科書のカリキュラムに沿って作成(教師による開発)。",
+          "url": "http://la-liga-sombra.vercel.app/"
+        },
+        {
+          "title": "F1 Dynasty",
+          "description": "ずっと遊びたかったF1マネージャーゲームを自作。",
+          "url": "https://f1dynasty.com"
+        },
+        {
+          "title": "H3XATR0N",
+          "description": "開発中のアーケードゲーム。骨の折れる作業だがClaudeのおかげで実現可能になった。",
+          "url": "https://skrazilla.itch.io/h3xatr0n"
         }
       ]
     },
@@ -204,6 +409,38 @@
           "title": "BetterStickies(詳細版)",
           "description": "ファイル・画像・リッチテキスト・コードブロックをそのまま貼り付けられる高機能デスクトップ付箋。Claude 3.6の個人ツールとして始まり、新モデルが出るたびに改良を重ね、公開4ヶ月で約3万行・1500テストの規模に成長。Claude自身の利用料を賄えるまで収益化(無料版+買い切りプレミアム)。全データはローカルJSON保存でアカウント不要。",
           "url": "https://betterstickies.com"
+        },
+        {
+          "title": "Sherlock Holmesオントロジー知識グラフ",
+          "description": "シャーロック・ホームズ全60作を包括的に分析し、オントロジーベースのRDF知識グラフとして整理。任意のLLMがダウンロード・取り込み可能な形で公開。",
+          "url": "https://github.com/tjkelly3va/SherlockHolmesOntology"
+        },
+        {
+          "title": "ALPR対抗研究ライブラリ",
+          "description": "ナンバープレート自動認識カメラ(Flock・Axon・Motorola等)に対抗するための非公開の調査ライブラリ。複数州で100件超のFOIA(情報公開請求)の作成・管理に活用。"
+        },
+        {
+          "title": "Geometry Kernel / Parametric CAD Software",
+          "description": "幾何カーネルとパラメトリックCADソフトウェアを自作。組み込みグラフィックスツールチェーン業界の既存ツールと重なる部分が多いとコメント欄で指摘されている。"
+        },
+        {
+          "title": "belgrade.quest",
+          "description": "ベオグラードの『隠れた秘密』を巡る観光客向けクエストアプリ(未完成)。",
+          "url": "https://belgrade.quest"
+        },
+        {
+          "title": "remaininghours.com",
+          "description": "自分の残り寿命が何時間か、その時間で何ができるかを計算する実存的なサイト。"
+        },
+        {
+          "title": "uispace",
+          "description": "近未来SF風のUIデザイン集。",
+          "url": "https://uispace.org/"
+        },
+        {
+          "title": "UFO Dossier",
+          "description": "機密解除されたUAP/UFO関連文書を検索しやすくするアーカイブ。検索可能な事例一覧・地図表示・原資料・AIへの質問機能(Ask the Archive)を搭載。",
+          "url": "https://www.ufodossier.com/"
         }
       ]
     },
@@ -225,6 +462,11 @@
           "title": "CouncilNotes.ai",
           "description": "分厚い市議会の会議記録を読みやすい概要に変換。何が起こり何が可決されたか、誰がどう投票したか、地元政治家への献金検索まで対応。データセットとチャットでの質問にも対応。",
           "url": "http://councilnotes.ai/"
+        },
+        {
+          "title": "RightsLeft.org",
+          "description": "トランプ政権が行った変更を追跡するプロジェクト。",
+          "url": "http://rightsleft.org/"
         }
       ]
     }
