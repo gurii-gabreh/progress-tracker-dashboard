@@ -142,7 +142,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe, #policy-iframe, #english-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe, #policy-iframe, #english-iframe, #journal-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
      上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
@@ -968,6 +968,7 @@
     <button class="top-tab-btn" id="top-tab-routine" data-view="routine">🔄 ルーティン</button>
     <button class="top-tab-btn" id="top-tab-relations" data-view="relations">🔗 連関図</button>
     <button class="top-tab-btn" id="top-tab-research" data-view="research">🔍 調査資料</button>
+    <button class="top-tab-btn" id="top-tab-journal" data-view="journal">📓 ジャーナル</button>
   </div>
   <div class="view-panel-area">
   <div id="hub-view" class="view-panel">
@@ -1458,6 +1459,13 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- 📓ジャーナルタブ(2026-10-18追加)。gurii-gabreh/mirai-journal(未来ジャーナル、AI面談による
+       1日の振り返り・目標進捗・トレンド蓄積アプリ)をそのまま埋め込む。🇬🇧英語タブと同じ
+       単一iframeパターンを再利用(rule23)。 -->
+  <div id="journal-view" class="view-panel">
+    <iframe id="journal-iframe" title="ジャーナル" loading="lazy"></iframe>
   </div>
   </div>
 </div>
@@ -3328,6 +3336,10 @@
       routine: { btn: document.getElementById("top-tab-routine"), panel: document.getElementById("routine-view") },
       relations: { btn: document.getElementById("top-tab-relations"), panel: document.getElementById("relations-view") },
       research: { btn: document.getElementById("top-tab-research"), panel: document.getElementById("research-view") },
+      journal: {
+        btn: document.getElementById("top-tab-journal"), panel: document.getElementById("journal-view"),
+        iframeId: "journal-iframe", url: "https://gurii-gabreh.github.io/mirai-journal/",
+      },
     };
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
