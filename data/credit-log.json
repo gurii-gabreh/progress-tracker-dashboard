@@ -1,6 +1,6 @@
 {
   "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/time/repo/task/noteを1行ずつ自動追記する(timeはJST・HH:MM形式)。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。【2026-08-20(1)】1日にどれだけ作業したか見た目で分からないという指摘を受け、time列と日別/直近5時間の自動集計を追加。2026-08-19以前の6件は時刻を記録していなかったため、time欄は空(直近5時間の集計には含めない。日別集計には含める)。【2026-08-20(2)】mcp__Claude_Code_Remote__get_sessionが実測の累積トークン数(usage: inputTokens/outputTokens/cacheReadTokens/cacheWriteTokens/costUsd)と、5時間レート制限の正確なリセット時刻(rateLimitResetsAt)を返すことが判明したため、以後のエントリにこの2つを追加。前の行のusageとの差分でタスクごとの消費量を表示し、rateLimitResetsAtが変わった箇所には実測ベースで自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要になった。申告ベースのtype:\"boundary\"も引き続き手動追加は可能)。usage/rateLimitResetsAtが無い過去のエントリは、差分計算・自動仕切りの対象外として「—」表示になる。",
-  "updatedAt": "2026-10-17",
+  "updatedAt": "2026-10-18",
   "entries": [
     {
       "date": "2026-08-19",
@@ -355,6 +355,21 @@
         "costUsd": 1770.5314992
       },
       "rateLimitResetsAt": "2026-10-17T19:20:00+09:00"
+    },
+    {
+      "date": "2026-10-18",
+      "time": "02:52",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-087: AI駆動型アプリコンテストページ新設 + ハッカソン①②セクション折りたたみ化 + 段階別フロー図スクロール固定化",
+      "note": "🎯AI駆動型アプリコンテストサブタブ新設(10件記録)。①②セクションを折りたたみ化・①は文字拡大。🔀段階別フロー図ページのタイトル・説明・アプリ選択・フィルタボタンもスクロール固定化(要件定義ページと同じsticky-headパターン)。ユーザー承認により完了。",
+      "usage": {
+        "inputTokens": 5590067,
+        "outputTokens": 9940119,
+        "cacheReadTokens": 5478435727,
+        "cacheWriteTokens": 126265518,
+        "costUsd": 1800.3010036
+      },
+      "rateLimitResetsAt": "2026-10-18T15:20:00+09:00"
     }
   ]
 }
