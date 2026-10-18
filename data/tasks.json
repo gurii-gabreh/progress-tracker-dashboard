@@ -4877,7 +4877,41 @@
           "type": "relates_to"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-086",
+      "task": "🎓学習タブを📄開発資料タブへ統合 + 🇬🇧英語タブ新設(English-Speaking-App埋め込み)",
+      "title": "ダッシュボード構成整理(学習タブ統合・英語タブ追加)",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-10-18",
+      "category": "feature",
+      "note": "ユーザー指示「ここの構成を、学習資料、学習記録、学習方針をアプリ開発タブにまとめ、その中で表示しろ。また、ここに英語タブを追加し、https://gurii-gabreh.github.io/progress-tracker-dashboard/のページを表示しろ」。後半のURLはprogress-tracker-dashboard自身のGitHub Pages(自己参照でiframeが壊れる)だったため、AskUserQuestionで意図を確認し、English-Speaking-Appのページ(https://gurii-gabreh.github.io/English-Speaking-App/)を表示する方針で確定・実装した。実装完了・動作確認済みだが、claude-core-rules.mdルール30によりユーザー確認待ちのためstatusは対応中のまま。",
+      "detail": "(1)学習タブ統合: 独立していた🎓学習タブ(📖学習資料/📝学習記録/🧭学習方針の3サブタブ、App-Development-Infoリポジトリのページをiframe表示)を廃止し、📄開発資料タブの既存manager-subview-toggleへ合流させた(📋要件定義・🔀段階別フロー図と合わせて計5サブタブ)。iframeの遅延読み込みロジック(初回クリック時にsrcをセット)は旧setupLearningSubviewToggle関数の実装をそのままsetupDevDocsControls側へ移植し、新規のパターンは作らなかった(rule23: 既存の仕組みを優先)。🏠一覧タブのhub-card(以前は学習タブへのリンクだった)も開発資料タブへ張り替え、説明文を5サブタブ構成に更新した。\n\n(2)英語タブ新設: 🇬🇧英語タブを📄開発資料タブの隣(旧🎓学習タブがあった位置)に新設し、gurii-gabreh/English-Speaking-Appのトップ選択ページ(index.html、自作アプリ練習/ChatGPT英会話レッスン案内/レッスン記録一覧の3ページへの入口)をiframeで埋め込んだ。既存の🗂アプリ一覧・🧠ナレッジと同じ単一iframe+遅延読み込みパターンをそのまま再利用し、新しい実装パターンは作っていない(rule23)。\n\n動作確認: python3 -m http.serverでローカル配信し、Playwrightで(a)開発資料タブの5サブタブ全てがクリックで切り替わり、学習系3サブタブのiframeがそれぞれ正しいURL(App-Development-Infoのmaterials/records/policy)を遅延取得すること、(b)🏠一覧タブのhub-cardが開発資料タブへ正しく遷移すること、(c)🇬🇧英語タブがEnglish-Speaking-AppのURLを正しくiframeへセットすることを確認した。English-Speaking-App自体のGitHub Pagesコンテンツは、このセッション固有のネットワークegressポリシーでgithub.ioドメインへの直接アクセスがブロックされているため中身までは検証できなかったが(Task-WBS等、既存の他のgithub.io埋め込みタブも同一の制約を受けており今回固有の問題ではない)、iframeへのURL設定自体は正しく行われていることをPlaywrightで確認済み。",
+      "issues": [],
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html(designated branch commit 08fbdc2・英語タブ分は別コミットで追加予定; main 18591b7まで反映済み)",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-18",
+          "summary": "🎓学習タブを📄開発資料タブへ統合(5サブタブ化)し、🇬🇧英語タブを新設してEnglish-Speaking-Appを埋め込んだ。英語タブのURLはユーザー指定のURLが自己参照だったためAskUserQuestionで確認し訂正。Playwrightで動作確認後、designated branch→main反映まで完了予定。"
+        }
+      ],
+      "nextAction": "ユーザーに完了してよいか確認(claude-core-rules.mdルール30)。承認後にstatusを完了へ更新。",
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": [
+        {
+          "id": "PTD-085",
+          "type": "relates_to"
+        },
+        {
+          "id": "ESA-001",
+          "type": "relates_to"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-17T17:14:01.699+00:00"
+  "updatedAt": "2026-10-18T01:22:28.406+00:00"
 }
