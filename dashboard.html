@@ -1407,7 +1407,7 @@
   <div class="manager-subview-toggle">
     <button type="button" class="manager-subview-btn active" id="research-subtab-hackathon" data-subview="hackathon">🏆 ハッカソン</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-contest" data-subview="contest">🎯 AI駆動型アプリコンテスト</button>
-    <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">💡 アプリ事例・アイデア帳</button>
+    <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">📱 Reddit事例集</button>
   </div>
 
   <div id="research-subview-hackathon" class="manager-subview active">
@@ -1449,8 +1449,8 @@
   <div id="research-subview-ideas" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">💡 アプリ事例・アイデア帳</div>
-        <p class="tab-page-overview">今後のアプリ作成のアイデア・着眼点の参考にするための、他のClaudeユーザーの作品事例調査です。data/app-idea-research.jsonから生成します(ユーザーがチャットに貼り付けた一次情報をもとに記録。自動収集は行っていません)。</p>
+        <div class="tab-page-title">📱 Reddit事例集</div>
+        <p class="tab-page-overview">今後のアプリ作成のアイデア・着眼点の参考にするための、r/ClaudeAI(Reddit)の作品事例一覧です。data/app-idea-research.jsonから生成します(ユーザーがチャットに貼り付けた一次情報をもとに記録。自動収集は行っていません、閲覧専用)。タイトル・概要・参照先URLの一覧形式で表示します。</p>
         <div class="policy-meta" id="research-ideas-meta"></div>
         <div id="research-ideas-categories"></div>
         <div class="devdocs-section-title" style="margin-top:20px;">🔍 自分のアプリ群との比較所感</div>
@@ -3782,6 +3782,9 @@
       });
   }
 
+  // 2026-10-18変更: ユーザー指示「タイトルと概要、参照先URLで一覧化にしてまとめて」により、
+  // カード形式から既存の.devdocs-qa-list(📋要件定義タブのQ&A一覧と同じ、罫線区切りの一覧)パターンへ
+  // 変更(rule23: 既存の仕組みを優先)。カテゴリ単位の折りたたみ構造(devdocs-stage-group)は維持。
   function renderIdeaCategories(categories) {
     const box = document.getElementById("research-ideas-categories");
     if (!box) return;
@@ -3791,11 +3794,13 @@
         <summary>${escapeHtmlForDevDocs(cat.name || "")} <span class="count">(${(cat.items || []).length})</span></summary>
         <div class="devdocs-stage-group-body">
           ${cat.note ? `<p class="tab-page-overview" style="margin:0 0 8px;">${escapeHtmlForDevDocs(cat.note)}</p>` : ""}
-          ${(cat.items || []).map((it) => `
-            <div class="policy-card" style="margin-bottom:8px;">
-              <h3 style="margin:0 0 4px;">${escapeHtmlForDevDocs(it.title || "")}</h3>
-              ${it.description ? `<p style="margin:0; font-size:12.5px; color:var(--text-muted); line-height:1.6;">${escapeHtmlForDevDocs(it.description)}</p>` : ""}
-            </div>`).join("")}
+          <div class="devdocs-qa-list">
+            ${(cat.items || []).map((it) => `
+              <div class="devdocs-qa-item">
+                <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
+                ${it.description ? `<div class="a">${escapeHtmlForDevDocs(it.description)}</div>` : ""}
+              </div>`).join("")}
+          </div>
         </div>
       </details>`).join("");
   }
