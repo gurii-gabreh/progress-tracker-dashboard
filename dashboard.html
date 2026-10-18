@@ -1199,15 +1199,18 @@
   <div id="devdocs-subview-flow" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">🔀 段階別フロー図</div>
-        <p class="tab-page-overview">タスクの経緯を段階ごとに並べたフロー図です。data/tasks.jsonの各タスクを更新日順に並べ、checkHistory(対応経緯)とdetail/output/nextAction(最終方針)を段階として表示します(専用データは持たず、tasks.jsonから毎回生成)。</p>
-        <div class="relations-controls">
-          <label>アプリ: <select id="devdocs-app-select-flow"></select></label>
-          <span id="devdocs-flow-filter" class="filter-row" style="margin:0;">
-            <button type="button" class="filter-btn active" data-filter="all">すべて</button>
-            <button type="button" class="filter-btn" data-filter="incomplete">未完了のみ</button>
-            <button type="button" class="filter-btn" data-filter="done">完了のみ</button>
-          </span>
+        <!-- 2026-10-18追加: 要件定義ページと同様、見出し・説明・アプリ選択・フィルタをスクロール固定化 -->
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">🔀 段階別フロー図</div>
+          <p class="tab-page-overview">タスクの経緯を段階ごとに並べたフロー図です。data/tasks.jsonの各タスクを更新日順に並べ、checkHistory(対応経緯)とdetail/output/nextAction(最終方針)を段階として表示します(専用データは持たず、tasks.jsonから毎回生成)。</p>
+          <div class="relations-controls">
+            <label>アプリ: <select id="devdocs-app-select-flow"></select></label>
+            <span id="devdocs-flow-filter" class="filter-row" style="margin:0;">
+              <button type="button" class="filter-btn active" data-filter="all">すべて</button>
+              <button type="button" class="filter-btn" data-filter="incomplete">未完了のみ</button>
+              <button type="button" class="filter-btn" data-filter="done">完了のみ</button>
+            </span>
+          </div>
         </div>
         <div id="devdocs-flow"></div>
       </div>
@@ -1420,8 +1423,12 @@
           </div>
         </details>
 
-        <div class="devdocs-section-title" style="margin-top:20px;">② 過去の入賞作品</div>
-        <div id="research-hackathon-winners"></div>
+        <details class="devdocs-stage-group" open style="margin-top:20px;">
+          <summary class="research-section-summary-lg">② 過去の入賞作品</summary>
+          <div class="devdocs-stage-group-body">
+            <div id="research-hackathon-winners"></div>
+          </div>
+        </details>
       </div>
     </div>
   </div>
