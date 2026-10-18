@@ -34,6 +34,18 @@
     {
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(2ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1vt249k/show_us_what_youve_created_with_claude/"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(18日前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1wujje8/show_us_what_youve_created_with_claude/"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(2ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1vmtj8f/show_us_what_youve_created_with_claude/"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(3ヶ月前、40件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1vac23x/show_us_what_youve_created_with_claude/"
     }
   ],
   "categories": [
@@ -312,6 +324,101 @@
           "title": "tripSignal",
           "description": "カナダ発の格安オールインクルーシブ旅行向け価格追跡ツール。SellOffVacations・RedTag・Air Transatを1日3回巡回し、気になる旅行の価格が下がるとメール通知。700以上のリゾートをGeminiでスクレイピング・情報強化し、家族向け・アダルト限定・ウォーターパーク有無・藻(サルガッサム)リスク・移動時間などで絞り込み検索できる。",
           "url": "https://tripsignal.ca"
+        },
+        {
+          "title": "RestIQ",
+          "description": "セット終了後にスマホを手に取ると自動的に計測が始まる、ジム用の休憩タイマー。",
+          "url": "https://apps.apple.com/us/app/restiq-gym-rest-timer/id6762704354"
+        },
+        {
+          "title": "Upload My Code / Laser / Model / Cut",
+          "description": "高校の工学クラス向けに作られたオープンソースのアプリ群。Chromebookから、Arduinoコード・レーザーカッターファイル・3Dプリント用スライスファイル・(開発中)CNC加工ファイルをアップロードできるようにする。",
+          "url": "https://uploadmycode.com/"
+        },
+        {
+          "title": "Suṣumṇā",
+          "description": "瞑想的な体験に発展したコヒーレント呼吸法アプリ。感じたい状態(生き生きと・穏やかに・明確に・地に足をつけて等)や抱えているもの(滞った気・散らばった気・アイデア等)を選ぶと、光が体のシンプルな図形を通って動き、静かな鈴の音と共に呼吸のペースを導く。無料・アカウント不要・広告無し・連続記録のプレッシャー無し・オフラインでも動作。",
+          "url": "https://susumna.com/show-us"
+        },
+        {
+          "title": "MeanWeather",
+          "description": "複数の世界的な気象モデルの平均(平均または中央値を選択可能)を取り、最小・平均・最大値として表示するサイト。各セルのツールチップで詳細を確認できる。",
+          "url": "https://meanweather.net"
+        },
+        {
+          "title": "TruePostings",
+          "description": "既に決まった求人への応募にうんざりして作った求人検索サイト。全てのリンクが企業自身の採用ページへ直接つながり、転載・会員登録の壁・既に終了した求人掲載が無い。各企業の採用ページを約1時間おきに再チェックし、消えた求人は自動でクローズ。「最近確認済み」フィルターで過去48時間以内に確認された求人のみ表示。500社以上・6000件以上の求人を無料・登録不要で検索可能。",
+          "url": "https://truepostings.com"
+        },
+        {
+          "title": "ScholarAB",
+          "description": "アルバータ州の高校生向けの無料奨学金ディレクトリ。",
+          "url": "https://www.scholarab.ca"
+        },
+        {
+          "title": "pgh.golf",
+          "description": "ゴルフコースを検索してティータイムを確認する手間にうんざりして作った、ペンシルベニア州西部・オハイオ州東部等180以上のゴルフコースを掲載する無料ディレクトリ。各コースの所在地・ホール数・パー・設備・衛星画像・コース状況を掲載し、オンライン予約や電話予約へ直接リンク。小規模な公営コースも含め、料金支払いの有無に関わらず全コースを掲載する「クイック予約」機能が特徴。",
+          "url": "https://pgh.golf"
+        },
+        {
+          "title": "TeachChat",
+          "description": "教室向けのライブチャット(Twitchのような仕組み)。プライバシー重視で、AI連携・データ収集は無し。",
+          "url": "https://teachchat.app/"
+        },
+        {
+          "title": "Lullay",
+          "description": "複数のiPhone/iPadを、MultipeerConnectivity経由で1つの同期した睡眠用サウンドスケープに変換するアプリ。サーバー不要・オフライン動作、各デバイスが同じシーンの異なる音のレイヤーを一晩中同期再生する。",
+          "url": "https://apps.apple.com/app/id6771234984"
+        },
+        {
+          "title": "Laadradar",
+          "description": "時間帯ごとに電気料金が変動する契約のEVドライバー向け、オランダのWebアプリ。市場価格・グリッド負荷・風力/太陽光発電・天候・ガス価格を取り込むLightGBMモデルで72時間先まで電気料金を予測し、充電に最適な時間帯を教える。予測時間の実際の価格との誤差は平均約1.4セント/kWh、最安時間帯の当たり率(±2時間以内)は約94%。",
+          "url": "https://www.laadradar.nl"
+        },
+        {
+          "title": "BC Cycle Tourism",
+          "description": "ブリティッシュコロンビア州でのサイクリング観光・バイクパッキング向けの総合サイト。自転車をある地域から別の地域へ運ぶためのバス/フェリー/飛行機を検索するツール(自転車輸送用Rome2Rio)、OpenStreetMapから収集した1万8000件のホテル・キャンプ場・レストランに自転車設備情報を注釈付けしたディレクトリ、州観光局等からの写真選別機能などを搭載。非営利団体としての法人設立書類の作成もClaudeに依頼。",
+          "url": "https://bccycletourism.ca"
+        },
+        {
+          "title": "Senny",
+          "description": "常に無料で使える瞑想・哲学アプリ。",
+          "url": "https://apps.apple.com/us/app/senny/id6790199078"
+        },
+        {
+          "title": "TopicLingo",
+          "description": "Duolingoのように、ニッチなトピックで今話題の単語を毎日少しずつ学べる語学学習アプリ。モバイルアプリ開発者になるための一連の学び(アカウント設定・プラットフォーム固有のビルド方法・公開)をClaudeに導いてもらいながら作った、個人の「アプリ工場」から生まれた最初の作品(Android/iOS両対応で公開済み、他に4本が開発中)。",
+          "url": "https://proliferaite.com/topiclingo/"
+        },
+        {
+          "title": "PhiMask",
+          "description": "個人情報(PII/PHI)を検出して自動的に覆い隠す、無料・オフラインのブラウザ内秘匿化ツール。医療紹介状やカルテ作成にChatGPTを使う医師向けに開発され、貼り付けた情報をマスクしてから安全にコピーできる。LLMを使わずTesseract OCRで画像・PDF内のテキストも検出するため数MBで軽量、ブラウザだけで動作。",
+          "url": "https://phimask.com/mask-data"
+        },
+        {
+          "title": "nitro.film",
+          "description": "Web・iPhone・iPad・Apple TV・Android・Android TV・Fire TV・Rokuに対応したマルチプラットフォーム定額制映画ストリーミングサービス。アプリ間課金・アプリ内課金・ピクチャーインピクチャー・字幕・AIレコメンデーションエンジン・対話型AIチャットボットを搭載。設計・開発を個人で実施。",
+          "url": "https://nitro.film"
+        },
+        {
+          "title": "RideQuiver",
+          "description": "マウンテンバイクの部品・在庫をスプレッドシートではなく専用アプリで管理できる、サイクリスト向け無料アプリ。",
+          "url": "https://ridequiver.com"
+        },
+        {
+          "title": "Loam Ride Conditions",
+          "description": "嵐の後、マウンテンバイクのトレイルが十分に乾いて走行可能になったかどうかを教えてくれる無料アプリ。",
+          "url": "https://loamrideconditions.com"
+        },
+        {
+          "title": "toqe",
+          "description": "フリーランサーや小規模スタジオ向けのプロジェクト・経費トラッカー。",
+          "url": "https://toqe.pro"
+        },
+        {
+          "title": "Ear Training Apps",
+          "description": "音楽の聴音(耳のトレーニング)に特化した音楽教育アプリシリーズ。",
+          "url": "https://eartrainingapps.com"
         }
       ]
     },
@@ -404,6 +511,71 @@
           "title": "Orgabot",
           "description": "組織図そのものを置き換えることを意図したエージェントオーケストレーションツール。各役職に人間またはエージェントを割り当て、ミッションを起動し結果を確認できる。",
           "url": "https://www.orga.bot"
+        },
+        {
+          "title": "LiveNerf",
+          "description": "モデルの安定性に関するデータをコミュニティに提供し、Anthropicがモデルを弱体化させているかを長期データで科学的に検証するためのプロジェクト。日次更新のグラフをリポジトリで公開。",
+          "url": "https://github.com/ninjahawk/livenerf"
+        },
+        {
+          "title": "Pindicate",
+          "description": "動画・画像・PDF・Webサイトなど何でもアップロードし、リンクを共有して、その上に直接コメントを残してもらえるツール。",
+          "url": "https://pindicate.com"
+        },
+        {
+          "title": "BananaPhone",
+          "description": "口述内容を整形し文法をコーチしてくれる音声入力ツール。ポルトガル語・スペイン語・英語のいずれかで話すと文字起こし・必要に応じ翻訳し、どこにでも貼り付けられる洗練された文章を生成。非母国語での音声入力時は、入力しようとした文章・頻出の間違い・その間違いの母国語での説明・繰り返し回数を表示。サポート業務向けのJiraモードも搭載(口述メモを顧客への返信と社内ログへ同時反映)。OpenAI・Gemini対応、Ollama経由で完全オフラインも可能。Claude Codeで構築、MITライセンス。",
+          "url": "https://github.com/cascodigital/bananaphone"
+        },
+        {
+          "title": "React 3D Mockups",
+          "description": "three.jsと手続き生成された3Dモデルを使い、任意のReactコンポーネントをGPUアクセラレーションのライブな3Dモックアップとして表示するツール(開発中)。",
+          "url": "https://area.is/react-3d-mockups"
+        },
+        {
+          "title": "Termi",
+          "description": "AIコーディングエージェント向けのコントロールルーム。読み込まれた全てのファイル・実行された全てのコマンド・全ての変更を3Dでリアルタイム監視できる、AIコーディングエージェントのための「体とルーム」を提供する。",
+          "url": "https://termiprotocol.com"
+        },
+        {
+          "title": "Screen Shawty",
+          "description": "タスクバーに常駐するMacアプリ。Claudeセッションへスクリーンショットを貼り付ける際、ペーストバッファ内のRetinaサイズの画像を、貼り付け前に適度に圧縮されたJPGへ自動縮小する。",
+          "url": "https://screenshawty.app/"
+        },
+        {
+          "title": "KyPost",
+          "description": "セルフホスト型のメールエコシステム。簡単に設定できるPGP暗号化送受信、ユーザー指定のGmail風カテゴリ分け、暗号化されていないメールを分類するローカルLLM、全デバイスへのCardDAV同期を搭載。接続の暗号化強制、通知プロバイダーの選択、携帯メーカーのクラウドへの非保存、敵対的位置情報保護(アプリを閉じるとデバイスごとのペアリングトークン以外全て消去)などセキュリティを重視した設計。オープンベータ稼働中。",
+          "url": "https://www.kypost.org/"
+        },
+        {
+          "title": "iso-24495",
+          "description": "Claudeにプレインランゲージ基準(ISO 24495)を守らせるプラグイン。コアルール・法律文書・技術文書・文書デザイン・組織展開をカバーする5つのスキルと、Claudeが書く全てのMarkdownファイルを文長・段落密度・法律用語・見出しの深さで監査するアドバイザリーフック、文書群全体を変更に応じて再監査するバックグラウンドモニターを搭載。SKILL.mdはエージェント中立の記述で他のエージェントでも動作する。",
+          "url": "https://github.com/GaZmagik/iso-24495"
+        },
+        {
+          "title": "etk (Linux distro)",
+          "description": "Snapdragon 865 Adreno 610搭載のレトロ携帯ゲーム機向けLinuxディストリビューション。AndroidよりもPS3エミュレーションの性能が高い。",
+          "url": "https://github.com/mercurious/etk"
+        },
+        {
+          "title": "NuvioDesktop(フォーク版)",
+          "description": "Windows経由のホームシアター設定に特化したNuvio Desktopのフォーク版。デスクでのマウス操作にも最適化。アップストリーム版に約50の機能を追加し、独自作成のポスター(Plex/Jellyfin等のメディアツールで使用可)も同じリポジトリで公開。",
+          "url": "https://github.com/UmbraProjects/NuvioDesktop"
+        },
+        {
+          "title": "marenhq",
+          "description": "ローカルで動作するTTS(音声合成)・STT(音声認識)と、Amazon Podcastのクローン的機能を持つツール群。",
+          "url": "https://marenhq.com"
+        },
+        {
+          "title": "Signal Check",
+          "description": "Claude Coworkを使って作られた、無料のブラウザ内音声解析ツール。ラウドネス・ダイナミクス・ステレオ相関・ジャンル別のトーナルバランス・トゥルーピークを測定できる。",
+          "url": "https://beatswithkev.com/signal-check"
+        },
+        {
+          "title": "Echo-Storm ツール群",
+          "description": "koboldcpp・Forge Neo・SillyTavern等のAIツール向けランチャー兼コントローラー、Cync製スマート電球を操作するWindowsアプリ、torbox向けファイルマネージャー/アップローダー・ダウンローダー、PCM/MSU1形式にも対応した音量平準化付き音声コンバーターなど、複数の個人用ツールをまとめて公開しているプロジェクト群。",
+          "url": "https://github.com/Echo-Storm/"
         }
       ]
     },
@@ -552,6 +724,46 @@
           "title": "Unstable Truck",
           "description": "荷物を集めながら進む、片手操作のトップダウン型トラックレースゲーム。日替わりのテーマとランダム生成レベル、リーダーボード付き。",
           "url": "https://lewistrick.com/unstable-truck"
+        },
+        {
+          "title": "Riso Rider",
+          "description": "リソグラフ風アートスタイルの、Line Riderにインスパイアされたパズルゲーム。50レベル全て無料でプレイ可能。",
+          "url": "https://tbone94.github.io/Riso-Rider/"
+        },
+        {
+          "title": "You Choose It",
+          "description": "2つの選択肢から1つを選び、勝者が次の挑戦者と対決していくトーナメント形式のサイト。15回対戦すると自分の「チャンピオン」が決まり、他の人との一致度も分かる。映画・ドラマ・アルバムジャケット・30秒プレビュー付きのバンド等に対応、登録不要。",
+          "url": "https://youchoose.it/"
+        },
+        {
+          "title": "YolkFlip",
+          "description": "スマートフォンから、Fable・Opus・Astraを組み合わせて100%AIで制作されたゲーム。",
+          "url": "https://jalapenoseed.itch.io/yolkflip"
+        },
+        {
+          "title": "The Lost Archive",
+          "description": "子供とその友達向けのインタラクティブな選択肢式アドベンチャー本。各本に20種類以上のエンディングがあり、「ゴールデンエンディング」を見つけると次へ進める。行方不明の著者に関する大きな謎(未解決)もあり、読み進めるとミニアーケードゲームがアンロックされる。",
+          "url": "https://www.thelostarchive.net/"
+        },
+        {
+          "title": "Endless Noir",
+          "description": "1930年代ノワール風の探偵ラジオドラマを自作したプロジェクト。架空の都市キャロウェイ・ベイを舞台に、ElevenLabsの音声を使用。脚本や企画書を作成するエージェント型ライターズルームが、設定・過去の出来事・架空の広告挿入まで管理している。",
+          "url": "https://endlessnoir.com"
+        },
+        {
+          "title": "r/PunchAPath",
+          "description": "Reddit内で完全にプレイできるパズルゲーム。",
+          "url": "https://www.reddit.com/r/PunchAPath/"
+        },
+        {
+          "title": "Mancalero",
+          "description": "幼少期に遊んだボードゲーム「マンカラ」を基にしたゲーム。特殊効果や敵の仕組みを加えることで戦略性とリプレイ性を高めている。パブリックプレイテスト公開中。",
+          "url": "https://store.steampowered.com/app/4811700/Mancalero/"
+        },
+        {
+          "title": "Haunt",
+          "description": "実在する場所にまつわる心霊story(怪談)を知りながら参加できる、セルフガイド式ゴーストツアーのiPhoneアプリ。無料ダウンロード・試用可能で、フリーモードでもアンビエントサウンドマシンとして使える。",
+          "url": "https://gethauntapp.com"
         }
       ]
     },
@@ -661,6 +873,36 @@
           "title": "remaininghours.com",
           "description": "自分の残り寿命が何時間あるか、その時間で何ができるかを可視化する実存主義的なサイト。",
           "url": "https://remaininghours.com/"
+        },
+        {
+          "title": "VIEW1108",
+          "description": "NASAのプログラムに基づいた、投機的なソフトウェア考古学プロジェクト。アポロ計画の窓デザインに関わった実在のNASAプログラムを題材にしている。",
+          "url": "https://aaronsb.github.io/view1108/"
+        },
+        {
+          "title": "Symbols",
+          "description": "却下されたロゴのためのシェルター(保護施設)。デザイナーが自身のお蔵入りロゴ案を供養する目的で作成。",
+          "url": "https://symbols.konpo.co/"
+        },
+        {
+          "title": "HaveWeReachedAGI.com",
+          "description": "「AGIに到達したか」という1つの問いにのみ答える非公式の政府風ダッシュボード(答えは今も「No」)。ジョークは作り物だが、根拠となる資料は実在するものを使用し、重要なAI動向を出典付きで追跡する。",
+          "url": "https://havewereachedagi.com/"
+        },
+        {
+          "title": "Space Map",
+          "description": "太陽系に加え、既知の恒星・ブラックホールまで含む宇宙地図を作成するプロジェクト。地球・恒星・人工衛星・ISSの追加、最大・最遠の天体のスケール調整などを継続的に改善中。",
+          "url": "https://www.scaryfast.ca/space"
+        },
+        {
+          "title": "ismycoolerworking.com",
+          "description": "自宅の蒸発式冷却器(エバポレーティブクーラー)が正常に作動しているかどうかを教えてくれるサイト。",
+          "url": "http://ismycoolerworking.com/"
+        },
+        {
+          "title": "rounded.lol",
+          "description": "無意味だが楽しい、最も無意味なウェブサイト。",
+          "url": "http://rounded.lol/"
         }
       ]
     },
@@ -702,6 +944,26 @@
           "title": "daylight.watch",
           "description": "米国政府機関の.govサイトを監視し、プライバシーポリシーが無く個人データを追跡しているサイトを見つけるツール。毎日サイトをWayback Machineへ送信して記録を残す。",
           "url": "https://daylight.watch/"
+        },
+        {
+          "title": "Civic",
+          "description": "現在の政治状況への不満から開発した、政治・市民参加のための新しいプラットフォーム。議員の活動内容・取り組んでいる法案・その法案が自分に与える影響を分かりやすく示し、議員と意見交換できるようにする。",
+          "url": "https://www.engagecivic.com/"
+        },
+        {
+          "title": "Pavillion",
+          "description": "オープンソースの統合型イベントカレンダー。地域のイベント情報を集約し、わざわざ遠くまで出かけなくても近くで楽しめるイベントがあることを知らせる。",
+          "url": "https://pavillion.social"
+        },
+        {
+          "title": "BeTravelKind",
+          "description": "旅行先のアクティビティが人・動物・地球に与える影響を、自分で調べなくても教えてくれる倫理評価ツール。Claude Haiku+Brave Searchの複数ステップ処理で、適切な質問を立てて検索結果上位を読み、影響の大きさで評価したリストと総合スコアを作成。各項目は出典にリンクする。タイの「倫理的」とされる象保護施設が実際には象乗り等を許可している実態に触れた経験がきっかけ。",
+          "url": "https://betravelkind.com/kindscore"
+        },
+        {
+          "title": "WhoAreThesePeople.org",
+          "description": "自分の情報をあまり公開していない地元の政治代表者について、プロフィール情報を提供するサイト(米国サウスジャージー地域対象)。",
+          "url": "http://whoarethesepeople.org/"
         }
       ]
     }
