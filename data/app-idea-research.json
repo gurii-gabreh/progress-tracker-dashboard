@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "description": "今後のアプリ作成のアイデア・着眼点の参考にするための、他のClaudeユーザーの作品事例調査。マネージャーアプリの「🔍 調査資料」タブ→「💡 アプリ事例・アイデア帳」ページで表示する。data/hackathon-research.json・data/contest-research.jsonと同じ『実績作り・着想収集』カテゴリだが、更新の性質(ユーザーがチャットに貼り付けた一次情報を記録するという形式)が異なるためファイルを分けた(2026-10-18、ユーザー指示「この調査結果は、調査資料にまとめて」)。",
+  "updatedAt": "2026-10-18",
+  "note": "r/ClaudeAI(Reddit)のコミュニティまとめ投稿をユーザーがチャットに貼り付けた内容を整理したもの。Reddit robots.txt/利用規約の制約により、このセッションからの自動収集(スクレイピング)は行っていない(CL-034と同じ判断)。一次情報はユーザー自身が手動で閲覧・貼り付けたもの。",
+  "sources": [
+    {
+      "title": "r/ClaudeAI 「Built with Claude」コミュニティまとめ投稿(ユーザー貼り付け、個別投稿URLは不明)",
+      "note": "2026-10-18にユーザーがチャットへ貼り付けた内容。元投稿の直接URLは貼り付けられていないため未記録。"
+    }
+  ],
+  "categories": [
+    {
+      "name": "① アプリ(日常の困りごと解決)",
+      "note": "r/ClaudeAIの集計で最多だったカテゴリ。大小さまざまな具体的な困りごとを解決するアプリ群。",
+      "items": [
+        {
+          "title": "地域の騒音レベル確認ツール",
+          "description": "オーストラリアへの引っ越し前に、その地域の騒音レベルを確認できるツール。"
+        },
+        {
+          "title": "教室用DJアプリ",
+          "description": "露骨な歌詞の曲を自動フィルタリングする、教室で使うためのDJアプリ。"
+        },
+        {
+          "title": "Better Stickies(付箋アプリ)",
+          "description": "プライバシーを最優先に考えた付箋アプリ。開発者にとって本格的な副業に発展した例。"
+        },
+        {
+          "title": "Obsidianオープンソース代替",
+          "description": "Obsidian(ノートアプリ)のオープンソース版代替ソフトウェア。"
+        },
+        {
+          "title": "トレーディングカード収集アプリ",
+          "description": ""
+        },
+        {
+          "title": "カナダの金融シミュレーター",
+          "description": "現在学校で実際に使用されている教材アプリ。"
+        },
+        {
+          "title": "食事プランナー・姿勢矯正アプリ・テスラ車用NESエミュレーター",
+          "description": "その他、種類の豊富さが特徴的だった例。"
+        }
+      ]
+    },
+    {
+      "name": "② 開発者向けメタツール",
+      "note": "Claudeを使ってClaude自身をさらに使いやすくするツール群。progress-tracker-dashboard・usage-tracker・claude-voice-bridgeと同じ方向性。",
+      "items": [
+        {
+          "title": "高度なClaude Codeセッションマネージャー",
+          "description": "複数のAIアシスタントを調整し、互いに干渉しないようにし、プロジェクトを管理するツール。"
+        },
+        {
+          "title": "トークン使用量追跡・最適化CLIツール",
+          "description": "請求額を26%削減することに成功した例。"
+        },
+        {
+          "title": "ピクセルアートのClaudeペット",
+          "description": "タスクバーに常駐し、使用制限を追跡、コーディング時には小さな魔法使いの帽子をかぶる。"
+        }
+      ]
+    },
+    {
+      "name": "③ ゲーム・エンタメ",
+      "note": "",
+      "items": [
+        {
+          "title": "Almost Television",
+          "description": "フェルト人形を使った週刊コメディ番組。Claudeが脚本を書き、仮想スタジオ全体を構築。"
+        },
+        {
+          "title": "チェス対局→アンビエントミュージック変換ライブ配信",
+          "description": "有名なチェスの対局をアンビエント音楽に変換するライブ配信。"
+        },
+        {
+          "title": "アメフトGMシミュレーションゲーム・ポイント&クリック型コメディゲーム・探偵ゲーム",
+          "description": "仮想の電話を覗き見て事件を解決する探偵ゲーム等、インディーゲーム多数。"
+        }
+      ]
+    },
+    {
+      "name": "④ 奇妙で素晴らしいもの(ニッチな個人用ツール)",
+      "note": "非常に具体的な個人のニーズから生まれたツール群。kizashi・mirai-journal等と近い方向性。",
+      "items": [
+        {
+          "title": "テキストを羽根の形に配置するツール",
+          "description": "特に実用目的は明記されていない、作者の個人的な興味から生まれたツール。"
+        },
+        {
+          "title": "電気技師の作業台自動化",
+          "description": "オシロスコープ・電源・カメラを使い、Claudeが回路基板のトラブルシューティングを行えるようにした。"
+        },
+        {
+          "title": "オーディオマスタリング・エクササイズ・ボーカルトレーニング用カスタムアプリ",
+          "description": "プログラマーではない写真家兼ミュージシャン(メキシコ在住)が開発。"
+        }
+      ]
+    }
+  ],
+  "comparisonNote": "ユーザー自身のアプリ群(kizashi・supermarket-price-tracker・study-app・English-Speaking-App・mirai-journal・progress-tracker-dashboard・usage-tracker・claude-voice-bridge等)との比較所感(2026-10-18、この1件のRedditまとめ投稿との比較に基づく所感であり、Claudeユーザー全体の中での客観的な希少性を保証するものではない)。\n\n似ている部分: ②開発者向けメタツール(Claudeを使いやすくするツール)はprogress-tracker-dashboard・usage-tracker・claude-voice-bridgeと同じ方向性。④ニッチな個人用ツール(具体的な困りごと解決)もkizashi(防災)・study-app(資格学習)・mirai-journal(日記+目標管理)と重なる。\n\n違う部分: Reddit側の例は『1人が1つの問題を1つのアプリで解決した単発の作品』がほとんど(トークン追跡CLI、Claudeペット、付箋アプリ等)。一方ユーザーの場合は、15以上のリポジトリを横断管理する運用システムそのもの(統一スキーマのtasks.json/concept-log.json/credit-log.json/requirements.json、毎日・週次の自動要約Routine、worker-room/サブエージェントへの作業委任、Obsidian Canvas連携、音声サイドパネルによるマルチモーダル操作系)であり、『AI駆動開発そのものを運用管理するメタシステム』に相当する規模の例は、このRedditまとめの中には見当たらなかった。"
+}
