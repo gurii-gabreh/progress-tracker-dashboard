@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "description": "ハッカソン以外の、AI駆動型アプリ・個人開発アプリ向けコンテスト/アワード/支援プログラムの調査資料。マネージャーアプリの「🔍 調査資料」タブ→「🎯 AI駆動型アプリコンテスト」ページで表示する。data/hackathon-research.jsonと同じ『実績作りイベント調査』カテゴリだが、ハッカソン(短期集中開発イベント)とは別の更新頻度・性質のためファイルを分けた(2026-10-18、ユーザー指示「調査資料にハッカソンの横にAI駆動型アプリコンテストを作り、そこに明記して」)。",
+  "updatedAt": "2026-10-18",
+  "note": "background agentによる1本のWeb調査の結果を反映。個人・無料で今すぐ使えるものは少なく、多くの国内コンテストは直近の募集期間(8〜9月締切)が終了済み。確認できなかった項目は推測で埋めず「不明(確認できず)」と明記している。",
+  "excludedNote": "調査時に見つかったが対象外/要注意として除外したもの: ①Vibe Coding系コンテスト(VibeCode Arena、RSNA 2026 Vibe Coding Hackathon等)はいずれもハッカソン形式のため対象外(🏆ハッカソンページ側で扱う)。②Google Cloud生成AI事例アワード(第5回)は企業・スタートアップ・自治体向けで個人応募は想定されていない可能性が高い。③ROHM EDGE HACK CHALLENGE 2026はエッジAI技術コンテストだがハードウェア(Solist-AIプラットフォーム)前提。④AI爆速アプリコンテスト(CODE BASE OKINAWA)は資格不問・個人可・無料だったが2026/8/20締切で終了済み。",
+  "entries": [
+    {
+      "id": "contest-built-with-claude",
+      "name": "Built with Claude Contest",
+      "organizer": "Anthropic, PBC",
+      "frequency": "不定期開催(2024年4月・6月に開催実績、直近は2025年9月30日〜10月7日)。次回時期は不明",
+      "eligibility": "個人のX(旧Twitter)またはDiscordへの投稿のみで参加可。18歳以上。居住国は米国・日本・韓国・英国・ドイツ等の指定国に限定。Anthropic社員・関係者は不可。参加費無料(NO PURCHASE NECESSARY)",
+      "criteria": "Claude(Sonnet 4.5等)を使って1週間以内に作ったもの。リポスト数・コメント数・コミュニティの関心・独創性を主催者裁量で審査",
+      "benefit": "当選者4名、各Claude Max 20Xプラン1年分(約2,400ドル相当)+APIクレジット1,000ドル。Anthropicのツール活用実績を公式にアピールできるが、学会発表のような外部的な権威づけは弱い",
+      "beginnerFriendliness": "高い(1人で作ったものをSNS投稿するだけで参加可能)",
+      "note": "Claude(まさにユーザーが使っているツール)での開発実績を直接アピールできる唯一の候補。個人・無料・1週間程度の短い制作期間で参加できる点が強み。",
+      "sources": [
+        {
+          "title": "Built with Claude Contest Official Rules",
+          "url": "https://support.claude.com/en/articles/12450131-built-with-claude-contest-official-rules"
+        },
+        {
+          "title": "Build with Claude developer contest",
+          "url": "https://docs.anthropic.com/claude/page/build-with-claude-developer-contest"
+        }
+      ]
+    },
+    {
+      "id": "contest-mitou-advanced",
+      "name": "未踏アドバンスト事業",
+      "organizer": "IPA(独立行政法人情報処理推進機構、経済産業省所管)",
+      "frequency": "年2回程度(上期・下期)。2026年度下期はエントリー締切2026/9/24で終了済み。次回(2027年度上期等)は例年の実施傾向から継続が見込まれるが公式な次回告知は未確認",
+      "eligibility": "ITを活用した革新的なアイデアを持つIT人材が対象。コンテストではなく、採択されると開発費等の支援を受けられるグラント型(支援)プログラム。応募自体は無料と見られる(明記未確認)",
+      "criteria": "革新的なアイデアでビジネスや社会課題解決につなげる提案内容",
+      "benefit": "採択されれば金銭的支援と著名プロデューサーからのメンタリングを受けられ、実績として国内では非常に評価が高い。コンテストではなく『育成・支援事業』である点に注意",
+      "beginnerFriendliness": "中〜高(個人応募可能だが審査難易度は高い)",
+      "note": "コンテストというより支援・育成プログラムだが、個人のAI活用アイデアを国が審査・支援する数少ない恒常的な制度であり、採択されれば実績としての評価は国内で非常に高い。",
+      "sources": [
+        {
+          "title": "IPA未踏事業について",
+          "url": "https://www.ipa.go.jp/jinzai/mitou/about.html"
+        },
+        {
+          "title": "2026年度下期公募",
+          "url": "https://www.ipa.go.jp/jinzai/mitou/advanced/2026second/rcu1hd0000015k6f-att/koubo20260716.pdf"
+        }
+      ]
+    },
+    {
+      "id": "contest-geniac-prize",
+      "name": "GENIAC-PRIZE 2026",
+      "organizer": "NEDO(経済産業省関連)",
+      "frequency": "2026年新設。テーマ1(業務プロセス改革)の説明会は2026/6/12、最終コンテスト・表彰式は2027/3予定",
+      "eligibility": "懸賞金総額は約10億円(テーマ1は6億円)という大規模なもの。ある解説記事では『ユーザー企業・学生チームも応募可能』とされる一方、内閣府資料の一部には『法人のみ』との記載もあり、個人(一人の開発者)が応募できるかどうかは不明(確認できず)。公式のNEDO懸賞広告PDFで応募資格欄を要確認",
+      "criteria": "エッセンシャルワーカーの人手不足解消に資するAI活用(テーマ1)",
+      "benefit": "賞金規模が大きく実績として非常に強いが、個人開発者向けというより企業・研究機関向けの性格が強い可能性がある",
+      "beginnerFriendliness": "不明(確認できず)。公式要項の確認が必須",
+      "note": "賞金規模の大きさに惹かれるが、個人の趣味開発が対象に含まれるか公式要項で未確認のまま。応募前に主催者への直接確認が必須。",
+      "sources": [
+        {
+          "title": "NEDOプレスリリース",
+          "url": "https://www.nedo.go.jp/news/press/AA5_101938.html"
+        },
+        {
+          "title": "内閣府資料",
+          "url": "https://www8.cao.go.jp/cstp/ai/ai_kankeishoutyou/2kai/shiryo3.pdf"
+        }
+      ]
+    },
+    {
+      "id": "contest-japan-dx-award",
+      "name": "日本DX大賞2026 個人表彰",
+      "organizer": "日本DX大賞実行委員会",
+      "frequency": "2026年に個人表彰部門が新設(今年が初回)。表彰式(サミット&アワード)は2026/7/22・23開催済み。次回募集期間は不明",
+      "eligibility": "詳細な応募資格(個人開発アプリが対象になるか、応募方法、費用)は不明。今年の受賞例は企業に所属する社員個人の業務内製化の取り組みが中心で、『個人が趣味・独立で作ったAIアプリ』が対象かどうかは不明(確認できず)",
+      "criteria": "DX推進の現場での個人の活動・取り組み内容",
+      "benefit": "国内の大型DXアワードであり実績として強いが、対象が『組織内でのDX推進個人』である可能性が高く、純粋な個人開発アプリとは毛色が異なる",
+      "beginnerFriendliness": "不明(確認できず)。公式サイト(dxawards-summit.jp)での応募要項確認が必要",
+      "note": "個人の趣味開発アプリが対象に含まれるか公式要項で未確認。企業所属社員の業務改善活動が中心という印象が強い。",
+      "sources": [
+        {
+          "title": "日本DX大賞関連記事",
+          "url": "https://koubo.jp/article/90835"
+        },
+        {
+          "title": "尼崎市資料",
+          "url": "https://www.city.amagasaki.hyogo.jp/_res/projects/default_project/_page_/001/043/644/260615-01.pdf"
+        }
+      ]
+    },
+    {
+      "id": "contest-u22",
+      "name": "U-22プログラミング・コンテスト2026(第47回)",
+      "organizer": "U-22プログラミング・コンテスト実行委員会",
+      "frequency": "毎年開催。2026年は7/1受付開始、8/31締切(募集終了済み)。最終審査会は11/29",
+      "eligibility": "個人参加可。生徒・学生は28歳以下、社会人・フリーターは22歳以下。参加費は不明(確認できず、通常無料とされることが多いが明記ページは未確認)",
+      "criteria": "AI活用自体は可だが、エントリー時に『どこにどう使ったか』を具体的記載する必要あり。保守性・独創性・目的への適合性が審査される",
+      "benefit": "国内有数の歴史ある学生対象コンテストで実績として強いが、年齢制限(社会人22歳以下)が厳しく一般の社会人個人開発者はほぼ対象外",
+      "beginnerFriendliness": "年齢条件に当てはまれば高い。社会人で22歳超の場合は対象外",
+      "note": "年齢条件次第でユーザー自身が対象外になる可能性が高い点に注意。",
+      "sources": [
+        {
+          "title": "U-22プログラミング・コンテスト2026応募受付開始",
+          "url": "https://resemom.jp/release/prtimes/20260701/192982.html"
+        }
+      ]
+    },
+    {
+      "id": "contest-ezuka",
+      "name": "e-ZUKAスマートアプリコンテスト2026(第15回)",
+      "organizer": "飯塚市(福岡県)関連団体(推定、詳細な主催団体名は確認できず)",
+      "frequency": "毎年開催(第15回)。2026年の一般の部(高校生以上)は8/14締切で募集終了済み",
+      "eligibility": "一般の部は高校生以上、個人またはグループ、居住地・学生・社会人を問わない。参加費は不明",
+      "criteria": "『スマートアプリ』全般(AI限定ではない可能性。詳細な審査基準は確認できず)",
+      "benefit": "社会人の個人開発者でも参加可能な国内コンテストとして貴重。地方自治体系のため実績としての知名度はやや限定的",
+      "beginnerFriendliness": "高い(資格の幅が広い)",
+      "note": "",
+      "sources": [
+        {
+          "title": "第15回e-ZUKAスマートアプリコンテスト2026",
+          "url": "https://koubo.jp/contest/319408"
+        }
+      ]
+    },
+    {
+      "id": "contest-sabae",
+      "name": "鯖江市アプリコンテスト(2026年募集分)",
+      "organizer": "鯖江市(福井県)",
+      "frequency": "2026年は9/30締切で募集終了済み。審査会は11/28予定。次回募集は不明(例年開催の可能性あり)",
+      "eligibility": "子どもから社会人まで、個人・チームいずれも応募可。費用は不明",
+      "criteria": "不明(確認できず、詳細審査基準はPDF要項未確認)",
+      "benefit": "地方自治体主催で個人の社会人も明確に対象に含まれている点が貴重",
+      "beginnerFriendliness": "高い",
+      "note": "公式要項を直接確認できておらず、詳細は要再確認。",
+      "sources": [
+        {
+          "title": "長崎県資料(参考情報として検索結果に混在、公式要項は未直接確認)",
+          "url": "https://www.pref.nagasaki.jp/shared/uploads/2025/06/1750982685.pdf"
+        }
+      ]
+    },
+    {
+      "id": "contest-openinnovation",
+      "name": "日本オープンイノベーション大賞(第9回)",
+      "organizer": "内閣府",
+      "frequency": "毎年開催(第9回)。2026年は6/9〜8/3 17時必着で募集終了済み",
+      "eligibility": "自薦・他薦可、国籍不問。個人・プロジェクトチームでの応募が可能(応募者全員の承諾が必要)。欠格事由(禁固刑以上の刑歴等)に該当しないこと。費用は不明(通常無料と見られる)",
+      "criteria": "オープンイノベーションによる取り組み全般(AI限定ではない)。分野別に大臣賞・長官賞等があり、その中から内閣総理大臣賞が選出される",
+      "benefit": "内閣府主催で実績としては非常に強いが、『アプリ単体』ではなく『オープンイノベーションの取り組み』全体が評価対象であり、個人のAI駆動開発アプリがどの程度フィットするかは不明",
+      "beginnerFriendliness": "不明(確認できず)。応募要項での個人応募の扱いを要確認",
+      "note": "",
+      "sources": [
+        {
+          "title": "第9回日本オープンイノベーション大賞公募",
+          "url": "https://www8.cao.go.jp/cstp/openinnovation/prize/2026"
+        }
+      ]
+    },
+    {
+      "id": "contest-nocodecamp",
+      "name": "NoCodeCampコンテスト",
+      "organizer": "NoCodeCamp運営(オンラインサロン運営会社)",
+      "frequency": "定期開催(第8回・第9回等、回数を重ねている)。2026年の最新開催情報は確認できず",
+      "eligibility": "NoCodeCampオンラインサロンのメンバー限定(有料コミュニティ加入が前提と見られる)。1人で複数作品の応募可",
+      "criteria": "ノーコードで作ったアプリ全般(AI限定ではない)",
+      "benefit": "過去の優勝賞金は1万円・準優勝5千円程度と小規模。実績としての外部的な知名度は限定的",
+      "beginnerFriendliness": "中(サロン加入という前提条件があり『無料で誰でも』ではない)",
+      "note": "",
+      "sources": [
+        {
+          "title": "第8回NoCodeCampコンテスト",
+          "url": "https://www.atpress.ne.jp/news/8098238"
+        }
+      ]
+    },
+    {
+      "id": "contest-product-hunt",
+      "name": "Product Hunt Golden Kitty Awards",
+      "organizer": "Product Hunt(米国)",
+      "frequency": "毎年開催(年末〜年明けに発表が多い)。2026年版の具体的な開催期間は確認できず",
+      "eligibility": "その年にProduct Huntで公開された製品が対象。個人開発の『サイドプロジェクト』部門(Side Project of the Year)があり、個人開発者に特にフィット。費用は無料。受賞は主にコミュニティ投票",
+      "criteria": "プロダクト全般(AI限定ではないが、近年はAIプロダクトが多数ノミネートされる傾向はあるとされるものの裏付けとなる一次資料は未確認)",
+      "benefit": "グローバルな個人開発者コミュニティでの知名度向上につながる。賞金はなく、知名度・ネットワーキングが主なメリット",
+      "beginnerFriendliness": "高い(無料・自薦で製品を公開するだけで候補になり得る)",
+      "note": "日本語の一次情報は見つからず、公式の最新情報は要追加確認。",
+      "sources": [
+        {
+          "title": "Golden Kitty Awards(参考、要最新確認)",
+          "url": "https://www.producthunt.com/p/producthunt/golden-kitty-awards-2017"
+        }
+      ]
+    }
+  ]
+}
