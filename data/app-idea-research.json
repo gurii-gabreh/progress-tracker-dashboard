@@ -2,11 +2,15 @@
   "schemaVersion": 1,
   "description": "今後のアプリ作成のアイデア・着眼点の参考にするための、他のClaudeユーザーの作品事例調査。マネージャーアプリの「🔍 調査資料」タブ→「💡 アプリ事例・アイデア帳」ページで表示する。data/hackathon-research.json・data/contest-research.jsonと同じ『実績作り・着想収集』カテゴリだが、更新の性質(ユーザーがチャットに貼り付けた一次情報を記録するという形式)が異なるためファイルを分けた(2026-10-18、ユーザー指示「この調査結果は、調査資料にまとめて」)。",
   "updatedAt": "2026-10-18",
-  "note": "r/ClaudeAI(Reddit)のコミュニティまとめ投稿をユーザーがチャットに貼り付けた内容を整理したもの。Reddit robots.txt/利用規約の制約により、このセッションからの自動収集(スクレイピング)は行っていない(CL-034と同じ判断)。一次情報はユーザー自身が手動で閲覧・貼り付けたもの。",
+  "note": "r/ClaudeAI(Reddit)の複数のコミュニティ投稿をユーザーがチャットに貼り付けた内容を整理したもの。1回目は匿名化されたまとめ要約、2回目は具体的なプロジェクト名・URL付きの個別コメント群。Reddit robots.txt/利用規約の制約により、このセッションからの自動収集(スクレイピング)は行っていない(CL-034と同じ判断)。一次情報はユーザー自身が手動で閲覧・貼り付けたもの。掲載URLは外部サイトであり、実在性・安全性をこのセッションから検証したものではない。",
   "sources": [
     {
       "title": "r/ClaudeAI 「Built with Claude」コミュニティまとめ投稿(ユーザー貼り付け、個別投稿URLは不明)",
       "note": "2026-10-18にユーザーがチャットへ貼り付けた内容。元投稿の直接URLは貼り付けられていないため未記録。"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(約320件のコメント、ユーザー貼り付け)",
+      "note": "2026-10-18にユーザーがチャットへ貼り付けた、個別コメント内の具体的なプロジェクト名・URL付きの事例。自動生成された議論要約(5カテゴリ)と、個別ユーザーの実例コメントの両方を含む。"
     }
   ],
   "categories": [
@@ -41,6 +45,51 @@
         {
           "title": "食事プランナー・姿勢矯正アプリ・テスラ車用NESエミュレーター",
           "description": "その他、種類の豊富さが特徴的だった例。"
+        },
+        {
+          "title": "528 Academy",
+          "description": "完全無料のフル機能MCAT(医学部進学適性試験)対策プラットフォーム。5,000問以上の練習問題、実際のPearson VUE試験環境を再現した試験インターフェース。開設1週間で90ユーザー獲得。",
+          "url": "https://the528academy.com"
+        },
+        {
+          "title": "homeground games",
+          "description": "ロンドンの区・アイルランドの郡・ワールドカップ代表チームを題材にした経営シミュレーション/アドベンチャーのブラウザゲーム3種。",
+          "url": "https://homegroundgames.com/"
+        },
+        {
+          "title": "netty-public",
+          "description": "セルフホスト型の個人向け財務管理アプリ。銀行口座接続は月額1.5ドルのSimpleFINブリッジのみで運用可能、オープンソース。",
+          "url": "https://github.com/vchiapaikeo/netty-public"
+        },
+        {
+          "title": "BrightonPartTimer",
+          "description": "150社超の求人サイトを1日2回スキャンし、アルバイト求人を1箇所に集約する地域求人ボード。2ヶ月で2,000件の応募を獲得。",
+          "url": "https://BrightonPartTimer.co.uk"
+        },
+        {
+          "title": "gratmap",
+          "description": "飲食店従業員がチップの受取額を投稿し合い、エリア別のチップ相場をヒートマップで可視化するサービス。",
+          "url": "https://gratmap.com"
+        },
+        {
+          "title": "Audiopian",
+          "description": "YouTubeの曲に合わせて歌う/ラップし、歌詞との一致度を採点するカラオケ×ギターヒーロー型アプリ。",
+          "url": "http://audiopian.com/"
+        },
+        {
+          "title": "Hzera",
+          "description": "耳鳴り(tinnitus)緩和のためのiOSアプリ。週次でアップデートを継続している個人開発アプリ。",
+          "url": "https://hzera.com"
+        },
+        {
+          "title": "会話型デスクトップ動画編集アプリ",
+          "description": "Claudeと会話しながら動画編集ができるデスクトップアプリ。",
+          "url": "https://www.daydreamvideo.com/"
+        },
+        {
+          "title": "楽器アプリ(iOS)",
+          "description": "ずっと作りたかった楽器アプリをiOS上で実現した個人プロジェクト。",
+          "url": "http://naturarum.github.io/apps"
         }
       ]
     },
@@ -59,6 +108,31 @@
         {
           "title": "ピクセルアートのClaudeペット",
           "description": "タスクバーに常駐し、使用制限を追跡、コーディング時には小さな魔法使いの帽子をかぶる。"
+        },
+        {
+          "title": "hush",
+          "description": "Claude専用プラグイン。信頼性を損なわずにセッションをより静かに・より安価にする。",
+          "url": "https://github.com/V-Songbird/hush/"
+        },
+        {
+          "title": "ClaudeQuota",
+          "description": "macOSメニューバーでClaudeの使用状況(セッション/週次の上限)をリアルタイム表示するアプリ。",
+          "url": "https://github.com/Dickie2306/ClaudeQuota"
+        },
+        {
+          "title": "claude-real-video",
+          "description": "Claudeに動画を『見せられる』ようにするオープンソースCLI。シーン検出キーフレーム+タイムスタンプ付き文字起こしに変換し、Claude Codeのスキルとして動作。完全ローカル実行、MITライセンス、1.6kスター。",
+          "url": "https://github.com/HUANGCHIHHUNGLeo/claude-real-video"
+        },
+        {
+          "title": "Slay the Task",
+          "description": "Claudeと直接連携し、タスク・カウンター・タイマー・カレンダーをリアルタイムダッシュボードで管理するビジュアルレイヤー。",
+          "url": "https://www.slaythetask.com"
+        },
+        {
+          "title": "jelly-ui",
+          "description": "UIにぷるぷるとした『揺れ』のエフェクトを加えるツール。",
+          "url": "https://jelly-ui.com"
         }
       ]
     },
@@ -77,6 +151,16 @@
         {
           "title": "アメフトGMシミュレーションゲーム・ポイント&クリック型コメディゲーム・探偵ゲーム",
           "description": "仮想の電話を覗き見て事件を解決する探偵ゲーム等、インディーゲーム多数。"
+        },
+        {
+          "title": "World of Claudecraft",
+          "description": "ブラウザで無料動作、ダウンロード不要のオープンソースMMORPG。元はこのサブレディットへの投稿から始まったコミュニティプロジェクト。9クラス×3タレント、3ゾーン、約80クエスト、5ダンジョン、ランク付けPvP、10人レイド、22言語対応。町・クリーチャー・呪文アイコン・サウンドはほぼ全て実行時生成。最新版ではテキスト/画像入力から完全リギング済み3Dモデルを自動生成するパイプラインも搭載。MITライセンス。",
+          "url": "http://worldofclaudecraft.com/"
+        },
+        {
+          "title": "Too Many Zeros",
+          "description": "Claudeが約200人の億万長者の通信簿を作成・採点したエンタメコンテンツ。",
+          "url": "https://toomanyzeros.com/"
         }
       ]
     },
@@ -95,6 +179,52 @@
         {
           "title": "オーディオマスタリング・エクササイズ・ボーカルトレーニング用カスタムアプリ",
           "description": "プログラマーではない写真家兼ミュージシャン(メキシコ在住)が開発。"
+        },
+        {
+          "title": "第四の沈黙(The Fourth Silence)",
+          "description": "未完のまま15年刊行が止まっているファンタジー小説シリーズの、ファン創作による完結編(第3巻)。全21万8000語。AIモデルFableで執筆、スタイルガイド作成・52セクションの整合性記録・複数回の全面改訂・別モデルによる校閲を経て完成。無料公開(ブラウザ/EPUB)。",
+          "url": "https://deductiveowl.github.io/the-fourth-silence/"
+        },
+        {
+          "title": "日よけ付き自撮り棒",
+          "description": "雨天・晴天でも撮影できる、キャノピー(日よけ)がポップアップする自撮り棒。特許出願中の物理製品。ClaudeがCADではなく財務モデル・海外工場とのNNN契約・IP戦略の整理を担当。",
+          "url": "https://theselfieshade.com"
+        },
+        {
+          "title": "kindalive(ロボット感情シミュレーター)",
+          "description": "テキストで状況を入力すると、ドーパミン・コルチゾール・アドレナリン等の化学物質インパルスをLLMがシミュレートし、台本化せず『化学反応から感情が立ち上がる』仕組みを再現。ブラウザ/モバイル/LED表示器・サーボ基板の実機にも対応。",
+          "url": "https://github.com/smithandrewjohn/kindalive"
+        },
+        {
+          "title": "フラクタル/L-システム植物ジェネレータ",
+          "description": "文法を書く代わりにグリッド上にスケッチして、フラクタル植物を生成するツール。自動phiボタン・シアノタイプ設定・樹皮の色6種を搭載。",
+          "url": "https://www.or-ni-thology.cloud/planta-manuscripta/"
+        },
+        {
+          "title": "BetterStickies(詳細版)",
+          "description": "ファイル・画像・リッチテキスト・コードブロックをそのまま貼り付けられる高機能デスクトップ付箋。Claude 3.6の個人ツールとして始まり、新モデルが出るたびに改良を重ね、公開4ヶ月で約3万行・1500テストの規模に成長。Claude自身の利用料を賄えるまで収益化(無料版+買い切りプレミアム)。全データはローカルJSON保存でアカウント不要。",
+          "url": "https://betterstickies.com"
+        }
+      ]
+    },
+    {
+      "name": "⑤ 市民ハッキング(Civic Hacking)",
+      "note": "行政・自治体の公開データやプロセスを、市民が使いやすい形に変換するテーマ。r/ClaudeAIで『クールで人気の高いテーマ』として紹介されていた。",
+      "items": [
+        {
+          "title": "BudgetMo(市予算版Venmo)",
+          "description": "Venmoのような直感的なUIで、市の予算の使われ方を可視化するサービス。",
+          "url": "https://www.khaledeltokhy.com/budgetmo"
+        },
+        {
+          "title": "311 Wrapped",
+          "description": "近隣住民が行った311番(市民通報ダイヤル)への通報内容を、Spotify Wrapped風にまとめて振り返れるサービス。",
+          "url": "https://www.311wrapped.com"
+        },
+        {
+          "title": "CouncilNotes.ai",
+          "description": "分厚い市議会の会議記録を読みやすい概要に変換。何が起こり何が可決されたか、誰がどう投票したか、地元政治家への献金検索まで対応。データセットとチャットでの質問にも対応。",
+          "url": "http://councilnotes.ai/"
         }
       ]
     }
