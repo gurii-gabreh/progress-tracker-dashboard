@@ -370,6 +370,21 @@
         "costUsd": 1800.3010036
       },
       "rateLimitResetsAt": "2026-10-18T15:20:00+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "time": "01:22",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-089: YouTube Data API v3を情報源に追加(category 2/5/10)",
+      "note": "REST Message「AI Research - YouTube」4メソッド新設、新規category 10(世の中の話題・トレンド)。実機確認でsetQueryParameterがキーを付与していない不具合が見つかり、setEndpoint方式へ修正。ServiceNow PDIへ再反映し、エラー0件でu_ai_research_itemへの挿入をユーザー画面で確認。診断用スクリプト(check_fetch_log.mjs)も新設し再利用可能にした。ユーザー承認により完了。",
+      "usage": {
+        "inputTokens": 5726998,
+        "outputTokens": 10297365,
+        "cacheReadTokens": 5703161682,
+        "cacheWriteTokens": 128580295,
+        "costUsd": 1858.1653395
+      },
+      "rateLimitResetsAt": "2026-10-19T02:00:00+09:00"
     }
   ]
 }
