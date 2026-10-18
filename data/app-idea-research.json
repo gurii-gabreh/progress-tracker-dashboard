@@ -21,6 +21,11 @@
       "title": "r/ClaudeAI 「Show me what you've created with Claude」投稿(5ヶ月前、320件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1tcftws/show_me_what_youve_created_with_claude/",
       "note": "2026-10-18にユーザーがチャットへ貼り付け。重複するURL・内容は既存エントリとの照合により記録から除外。"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(1ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1wc1dmr/show_us_what_youve_created_with_claude/",
+      "note": "2026-10-18にユーザーがチャットへ貼り付け。最多得票はopusfived.dev(Claude『PTSDシミュレーター』パロディ)。BetterStickies等、既存記録と重複するURLは自動的に除外。"
     }
   ],
   "categories": [
@@ -216,6 +221,54 @@
           "title": "tripSignal",
           "description": "カナダ(リジャイナ発)からのオールインクルーシブ旅行の価格を追跡するツール。主要旅行会社を1日3回監視し値下がりをメール通知。Geminiで700以上のリゾート情報を収集・拡充し、家族向け・アダルト限定・ウォーターパーク等で絞り込み可能。Next.js+FastAPI+PostgreSQL、VPS上のDocker稼働。開発者はUXデザイナーでエンジニアではない。",
           "url": "https://tripSignal.ca"
+        },
+        {
+          "title": "ClearList",
+          "description": "売りたい不用品の写真(最大50枚)をアップロードするだけで、AIが商品を識別・グルーピングし、タイトル・説明文・相場価格・寸法・状態を自動作成。1つの共有リンクで出品でき、予約・順番待ち・ピックアップ日程調整まで対応。MCP経由でAIアシスタントに出品・管理を任せることも可能。",
+          "url": "https://clearlist.me"
+        },
+        {
+          "title": "Daily 5Ws",
+          "description": "複数のニュースを集約し、政治的偏向を除いて5W(誰が・何を・いつ・どこで・なぜ)で要約するニュースサイト。1日1回朝に更新、元記事へのリンク付き。",
+          "url": "https://www.daily5ws.com/"
+        },
+        {
+          "title": "Job Seeker Workbench",
+          "description": "自分用に作った求職活動管理システムを、90年代パッケージソフト風のデザインに仕上げて販売用ファイルとして公開。",
+          "url": "https://file.productions/jobseeker"
+        },
+        {
+          "title": "relaysh",
+          "description": "共有チャット・カレンダー・リスト・バケットリスト・夕食メニュー決め・映画ナイト等、7つのウィジェットをClaudeが横断して読み書きするカップル/家族向けアプリ。無料で試用可。",
+          "url": "https://relaysh.app"
+        },
+        {
+          "title": "Pick Flick",
+          "description": "家族の映画ナイトのローテーションを管理するアプリ。順番通りに進めるだけで何を見るか迷わなくて済み、拒否権機能も搭載。",
+          "url": "https://pick-flick.fly.dev/welcome"
+        },
+        {
+          "title": "Cardpool",
+          "description": "イベント後に集めた名刺を事業開発チームが管理するためのツール。",
+          "url": "http://cardpool.io/"
+        },
+        {
+          "title": "PicHaven",
+          "description": "Android端末からWindows PCへ、クラウドを介さず写真をバックアップするツール。QRコードでペアリングしmTLS通信、充電時に自動同期。1人でRustコア+Tauriトレイアプリ+Kotlin/Composeアプリの3コードベースを開発。",
+          "url": "https://pichaven.app"
+        },
+        {
+          "title": "3Dプリント用潜水艦パーツトラッカー",
+          "description": "101パーツ・13セクションからなる自作3Dプリント潜水艦模型の進捗管理アプリ。3Dビューアで分解・X線表示、パーツごとのカード管理、左右対称パーツの取り違え防止、Bambu Studioへの印刷連携も対応。非エンジニアがClaude Codeのみで開発。"
+        },
+        {
+          "title": "B2Bコンプライアンス業務自動化スタック",
+          "description": "生命安全関連のB2Bサービス業で、技術者の作業報告・顧客確認・コンプライアンス報告・請求処理までを自動化。CRM・Claude・QuickBooks・SharePointを統合し、チェックリスト入力と写真アップロードだけでレポート自動生成、異常時のみ人の確認が入る設計。"
+        },
+        {
+          "title": "Good News for the UK",
+          "description": "複数のRSS・ニュース源から前向きなニュースだけを抽出・10点満点で評価し、見出しを平易な英語に書き換えて公開するサイト。9点以上はBlueSkyにも自動投稿。元記事へのリンク付き。",
+          "url": "https://goodnewsforthe.uk/"
         }
       ]
     },
@@ -278,6 +331,16 @@
           "title": "Vibecarbon",
           "description": "vibecoder(AIに作らせる開発者)向けの、フルスタックアプリ設計・DevOps自動化・AIセキュリティガードレールを提供するツール。",
           "url": "https://vibecarbon.com/"
+        },
+        {
+          "title": "clauding",
+          "description": "Claude Codeの処理中スピナーに表示される動詞を、スタートレック風・フィルムノワール風等、好きなテーマに変更できるスキル。",
+          "url": "https://github.com/highsierralabs/clauding"
+        },
+        {
+          "title": "Builders-Gate",
+          "description": "ゲーム開発プロセス向けのオープンソースAgenticハーネス。エージェント用ツールボックスとしても、複数エージェントとの共同開発空間としても使える。現在Godot対応、Unity・Webアプリ向けツールも拡張予定。",
+          "url": "https://github.com/Thepizzapie/BuildersGate"
         }
       ]
     },
@@ -366,6 +429,31 @@
           "title": "H3XATR0N",
           "description": "開発中のアーケードゲーム。骨の折れる作業だがClaudeのおかげで実現可能になった。",
           "url": "https://skrazilla.itch.io/h3xatr0n"
+        },
+        {
+          "title": "Hook, Line, and Sentence",
+          "description": "タイピングゲームなのか釣りゲームなのか分からない、子供向けに作ったゲーム。",
+          "url": "https://hook-line-and-sentence.netlify.app/"
+        },
+        {
+          "title": "Polynome",
+          "description": "ポリメーター・ポリリズムモードを備えた、過剰なまでに作り込まれたメトロノーム。BPMエンベロープ付きで複数リズムを同時再生可能。",
+          "url": "https://polynome.tobyhede.com/"
+        },
+        {
+          "title": "Scarab Shuffle",
+          "description": "ローグライト要素を加えたカードゲーム『Egyptian Rat Screw』風のビデオゲーム。",
+          "url": "https://thegian7.cloud/games/scarab-shuffle/"
+        },
+        {
+          "title": "Doom Legacy Arcade",
+          "description": "アーケード筐体向けに設計されたDoomの移植版。ハイスコア機能・ロック可能メニュー・4人同時プレイの split screen・アトラクトスクリーン・ジョイスティック対応。",
+          "url": "https://github.com/mridlen/DoomLegacyArcade"
+        },
+        {
+          "title": "The Kleptocrat",
+          "description": "Claudeの支援で作成中のWebゲーム。モバイル最適化はこれから。",
+          "url": "https://thekleptocrat.com/"
         }
       ]
     },
@@ -441,6 +529,10 @@
           "title": "UFO Dossier",
           "description": "機密解除されたUAP/UFO関連文書を検索しやすくするアーカイブ。検索可能な事例一覧・地図表示・原資料・AIへの質問機能(Ask the Archive)を搭載。",
           "url": "https://www.ufodossier.com/"
+        },
+        {
+          "title": "opusfived.dev",
+          "description": "このスレッドで最多得票となった、痛いほど的確な『Claude(のPTSD)シミュレーター』パロディサイト。AIコーディング特有のあるあるネタで共感を呼んだ。"
         }
       ]
     },
