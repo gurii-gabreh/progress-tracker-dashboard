@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-17T15:10:40.842+00:00",
+  "lastProcessedAt": "2026-10-18T15:14:28.886+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -150,6 +150,15 @@
         "PTD-058: 残り約2,340件の日本語要約のバックフィル、GitHub PagesのSource設定(ユーザー作業)が未完了のまま。",
         "ハッカソンは出場見送り・情報収集のみの方針。次回開催時期(A・Bとも)は不明のまま、PTD-065で動向収集を継続する。",
         "PMG-001(PROMPT-MANAGER × claude-voice-bridge統合)は対応中のまま。iframe高さ自動調整・生成履歴JSON化・質問ウィザードの扱いが未対応。"
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "generatedAt": "2026-10-18T15:14:28.885+00:00",
+      "summary": "【🔍調査資料タブ新設(PTD-085〜088)・🔗連関図簡素化・学習/英語タブ整理】\n赤丸スクリーンショット付きの指摘「赤丸部分は不要、削除しろ」を受け、🔗連関図タブからチェックボックス・凡例・メタ情報を削除し常に全タスクを表示する形へ簡素化(PTD-085)。続けて「📋要件定義・📄開発資料タブと同じく、学習タブをアプリ開発タブにまとめ、英語タブを追加して」との指示で、🎓学習タブ(学習資料/学習記録/学習方針)を📄開発資料タブの5番目以降のサブタブへ統合し、🇬🇧英語タブを新設。当初ユーザー指示の埋め込み先URLがこのダッシュボード自身のURLだったため、AskUserQuestionで確認しEnglish-Speaking-Appの正しいURLへ訂正した(PTD-086)。さらに「ページタイトル・説明をスクロールしても固定に」との要望で、要件定義・段階別フロー図のヘッダーをposition:stickyで固定化。「🔍調査資料タブを作り、ハッカソン候補・入賞作品をカードでまとめて」との依頼を受け、新規🔍調査資料タブ(🏆ハッカソン/🎯AI駆動型アプリコンテスト)を新設し、data/hackathon-research.json・data/contest-research.jsonを新規作成(PTD-087、ユーザー確認済みで完了)。①②セクションの折りたたみ化・大型化も対応した。\n\n【📱Reddit事例集の構築とreddit-idea-recorderスキル化(PTD-088)】\nReddit(reddit.com)への自動アクセスはWebFetchのツールレベルブロックとネットワークポリシーの両方で不可能と判明し、過去のCL-034(Google Trends自動取得見送り)と同じ「自動アクセスは避け、ユーザーが手動で見た内容を貼り付けてもらう」方針で合意。ユーザーがr/ClaudeAIの「Show us what you've created with Claude」系スレッドを6本分チャットへ貼り付け、各事例をdata/app-idea-research.json(①アプリ/②開発者向けメタツール/③ゲーム・エンタメ/④奇妙で素晴らしいもの/⑤市民ハッキングの5カテゴリ)へURL重複チェック付きで記録し続け、最終的に183件まで積み上がった。「このまとめ作業はスキル化できるか」との相談を受け、reddit-idea-recorderスキルを新設(.claude/skills/配下)。ユーザー自身のアプリ群との比較所感(comparisonNote)も記録し、「BetterStickiesが気になる」「claude-real-videoの使い所がわからない」といった個別の深掘り質問にも、記録済みデータと元投稿の引用のみで(推測を混ぜず)回答した。claude-real-video(動画をキーフレーム+文字起こしに変換するツール)から発展した「mirai-journalの記録フローを動画直接投入に変えられないか」というアイデアは、精度面で現行のGemini Live音声フローが優位と判断し、実装はせずcomparisonNoteへアイデアとして記録するに留めた(ffmpeg/Whisperがこの環境で入手可能なことは確認済み)。\n\n【📓ジャーナルタブ新設(mirai-journal埋め込み)】\n「ここの構成を...ジャーナルタブを作ってアプリを表示しろ」との指示で、🔍調査資料タブの横に📓ジャーナルタブを新設し、gurii-gabreh/mirai-journal(AI面談による1日の振り返りアプリ)をEnglish-Speaking-Appと同じ単一iframeパターンで埋め込んだ。あわせてmirai-journalの記録フロー(Gemini Live音声面談→claude-voice-bridge→Claude Codeへ貼り付け→分析→journals.json/profile.jsonへcommit)をユーザーへ説明し、「手書き日報の画像を貼ればこのフローに乗せられるか」との質問には、画像の内容を一度提示して確認してから分析に進む方針で合意した(実際の画像提出はまだ)。\n\n【YouTube Data API連携: Claude Codeのシークレット機構での試行錯誤からservicenow-sub-agentへの実装方針転換(PTD-089・CL-043)】\n「AIの最新技術と、世の中で再生回数の多いキーワードを調べたい(日本・世界両方)」との要望を受け、まずこのマネージャールームのクラウド環境のNetwork secrets機能でYouTube Data API v3のAPIキーを扱おうと試行錯誤した。Bearer/Basic/GCP access token(Service Account)等どの「シークレットの種類」もYouTube Data APIのクエリパラメータ方式(?key=...)と噛み合わず、OAuthスコープ不足の403エラー、原因不明の「injection failed」エラーを繰り返した(後者は当初「2つのシークレットが競合している」と誤った仮説を立てたが、実際には競合ではなく「Body parameter」がGETリクエストの空のボディへ注入しようとして失敗した可能性が高いと判明)。ユーザーから「スクリプトでキーワードの値を取得すればいいだけなのに、いちいちClaudeでやる必要ないだろ、考えろ」「GASとかでやればいいだろ、それこそservicenowとかで」という指摘を受け方針転換。既存のservicenow-sub-agentパイプライン(README「APIキー等はこのリポジトリには絶対にコミットしない、ServiceNow PDI内のシステムプロパティでのみ保持する」という既存方針)へ実装し直した。\n\n具体的には、新規REST Message「AI Research - YouTube」(aitech=AI最新技術/新着順、aitrend=AI流行/再生回数順、trendjp=日本の急上昇、trendworld=世界の急上昇・regionCode=USで代用)を追加し、新規category 10(世の中の話題・トレンド)を新設。このパイプライン初の認証必須情報源のため、APIキーをリポジトリにコミットしない設計(新規setup_youtube_api_key.mjsがGitHub Actions SecretsのYOUTUBE_API_KEYをServiceNow PDI側のシステムプロパティ\"youtube.api_key\"(password2、暗号化保存)へ設定し、scheduled_job側はRESTMessageV2.setQueryParameterで実行時にのみキーを付与、${変数}事前登録の既知の落とし穴を回避)とし、既存のdry_run/verifyFieldsExist等のパターンを再利用して実装した。この方針転換の教訓はCL-043として記録。\n\nユーザーがGitHub Actions SecretsへYOUTUBE_API_KEYを登録後、dry_run=trueで実行しエラー無しを確認、その後ユーザー確認を得てdry_run=falseで実行。REST Message・4メソッド・システムプロパティ・Scheduled Jobスクリプトの更新が全て実際にServiceNow PDIへ反映されたことをGitHub Actionsのジョブログで確認した(sys_id取得済み)。続けてユーザーがServiceNow Studio側でu_ai_research_item.u_categoryのChoiceリストへ値10(世の中の話題・トレンド)を手動追加したことを確認した。\n\n【未解決事項(2026-10-19にも持ち越し)】\n- Scheduled Jobを実際に1回実行し、u_ai_research_itemへYouTube系レコードが挿入されるかの実機確認(setQueryParameterの実機動作は本セッションからは検証不可)\n- Claude Code環境側に追加したが結局使わなかったYouTube関連のシークレット・環境変数の削除(ユーザー任意)\n- PTD-085・086・088(いずれも実装完了・動作確認済みだが、ルール30により完了確認待ちのまま)\n\n【0時Routine発火(本記録自身)での対応】\nCLAUDE.md定期確認Routineでdata/claude-core-rules.mdを再読し、問題無しと確認。週次ルームログ要約Routineの常駐セッション(session_01DTRNY4tA8x34WyJvQYF9D7)のコンテキスト使用率は19.8%で閾値(70%)未満のため切り替え不要。本Routine(マネージャールーム日次ログ)の記録漏れチェック(手順7〜9)では、tasks.json側に完了なのにdetail欠落のタスクは無く、credit-log.jsonもPTD-087分が既に記録済みで漏れは無かった。",
+      "unresolvedCarriedOver": [
+        "YouTube用Scheduled Jobの実機動作確認(u_ai_research_itemへの挿入確認)",
+        "PTD-085・086・088のユーザー完了確認待ち(ルール30)"
       ]
     }
   ]
