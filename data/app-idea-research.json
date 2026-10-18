@@ -26,6 +26,10 @@
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(1ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1wc1dmr/show_us_what_youve_created_with_claude/",
       "note": "2026-10-18にユーザーがチャットへ貼り付け。最多得票はopusfived.dev(Claude『PTSDシミュレーター』パロディ)。BetterStickies等、既存記録と重複するURLは自動的に除外。"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(3ヶ月前、320件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1uxlehk/show_us_what_youve_created_with_claude/"
     }
   ],
   "categories": [
@@ -269,6 +273,16 @@
           "title": "Good News for the UK",
           "description": "複数のRSS・ニュース源から前向きなニュースだけを抽出・10点満点で評価し、見出しを平易な英語に書き換えて公開するサイト。9点以上はBlueSkyにも自動投稿。元記事へのリンク付き。",
           "url": "https://goodnewsforthe.uk/"
+        },
+        {
+          "title": "What's Happening Here",
+          "description": "世界地図上の任意の場所をクリックすると、その地域のローカルニュースが表示されるアプリ。",
+          "url": "https://whats-happening-here.vercel.app/"
+        },
+        {
+          "title": "Brighton Part Timer",
+          "description": "150以上の雇用主のサイトを1日2回スキャンし、パートタイム求人を一箇所にまとめるローカル求人ボード。2ヶ月で応募2000件を達成。",
+          "url": "https://brightonparttimer.co.uk"
         }
       ]
     },
@@ -454,6 +468,16 @@
           "title": "The Kleptocrat",
           "description": "Claudeの支援で作成中のWebゲーム。モバイル最適化はこれから。",
           "url": "https://thekleptocrat.com/"
+        },
+        {
+          "title": "World of Claudecraft",
+          "description": "ブラウザだけで無料プレイできるオープンソースのクラシック路線MMORPG。9クラス×3特化、3ゾーン、約80クエスト、5ダンジョン、ランクPvP、10人レイド対応。町・クリーチャー・魔法アイコン・音までほぼ全てランタイム生成。テキスト/画像から3Dモデルを自動生成してゲームに組み込む自動アセットパイプライン(Tripo API連携)も実装。MITライセンスでセルフホスト可能。",
+          "url": "https://github.com/levy-street/world-of-claudecraft"
+        },
+        {
+          "title": "Audiopian",
+          "description": "YouTubeの任意の曲を選んで歌・ラップで一緒に歌い、採点してもらえるカラオケ×ギターヒーロー的サービス。曲の.lrcファイルと同期し、ブラウザの音声認識で歌詞との一致を判定する。",
+          "url": "https://audiopian.com/"
         }
       ]
     },
@@ -533,6 +557,11 @@
         {
           "title": "opusfived.dev",
           "description": "このスレッドで最多得票となった、痛いほど的確な『Claude(のPTSD)シミュレーター』パロディサイト。AIコーディング特有のあるあるネタで共感を呼んだ。"
+        },
+        {
+          "title": "Naturarum Apps",
+          "description": "iOS向けに、長年作りたかった楽器アプリ群をようやく形にしたプロジェクト。",
+          "url": "https://naturarum.github.io/apps"
         }
       ]
     },
@@ -559,6 +588,11 @@
           "title": "RightsLeft.org",
           "description": "トランプ政権が行った変更を追跡するプロジェクト。",
           "url": "http://rightsleft.org/"
+        },
+        {
+          "title": "CouncilNotes.ai",
+          "description": "市議会の記録を「何が起きたか・何が可決したか・誰がどう投票したか・なぜ重要か」が分かる読みやすいブリーフィングに変換するアプリ。データセットとのチャットや地元政治家への献金検索機能も搭載。",
+          "url": "https://councilnotes.ai/"
         }
       ]
     }
