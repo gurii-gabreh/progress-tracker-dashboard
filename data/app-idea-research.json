@@ -42,6 +42,10 @@
     {
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(2ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1vmtj8f/show_us_what_youve_created_with_claude/"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(3ヶ月前、40件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1vac23x/show_us_what_youve_created_with_claude/"
     }
   ],
   "categories": [
@@ -390,6 +394,31 @@
           "title": "PhiMask",
           "description": "個人情報(PII/PHI)を検出して自動的に覆い隠す、無料・オフラインのブラウザ内秘匿化ツール。医療紹介状やカルテ作成にChatGPTを使う医師向けに開発され、貼り付けた情報をマスクしてから安全にコピーできる。LLMを使わずTesseract OCRで画像・PDF内のテキストも検出するため数MBで軽量、ブラウザだけで動作。",
           "url": "https://phimask.com/mask-data"
+        },
+        {
+          "title": "nitro.film",
+          "description": "Web・iPhone・iPad・Apple TV・Android・Android TV・Fire TV・Rokuに対応したマルチプラットフォーム定額制映画ストリーミングサービス。アプリ間課金・アプリ内課金・ピクチャーインピクチャー・字幕・AIレコメンデーションエンジン・対話型AIチャットボットを搭載。設計・開発を個人で実施。",
+          "url": "https://nitro.film"
+        },
+        {
+          "title": "RideQuiver",
+          "description": "マウンテンバイクの部品・在庫をスプレッドシートではなく専用アプリで管理できる、サイクリスト向け無料アプリ。",
+          "url": "https://ridequiver.com"
+        },
+        {
+          "title": "Loam Ride Conditions",
+          "description": "嵐の後、マウンテンバイクのトレイルが十分に乾いて走行可能になったかどうかを教えてくれる無料アプリ。",
+          "url": "https://loamrideconditions.com"
+        },
+        {
+          "title": "toqe",
+          "description": "フリーランサーや小規模スタジオ向けのプロジェクト・経費トラッカー。",
+          "url": "https://toqe.pro"
+        },
+        {
+          "title": "Ear Training Apps",
+          "description": "音楽の聴音(耳のトレーニング)に特化した音楽教育アプリシリーズ。",
+          "url": "https://eartrainingapps.com"
         }
       ]
     },
@@ -527,6 +556,26 @@
           "title": "etk (Linux distro)",
           "description": "Snapdragon 865 Adreno 610搭載のレトロ携帯ゲーム機向けLinuxディストリビューション。AndroidよりもPS3エミュレーションの性能が高い。",
           "url": "https://github.com/mercurious/etk"
+        },
+        {
+          "title": "NuvioDesktop(フォーク版)",
+          "description": "Windows経由のホームシアター設定に特化したNuvio Desktopのフォーク版。デスクでのマウス操作にも最適化。アップストリーム版に約50の機能を追加し、独自作成のポスター(Plex/Jellyfin等のメディアツールで使用可)も同じリポジトリで公開。",
+          "url": "https://github.com/UmbraProjects/NuvioDesktop"
+        },
+        {
+          "title": "marenhq",
+          "description": "ローカルで動作するTTS(音声合成)・STT(音声認識)と、Amazon Podcastのクローン的機能を持つツール群。",
+          "url": "https://marenhq.com"
+        },
+        {
+          "title": "Signal Check",
+          "description": "Claude Coworkを使って作られた、無料のブラウザ内音声解析ツール。ラウドネス・ダイナミクス・ステレオ相関・ジャンル別のトーナルバランス・トゥルーピークを測定できる。",
+          "url": "https://beatswithkev.com/signal-check"
+        },
+        {
+          "title": "Echo-Storm ツール群",
+          "description": "koboldcpp・Forge Neo・SillyTavern等のAIツール向けランチャー兼コントローラー、Cync製スマート電球を操作するWindowsアプリ、torbox向けファイルマネージャー/アップローダー・ダウンローダー、PCM/MSU1形式にも対応した音量平準化付き音声コンバーターなど、複数の個人用ツールをまとめて公開しているプロジェクト群。",
+          "url": "https://github.com/Echo-Storm/"
         }
       ]
     },
@@ -710,6 +759,11 @@
           "title": "Mancalero",
           "description": "幼少期に遊んだボードゲーム「マンカラ」を基にしたゲーム。特殊効果や敵の仕組みを加えることで戦略性とリプレイ性を高めている。パブリックプレイテスト公開中。",
           "url": "https://store.steampowered.com/app/4811700/Mancalero/"
+        },
+        {
+          "title": "Haunt",
+          "description": "実在する場所にまつわる心霊story(怪談)を知りながら参加できる、セルフガイド式ゴーストツアーのiPhoneアプリ。無料ダウンロード・試用可能で、フリーモードでもアンビエントサウンドマシンとして使える。",
+          "url": "https://gethauntapp.com"
         }
       ]
     },
