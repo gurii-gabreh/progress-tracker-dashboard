@@ -318,6 +318,8 @@
      このダッシュボードの配色トークンへ合わせて移植。②段階別フロー図は段階別フロー図サンプル
      (https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca)のタイムライン表現を移植。 */
   .devdocs-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+  /* 2026-10-18追加: 要件定義タブの見出し・説明・アプリ選択・統計タイルをスクロールしても固定表示にする */
+  .devdocs-sticky-head { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 10px; border-bottom: 1px solid var(--border); }
   .devdocs-stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; text-align: center; }
   .devdocs-stat-tile .num { font-size: 16px; font-weight: 700; color: var(--accent); }
   .devdocs-stat-tile .label { font-size: 10.5px; color: var(--text-muted); }
@@ -1175,12 +1177,17 @@
   <div id="devdocs-subview-requirements" class="manager-subview active">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">📋 要件定義</div>
-        <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)を確認できます。</p>
-        <div class="relations-controls">
-          <label>アプリ: <select id="devdocs-app-select-req"></select></label>
+        <!-- 2026-10-18追加: ユーザー指示「要件定義と説明、アプリ欄登録アプリ数部分のボタンまとまりも
+             スクロールしても動かないようにして」により、タイトル・説明文・アプリ選択・統計タイルを
+             sticky化した。 -->
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">📋 要件定義</div>
+          <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)を確認できます。</p>
+          <div class="relations-controls">
+            <label>アプリ: <select id="devdocs-app-select-req"></select></label>
+          </div>
+          <div id="devdocs-stats" class="relations-legend"></div>
         </div>
-        <div id="devdocs-stats" class="relations-legend"></div>
         <div id="devdocs-requirements"></div>
       </div>
     </div>
