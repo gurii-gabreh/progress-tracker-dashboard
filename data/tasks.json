@@ -4979,7 +4979,35 @@
           "type": "relates_to"
         }
       ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-089",
+      "task": "YouTube Data API v3を情報源に追加(category 2/5/10)",
+      "title": "AI最新技術+世の中のトレンド(再生回数ベース、日本/世界)をYouTubeから自動収集",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-10-18",
+      "category": "feature",
+      "note": "manager-roomでの相談「AIの最新技術と、世の中のトレンドとして再生回数が多いキーワードを探してほしい(AI関連・一般ジャンル問わず両方、日本・世界両方)」への対応。実装前にClaude Codeのネットワークセクレット機能(Bearer/Basic/GCP access token等)でAPIキーをセッションに持たせる方法を複数試したが、YouTube Data API v3のクエリパラメータ方式の鍵と噛み合わず、ユーザー指摘「これって要は、スクリプトとかでキーワードの値を取得すればいいんだから、いちいちclaudeでやる必要ないだろ」「GASとかでやればいいだろ、それこそservicenowとかで」を受けて方針転換し、既存のservicenow-sub-agentパイプライン(README「ServiceNow認証情報や、万一将来他の情報源で認証が必要になった場合のAPIキー等は、このリポジトリには絶対にコミットしない」の既存方針どおり)へ実装し直した。この過程でClaude Code環境側に追加したYouTube関連のシークレット・環境変数は未使用のまま残っている可能性があり、ユーザー側での削除が必要な場合がある。",
+      "detail": "servicenow-sub-agentに以下を実装(commit済み、mainへpush済み):\n- REST Message \"AI Research - YouTube\" を4メソッド(aitech=category2新着順検索/aitrend=category5再生回数順検索/trendjp=category10日本急上昇/trendworld=category10世界急上昇・regionCode=USで代用)で追加(setup_rest_messages.mjs)\n- 新規category 10(世の中の話題・トレンド、ジャンル問わず)をscheduled_job_ai_research_fetch.jsのCATEGORY定義に追加\n- fetchYouTubeSearch/fetchYouTubeTrendingの2関数を追加。このパイプライン初の認証必須情報源のため、APIキーをリポジトリにコミットしない設計にした: 新規setup_youtube_api_key.mjsがGitHub Actions SecretsのYOUTUBE_API_KEYをServiceNow PDI側のシステムプロパティ\"youtube.api_key\"(type: password2、暗号化保存)へ設定し、scheduled_job側はRESTMessageV2.setQueryParameter(\"key\", apiKey)で実行時にのみ付与する(既存の${変数}事前登録の落とし穴を踏まない設計、README参照)\n- .github/workflows/servicenow-setup.ymlにsetup-youtube-api-keyジョブを追加、YOUTUBE_API_KEY未設定でも他ジョブに影響しないようスキップ処理を実装\n- README.mdの対象観点表・情報源表・セットアップ手順を更新、新セクション「YouTube Data API v3(category 2/5/10)」を追加\n\n【未検証・残作業】\n1. GitHub Actions SecretsにYOUTUBE_API_KEYを登録(ユーザー側の作業、Google Cloud ConsoleでAPIキー発行済み)\n2. ServiceNowセットアップワークフローをdry_run=falseで実行\n3. Scheduled Job実行後、u_ai_research_itemにYouTube系レコードが実際に挿入されるか確認(setQueryParameterの実機動作は本セッションから検証不可だったため)\n4. ServiceNow Studio側でu_ai_research_item.u_categoryのChoiceリストに\"10\"を手動追加(category 6/7/8/9と同じ既知の制約)\n5. Claude Code環境側に追加した不要なYouTube関連シークレット・環境変数の削除(ユーザー確認)",
+      "issues": [
+        "setQueryParameterの実機検証ができていない(ServiceNow PDIへの対話的ログイン手段がこのセッションに無いため)",
+        "u_categoryのChoiceリストへの10の手動追加が必要(自動化対象外)"
+      ],
+      "output": "gurii-gabreh/servicenow-sub-agent servicenow/scheduled_job_ai_research_fetch.js・servicenow/scripts/setup_rest_messages.mjs・servicenow/scripts/setup_youtube_api_key.mjs(新規)・.github/workflows/servicenow-setup.yml・README.md",
+      "steps": null,
+      "checkHistory": [
+        {
+          "date": "2026-10-18",
+          "summary": "YouTube Data API v3連携をservicenow-sub-agentへ実装、commit・push完了。ServiceNow PDIへの実反映(dry_run=false実行)・動作確認・u_category Choice追加はユーザー側の作業として残っている。"
+        }
+      ],
+      "nextAction": "ユーザーがGitHub Actions SecretsへYOUTUBE_API_KEYを登録し、dry_run=falseでワークフロー実行。その後Scheduled Jobを1回実行してu_ai_research_itemへの挿入を確認。完了したらステータス更新をユーザーに確認(ルール30)。",
+      "subtasks": null,
+      "goal": null,
+      "relatedTasks": []
     }
   ],
-  "updatedAt": "2026-10-18T04:01:51.875+00:00"
+  "updatedAt": "2026-10-18"
 }
