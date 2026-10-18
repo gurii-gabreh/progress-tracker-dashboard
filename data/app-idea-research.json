@@ -20,7 +20,7 @@
     {
       "title": "r/ClaudeAI 「Show me what you've created with Claude」投稿(5ヶ月前、320件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1tcftws/show_me_what_youve_created_with_claude/",
-      "note": "2026-10-18にユーザーがチャットへ貼り付け。重複するURL・内容は既存エントリとの照合により記録から除外。"
+      "note": "2026-10-18にユーザーがチャットへ貼り付け。重複するURL・内容は既存エントリとの照合により記録から除外。 2026-10-18に同スレッドが再度貼り付けられ、追加の個別コメントから新規項目を補完した。"
     },
     {
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(1ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
@@ -30,6 +30,10 @@
     {
       "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(3ヶ月前、320件コメント時点の要約+個別コメント、ユーザー貼り付け)",
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1uxlehk/show_us_what_youve_created_with_claude/"
+    },
+    {
+      "title": "r/ClaudeAI 「Show us what you've created with Claude」投稿(2ヶ月前、200件コメント時点の要約+個別コメント、ユーザー貼り付け)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1vt249k/show_us_what_youve_created_with_claude/"
     }
   ],
   "categories": [
@@ -283,6 +287,31 @@
           "title": "Brighton Part Timer",
           "description": "150以上の雇用主のサイトを1日2回スキャンし、パートタイム求人を一箇所にまとめるローカル求人ボード。2ヶ月で応募2000件を達成。",
           "url": "https://brightonparttimer.co.uk"
+        },
+        {
+          "title": "音楽理論学習アプリ(whererusteve作)",
+          "description": "音楽理論への理解を深めるために作った個人用学習アプリ。Claudeの公開アーティファクトとして公開。",
+          "url": "https://claude.ai/public/artifacts/53675028-a3e3-42bd-8aa6-12a6e1a423e6"
+        },
+        {
+          "title": "Kids Reward Chart System",
+          "description": "紙のご褒美チャートが機能せず子供同士で妨害し合っていたため作られた、子供向けご褒美チャートシステム。",
+          "url": "https://github.com/chapdad031167/Kids-Reward-Chart-System"
+        },
+        {
+          "title": "A Third Place",
+          "description": "保存した場所を共有可能なリストに変換し、リストを実際の計画に変換するアプリ。リストはiMessage/Web/Instagramへ即時エクスポートでき、おすすめの場所がアルゴリズムではなく人を通じて広がる設計。",
+          "url": "https://apps.apple.com/us/app/a-third-place-find-plan/id6780071384"
+        },
+        {
+          "title": "Precursor",
+          "description": "アプリごとにスクリーンタイムの上限を設定し、doomscroll(無限スクロール)に入る前に止め、再度スクロールする前にクールダウンを挟む新しいスクリーンタイム管理アプリ。既存のスクリーンタイムアプリにはこの機能が無かったため開発。",
+          "url": "https://apps.apple.com/app/apple-store/id6791403654"
+        },
+        {
+          "title": "tripSignal",
+          "description": "カナダ発の格安オールインクルーシブ旅行向け価格追跡ツール。SellOffVacations・RedTag・Air Transatを1日3回巡回し、気になる旅行の価格が下がるとメール通知。700以上のリゾートをGeminiでスクレイピング・情報強化し、家族向け・アダルト限定・ウォーターパーク有無・藻(サルガッサム)リスク・移動時間などで絞り込み検索できる。",
+          "url": "https://tripsignal.ca"
         }
       ]
     },
@@ -355,6 +384,26 @@
           "title": "Builders-Gate",
           "description": "ゲーム開発プロセス向けのオープンソースAgenticハーネス。エージェント用ツールボックスとしても、複数エージェントとの共同開発空間としても使える。現在Godot対応、Unity・Webアプリ向けツールも拡張予定。",
           "url": "https://github.com/Thepizzapie/BuildersGate"
+        },
+        {
+          "title": "PAD",
+          "description": "AI(エージェント)向けに設計されたプロジェクト管理アプリ。Jira/Linear/Asana+Notion/Obsidianのような機能を、エージェントが自然に使えるよう一から設計。Web UI+CLI、オープンソース、ローカル実行またはDockerホスティング対応、Unraid Community Appsにも対応。",
+          "url": "https://github.com/perpetualsoftware/pad"
+        },
+        {
+          "title": "VIRP",
+          "description": "AIエージェントに実インフラ(ルーター・ファイアウォール・ハイパーバイザー等)を操作させつつ信頼しなくても済むようにするガバナンスゲート。コマンドをgreen(自動実行可)/yellow(人間の署名が必要)/black(絶対不可)に分類し、全ての操作(許可・拒否問わず)を改ざん検知可能な形で暗号署名してチェーンに記録する。Apache 2.0、IETFドラフト進行中。",
+          "url": "https://github.com/nhowardtli/virp"
+        },
+        {
+          "title": "CrumbVMS",
+          "description": "Rustバックエンド+4プラットフォームのネイティブクライアントによる、セルフホスト型の映像管理システム(NVR)。H.265タイムラインのスムーズなスクラブ、5種類の切替可能な動き検知アルゴリズム、ローカルナンバープレート認識、Home Assistant連携、Frigateとの物体検知連携に対応。無料・オープンソース(AGPL)、カメラ数制限無し、クラウド不要、テレメトリ無し。自宅の11台のカメラを数ヶ月間無停止で録画中。",
+          "url": "https://crumbvms.com"
+        },
+        {
+          "title": "Orgabot",
+          "description": "組織図そのものを置き換えることを意図したエージェントオーケストレーションツール。各役職に人間またはエージェントを割り当て、ミッションを起動し結果を確認できる。",
+          "url": "https://www.orga.bot"
         }
       ]
     },
@@ -478,6 +527,31 @@
           "title": "Audiopian",
           "description": "YouTubeの任意の曲を選んで歌・ラップで一緒に歌い、採点してもらえるカラオケ×ギターヒーロー的サービス。曲の.lrcファイルと同期し、ブラウザの音声認識で歌詞との一致を判定する。",
           "url": "https://audiopian.com/"
+        },
+        {
+          "title": "Glovebox.quest",
+          "description": "ロードトリップ用に作られたミニアーケード。移動中だけでなくどこでも暇つぶしに使える。",
+          "url": "http://glovebox.quest/"
+        },
+        {
+          "title": "Pizzaπ",
+          "description": "親子で一緒に作った、子供向けの数学ゲーム。",
+          "url": "https://pizzapi.vinceroyer.ca"
+        },
+        {
+          "title": "Photon Cycles",
+          "description": "長年プレイしたかったライトサイクル(TRON風)ゲーム。1年以上かけて開発し、サーバー権威管理とピクセル精度の近い当たり判定を実現。ソロ/カジュアル/マルチプレイヤー対応。",
+          "url": "https://photonecycles.com"
+        },
+        {
+          "title": "United Mazes of America",
+          "description": "手描きの迷路を解きながら、米国各州の歴史・名所・隠れた州のシンボルを学べる9歳以上向けiPadアプリ。複数段階の歴史アドベンチャー迷路・旅行記録・トリビア・ヒント機能付き。Swift約84,000行、トリビア836問、名所303件。2026年にApp Store公開。",
+          "url": "https://www.unitedmazesofamerica.com"
+        },
+        {
+          "title": "Unstable Truck",
+          "description": "荷物を集めながら進む、片手操作のトップダウン型トラックレースゲーム。日替わりのテーマとランダム生成レベル、リーダーボード付き。",
+          "url": "https://lewistrick.com/unstable-truck"
         }
       ]
     },
@@ -562,6 +636,31 @@
           "title": "Naturarum Apps",
           "description": "iOS向けに、長年作りたかった楽器アプリ群をようやく形にしたプロジェクト。",
           "url": "https://naturarum.github.io/apps"
+        },
+        {
+          "title": "hereandaway.net",
+          "description": "チャット機能の無いAIM(旧AOL Instant Messenger)風アプリ。会話するのではなく、作業に没頭する相手が隣にいる感覚(ボディダブル)を再現するテキスト形式のツール。",
+          "url": "https://hereandaway.net/"
+        },
+        {
+          "title": "Percolate",
+          "description": "コーヒー好きのための豆トラッキングアプリ。好きな豆を記録し、自分の「コーヒーDNA」を発見し、価格の下落を検知できる。",
+          "url": "https://apps.apple.com/us/app/percolate-coffee-tracker/id6786252100"
+        },
+        {
+          "title": "Media Server Cold Storage and Rotation",
+          "description": "自宅メディアサーバーの保存容量が限られているため、必要に応じて外部ドライブへデータを退避・復帰させるローテーションシステム。",
+          "url": "https://github.com/chapdad031167/NAS-Media-Server-cold-storage-and-rotation"
+        },
+        {
+          "title": "Phish Picks",
+          "description": "バンド「Phish」の究極のファンサイト。phish.net(90年代から続くファン運営データベース)・phish.in(ライブ録音アーカイブ)のAPIを使い、セットリストゲームも搭載。",
+          "url": "http://www.phishpicks.net/"
+        },
+        {
+          "title": "remaininghours.com",
+          "description": "自分の残り寿命が何時間あるか、その時間で何ができるかを可視化する実存主義的なサイト。",
+          "url": "https://remaininghours.com/"
         }
       ]
     },
@@ -593,6 +692,16 @@
           "title": "CouncilNotes.ai",
           "description": "市議会の記録を「何が起きたか・何が可決したか・誰がどう投票したか・なぜ重要か」が分かる読みやすいブリーフィングに変換するアプリ。データセットとのチャットや地元政治家への献金検索機能も搭載。",
           "url": "https://councilnotes.ai/"
+        },
+        {
+          "title": "vitals.watch",
+          "description": "膨大な米国政府データを閲覧・比較できるサイト。複数データセットを比較した厳選ケーススタディも掲載。",
+          "url": "https://vitals.watch/"
+        },
+        {
+          "title": "daylight.watch",
+          "description": "米国政府機関の.govサイトを監視し、プライバシーポリシーが無く個人データを追跡しているサイトを見つけるツール。毎日サイトをWayback Machineへ送信して記録を残す。",
+          "url": "https://daylight.watch/"
         }
       ]
     }
