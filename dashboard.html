@@ -142,7 +142,7 @@
   .view-panel-area { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
   .view-panel { display: none; flex: 1 1 auto; min-height: 0; }
   .view-panel.active { display: flex; flex-direction: column; }
-  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe, #policy-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
+  #applist-iframe, #knowledge-iframe, #schedule-iframe, #materials-iframe, #records-iframe, #policy-iframe, #english-iframe { flex: 1 1 auto; width: 100%; border: none; display: block; background: var(--surface); }
 
   /* 🧭タスクWBSタブ内の切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
      上部タブとは別の、タブ内サブ切り替え。既定でタスクスケジュールを表示する。 */
@@ -955,6 +955,7 @@
     <button class="top-tab-btn" id="top-tab-hub" data-view="hub">🏠 一覧</button>
     <button class="top-tab-btn active" id="top-tab-manager" data-view="manager">🧭 タスクWBS</button>
     <button class="top-tab-btn" id="top-tab-devdocs" data-view="devdocs">📄 開発資料</button>
+    <button class="top-tab-btn" id="top-tab-english" data-view="english">🇬🇧 英語</button>
     <button class="top-tab-btn" id="top-tab-applist" data-view="applist">🗂 アプリ一覧</button>
     <button class="top-tab-btn" id="top-tab-knowledge" data-view="knowledge">🧠 ナレッジ</button>
     <button class="top-tab-btn" id="top-tab-ai-config" data-view="ai-config">🤖 AI基本設定</button>
@@ -1214,6 +1215,12 @@
   </div>
   </div>
 
+  <!-- 🇬🇧英語タブ(2026-10-18追加)。gurii-gabreh/English-Speaking-App(index.html/app.html/chatgpt.html/
+       lessons.htmlのトップ選択ページ)をそのまま埋め込む。既存の🗂アプリ一覧・🧠ナレッジと同じ
+       単一iframeパターンを再利用(rule23)。 -->
+  <div id="english-view" class="view-panel">
+    <iframe id="english-iframe" title="英語" loading="lazy"></iframe>
+  </div>
   <div id="applist-view" class="view-panel">
     <iframe id="applist-iframe" title="アプリ一覧" loading="lazy"></iframe>
   </div>
@@ -3254,6 +3261,10 @@
       hub: { btn: document.getElementById("top-tab-hub"), panel: document.getElementById("hub-view") },
       manager: { btn: document.getElementById("top-tab-manager"), panel: document.getElementById("manager-view") },
       devdocs: { btn: document.getElementById("top-tab-devdocs"), panel: document.getElementById("devdocs-view") },
+      english: {
+        btn: document.getElementById("top-tab-english"), panel: document.getElementById("english-view"),
+        iframeId: "english-iframe", url: "https://gurii-gabreh.github.io/English-Speaking-App/",
+      },
       applist: {
         btn: document.getElementById("top-tab-applist"), panel: document.getElementById("applist-view"),
         iframeId: "applist-iframe", url: "https://gurii-gabreh.github.io/my-dashboard/",
