@@ -400,6 +400,21 @@
         "costUsd": 1868.2502607
       },
       "rateLimitResetsAt": "2026-10-20T01:30:00+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "time": "16:14",
+      "repo": "mirai-journal",
+      "task": "MJ-002: 日報記録経路+習慣チェック(○×)欄を追加",
+      "note": "journals.jsonにdailyReport(日報直接貼り付け経路)・habits(○×習慣チェック)フィールドを追加。journal.html/app.js/README/settings.htmlを更新、Playwrightで表示確認済み。main push済み、ユーザーの完了確認待ち。",
+      "usage": {
+        "inputTokens": 5730692,
+        "outputTokens": 10346219,
+        "cacheReadTokens": 5736899447,
+        "cacheWriteTokens": 130396671,
+        "costUsd": 1872.6743245
+      },
+      "rateLimitResetsAt": "2026-10-20T01:30:00+09:00"
     }
   ]
 }

@@ -5040,6 +5040,33 @@
         }
       ],
       "updated": "2026-10-19"
+    },
+    {
+      "id": "MJ-002",
+      "title": "mirai-journalに日報記録経路+習慣チェック(○×)欄を追加",
+      "task": "journals.jsonへdailyReport・habitsフィールドを追加",
+      "repo": "mirai-journal",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "「手書きの日報は記録する仕様になっていないよね?」という確認を受け、現状のmirai-journalはGemini Live音声面談のトランスクリプトのみが記録経路であることを実際にentrySchemaを確認して回答した。ユーザーから「日報でまとめてくれる」との依頼を受け、日報を直接Claude Codeチャットへ貼り付けて記録する経路を追加した。さらに「ジムに行った/資格勉強をするといった項目を○×で記載する仕様になっていないか」との確認があり、profile.jsonのgoalSchemaを確認した結果、そのような日次の習慣チェックリスト機能は無いことを回答、ユーザー承認(「して」)を受けて追加した。設計判断: 既存のjournals.json/profile.jsonの2分割(claude-core-rules.mdルール29、更新頻度による分割基準)に沿い、新フィールドは高頻度ログであるjournals.json側へ追加し、新規ファイルは作らなかった(ルール23: 既存システムの改修を優先)。",
+      "detail": "mirai-journalのdata/journals.jsonのentrySchemaに2フィールドを追加した(commit 697d685、main直push)。\n- `dailyReport`: ユーザーがClaude Codeのチャットへ直接貼り付けた日報の原文(要約・改変しない)。既存の`rawTranscript`(音声面談トランスクリプト)と並存し、同じ日に両方あれば同一エントリに統合する。\n- `habits`: `[{name, done}]`形式の配列。本文中で言及された習慣項目(例: ジムに行った/資格の勉強)の実施有無を○×で記録する。固定の習慣マスタは持たず、言及された項目のみその場で記録する方式。\nジャーナル履歴ページ(pages/journal.html)に、面談トランスクリプト/日報をラベル分けして表示し、habitsを○/✗バッジで表示するUIを追加。ホームのプレビュー(js/app.js)もdailyReportへフォールバックするよう修正。README.md・このアプリについてページ(pages/settings.html)も新しい2経路(①音声面談 ②日報直接貼り付け)に合わせて更新した。既存の1件のエントリにもdailyReport:null・habits(本文の記載に基づきアプリ制作:済み/資格の勉強:未)を後付けした。\nPlaywrightでjournal.htmlを実際にレンダリングし、habit-badgeが「○ アプリ制作」「✗ 資格の勉強」と正しく表示されること、既存のrawTranscript表示が壊れていないことをスクリーンショットで確認済み。",
+      "output": "gurii-gabreh/mirai-journal data/journals.json・pages/journal.html・js/app.js・README.md・pages/settings.html",
+      "relatedTasks": [
+        "MJ-001"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-19",
+          "summary": "日報記録経路+習慣○×チェック欄を実装、Playwrightで表示確認済み、main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-19"
     }
   ],
   "updatedAt": "2026-10-18"
