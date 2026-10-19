@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-18T15:14:28.886+00:00",
+  "lastProcessedAt": "2026-10-19T15:25:00.000+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -159,6 +159,15 @@
       "unresolvedCarriedOver": [
         "YouTube用Scheduled Jobの実機動作確認(u_ai_research_itemへの挿入確認)",
         "PTD-085・086・088のユーザー完了確認待ち(ルール30)"
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "generatedAt": "2026-10-19T15:25:00.000+00:00",
+      "summary": "【YouTubeトレンド分析と改善方針の検討(PTD-090起点)】\nPTD-089(YouTube Data API v3連携)完了後、「YouTubeの調査結果から、今の傾向は何?」という相談を受けて実データを分析したところ、category5(AI流行・再生回数順)にMrBeast動画・料理動画・無関係な曲(「Ai, Amor」等)が多数混入していることが判明した。「どういう改善が必要か、ClaudeかChatGPTで調べるべきか」という相談に対し、改善案A(検索語改善+publishedAfterでの直近化、無料)とB(既存のresearch-item-curationスキル=Claudeベースのキュレーションを再利用、ルール9の永久無料制約・ルール23の既存システム優先に合致するためChatGPT等の新規有料ツールは見送り)の2案を提示した。「Bはクレジットをかなり使うか」という懸念にはコスト構造を説明し、さらに「そんなに使ったのか」「これは今日ではなく日本時間的には昨日では」「ドルは実際にはかかっていない、クレジット数だよね、月額プランのみの認識」という一連のクレジット・日付・課金に関する確認が続いた。これに対し、credit-log.jsonの各エントリが累積値のスナップショットであり実際の日次コストは差分計算が必要なこと、JSTでの日付の取り違えがあったこと、`isUsingOverage: false`から実際の追加課金は発生していないこと(月額プランの範囲内、5時間レート制限のみが実質的な制約)を、実際に確認した事実に基づいて回答した。「了解、それならさっきのABを進めて」で両案の実施が承認された。\n\n【PTD-090実施: 検索語改善(改善A)とAI判断キュレーション(改善B)】\n改善A: servicenow-sub-agentの`setup_rest_messages.mjs`・`scheduled_job_ai_research_fetch.js`の`aitrend`クエリから単体の\"AI\"というbare項を削除し\"artificial intelligence\"という具体的フレーズへ置換、`GlideDateTime`で動的に算出した`publishedAfter`(直近30日)を追加。commit 4f7ebc5でmainへpush、`servicenow-setup.yml`(dry_run=false)で実機反映(ワークフロー自体はsuccess、Scheduled Job次回実行後の実データ確認はまだ)。\n改善B: 既存のresearch-item-curationスキルの運用(score降順の候補選定→rawSummaryを読んで判断→summaryJa/pointsJa/applicableTechJa付与→curated:true+score+1→Pythonスクリプトでの一括書き込み→main直push)を再利用し、すでに収集済みのYouTube項目20件(category2×10・category5×10)を実際に読んで判定した。結果、**category5(AI流行・再生回数順)は10件中0件が本当にAI関連だった**(全てノイズと確認、改善Aの必要性を裏付けた)。category2(AI最新技術)は8/10件が本物のAI関連ニュース(Anthropic/Claude Code/AIエージェント等)と確認でき、curated:trueに設定。category10(世の中の話題・トレンド)20件は設計上AI限定ではない一般トレンドのため対象外とした(スキル自身の「無関係な接続を強制しない」方針に基づく判断)。commit 76143e3でmainへpush。\nprogress-tracker-dashboard側にはPTD-090として登録(status: 対応中、Scheduled Job実行結果のユーザー確認待ちのためルール30により未完了のまま)、concept-log.jsonにCL-044(キーワード検索×再生回数順ソートのノイズ対策はnarrowとAI判断キュレーションを両方組み合わせて初めて機能する、という教訓)を追加、credit-log.jsonに追記。designated branchからmainへマージ済み。\nユーザーから「これによって、もう少し精査されるの?」という確認があり、改善Aは今後の新規収集分のノイズを減らすもの、改善Bは既存20件を実際に読んで仕分けたが削除はしておらずcurated:falseのまま生データに残っていること、ビューア(index.html)にはもともと「要約済みのみ」表示切替(デフォルトOFF)があることを、実際にindex.htmlを確認した上で正直に回答した。\n\n【英会話レッスン記録(Lesson 4 Weeknights)】\n「今日の英会話レポート、まとめてから記録しておいて」との依頼で、スキマ英会話Lesson 4(平日の夜、中級)のレポートをEnglish-Speaking-App(リポジトリ名がEnglish-Speaking-Appへ大文字小文字変更されていた)の`data/lessons.json`へ`lesson-2026-10-19-02`として記録、main直pushで完了。表現5件(帰宅・夕食・ジムの習慣、andでつなげた複文)・訂正4件(for dinnerの脱落、過去形/現在形の混同、every nightの誤り、複文のつなげ方)・宿題(3文を続けて言う練習)を既存スキーマに沿って記録した。pushの際に「このリポジトリは移動しました」という通知が出たことについて「これは何?もう一度やり直すべき?」という質問があり、push自体は既に成功していること(GitHub側の自動転送によるもの)、今後のため念のためローカルのリモートURLを正式表記へ更新したことを説明した。\n\n【CLAUDE.md定期確認Routine(2026-10-20 00:07 JST着火)】\nルール16のRoutineが発火し、data/claude-core-rules.mdを再読した。自分がこのセッション開始時に読み込んでいたCLAUDE.mdのスナップショットにはルール30(2026-10-17追加)が欠落していたこと、ルール28のTask-WBS削除方針も2026-10-17の変更前の古い版だったことに気づいたが、いずれも本セッション内の実際の行動(PTD-089/090の完了判定でルール30を適用済み、Task-WBS同期で「削除せず完了状態に更新」という新方式を既に使用済み)とは矛盾しておらず、実害は無かったと確認した。セッション開始時の静的スナップショットと、その後ファイル側で更新された内容との間にズレが生じうること自体を気づきとして記録する。",
+      "unresolvedCarriedOver": [
+        "PTD-085・086・088のユーザー完了確認待ち(ルール30)",
+        "PTD-090: 改善A反映後のScheduled Job実行結果の実データ確認待ち(check_fetch_log.mjs等で、次回日次実行後に確認予定)"
       ]
     }
   ]
