@@ -385,6 +385,21 @@
         "costUsd": 1858.1653395
       },
       "rateLimitResetsAt": "2026-10-19T02:00:00+09:00"
+    },
+    {
+      "date": "2026-10-19",
+      "time": "21:17",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-090: YouTube「AI流行」カテゴリのノイズ削減(検索語改善+キュレーション判定)",
+      "note": "改善A(bareの\"AI\"除去+publishedAfter直近30日、setup_rest_messages.mjs/scheduled_job_ai_research_fetch.js)と改善B(research-item-curationスキルでcategory2/5のYouTube20件を判定、8件curated:true)を実施。改善Aはservicenow-setup.yml(dry_run=false)で実機反映済み(run成功)。Scheduled Job実行後の実データ確認はまだ(ユーザー確認待ち、ルール30)。",
+      "usage": {
+        "inputTokens": 5729058,
+        "outputTokens": 10314923,
+        "cacheReadTokens": 5721579828,
+        "cacheWriteTokens": 130135693,
+        "costUsd": 1868.2502607
+      },
+      "rateLimitResetsAt": "2026-10-20T01:30:00+09:00"
     }
   ]
 }
