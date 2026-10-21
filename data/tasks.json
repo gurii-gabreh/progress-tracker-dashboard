@@ -5027,7 +5027,7 @@
         "改善A(dry_run=false反映)のScheduled Job実機実行後の動作確認がまだ(check_fetch_log.mjs等での確認待ち)"
       ],
       "nextAction": "次回Scheduled Job実行後、check_fetch_log.mjsでエラー無く新クエリ(publishedAfter付き)が動いているか確認し、ユーザーへ報告の上、問題なければ完了とする(ルール30、ユーザーの明示確認待ち)。",
-      "note": "manager-roomでのYouTube調査結果トレンド分析相談から判明: category5(AI流行・再生回数順)はorder=viewCount(全期間対象)とbareの\"AI\"というOR検索語の組み合わせにより、MrBeast動画・料理動画・\"Ai, Amor\"(ポルトガル語の歌)等、AIと無関係な動画がノイズとして上位に来ていた。ユーザーに改善案A(検索語改善+publishedAfterでの直近化、無料・即実施可)とB(ChatGPT等の新規有料ツールではなく、既存のresearch-item-curationスキル=Claude判断によるキュレーションを再利用、ルール9の永久無料制約・ルール23の既存システム優先に合致)を提示し、ユーザー承認(「了解 それならさっきのabを進めて」)を得て両方実施した。",
+      "note": "manager-roomでのYouTube調査結果トレンド分析相談から判明: category5(AI流行・再生回数順)はorder=viewCount(全期間対象)とbareの\"AI\"というOR検索語の組み合わせにより、MrBeast動画・料理動画・\"Ai, Amor\"(ポルトガル語の歌)等、AIと無関係な動画がノイズとして上位に来ていた。ユーザーに改善案A(検索語改善+publishedAfterでの直近化、無料・即実施可)とB(ChatGPT等の新規有料ツールではなく、既存のresearch-item-curationスキル=Claude判断によるキュレーションを再利用、ルール9の永久無料制約・ルール23の既存システム優先に合致)を提示し、ユーザー承認(「了解 それならさっきのabを進めて」)を得て両方実施した。 【2026-10-21追記】AとBは補完関係と判明(ユーザーとの相談で確認)。Aはクエリ側の既知パターンを都度追加で除外、Bは収集後の個別判断で残りを弾く、という二層運用を継続する方針。",
       "detail": "【改善A】servicenow-sub-agentのsetup_rest_messages.mjs・scheduled_job_ai_research_fetch.jsのYOUTUBE_ENDPOINTS.aitrendから単体の\"AI\"というbareのOR項を削除し、\"artificial intelligence\"という具体的フレーズへ置換。さらにfetchYouTubeSearchにrecentDays引数を追加し、aitrend呼び出しのみGlideDateTimeで動的に算出したpublishedAfter(直近30日)を付与するようにした。commit 4f7ebc5でmainへpush、servicenow-setup.yml(dry_run=false)で実機反映済み(実行結果の確認は未完了、下記issues参照)。\n\n【改善B】research-item-curationスキルの既存運用(score降順の候補選定→rawSummaryを読んでgenuine Japanese analysis作成→curated:true+score+1→Pythonスクリプトでの一括書き込み→main直push)をそのまま再利用し、YouTube経由で既に収集済みのcategory2(AI最新技術)10件・category5(AI流行・再生回数順)10件、計20件を実際に読んで判定した。\n- category2: 8/10件が実在するAI関連ニュース(Anthropic/Claude Code/AIエージェント等)と確認できcurated:trueに設定。残り2件(フットサル大会名\"AI SPORT\"、株式セミナー広告の#AIタグ)はbareな\"AI\"文字列への機械的一致で本文は無関係と判断しcurated:falseのまま残した。\n- category5: 10件全てを確認したが、本当にAI関連の内容を持つ動画は0件だった(MrBeast動画・料理動画・\"Ai, Amor\"というポルトガル語の歌等、いずれもbareな\"AI\"文字列への偶然一致)。この結果が改善Aの必要性を裏付けている。\n- category10(世の中の話題・トレンド、trendjp/trendworld)20件は、設計上AI限定ではない一般トレンド動画のため対象外とした(research-item-curationスキル自身の「無関係な接続を強制しない」方針に基づく判断)。\ncommit 76143e3でmainへpush済み。",
       "output": "gurii-gabreh/servicenow-sub-agent servicenow/scheduled_job_ai_research_fetch.js・servicenow/scripts/setup_rest_messages.mjs(改善A、commit 4f7ebc5)・data/research-items.json(改善B、commit 76143e3)",
       "relatedTasks": [
@@ -5037,9 +5037,13 @@
         {
           "date": "2026-10-19",
           "summary": "改善A(検索語改善+publishedAfter)をcommit・push・servicenow-setup.yml(dry_run=false)で実機反映。改善B(research-item-curationスキルでcategory2/5のYouTube20件を判定、8件curated:true)をcommit・push。いずれもユーザーの最終確認はまだ。"
+        },
+        {
+          "date": "2026-10-21",
+          "summary": "改善B(2回目)で改善A適用後の新規収集14件を判定(7件curated)、うち2件が俳優\"Jean-Claude Van Damme\"への誤マッチと判明。改善A(2回目)として-\"Jean-Claude\"をクエリへ追加しdry_run=falseで再デプロイ。REST Message・Scheduled Job同期の両ジョブは成功を確認。ワークフロー全体はverify_source_urls.mjs(Anthropic News page scraperの構造変更、PTD-090とは無関係)の失敗によりfailure表示だが、YouTube関連の反映自体は成功。"
         }
       ],
-      "updated": "2026-10-19"
+      "updated": "2026-10-21"
     },
     {
       "id": "MJ-002",
@@ -5120,6 +5124,35 @@
         }
       ],
       "updated": "2026-10-20"
+    },
+    {
+      "id": "PTD-091",
+      "title": "servicenow-sub-agent: Anthropic News page(生HTMLスクレイピング)が構造変更で取得失敗",
+      "task": "verify_source_urls.mjsのAnthropic News取得失敗を修正",
+      "repo": "servicenow-sub-agent",
+      "category": "bugfix",
+      "priority": "低",
+      "status": "未着手",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "Anthropic公式サイト(https://www.anthropic.com/news)のHTML構造が変わり、期待していたCSS Modulesクラス名(PublicationList-module-scss-module__<hash>__listItem)を持つ<li>要素が見つからなくなっている(verify_source_urls.mjsのNG検出による)。"
+      ],
+      "nextAction": "実際のページHTMLを取得して新しい記事一覧のマークアップ構造を確認し、fetchAnthropicNewsHtml()の抽出用正規表現を更新する。優先度・着手タイミングはユーザーへ確認。",
+      "note": "PTD-090(YouTube改善A・2回目)のデプロイ確認中、servicenow-setup.ymlワークフローのverify_source_urls.mjsジョブが失敗していることに気づいて発見した(2026-10-21)。PTD-090自体とは無関係な既存情報源の劣化。CL-017(Anthropic News pageスクレイピングの既知の脆さ)で過去にも同種の構造変更への耐性を一部持たせていたが、今回はその許容範囲を超える変更があった模様。",
+      "detail": "未対応(発見のみ)。",
+      "output": null,
+      "relatedTasks": [
+        "PTD-090"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-21",
+          "summary": "servicenow-setup.ymlのverify_source_urls.mjsジョブでHTTP 200だがNG(想定したCSSクラスを持つ<li>要素が0件)と判明。未対応。"
+        }
+      ],
+      "updated": "2026-10-21"
     }
   ],
   "updatedAt": "2026-10-18"
