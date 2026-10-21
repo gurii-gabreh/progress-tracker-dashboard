@@ -415,6 +415,36 @@
         "costUsd": 1872.6743245
       },
       "rateLimitResetsAt": "2026-10-20T01:30:00+09:00"
+    },
+    {
+      "date": "2026-10-20",
+      "time": "12:14",
+      "repo": "study-app",
+      "task": "STU-004: 問題モードのパンくず・リセットボタン行を固定化",
+      "note": "日次Routineによる遡及記録。commit ac4978eでmain push済み。",
+      "usage": {
+        "inputTokens": 5731280,
+        "outputTokens": 10366860,
+        "cacheReadTokens": 5749986086,
+        "cacheWriteTokens": 131121368,
+        "costUsd": 1878.3980263
+      },
+      "rateLimitResetsAt": "2026-10-22T02:10:00+09:00"
+    },
+    {
+      "date": "2026-10-20",
+      "time": "12:14",
+      "repo": "mirai-journal",
+      "task": "MJ-003: ジャーナル履歴ページに月表示ブロック型カレンダーを追加",
+      "note": "日次Routineによる遡及記録。commit c1d1e4eでmain push済み。",
+      "usage": {
+        "inputTokens": 5731280,
+        "outputTokens": 10366860,
+        "cacheReadTokens": 5749986086,
+        "cacheWriteTokens": 131121368,
+        "costUsd": 1878.3980263
+      },
+      "rateLimitResetsAt": "2026-10-22T02:10:00+09:00"
     }
   ]
 }
