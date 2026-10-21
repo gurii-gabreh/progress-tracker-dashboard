@@ -5067,6 +5067,59 @@
         }
       ],
       "updated": "2026-10-19"
+    },
+    {
+      "id": "STU-004",
+      "title": "問題モード画面のパンくず・リセットボタン行を固定化",
+      "task": "quiz-bar/sec-hdrのsticky化",
+      "repo": "study-app",
+      "category": "bugfix",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "「問題モードを開いた時に上部にあるリセットボタンや、パンくず(Course 1・1-1)の部分は固定にして、スクロールさせないようにして」という依頼。「年代」という言葉が何を指すか不明だったため、実際にPlaywrightでquiz画面のスクリーンショットを撮って送付した上でAskUserQuestionで確認し、パンくず「Course 1・1-1」を指すことを確認してから実装した(推測で進めなかった)。",
+      "detail": ".sec-hdr(パンくず+レッスンタイトル)と.quiz-bar(スコア/リセット/ランダム/履歴保存ボタン)を新規.quiz-sticky-hdrでラップし、position:stickyで.contentスクロール領域の先頭に固定した(commit ac4978e、main直push)。携帯幅(max-width:640px)では.contentがmax-height:noneになりbody側がスクロールコンテナになるが、.contentにoverflow-y:autoが残ったままだとposition:stickyがbodyのスクロールに反応しないことが分かったため、overflow-y:visibleへ変更し、.quiz-sticky-hdrのtopも.hdr(56px)の下へ合わせた。Playwrightでデスクトップ幅(1280px)・携帯幅(375px)の両方でスクロール後も固定表示されること、横スクロールが発生しないことを確認済み。",
+      "output": "gurii-gabreh/study-app index.html",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-10-20",
+          "summary": "sticky化を実装、Playwrightでデスクトップ・携帯両幅の動作を確認、main push済み。"
+        }
+      ],
+      "updated": "2026-10-20"
+    },
+    {
+      "id": "MJ-003",
+      "title": "ジャーナル履歴ページに月表示のブロック型カレンダーを追加",
+      "task": "journal.htmlへカレンダー(月表示ブロック型)を追加",
+      "repo": "mirai-journal",
+      "category": "feature",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "「カレンダーを左に追加して、記録があれば日付をクリックできるようにして、クリックしたら詳細を開けるようにしてほしい。カレンダーはブロック型で」という依頼。配置先ページ・ブロック型の意味(月表示カレンダー vs GitHub Contribution風ヒートマップ)・クリック時の挙動(一覧内スクロール vs モーダル)が曖昧だったため、AskUserQuestionで4点確認してから実装した。",
+      "detail": "journal.htmlの記録一覧カードの左に月表示カレンダー(日付が四角いマス目のブロック型)を新設(commit c1d1e4e、main直push)。記録のある日は色付きブロックになりクリック可能、押すと右の一覧内の該当エントリまでスクロールし一時的にハイライトする。前月/次月ボタンで月を切り替え可能、初期表示は最新エントリの月(無ければ現在月)。既存の.two-col/.three-colと同じ900px以下で1カラムへ崩すresponsiveパターンを再利用し、新しいブレークポイントは追加しなかった。Playwrightでデスクトップ幅・携帯幅(375px)の両方で表示・クリック後のスクロール&ハイライト・月送りの動作を確認済み。",
+      "output": "gurii-gabreh/mirai-journal pages/journal.html",
+      "relatedTasks": [
+        "MJ-001",
+        "MJ-002"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-20",
+          "summary": "カレンダーを実装、Playwrightで表示・クリック・月送りの動作を確認、main push済み。"
+        }
+      ],
+      "updated": "2026-10-20"
     }
   ],
   "updatedAt": "2026-10-18"

@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-19T15:25:00.000+00:00",
+  "lastProcessedAt": "2026-10-21T03:20:00.000+00:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -168,6 +168,16 @@
       "unresolvedCarriedOver": [
         "PTD-085・086・088のユーザー完了確認待ち(ルール30)",
         "PTD-090: 改善A反映後のScheduled Job実行結果の実データ確認待ち(check_fetch_log.mjs等で、次回日次実行後に確認予定)"
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "generatedAt": "2026-10-21T03:20:00.000+00:00",
+      "summary": "【mirai-journalの閲覧先についての確認】\n「これどこに追加したの?いまいち見方がわからない」という質問に対し、progress-tracker-dashboardの📓ジャーナルタブ内の埋め込み、またはmirai-journal単体サイト(https://gurii-gabreh.github.io/mirai-journal/)のどちらでも、サイドバー「ジャーナル履歴」ページに日報・習慣○×バッジが表示されることを説明した。\n\n【STU-004: study-appの問題モードヘッダー固定化】\n「問題モードを開いた時に上部にあるリセットボタンや、年代の部分は固定にして、スクロールさせないようにして」という依頼を受けた。「年代」が指す要素が不明だったため、Playwrightで実際にquiz画面を操作してスクリーンショットを撮影・送付した上でAskUserQuestionで確認し、パンくず「Course 1・1-1」を指すことを確認した(推測で実装を進めなかった)。.sec-hdr(パンくず+レッスンタイトル)と.quiz-bar(スコア/リセット/ランダム/履歴保存ボタン)を新規.quiz-sticky-hdrでラップし、position:stickyで固定化。携帯幅では.contentのoverflow-y:autoがstickyの妨げになることが分かり、overflow-y:visibleへの変更とtop基準の調整も行った。Playwrightでデスクトップ幅・携帯幅(375px)の両方でスクロール後も固定表示されること、横スクロールが発生しないことを確認し、commit ac4978eでstudy-app mainへpush、完了。\n\n【MJ-003: mirai-journalへ月表示ブロック型カレンダーを追加】\n「カレンダーを左に追加して、記録があれば日付をクリックできるようにして、クリックしたら詳細を開けるようにしてほしい。カレンダーはブロック型で」という依頼。配置先ページ・「ブロック型」の意味(月表示カレンダー vs GitHub Contribution風ヒートマップ)・クリック時の挙動(一覧内スクロール vs モーダル)が曖昧だったため、AskUserQuestionで4点確認してから実装した。journal.htmlの記録一覧カードの左に月表示カレンダー(日付が四角いマス目のブロック型)を新設。記録のある日は色付きブロックになりクリック可能、押すと右の一覧内の該当エントリまでスクロールし一時的にハイライトする。前月/次月ボタンで月切り替え可能、初期表示は最新エントリの月。既存の.two-col/.three-colと同じ900px以下で1カラムへ崩すresponsiveパターンを再利用し新しいブレークポイントは追加しなかった。Playwrightでデスクトップ幅・携帯幅の両方で表示・クリック後のスクロール&ハイライト・月送りの動作を確認し、commit c1d1e4eでmirai-journal mainへpush、完了。\n\n【同じ依頼が重複送信された件】\n「カレンダーを追加して」という依頼が、実装完了後にもう一度そのまま届いたため、既に実装・pushが完了していること(commit c1d1e4e)を説明し、再実装は行わなかった。\n\n【0時Routine発火(本記録自身)での対応】\nCLAUDE.md定期確認Routineでdata/claude-core-rules.mdを再読し、ルール28・30を含め変更なし・問題なしと確認。週次ルームログ要約Routineの常駐セッションのコンテキスト使用率は19.8%で閾値(70%)未満のため切り替え不要。本Routine(マネージャールーム日次ログ)の記録漏れチェック(手順7〜9)で、STU-004・MJ-003がtasks.json/credit-log.jsonに未記録だったため遡及登録した(ステップ7、ルール30の確認対象外)。Task-WBS側(ステップ10)にも両タスクを完了として新規追加し、main直push済み。なお、12時のCLAUDE.md定期確認Routine(平日・祝日でないため作業スキップ対象)は内容確認のみで対応不要と判断した。",
+      "unresolvedCarriedOver": [
+        "PTD-085・086・088のユーザー完了確認待ち(ルール30)",
+        "PTD-090: 改善A反映後のScheduled Job実行結果の実データ確認待ち(次回日次実行後に確認予定)",
+        "MJ-002: 日報記録経路+習慣チェック欄追加のユーザー完了確認待ち(ルール30)"
       ]
     }
   ]
