@@ -889,6 +889,7 @@
 
   /* 📱アプリ開発(2026-10-23追加、旧📋要件定義タブの再編) */
   .appdev-screen { margin-bottom: 10px; }
+  .appdev-stage-toggle { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
   .appdev-home-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
   .appdev-big-btn {
     flex: 1 1 200px; min-height: 100px; border-radius: 14px; border: 1px solid var(--border);
@@ -1278,13 +1279,21 @@
                sticky化した。 -->
           <div class="devdocs-sticky-head">
             <div class="tab-page-title">📂 開発アプリ一覧</div>
-            <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)を確認できます。</p>
+            <p class="tab-page-overview">各アプリの工程別ドキュメント(新規相談スキルでの聞き取り結果)を確認できます。</p>
             <div class="relations-controls">
               <label>アプリ: <select id="devdocs-app-select-req"></select></label>
             </div>
             <div id="devdocs-stats" class="relations-legend"></div>
+            <!-- 2026-10-23追加(②基本設計フェーズ): 工程切替タブ。元の要望は「左メニュー」だったが、
+                 携帯幅での表示崩れを避けるため、他タブ(調査資料のサブタブ等)と同じ横並びの
+                 manager-subview-btnパターンに揃えた(rule23: 既存の仕組みを再利用)。 -->
+            <div class="appdev-stage-toggle" id="appdev-stage-toggle">
+              <button type="button" class="manager-subview-btn active" id="appdev-stage-btn-requirements" data-stage="requirements">📋 要件定義</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
+            </div>
           </div>
           <div id="devdocs-requirements"></div>
+          <div id="appdev-basicdesign" style="display:none;"></div>
         </div>
 
       </div>
@@ -3777,7 +3786,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -3790,6 +3799,7 @@
         REQUIREMENTS.requirements = data.requirements || [];
         REQUIREMENTS.concerns = data.concerns || { items: [] };
         REQUIREMENTS.interviewChecklist = data.interviewChecklist || { items: [] };
+        REQUIREMENTS.basicDesignChecklist = data.basicDesignChecklist || { items: [] };
         populateDevDocsAppSelect();
         renderDevDocsRequirements();
         renderAppDevHomeStats();
@@ -4536,6 +4546,118 @@
     `;
   }
 
+  // 📂開発アプリ一覧→🏗基本設計(2026-10-23追加、②基本設計フェーズ)。選択中アプリの
+  // basicDesign(data/requirements.jsonのrequirements[].basicDesign、まだ無いアプリも多い)があれば
+  // 既存の回答を表示し、無ければ未着手として扱う。常に入力フォーム+プロンプト生成ボタンを表示し、
+  // 要件定義(①)の新規開発フォームと同じ「空欄のままでも可、依頼文を生成してClaude Codeへ相談する」
+  // 流れを踏襲する(rule23: 既存パターンの再利用)。
+  function showAppDevStage(stage) {
+    const reqBox = document.getElementById("devdocs-requirements");
+    const bdBox = document.getElementById("appdev-basicdesign");
+    const reqBtn = document.getElementById("appdev-stage-btn-requirements");
+    const bdBtn = document.getElementById("appdev-stage-btn-basicdesign");
+    if (reqBox) reqBox.style.display = stage === "basicDesign" ? "none" : "";
+    if (bdBox) bdBox.style.display = stage === "basicDesign" ? "" : "none";
+    if (reqBtn) reqBtn.classList.toggle("active", stage !== "basicDesign");
+    if (bdBtn) bdBtn.classList.toggle("active", stage === "basicDesign");
+    if (stage === "basicDesign") renderAppDevBasicDesign();
+  }
+  (function setupAppDevStageToggle() {
+    const reqBtn = document.getElementById("appdev-stage-btn-requirements");
+    const bdBtn = document.getElementById("appdev-stage-btn-basicdesign");
+    if (reqBtn) reqBtn.addEventListener("click", () => showAppDevStage("requirements"));
+    if (bdBtn) bdBtn.addEventListener("click", () => showAppDevStage("basicDesign"));
+  })();
+
+  function renderAppDevBasicDesign() {
+    const box = document.getElementById("appdev-basicdesign");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    const items = (REQUIREMENTS.basicDesignChecklist && REQUIREMENTS.basicDesignChecklist.items) || [];
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+
+    const bd = req.basicDesign;
+    const bdAnswers = (bd && bd.answers) || [];
+    const qaHtml = bdAnswers.length
+      ? `<div class="devdocs-qa-list">${bdAnswers.map((a) => `
+          <div class="devdocs-qa-item">
+            <div class="q"><span class="n">${a.n}.</span>${escapeHtmlForDevDocs(a.question || "")}</div>
+            <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
+          </div>`).join("")}</div>`
+      : `<div class="empty">まだ基本設計の記録がありません(未着手)。下のフォームに分かる範囲で入力し、「📋 プロンプトを作成」からClaude Codeへ相談してください。</div>`;
+
+    const fieldsHtml = items.map((it) => {
+      const existing = bdAnswers.find((a) => a.n === it.n);
+      return `
+      <div class="form-field">
+        <label for="appdev-bd-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-bd-item-${it.n}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(existing ? existing.answer : "")}</textarea>
+      </div>`;
+    }).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">基本設計: ${escapeHtmlForDevDocs((bd && bd.status) || "未着手")}</span>
+      </div>
+      ${qaHtml}
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-bd-fields">${fieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-bd-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-bd-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildBasicDesignPromptText(req, items), `${req.title || req.repo} 基本設計 依頼文`, true);
+      });
+    }
+  }
+
+  // 要件定義の回答(answers)を参考情報として埋め込み、基本設計フォームの入力値と合わせて
+  // Claude Codeへの依頼文を生成する(buildNewAppFormPromptText()と同じ考え方をrule23で再利用)。
+  function buildBasicDesignPromptText(req, items) {
+    const answerLines = items.map((it) => {
+      const el = document.getElementById(`appdev-bd-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答。設計を詰める段になってから確認する)"}`;
+    }).join("\n");
+    const reqSummary = (req.answers || []).map((a) => `   ${a.n}) ${a.question}: ${a.answer || "(未回答)"}`).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})の基本設計(②フェーズ)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「🏗 基本設計」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: このアプリの要件定義(①フェーズ、data/requirements.jsonのrequirements[].answers)】",
+      reqSummary || "(要件定義の回答が見つかりません)",
+      "",
+      "【基本設計の入力済み項目(1〜4がシステム方式設計、5〜11がソフトウェア方式設計、",
+      "  IPA共通フレーム2013 2.3.3/2.4.3に相当)】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 上記の要件定義・data/concept-log.json・data/policy.jsonと、該当リポジトリ自身の既存実装",
+      "   (ソースコード・README等)を確認し、関連する過去の設計判断が無いか確認する",
+      "2. 空欄の項目は、今すぐ全て埋めようとせず、このプロジェクトの実績・ナレッジとWeb調査の両方を",
+      "   根拠にしながらユーザーと相談して方向性を決めていく。全項目が揃っていなくても先に進めてよい",
+      "3. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   basicDesignフィールドを追加・更新する(answers配列は{n, question, answer}として11項目すべて",
+      "   格納、statusは「対応中」または「完了」)。commit・pushする",
+      "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🏗基本設計に",
+      "   自動で表示される(別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+
   function devDocsBulletsFromCheckHistory(task) {
     const items = [];
     (task.checkHistory || []).forEach((c) => {
@@ -4740,7 +4862,13 @@
   (function setupDevDocsControls() {
     const selReq = document.getElementById("devdocs-app-select-req");
     const selFlow = document.getElementById("devdocs-app-select-flow");
-    if (selReq) selReq.addEventListener("change", (e) => { devDocsSetCurrentRepo(e.target.value); renderDevDocsRequirements(); renderDevDocsFlow(); });
+    if (selReq) selReq.addEventListener("change", (e) => {
+      devDocsSetCurrentRepo(e.target.value);
+      renderDevDocsRequirements();
+      renderDevDocsFlow();
+      const bdBox = document.getElementById("appdev-basicdesign");
+      if (bdBox && bdBox.style.display !== "none") renderAppDevBasicDesign();
+    });
     if (selFlow) selFlow.addEventListener("change", (e) => { devDocsSetCurrentRepo(e.target.value); renderDevDocsRequirements(); renderDevDocsFlow(); });
 
     const filterRow = document.getElementById("devdocs-flow-filter");
