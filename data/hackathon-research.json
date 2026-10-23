@@ -115,7 +115,8 @@
           "title": "Zenn公式X(第1回受賞紹介)",
           "url": "https://x.com/zenn_dev/status/1912339763870462144"
         }
-      ]
+      ],
+      "id": "winner-01"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -130,7 +131,8 @@
           "title": "Zenn公式X(第1回受賞紹介)",
           "url": "https://x.com/zenn_dev/status/1912668028426186923"
         }
-      ]
+      ],
+      "id": "winner-02"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -145,7 +147,8 @@
           "title": "Zenn公式X(第1回受賞紹介)",
           "url": "https://x.com/zenn_dev/status/1914188319203942406"
         }
-      ]
+      ],
+      "id": "winner-03"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -160,7 +163,8 @@
           "title": "Zenn公式X(第2回結果)",
           "url": "https://x.com/zenn_dev/status/1952924117386314162"
         }
-      ]
+      ],
+      "id": "winner-04"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -175,7 +179,8 @@
           "title": "Zenn公式X(第2回結果)",
           "url": "https://x.com/zenn_dev/status/1952924117386314162"
         }
-      ]
+      ],
+      "id": "winner-05"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -190,7 +195,8 @@
           "title": "Zenn公式X(第2回結果)",
           "url": "https://x.com/zenn_dev/status/1952924117386314162"
         }
-      ]
+      ],
+      "id": "winner-06"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -205,7 +211,8 @@
           "title": "Google Cloud Japan公式X(第3回最優秀賞)",
           "url": "https://x.com/googlecloud_jp/status/1984232639658643734"
         }
-      ]
+      ],
+      "id": "winner-07"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -220,7 +227,8 @@
           "title": "Zenn公式X(第3回結果)",
           "url": "https://x.com/zenn_dev/status/1985636901290983533"
         }
-      ]
+      ],
+      "id": "winner-08"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -235,7 +243,8 @@
           "title": "Google Cloud Japan公式X(第4回最優秀賞)",
           "url": "https://x.com/googlecloud_jp/status/2037424379202617409"
         }
-      ]
+      ],
+      "id": "winner-09"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -250,7 +259,8 @@
           "title": "Google Gemini公式note記事(第4回受賞紹介)",
           "url": "https://note.com/google_gemini/n/n03128c3d873a"
         }
-      ]
+      ],
+      "id": "winner-10"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -265,7 +275,8 @@
           "title": "atlax blogs(NRI、第4回奨励賞)",
           "url": "https://atlaxblogs.nri.co.jp/entry/20260428"
         }
-      ]
+      ],
+      "id": "winner-11"
     },
     {
       "hackathon": "Agentic AI Hackathon with Google Cloud",
@@ -280,7 +291,8 @@
           "title": "第5回 Agentic AI Hackathon(Zenn)",
           "url": "https://zenn.dev/hackathons/google-cloud-japan-ai-hackathon-vol5"
         }
-      ]
+      ],
+      "id": "winner-12"
     },
     {
       "hackathon": "Microsoft Agent Hackathon",
@@ -295,7 +307,8 @@
           "title": "ヘッドウォータース プレスリリース",
           "url": "https://www.headwaters.co.jp/news/Microsoft_Agent_Hackathon_DATA_IMPACT_JOINT_STOCK_COMPANY.html"
         }
-      ]
+      ],
+      "id": "winner-13"
     },
     {
       "hackathon": "Microsoft Agent Hackathon",
@@ -310,7 +323,8 @@
           "title": "note.com(3682tw、受賞報告)",
           "url": "https://note.com/3682tw/n/n602cc9273b27"
         }
-      ]
+      ],
+      "id": "winner-14"
     },
     {
       "hackathon": "Microsoft Agent Hackathon",
@@ -325,7 +339,8 @@
           "title": "Microsoft Agent Hackathon powered by Tokyo Electron Device(Zenn)",
           "url": "https://zenn.dev/hackathons/microsoft-agent-hackathon-2026"
         }
-      ]
+      ],
+      "id": "winner-15"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -340,7 +355,8 @@
           "title": "東京都報道発表(2026/09/18)",
           "url": "https://www.metro.tokyo.lg.jp/information/press/2026/09/2026091813"
         }
-      ]
+      ],
+      "id": "winner-16"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -359,7 +375,8 @@
           "title": "東京都報道発表(2025年度受賞者決定)",
           "url": "https://www.metro.tokyo.lg.jp/information/press/2025/10/2025102806"
         }
-      ]
+      ],
+      "id": "winner-17"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -374,7 +391,8 @@
           "title": "東京都報道発表(2025年度受賞者決定)",
           "url": "https://www.metro.tokyo.lg.jp/information/press/2025/10/2025102806"
         }
-      ]
+      ],
+      "id": "winner-18"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -389,7 +407,8 @@
           "title": "CodeZine",
           "url": "https://codezine.jp/news/detail/22489"
         }
-      ]
+      ],
+      "id": "winner-19"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -404,7 +423,8 @@
           "title": "日建設計総合研究所",
           "url": "https://www.nikken-ri.com/news/publicity/20251029h.html"
         }
-      ]
+      ],
+      "id": "winner-20"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -419,7 +439,8 @@
           "title": "日建設計総合研究所",
           "url": "https://www.nikken-ri.com/news/publicity/20241030.html"
         }
-      ]
+      ],
+      "id": "winner-21"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -434,7 +455,8 @@
           "title": "都知事杯事務局 公式X",
           "url": "https://x.com/Tokyo_ODH"
         }
-      ]
+      ],
+      "id": "winner-22"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -449,7 +471,8 @@
           "title": "大谷大学",
           "url": "https://www.otani.ac.jp/news/2023/sfpjr70000019600.html"
         }
-      ]
+      ],
+      "id": "winner-23"
     },
     {
       "hackathon": "都知事杯オープンデータ・ハッカソン",
@@ -464,7 +487,8 @@
           "title": "都知事杯事務局 公式X",
           "url": "https://x.com/Tokyo_ODH/status/1798273953888395727"
         }
-      ]
+      ],
+      "id": "winner-24"
     },
     {
       "hackathon": "AI HACK",
@@ -479,7 +503,8 @@
           "title": "EDA社プレスリリース",
           "url": "https://eda-inc.jp/post-11072/"
         }
-      ]
+      ],
+      "id": "winner-25"
     },
     {
       "hackathon": "AI HACK",
@@ -494,7 +519,8 @@
           "title": "X(@chomado、受賞紹介)",
           "url": "https://x.com/chomado/status/2102617475397599353"
         }
-      ]
+      ],
+      "id": "winner-26"
     },
     {
       "hackathon": "AI HACK",
@@ -509,7 +535,8 @@
           "title": "Qiita(Shibata-1273352)",
           "url": "https://qiita.com/Shibata-1273352/items/14a08bef83be01ac7ec9"
         }
-      ]
+      ],
+      "id": "winner-27"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -524,7 +551,8 @@
           "title": "AIフェスティバル公式",
           "url": "https://www.aifestival.jp/first"
         }
-      ]
+      ],
+      "id": "winner-28"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -539,7 +567,8 @@
           "title": "AIフェスティバル公式(結果報告)",
           "url": "https://www.aifestival.jp/news/「東京24時間aiハッカソン-2024」結果報告"
         }
-      ]
+      ],
+      "id": "winner-29"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -554,7 +583,8 @@
           "title": "3up-tec.jp",
           "url": "https://3up-tec.jp/2025/11/10/6504/"
         }
-      ]
+      ],
+      "id": "winner-30"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -569,7 +599,8 @@
           "title": "Impress Watch",
           "url": "https://forest.watch.impress.co.jp/docs/special/2067831.html"
         }
-      ]
+      ],
+      "id": "winner-31"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -584,7 +615,8 @@
           "title": "AIフェスティバル公式(東日本大会結果)",
           "url": "https://www.aifestival.jp/news/2025east-result"
         }
-      ]
+      ],
+      "id": "winner-32"
     },
     {
       "hackathon": "全日本AIハッカソン",
@@ -599,7 +631,8 @@
           "title": "Impress Watch",
           "url": "https://forest.watch.impress.co.jp/docs/news/2081191.html"
         }
-      ]
+      ],
+      "id": "winner-33"
     }
   ]
 }
