@@ -1496,6 +1496,7 @@
     <button type="button" class="manager-subview-btn active" id="research-subtab-hackathon" data-subview="hackathon">🏆 ハッカソン</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-contest" data-subview="contest">🎯 AI駆動型アプリコンテスト</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">📱 Reddit事例集</button>
+    <button type="button" class="manager-subview-btn" id="research-subtab-ai-trends" data-subview="ai-trends">🤖 AI最新情報</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-preferences" data-subview="preferences">👤 ユーザー思考</button>
   </div>
 
@@ -1553,6 +1554,24 @@
         <div id="research-ideas-categories"></div>
         <div class="devdocs-section-title" style="margin-top:20px;">🔍 自分のアプリ群との比較所感</div>
         <div class="devdocs-concern-card" id="research-ideas-comparison"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🤖AI最新情報サブタブ(2026-10-23追加)。ユーザー指摘「AIの最新情報はYoutubeで調べた情報って
+       今調査資料タブの中にないよね？」への対応。servicenow-sub-agentのdata/research-items.json
+       (PTD-046の自動収集パイプライン+PTD-090で調整したYouTube検索クエリ+Claudeによる手動キュレーション)を
+       raw.githubusercontent.com経由でfetchする(claude-voice-bridgeのwidget-design.js/webapp/index.htmlが
+       既にprogress-tracker-dashboardのrequirements.jsonを同じ方式で取得しており、cache-bust付きfetchの
+       実績パターンをrule23で再利用)。全5000件超のうちcurated:trueの項目のみ表示する
+       (CL-044「narrow+curate」の方針を踏襲。生データは英語中心かつノイズが多く、一覧表に向かないため)。 -->
+  <div id="research-subview-ai-trends" class="manager-subview">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="tab-page-title">🤖 AI最新情報</div>
+        <p class="tab-page-overview">AI技術・業界動向に関する調査結果です。YouTube・MarkTechPost・Hacker News・arXiv等から自動収集し、Claudeが内容を確認して日本語要約・ポイント・活用のヒントを付与した項目(servicenow-sub-agentリポジトリのdata/research-items.json)のみを表示します(自動収集された生データは英語中心・件数過多のため対象外)。気になる記事は左端のチェックボックスでマークできます(上部の「📋 気になる記事をコピー」から)。</p>
+        <div class="policy-meta" id="research-ai-trends-meta"></div>
+        <div id="research-ai-trends-list"></div>
       </div>
     </div>
   </div>
@@ -4053,6 +4072,56 @@
     wireResearchCheckboxes(box);
   }
 
+  // 🔍調査資料タブ→🤖AI最新情報(2026-10-23追加)。servicenow-sub-agentのdata/research-items.jsonを
+  // raw.githubusercontent.com経由でfetchする(claude-voice-bridgeの既存パターンをrule23で再利用)。
+  const AI_TRENDS_URL = "https://raw.githubusercontent.com/gurii-gabreh/servicenow-sub-agent/main/data/research-items.json";
+  function loadAiTrendsResearch() {
+    return fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`research-items.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        const items = (data.items || []).filter((it) => it.curated);
+        items.sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
+        renderAiTrendsItems(items, data.categories || {});
+        const meta = document.getElementById("research-ai-trends-meta");
+        if (meta) meta.textContent = `更新日: ${data.generatedAt || "不明"} ／ キュレーション済み: ${items.length}件(収集した生データ全${data.itemCount || "不明"}件のうち、内容確認・要約済みのもののみ表示)`;
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("research-ai-trends-list");
+        if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
+      });
+  }
+  function renderAiTrendsItems(items, categories) {
+    const box = document.getElementById("research-ai-trends-list");
+    if (!box) return;
+    if (!items.length) { box.innerHTML = `<div class="empty">キュレーション済みの項目がまだありません。</div>`; return; }
+    items.forEach((it) => registerResearchItem(it.sysId, "ai-trend", it.title, it.summaryJa || it.rawSummary, it.sourceUrl));
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th></th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
+          <tbody>
+            ${items.map((it) => `
+              <tr>
+                ${researchCheckboxTd(it.sysId)}
+                <td>${escapeHtmlForDevDocs(categories[String(it.category)] || String(it.category || "不明"))}</td>
+                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.sourceName || "不明")}</td>
+                <td>${escapeHtmlForDevDocs((it.publishedAt || "不明").slice(0, 10))}</td>
+                <td>${escapeHtmlForDevDocs(it.summaryJa || "")}</td>
+                <td>${(it.pointsJa || []).map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</td>
+                <td>${escapeHtmlForDevDocs(it.applicableTechJa || "")}</td>
+                <td>${it.sourceUrl ? `<a href="${escapeHtmlForDevDocs(it.sourceUrl)}" target="_blank" rel="noopener">出典 ↗</a>` : ""}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
+  }
+
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
   // ビューアーのみ(書き込みは常にClaude Code経由)。
   function loadPreferencesResearch() {
@@ -4100,6 +4169,7 @@
       hackathon: { btn: document.getElementById("research-subtab-hackathon"), panel: document.getElementById("research-subview-hackathon") },
       contest: { btn: document.getElementById("research-subtab-contest"), panel: document.getElementById("research-subview-contest") },
       ideas: { btn: document.getElementById("research-subtab-ideas"), panel: document.getElementById("research-subview-ideas") },
+      "ai-trends": { btn: document.getElementById("research-subtab-ai-trends"), panel: document.getElementById("research-subview-ai-trends") },
       preferences: { btn: document.getElementById("research-subtab-preferences"), panel: document.getElementById("research-subview-preferences") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
@@ -4115,6 +4185,7 @@
   })();
   loadContestResearch();
   loadIdeaResearch();
+  loadAiTrendsResearch();
   loadPreferencesResearch();
   updateResearchLikedCount();
 
