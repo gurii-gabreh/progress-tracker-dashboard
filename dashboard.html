@@ -897,10 +897,22 @@
      基本設計…と各工程を表示」)。PC幅はdevdocs-requirements/appdev-basicdesignの左に縦並びの
      メニューとして配置し、携帯幅(640px以下)では.detail-tabsと同じ横スクロール方式に切り替えて
      崩れを防ぐ(rule23: 既存のモバイル対応パターンを再利用)。 */
-  .appdev-stage-layout { display: flex; gap: 16px; align-items: flex-start; }
-  .appdev-stage-sidebar { flex: 0 0 168px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; }
+  /* 2026-10-23追記: ユーザー指示「左にあるサイドメニューとアプリタイトルは、固定にできる？」。
+     サイドメニュー・アプリタイトル(devdocs-head)とも、上のdevdocs-sticky-head(タイトル・説明・
+     アプリ選択・統計タイル、z-index:5)の直下に固定したい。devdocs-sticky-headの実高さは文章の
+     折返しで変わるため固定px値は使わず、ResizeObserverで実測して--appdev-sticky-offsetへ反映する
+     (setupAppDevStickyOffset、下部のJS参照)。 */
+  .appdev-stage-layout { display: flex; gap: 16px; align-items: flex-start; --appdev-sticky-offset: 0px; }
+  .appdev-stage-sidebar {
+    flex: 0 0 168px; display: flex; flex-direction: column; gap: 4px;
+    position: sticky; top: var(--appdev-sticky-offset); z-index: 4;
+  }
   .appdev-stage-sidebar .manager-subview-btn { width: 100%; text-align: left; border-radius: 8px; }
   .appdev-stage-content { flex: 1 1 auto; min-width: 0; }
+  #appdev-list .devdocs-head {
+    position: sticky; top: var(--appdev-sticky-offset); z-index: 4;
+    background: var(--bg); padding: 6px 0 10px; border-bottom: 1px solid var(--border);
+  }
   @media (max-width: 640px) {
     .appdev-stage-layout { flex-direction: column; }
     .appdev-stage-sidebar {
@@ -908,6 +920,9 @@
       position: static; padding-bottom: 4px;
     }
     .appdev-stage-sidebar .manager-subview-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
+    /* 携帯幅はサイドメニューが横並びタブに変わりdevdocs-sticky-head直下に収まらないため、
+       アプリタイトルの固定もモバイルでは行わない(固定要素が増えすぎて画面を圧迫するのを防ぐ)。 */
+    #appdev-list .devdocs-head { position: static; }
   }
   .appdev-home-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
   .appdev-big-btn {
@@ -4598,6 +4613,19 @@
       const btn = document.getElementById(cfg.btn);
       if (btn) btn.addEventListener("click", () => showAppDevStage(key));
     });
+  })();
+
+  // devdocs-sticky-head(タイトル・説明・アプリ選択・統計タイル)の実高さをResizeObserverで監視し、
+  // サイドメニュー・アプリタイトル(devdocs-head)のsticky位置(--appdev-sticky-offset)へ反映する
+  // (2026-10-23追加、ユーザー指示「左にあるサイドメニューとアプリタイトルは、固定にできる?」)。
+  // 固定px値にすると、説明文がウィンドウ幅で折り返されたときに高さがずれてしまうため、実測値を使う。
+  (function setupAppDevStickyOffset() {
+    const head = document.querySelector("#appdev-list .devdocs-sticky-head");
+    const layout = document.querySelector("#appdev-list .appdev-stage-layout");
+    if (!head || !layout || typeof ResizeObserver === "undefined") return;
+    const update = () => layout.style.setProperty("--appdev-sticky-offset", `${head.getBoundingClientRect().height}px`);
+    new ResizeObserver(update).observe(head);
+    update();
   })();
 
   function renderAppDevBasicDesign() {
