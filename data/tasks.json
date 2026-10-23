@@ -5153,6 +5153,33 @@
         }
       ],
       "updated": "2026-10-21"
+    },
+    {
+      "id": "PTD-092",
+      "title": "調査資料タブを一覧表+チェックボックス形式へ変更、ユーザー思考タブを新設",
+      "task": "research-table化+気になる記事チェック+趣向分析タブ",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "「調査資料のレイアウトを全部各ページごとに一覧表にして項目を揃えて表示、一番左の列にチェックボックスを用意し、チェックが入った記事は気になる記事の判定にして趣向データとして別JSONにまとめ、調査資料タブ内にユーザー思考ボタンを作りそこに分析結果を表示して」という依頼。このダッシュボードはGitHub Pagesの静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態の永続化方法が設計上の最大の論点だった。AskUserQuestionで(1)永続化方法(2)対象ページ範囲(3)分析の中身、の3点を確認し、(1)localStorage一時保存+「コピー」ボタンでチャットへ貼り付けてClaudeへ反映依頼、(2)3ページ全部、(3)Claudeが内容を読んで言語化する分析、という方針で実装した。",
+      "detail": "🏆ハッカソン(候補+過去入賞作品)・🎯AI駆動型アプリコンテスト・📱Reddit事例集の3ページを、カード形式から一覧表(research-table)形式へ変更し、各行の左端にチェックボックスを配置した。チェック状態はlocalStorage(researchLikedIds)に保存し、「📋 気になる記事をコピー」ボタンでチェック済み項目(id/タイトル/概要/URL)をテキスト化してコピーできるようにした(既存のmodal-copy-btnパターンを再利用)。新規data/user-preferences.jsonを作成(likedItems+analysis、rule29のJSON分割原則に沿い既存の調査データファイルとは分離)。hackathon-research.jsonのwinners(33件)にはid(winner-01〜33)を新規付与、候補・コンテストは既存id、Reddit事例はurlをidとして利用した。research-view内にReddit事例集の横へ👤ユーザー思考サブタブを新設し、data/user-preferences.jsonの分析結果・記録済み項目を表示するビューアーを実装した(書き込みは常にClaude Code経由、mirai-journal等と同じ方針)。Playwrightでデスクトップ幅・携帯幅(375px)の両方で、全ページの表描画・チェック→localStorage保存→リロード後も保持・コピー機能(実際にクリップボードの内容を検証)・ユーザー思考タブの表示を実地確認済み(チェックボックス総数5+33+10+183=231件で一致を確認)。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・data/hackathon-research.json・data/user-preferences.json(新規)",
+      "relatedTasks": [
+        "PTD-087"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-23",
+          "summary": "一覧表+チェックボックス+コピー機能+ユーザー思考タブを実装、Playwrightでデスクトップ・携帯両幅の動作を確認、main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-23"
     }
   ],
   "updatedAt": "2026-10-18"

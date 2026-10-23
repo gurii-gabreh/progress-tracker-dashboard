@@ -445,6 +445,21 @@
         "costUsd": 1878.3980263
       },
       "rateLimitResetsAt": "2026-10-22T02:10:00+09:00"
+    },
+    {
+      "date": "2026-10-23",
+      "time": "16:00",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-092: 調査資料タブを一覧表+チェックボックス形式へ変更、ユーザー思考タブを新設",
+      "note": "🏆🎯📱の3ページをカードから一覧表+チェックボックスへ変更、localStorage+コピー+Claude反映方式でdata/user-preferences.jsonへ趣向データを蓄積する仕組みを実装。👤ユーザー思考タブも新設。Playwrightで実地確認済み、main push済み。ユーザーの完了確認待ち。",
+      "usage": {
+        "inputTokens": 5833768,
+        "outputTokens": 10446214,
+        "cacheReadTokens": 5801999428,
+        "cacheWriteTokens": 134891553,
+        "costUsd": 1904.70762024
+      },
+      "rateLimitResetsAt": "2026-10-24T05:10:00+09:00"
     }
   ]
 }
