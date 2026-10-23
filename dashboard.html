@@ -179,6 +179,13 @@
      (.policy-*という命名は元々⚙運用ポリシータブ用に作ったものを流用している名残)。 */
   .policy-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   .policy-wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+  /* 🔍調査資料タブのみ、表(research-table)をウィンドウ幅いっぱいに表示したい(2026-10-23、
+     ユーザー指示「横はウィンドウにめいいっぱい表示するようにして」)。他タブ共通の
+     .policy-wrap(max-width:720px)はそのまま維持し、#research-view配下だけ上書きする。
+     research-table自体はwidth:100%+.research-table-wrapがoverflow-x:autoのため、
+     ウィンドウが狭くなれば追従して縮む(ユーザー指示「ウインドウの横幅が小さくなったら
+     それに合うように表の横幅も調整できるように」は既存CSSでそのまま満たされる)。 */
+  #research-view .policy-wrap { max-width: none; }
   .policy-meta { font-size: 12.5px; color: var(--text-muted); }
   .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
   .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
