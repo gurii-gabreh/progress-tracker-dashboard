@@ -5251,7 +5251,7 @@
       "issues": [],
       "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
       "note": "ユーザー指摘「AIの最新情報はYoutubeで調べた情報って今調査資料タブの中にないよね?」が発端。確認した結果、servicenow-sub-agentのdata/research-items.json(PTD-046の自動収集パイプライン+PTD-090で調整したYouTube検索クエリ+Claudeによる手動キュレーション)は、プロンプトテンプレート内の文章参照とオーケストレーション構成図のノードとしてしかdashboard.html内に存在せず、実際に一覧表示するビューアーが無いことが判明。追加の依頼「追加して、youtube調査記事とAI最新情報を追加して、同じ様に一覧化して表示して」を受けて実装した。",
-      "detail": "調査資料タブに5つ目のサブタブ「🤖 AI最新情報」(#research-subview-ai-trends)を新設。servicenow-sub-agentのdata/research-items.jsonをraw.githubusercontent.com経由でfetchする(claude-voice-bridgeのwidget-design.js/webapp/index.htmlが既にprogress-tracker-dashboardのrequirements.jsonを同じ方式(cache-bust付きfetch+cache:\"no-store\")で取得しており、その実績パターンをrule23で再利用)。全5511件のうちcurated:trueの項目(44件、YouTube・MarkTechPost・Hacker News・arXiv・OpenAI Blog・InfoQ等から収集しClaudeが内容確認・日本語要約/ポイント/活用のヒントを付与済みのもの)のみを公開日降順の一覧表で表示し、生データ(英語中心・件数過多でノイズが多い)は対象外とした(CL-044「narrow+curate」の方針を踏襲)。他の調査資料サブタブ(🏆🎯📱)と同じregisterResearchItem/researchCheckboxTd/wireResearchCheckboxesの仕組みをそのまま再利用し、チェックボックス・「📋 気になる記事をコピー」・👤ユーザー思考タブへの反映も統合済み。動作確認では、このセッションのネットワークプロキシ制約によりPlaywrightのヘッドレスChromiumからクロスオリジンfetchができない問題に遭遇(curl/Node側では同じURLへの到達を確認済み、プロキシ設定自体が原因と特定)。対策として、Node側で実際のresearch-items.json(本番の生データそのもの)を取得し、Playwrightのpage.route()でそのレスポンスを注入する方式でテストし、44件の表描画・メタ情報表示・「Claude Sonnet 5.5」タイトルの存在・チェックボックス操作とlocalStorage連携・他サブタブ(ハッカソン)への非影響を実地確認した。本番(実際のユーザーのブラウザ)はこのセッション固有のプロキシを経由しないため、影響はテスト環境限定と判断した。",
+      "detail": "調査資料タブに5つ目のサブタブ「🤖 AI最新情報」(#research-subview-ai-trends)を新設。servicenow-sub-agentのdata/research-items.jsonをraw.githubusercontent.com経由でfetchする(claude-voice-bridgeのwidget-design.js/webapp/index.htmlが既にprogress-tracker-dashboardのrequirements.jsonを同じ方式(cache-bust付きfetch+cache:\"no-store\")で取得しており、その実績パターンをrule23で再利用)。全5511件のうちcurated:trueの項目(44件、YouTube・MarkTechPost・Hacker News・arXiv・OpenAI Blog・InfoQ等から収集しClaudeが内容確認・日本語要約/ポイント/活用のヒントを付与済みのもの)のみを公開日降順の一覧表で表示し、生データ(英語中心・件数過多でノイズが多い)は対象外とした(CL-044「narrow+curate」の方針を踏襲)。他の調査資料サブタブ(🏆🎯📱)と同じregisterResearchItem/researchCheckboxTd/wireResearchCheckboxesの仕組みをそのまま再利用し、チェックボックス・「📋 気になる記事をコピー」・👤ユーザー思考タブへの反映も統合済み。動作確認では、このセッションのネットワークプロキシ制約によりPlaywrightのヘッドレスChromiumからクロスオリジンfetchができない問題に遭遇(curl/Node側では同じURLへの到達を確認済み、プロキシ設定自体が原因と特定)。対策として、Node側で実際のresearch-items.json(本番の生データそのもの)を取得し、Playwrightのpage.route()でそのレスポンスを注入する方式でテストし、44件の表描画・メタ情報表示・「Claude Sonnet 5.5」タイトルの存在・チェックボックス操作とlocalStorage連携・他サブタブ(ハッカソン)への非影響を実地確認した。本番(実際のユーザーのブラウザ)はこのセッション固有のプロキシを経由しないため、影響はテスト環境限定と判断した。\n\n【2026-10-23追記・フィルタ機能追加】ユーザー指示「この調査資料はフィルタ化できるようにして、後、今日取得した情報のみを表示する用のボタンを設けて」を受け、カテゴリ・情報源・作成日(公開日)のプルダウンとキーワード検索(タイトル・概要・ポイント・活かせる技術を対象)を追加した。「今日取得した情報のみ」はfetchedAt(取得日時)がJST基準の今日と一致する項目に絞るトグルボタン(jstTodayStr()で算出)。全項目は初回ロード時に一度だけregisterResearchItem()で登録し、フィルタ変更時はAI_TRENDS_ITEMSからの再描画のみ行う設計のため、チェックボックスの状態(localStorage)はフィルタ操作の影響を受けない。実データ注入によるPlaywrightテストで、カテゴリ別件数の一致・キーワード検索・今日のみトグルのON/OFF・フィルタ変更後もチェック状態が保持されることを確認、main push済み。",
       "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html",
       "relatedTasks": [
         "PTD-090",
@@ -5261,6 +5261,10 @@
         {
           "date": "2026-10-23",
           "summary": "AI最新情報サブタブを実装、servicenow-sub-agentのresearch-items.jsonからcurated済み44件を一覧表示。実データ注入によるPlaywrightテストで動作確認、main push済み。ユーザーの完了確認待ち。"
+        },
+        {
+          "date": "2026-10-23",
+          "summary": "カテゴリ・情報源・作成日・キーワードのフィルタと「今日取得した情報のみ」ボタンを追加。実データ注入テストで動作確認、main push済み。"
         }
       ],
       "updated": "2026-10-23"
