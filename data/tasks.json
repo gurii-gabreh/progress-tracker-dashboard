@@ -5236,6 +5236,34 @@
         }
       ],
       "updated": "2026-10-23"
+    },
+    {
+      "id": "PTD-095",
+      "title": "調査資料タブに「AI最新情報」サブタブを追加",
+      "task": "servicenow-sub-agentのresearch-items.jsonを横断表示",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指摘「AIの最新情報はYoutubeで調べた情報って今調査資料タブの中にないよね?」が発端。確認した結果、servicenow-sub-agentのdata/research-items.json(PTD-046の自動収集パイプライン+PTD-090で調整したYouTube検索クエリ+Claudeによる手動キュレーション)は、プロンプトテンプレート内の文章参照とオーケストレーション構成図のノードとしてしかdashboard.html内に存在せず、実際に一覧表示するビューアーが無いことが判明。追加の依頼「追加して、youtube調査記事とAI最新情報を追加して、同じ様に一覧化して表示して」を受けて実装した。",
+      "detail": "調査資料タブに5つ目のサブタブ「🤖 AI最新情報」(#research-subview-ai-trends)を新設。servicenow-sub-agentのdata/research-items.jsonをraw.githubusercontent.com経由でfetchする(claude-voice-bridgeのwidget-design.js/webapp/index.htmlが既にprogress-tracker-dashboardのrequirements.jsonを同じ方式(cache-bust付きfetch+cache:\"no-store\")で取得しており、その実績パターンをrule23で再利用)。全5511件のうちcurated:trueの項目(44件、YouTube・MarkTechPost・Hacker News・arXiv・OpenAI Blog・InfoQ等から収集しClaudeが内容確認・日本語要約/ポイント/活用のヒントを付与済みのもの)のみを公開日降順の一覧表で表示し、生データ(英語中心・件数過多でノイズが多い)は対象外とした(CL-044「narrow+curate」の方針を踏襲)。他の調査資料サブタブ(🏆🎯📱)と同じregisterResearchItem/researchCheckboxTd/wireResearchCheckboxesの仕組みをそのまま再利用し、チェックボックス・「📋 気になる記事をコピー」・👤ユーザー思考タブへの反映も統合済み。動作確認では、このセッションのネットワークプロキシ制約によりPlaywrightのヘッドレスChromiumからクロスオリジンfetchができない問題に遭遇(curl/Node側では同じURLへの到達を確認済み、プロキシ設定自体が原因と特定)。対策として、Node側で実際のresearch-items.json(本番の生データそのもの)を取得し、Playwrightのpage.route()でそのレスポンスを注入する方式でテストし、44件の表描画・メタ情報表示・「Claude Sonnet 5.5」タイトルの存在・チェックボックス操作とlocalStorage連携・他サブタブ(ハッカソン)への非影響を実地確認した。本番(実際のユーザーのブラウザ)はこのセッション固有のプロキシを経由しないため、影響はテスト環境限定と判断した。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html",
+      "relatedTasks": [
+        "PTD-090",
+        "PTD-092"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-23",
+          "summary": "AI最新情報サブタブを実装、servicenow-sub-agentのresearch-items.jsonからcurated済み44件を一覧表示。実データ注入によるPlaywrightテストで動作確認、main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-23"
     }
   ],
   "updatedAt": "2026-10-18"
