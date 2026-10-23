@@ -186,6 +186,10 @@
      ウィンドウが狭くなれば追従して縮む(ユーザー指示「ウインドウの横幅が小さくなったら
      それに合うように表の横幅も調整できるように」は既存CSSでそのまま満たされる)。 */
   #research-view .policy-wrap { max-width: none; }
+  /* 📱アプリ開発タブも同様にウィンドウ幅いっぱいに表示する(2026-10-23、ユーザー指示「これも
+     なんだけど、画面の横幅は目一杯使って」。PTD-094の調査資料タブと同じ方式)。appdev-home/
+     appdev-new/appdev-list(基本設計・課題管理表の左メニュー含む)が対象、他タブは720px上限を維持。 */
+  #devdocs-subview-requirements .policy-wrap { max-width: none; }
   .policy-meta { font-size: 12.5px; color: var(--text-muted); }
   .policy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
   .policy-detail { font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
@@ -1307,10 +1311,12 @@
             <div class="appdev-stage-sidebar" id="appdev-stage-toggle">
               <button type="button" class="manager-subview-btn active" id="appdev-stage-btn-requirements" data-stage="requirements">📋 要件定義</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-issuelog" data-stage="issueLog">📝 課題管理表</button>
             </div>
             <div class="appdev-stage-content">
               <div id="devdocs-requirements"></div>
               <div id="appdev-basicdesign" style="display:none;"></div>
+              <div id="appdev-issuelog" style="display:none;"></div>
             </div>
           </div>
         </div>
@@ -4570,22 +4576,28 @@
   // 既存の回答を表示し、無ければ未着手として扱う。常に入力フォーム+プロンプト生成ボタンを表示し、
   // 要件定義(①)の新規開発フォームと同じ「空欄のままでも可、依頼文を生成してClaude Codeへ相談する」
   // 流れを踏襲する(rule23: 既存パターンの再利用)。
+  // 工程(左メニュー)の一覧。③課題管理表追加時にここへ1行足すだけで済むよう、
+  // stage→{パネルid, ボタンid, 表示時のrenderer}のマップ方式にしてある。
+  const APPDEV_STAGES = {
+    requirements: { panel: "devdocs-requirements", btn: "appdev-stage-btn-requirements" },
+    basicDesign: { panel: "appdev-basicdesign", btn: "appdev-stage-btn-basicdesign", render: () => renderAppDevBasicDesign() },
+    issueLog: { panel: "appdev-issuelog", btn: "appdev-stage-btn-issuelog", render: () => renderAppDevIssueLog() },
+  };
   function showAppDevStage(stage) {
-    const reqBox = document.getElementById("devdocs-requirements");
-    const bdBox = document.getElementById("appdev-basicdesign");
-    const reqBtn = document.getElementById("appdev-stage-btn-requirements");
-    const bdBtn = document.getElementById("appdev-stage-btn-basicdesign");
-    if (reqBox) reqBox.style.display = stage === "basicDesign" ? "none" : "";
-    if (bdBox) bdBox.style.display = stage === "basicDesign" ? "" : "none";
-    if (reqBtn) reqBtn.classList.toggle("active", stage !== "basicDesign");
-    if (bdBtn) bdBtn.classList.toggle("active", stage === "basicDesign");
-    if (stage === "basicDesign") renderAppDevBasicDesign();
+    Object.entries(APPDEV_STAGES).forEach(([key, cfg]) => {
+      const panel = document.getElementById(cfg.panel);
+      const btn = document.getElementById(cfg.btn);
+      if (panel) panel.style.display = key === stage ? "" : "none";
+      if (btn) btn.classList.toggle("active", key === stage);
+    });
+    const active = APPDEV_STAGES[stage];
+    if (active && active.render) active.render();
   }
   (function setupAppDevStageToggle() {
-    const reqBtn = document.getElementById("appdev-stage-btn-requirements");
-    const bdBtn = document.getElementById("appdev-stage-btn-basicdesign");
-    if (reqBtn) reqBtn.addEventListener("click", () => showAppDevStage("requirements"));
-    if (bdBtn) bdBtn.addEventListener("click", () => showAppDevStage("basicDesign"));
+    Object.entries(APPDEV_STAGES).forEach(([key, cfg]) => {
+      const btn = document.getElementById(cfg.btn);
+      if (btn) btn.addEventListener("click", () => showAppDevStage(key));
+    });
   })();
 
   function renderAppDevBasicDesign() {
@@ -4675,6 +4687,52 @@
       "",
       "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
     ].join("\n");
+  }
+
+  // 📂開発アプリ一覧→📝課題管理表(2026-10-23追加)。ユーザー指示「それぞれのアプリ毎に課題管理表を
+  // 作成してまとめたい」「課題が発生したら、ここに明記してくれる？」。要件定義・基本設計と違い、
+  // これは聞き取りチェックリストではなく随時追記されるログなので、入力フォーム+プロンプト生成は
+  // 設けず、閲覧専用のビューアーのみとした(課題の記録はClaude Codeが実装作業の中で直接
+  // data/requirements.jsonのrequirements[].issueLogへ書き込む、mirai-journal等と同じ
+  // 「JSON正本+Claude経由の書き込み」方式)。タイトル・内容・作成日・ステータス・対応内容の
+  // 5項目を一覧表(research-tableを再利用、rule23)で表示する。
+  function renderAppDevIssueLog() {
+    const box = document.getElementById("appdev-issuelog");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+    const issues = req.issueLog || [];
+    const headHtml = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">課題: ${issues.length}件</span>
+      </div>`;
+    if (!issues.length) {
+      box.innerHTML = `${headHtml}<div class="empty">このアプリで記録されている課題はまだありません。実装中に課題が発生した場合、Claude Codeがここへ記録します。</div>`;
+      return;
+    }
+    box.innerHTML = `
+      ${headHtml}
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th>タイトル</th><th>内容</th><th>作成日</th><th>ステータス</th><th>対応内容</th></tr></thead>
+          <tbody>
+            ${issues.map((it) => `
+              <tr>
+                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.content || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.createdAt || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.status || "未対応")}</td>
+                <td>${escapeHtmlForDevDocs(it.resolution || "")}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
   }
 
   function devDocsBulletsFromCheckHistory(task) {
@@ -4885,8 +4943,12 @@
       devDocsSetCurrentRepo(e.target.value);
       renderDevDocsRequirements();
       renderDevDocsFlow();
-      const bdBox = document.getElementById("appdev-basicdesign");
-      if (bdBox && bdBox.style.display !== "none") renderAppDevBasicDesign();
+      // 現在表示中の工程(要件定義以外)があれば、アプリ切替に合わせて再描画する。
+      Object.entries(APPDEV_STAGES).forEach(([key, cfg]) => {
+        if (key === "requirements") return;
+        const panel = document.getElementById(cfg.panel);
+        if (panel && panel.style.display !== "none" && cfg.render) cfg.render();
+      });
     });
     if (selFlow) selFlow.addEventListener("change", (e) => { devDocsSetCurrentRepo(e.target.value); renderDevDocsRequirements(); renderDevDocsFlow(); });
 
