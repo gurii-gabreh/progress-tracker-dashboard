@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "description": "🔍調査資料タブ(ハッカソン/AI駆動型アプリコンテスト/Reddit事例集)の一覧表で、ユーザーが「気になる」としてチェックした記事と、そこから読み取れる趣向の分析(2026-10-23新設)。記録手順: ①各ページの一覧表でチェックボックスを入れる(ブラウザのlocalStorageに一時保存される、端末・ブラウザ限定)→②研究資料タブ上部の「📋 気になる記事をコピー」ボタンでチェック済み項目をテキスト化→③それをClaude Codeのチャットへ貼り付けて反映を依頼→④ClaudeがこのファイルのlikedItemsへ追記し、蓄積された項目を読んで趣向の分析(analysis)を書き直し、commit・pushする。",
+  "entrySchema": {
+    "id": "元データの項目id(ハッカソン候補/コンテストはid、入賞作品はwinner-NN、Redditアイデアはurl)",
+    "sourceType": "hackathon-candidate | hackathon-winner | contest | idea",
+    "title": "項目のタイトル・名前",
+    "summary": "元データの概要・内容(どのフィールドを使うかはsourceTypeによる)",
+    "url": "参照先URL(あれば)",
+    "addedAt": "このファイルへ記録した日時(ISO8601)"
+  },
+  "likedItems": [],
+  "analysis": {
+    "generatedAt": null,
+    "summaryJa": "",
+    "pointsJa": []
+  }
+}

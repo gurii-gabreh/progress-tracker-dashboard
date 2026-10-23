@@ -337,6 +337,22 @@
   .devdocs-qa-item .a { font-size: 12.5px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
 
   .devdocs-section-title { font-size: 12px; font-weight: 700; margin: 16px 0 8px; }
+
+  /* 🔍調査資料タブ: 一覧表+チェックボックス(2026-10-23追加、ユーザー指示「全部各ページごとに
+     一覧表にして項目を揃えて表示、一番左の列にチェックボックスを用意」)。このダッシュボードは
+     GitHub Pagesの静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態は
+     まずlocalStorageへ一時保存し、「📋 気になる記事をコピー」ボタンでテキスト化してチャットへ
+     貼り付け、Claudeがdata/user-preferences.jsonへ反映する運用(README参照)。 */
+  .research-table-wrap { overflow-x: auto; margin-bottom: 14px; }
+  .research-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .research-table th { text-align: left; padding: 7px 10px; background: var(--border); color: var(--text-muted); font-weight: 700; font-size: 11px; white-space: nowrap; }
+  .research-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .research-table tbody tr:hover td { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  .research-table td.rt-check { width: 28px; text-align: center; }
+  .research-table td.rt-check input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+  .research-table td a { color: var(--accent); }
+  .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .research-copy-bar .count { font-size: 11.5px; color: var(--text-muted); }
   .devdocs-concern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; margin-bottom: 8px; }
   .devdocs-concern-card.novel { border-color: var(--status-running-fg, #d97706); }
   .devdocs-concern-card .concern-id { font-size: 10px; color: var(--accent); }
@@ -1409,13 +1425,23 @@
     <button type="button" class="manager-subview-btn active" id="research-subtab-hackathon" data-subview="hackathon">🏆 ハッカソン</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-contest" data-subview="contest">🎯 AI駆動型アプリコンテスト</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">📱 Reddit事例集</button>
+    <button type="button" class="manager-subview-btn" id="research-subtab-preferences" data-subview="preferences">👤 ユーザー思考</button>
+  </div>
+
+  <!-- 2026-10-23追加: 各ページの一覧表でチェックした「気になる記事」をテキスト化してコピーするための
+       共通バー(どのサブタブからでも、それまでにチェックした全項目をまとめてコピーできる)。
+       チェック状態はlocalStorage(キー: researchLikedIds)に保存、永続化はClaudeへの反映依頼を介して
+       data/user-preferences.jsonへ行う(README参照、静的サイトのため直接書き込む手段が無いため)。 -->
+  <div class="research-copy-bar">
+    <button type="button" class="modal-copy-btn" id="research-copy-liked-btn">📋 気になる記事をコピー</button>
+    <span class="count" id="research-liked-count">チェック済み: 0件</span>
   </div>
 
   <div id="research-subview-hackathon" class="manager-subview active">
     <div class="policy-scroll">
       <div class="policy-wrap">
         <div class="tab-page-title">🏆 ハッカソン調査</div>
-        <p class="tab-page-overview">ハッカソンでの実績作り(PTD-020・PTD-065)に向けた調査資料です。data/hackathon-research.jsonから生成します。まず①狙っている/検討中のハッカソン候補(名前・内容・前回開催時期)、続いて②各ハッカソンの過去の入賞作品をカードで一覧できます。</p>
+        <p class="tab-page-overview">ハッカソンでの実績作り(PTD-020・PTD-065)に向けた調査資料です。data/hackathon-research.jsonから生成します。まず①狙っている/検討中のハッカソン候補(名前・内容・前回開催時期)、続いて②各ハッカソンの過去の入賞作品を一覧表で表示します。気になる記事は左端のチェックボックスでマークできます(上部の「📋 気になる記事をコピー」から)。</p>
         <div class="policy-meta" id="research-hackathon-meta"></div>
 
         <details class="devdocs-stage-group" open>
@@ -1456,6 +1482,23 @@
         <div id="research-ideas-categories"></div>
         <div class="devdocs-section-title" style="margin-top:20px;">🔍 自分のアプリ群との比較所感</div>
         <div class="devdocs-concern-card" id="research-ideas-comparison"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 👤ユーザー思考サブタブ(2026-10-23追加)。data/user-preferences.jsonを表示する。
+       記録・分析は常にClaude Code側が行う(このサイト自体はビューアーのみ、mirai-journal等と
+       同じ「JSON正本+Claude経由の書き込み」方式。rule29のJSON分割原則に沿い新規ファイルとして
+       切り出した)。 -->
+  <div id="research-subview-preferences" class="manager-subview">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="tab-page-title">👤 ユーザー思考</div>
+        <p class="tab-page-overview">🏆🎯📱の各一覧表でチェックした「気になる記事」から読み取れる趣向の分析です。data/user-preferences.jsonから生成します。チェック→「📋 気になる記事をコピー」→Claude Codeのチャットへ貼り付けて反映を依頼、という手順で蓄積されます(このページ自体はビューアーのみで、ここから直接書き込むことはできません)。</p>
+        <div class="policy-meta" id="research-preferences-meta"></div>
+        <div id="research-preferences-analysis"></div>
+        <div class="devdocs-section-title" style="margin-top:20px;">📌 気になる記事として記録済みの項目</div>
+        <div id="research-preferences-items"></div>
       </div>
     </div>
   </div>
@@ -3652,8 +3695,102 @@
       });
   }
 
-  // 🔍 調査資料タブ→🏆ハッカソン(2026-10-18追加)。data/hackathon-research.jsonを読み込み、
-  // ①狙っている/検討中のハッカソン候補カード→②過去の入賞作品カードの順に描画する。
+  // 🔍調査資料タブ: 「気になる記事」チェック機構(2026-10-23追加)。このダッシュボードはGitHub Pagesの
+  // 静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態はまずlocalStorageへ
+  // 一時保存し(端末・ブラウザ限定)、「📋 気になる記事をコピー」ボタンでテキスト化してチャットへ
+  // 貼り付け、Claudeがdata/user-preferences.jsonへ反映する運用にした(mirai-journal等と同じ
+  // 「JSON正本+Claude経由の書き込み」方式をrule23に沿って踏襲)。
+  const RESEARCH_LIKED_KEY = "researchLikedIds";
+  const researchItemRegistry = new Map(); // id -> {sourceType, title, summary, url}
+
+  function getResearchLikedIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(RESEARCH_LIKED_KEY) || "[]")); }
+    catch (e) { return new Set(); }
+  }
+  function setResearchLikedIds(set) {
+    try { localStorage.setItem(RESEARCH_LIKED_KEY, JSON.stringify([...set])); } catch (e) {}
+  }
+  function updateResearchLikedCount() {
+    const el = document.getElementById("research-liked-count");
+    if (el) el.textContent = `チェック済み: ${getResearchLikedIds().size}件`;
+  }
+  function registerResearchItem(id, sourceType, title, summary, url) {
+    if (!id) return;
+    researchItemRegistry.set(id, { sourceType, title: title || "", summary: summary || "", url: url || "" });
+  }
+  function researchCheckboxTd(id) {
+    return `<td class="rt-check"><input type="checkbox" class="research-like-checkbox" data-id="${escapeHtmlForDevDocs(id)}"></td>`;
+  }
+  function wireResearchCheckboxes(container) {
+    const liked = getResearchLikedIds();
+    container.querySelectorAll(".research-like-checkbox").forEach((cb) => {
+      const id = cb.dataset.id;
+      cb.checked = liked.has(id);
+      cb.addEventListener("change", () => {
+        const ids = getResearchLikedIds();
+        if (cb.checked) ids.add(id); else ids.delete(id);
+        setResearchLikedIds(ids);
+        updateResearchLikedCount();
+      });
+    });
+  }
+
+  (function setupResearchCopyButton() {
+    const btn = document.getElementById("research-copy-liked-btn");
+    if (!btn) return;
+    const defaultLabel = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const likedIds = [...getResearchLikedIds()];
+      if (!likedIds.length) {
+        btn.textContent = "チェックされた項目がありません";
+        setTimeout(() => { btn.textContent = defaultLabel; }, 2000);
+        return;
+      }
+      const groupLabels = {
+        "hackathon-candidate": "🏆 ハッカソン候補",
+        "hackathon-winner": "🏆 ハッカソン入賞作品",
+        "contest": "🎯 AI駆動型アプリコンテスト",
+        "idea": "📱 Reddit事例集",
+      };
+      const bySrc = {};
+      likedIds.forEach((id) => {
+        const it = researchItemRegistry.get(id);
+        if (!it) return;
+        (bySrc[it.sourceType] = bySrc[it.sourceType] || []).push({ id, ...it });
+      });
+      let text = `【気になる記事(${new Date().toISOString().slice(0, 10)}時点、計${likedIds.length}件)】\n\n`;
+      Object.entries(groupLabels).forEach(([key, label]) => {
+        const items = bySrc[key];
+        if (!items || !items.length) return;
+        text += `■${label}\n`;
+        items.forEach((it) => {
+          text += `・[${it.id}] ${it.title}${it.summary ? " — " + it.summary : ""}${it.url ? " (" + it.url + ")" : ""}\n`;
+        });
+        text += `\n`;
+      });
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch (err) {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          copied = document.execCommand("copy");
+          document.body.removeChild(ta);
+        } catch (err2) { copied = false; }
+      }
+      btn.textContent = copied ? "コピーしました ✓" : "コピー不可(手動で選択してください)";
+      btn.classList.toggle("copied", copied);
+      setTimeout(() => { btn.textContent = defaultLabel; btn.classList.remove("copied"); }, 2500);
+    });
+  })();
+
+  // 🔍 調査資料タブ→🏆ハッカソン(2026-10-18追加、2026-10-23に一覧表+チェックボックス形式へ変更)。
+  // data/hackathon-research.jsonを読み込み、①狙っている/検討中のハッカソン候補→②過去の入賞作品の
+  // 順に一覧表で描画する。
   function loadHackathonResearch() {
     return fetch("data/hackathon-research.json", { cache: "no-store" })
       .then((res) => {
@@ -3673,59 +3810,65 @@
       });
   }
 
-  function hackathonSourcesHtml(sources) {
-    if (!sources || !sources.length) return "";
-    return `<div class="devdocs-concern-card" style="margin-top:8px; padding:6px 10px;"><dt style="margin-top:0;">出典</dt>${sources
-      .map((s) => `<div><a href="${escapeHtmlForDevDocs(s.url)}" target="_blank" rel="noopener" style="font-size:11.5px;">${escapeHtmlForDevDocs(s.title)}</a></div>`)
-      .join("")}</div>`;
+  function researchSourceLinkTd(sources) {
+    if (!sources || !sources.length) return `<td></td>`;
+    return `<td><a href="${escapeHtmlForDevDocs(sources[0].url)}" target="_blank" rel="noopener">出典 ↗</a></td>`;
   }
 
   function renderHackathonCandidates(candidates) {
     const box = document.getElementById("research-hackathon-candidates");
     if (!box) return;
     if (!candidates.length) { box.innerHTML = `<div class="empty">候補データがありません。</div>`; return; }
-    box.innerHTML = candidates.map((c) => `
-      <div class="policy-card" style="margin-bottom:10px;">
-        <div class="devdocs-head">
-          <h3>${escapeHtmlForDevDocs(c.name || "")}</h3>
-          <span class="devdocs-tag repo">${escapeHtmlForDevDocs(c.organizer || "")}</span>
-        </div>
-        <dl style="margin:0;">
-          <dt>内容</dt><dd>${escapeHtmlForDevDocs(c.content || "")}</dd>
-          <dt>前回の開催時期</dt><dd>${escapeHtmlForDevDocs(c.lastPeriod || "不明")}</dd>
-          <dt>直近回のテーマ</dt><dd>${escapeHtmlForDevDocs(c.theme || "不明")}</dd>
-          <dt>次回開催</dt><dd>${escapeHtmlForDevDocs(c.nextEdition || "不明")}</dd>
-          <dt>現在の状況</dt><dd>${escapeHtmlForDevDocs(c.status || "不明")}</dd>
-        </dl>
-        ${hackathonSourcesHtml(c.sources)}
-      </div>`).join("");
+    candidates.forEach((c) => registerResearchItem(c.id, "hackathon-candidate", c.name, c.content, c.sources && c.sources[0] && c.sources[0].url));
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th></th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
+          <tbody>
+            ${candidates.map((c) => `
+              <tr>
+                ${researchCheckboxTd(c.id)}
+                <td>${escapeHtmlForDevDocs(c.name || "")}</td>
+                <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
+                <td>${escapeHtmlForDevDocs(c.content || "")}</td>
+                <td>${escapeHtmlForDevDocs(c.lastPeriod || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.theme || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.nextEdition || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.status || "不明")}</td>
+                ${researchSourceLinkTd(c.sources)}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
   }
 
   function renderHackathonWinners(winners, candidates) {
     const box = document.getElementById("research-hackathon-winners");
     if (!box) return;
     if (!winners.length) { box.innerHTML = `<div class="empty">入賞作品データは現在調査中です。調査が完了したら順次反映されます。</div>`; return; }
-    const byHackathon = {};
-    winners.forEach((w) => { (byHackathon[w.hackathon] = byHackathon[w.hackathon] || []).push(w); });
-    box.innerHTML = Object.entries(byHackathon).map(([name, items]) => `
-      <details class="devdocs-stage-group" open>
-        <summary>${escapeHtmlForDevDocs(name)} <span class="count">(${items.length})</span></summary>
-        <div class="devdocs-stage-group-body">
-          ${items.map((w) => `
-            <div class="policy-card" style="margin-bottom:8px;">
-              <div class="devdocs-head">
-                <span class="devdocs-tag">${escapeHtmlForDevDocs(w.edition || "")}</span>
-                <span class="devdocs-tag repo">${escapeHtmlForDevDocs(w.rank || "")}</span>
-              </div>
-              <h3 style="margin:4px 0;">${escapeHtmlForDevDocs(w.title || "")}${w.team ? ` (${escapeHtmlForDevDocs(w.team)})` : ""}</h3>
-              <dl style="margin:0;">
-                <dt>概要</dt><dd>${escapeHtmlForDevDocs(w.summary || "不明")}</dd>
-                ${w.tech ? `<dt>使用技術</dt><dd>${escapeHtmlForDevDocs(w.tech)}</dd>` : ""}
-              </dl>
-              ${hackathonSourcesHtml(w.sources)}
-            </div>`).join("")}
-        </div>
-      </details>`).join("");
+    winners.forEach((w) => registerResearchItem(w.id, "hackathon-winner", w.title, w.summary, w.sources && w.sources[0] && w.sources[0].url));
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th></th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
+          <tbody>
+            ${winners.map((w) => `
+              <tr>
+                ${researchCheckboxTd(w.id)}
+                <td>${escapeHtmlForDevDocs(w.hackathon || "")}</td>
+                <td>${escapeHtmlForDevDocs(w.edition || "")}</td>
+                <td>${escapeHtmlForDevDocs(w.rank || "")}</td>
+                <td>${escapeHtmlForDevDocs(w.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(w.team || "")}</td>
+                <td>${escapeHtmlForDevDocs(w.summary || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(w.tech || "")}</td>
+                ${researchSourceLinkTd(w.sources)}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
   }
 
   // 🔍調査資料タブ→🎯AI駆動型アプリコンテスト(2026-10-18追加)。data/contest-research.jsonを読み込み、
@@ -3754,26 +3897,33 @@
     const box = document.getElementById("research-contest-list");
     if (!box) return;
     if (!entries.length) { box.innerHTML = `<div class="empty">コンテストデータがありません。</div>`; return; }
-    box.innerHTML = entries.map((c) => `
-      <div class="policy-card" style="margin-bottom:10px;">
-        <div class="devdocs-head">
-          <h3>${escapeHtmlForDevDocs(c.name || "")}</h3>
-          <span class="devdocs-tag repo">${escapeHtmlForDevDocs(c.organizer || "")}</span>
-          <span class="devdocs-tag">初心者向け度: ${escapeHtmlForDevDocs(c.beginnerFriendliness || "不明")}</span>
-        </div>
-        <dl style="margin:0;">
-          <dt>開催頻度・直近募集</dt><dd>${escapeHtmlForDevDocs(c.frequency || "不明")}</dd>
-          <dt>参加資格</dt><dd>${escapeHtmlForDevDocs(c.eligibility || "不明")}</dd>
-          <dt>評価基準・テーマ</dt><dd>${escapeHtmlForDevDocs(c.criteria || "不明")}</dd>
-          <dt>メリット</dt><dd>${escapeHtmlForDevDocs(c.benefit || "不明")}</dd>
-          ${c.note ? `<dt>備考</dt><dd>${escapeHtmlForDevDocs(c.note)}</dd>` : ""}
-        </dl>
-        ${hackathonSourcesHtml(c.sources)}
-      </div>`).join("");
+    entries.forEach((c) => registerResearchItem(c.id, "contest", c.name, c.benefit, c.sources && c.sources[0] && c.sources[0].url));
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th></th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
+          <tbody>
+            ${entries.map((c) => `
+              <tr>
+                ${researchCheckboxTd(c.id)}
+                <td>${escapeHtmlForDevDocs(c.name || "")}</td>
+                <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
+                <td>${escapeHtmlForDevDocs(c.beginnerFriendliness || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.frequency || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.eligibility || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.criteria || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.benefit || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(c.note || "")}</td>
+                ${researchSourceLinkTd(c.sources)}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
   }
 
   // 🔍調査資料タブ→💡アプリ事例・アイデア帳(2026-10-18追加)。data/app-idea-research.jsonを読み込み、
-  // 他のClaudeユーザーの作品事例(ユーザーがチャットに貼り付けた一次情報)をカテゴリ別カードで表示する。
+  // 他のClaudeユーザーの作品事例(ユーザーがチャットに貼り付けた一次情報)をカテゴリ別の一覧表で表示する。
   function loadIdeaResearch() {
     return fetch("data/app-idea-research.json", { cache: "no-store" })
       .then((res) => {
@@ -3794,9 +3944,11 @@
       });
   }
 
-  // 2026-10-18変更: ユーザー指示「タイトルと概要、参照先URLで一覧化にしてまとめて」により、
-  // カード形式から既存の.devdocs-qa-list(📋要件定義タブのQ&A一覧と同じ、罫線区切りの一覧)パターンへ
-  // 変更(rule23: 既存の仕組みを優先)。カテゴリ単位の折りたたみ構造(devdocs-stage-group)は維持。
+  // 2026-10-18変更: タイトル・概要・参照先URLの一覧形式に変更。2026-10-23変更: ユーザー指示
+  // 「全部各ページごとに一覧表にして項目を揃えて表示、一番左の列にチェックボックスを用意」により
+  // 罫線区切りの一覧(devdocs-qa-list)から一覧表(research-table)へ変更。カテゴリ単位の折りたたみ
+  // 構造(devdocs-stage-group)は維持。idはurl(既存のreddit-idea-recorderスキルのURL重複チェックと
+  // 同じ基準、記事自体にid相当のフィールドが無いため)。
   function renderIdeaCategories(categories) {
     const box = document.getElementById("research-ideas-categories");
     if (!box) return;
@@ -3806,15 +3958,67 @@
         <summary>${escapeHtmlForDevDocs(cat.name || "")} <span class="count">(${(cat.items || []).length})</span></summary>
         <div class="devdocs-stage-group-body">
           ${cat.note ? `<p class="tab-page-overview" style="margin:0 0 8px;">${escapeHtmlForDevDocs(cat.note)}</p>` : ""}
-          <div class="devdocs-qa-list">
-            ${(cat.items || []).map((it) => `
-              <div class="devdocs-qa-item">
-                <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
-                ${it.description ? `<div class="a">${escapeHtmlForDevDocs(it.description)}</div>` : ""}
-              </div>`).join("")}
+          <div class="research-table-wrap">
+            <table class="research-table">
+              <thead><tr><th></th><th>タイトル</th><th>概要</th><th>URL</th></tr></thead>
+              <tbody>
+                ${(cat.items || []).map((it) => `
+                  <tr>
+                    ${researchCheckboxTd(it.url || `idea:${cat.name}:${it.title}`)}
+                    <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                    <td>${escapeHtmlForDevDocs(it.description || "")}</td>
+                    <td>${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">リンク ↗</a>` : ""}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
           </div>
         </div>
       </details>`).join("");
+    categories.forEach((cat) => (cat.items || []).forEach((it) =>
+      registerResearchItem(it.url || `idea:${cat.name}:${it.title}`, "idea", it.title, it.description, it.url)));
+    wireResearchCheckboxes(box);
+  }
+
+  // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
+  // ビューアーのみ(書き込みは常にClaude Code経由)。
+  function loadPreferencesResearch() {
+    return fetch("data/user-preferences.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/user-preferences.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        const meta = document.getElementById("research-preferences-meta");
+        if (meta) meta.textContent = `分析日: ${(data.analysis && data.analysis.generatedAt) || "まだ分析がありません"} ／ 記録済み件数: ${(data.likedItems || []).length}件`;
+        const analysisBox = document.getElementById("research-preferences-analysis");
+        if (analysisBox) {
+          if (data.analysis && data.analysis.summaryJa) {
+            analysisBox.innerHTML = `
+              <div class="devdocs-concern-card">
+                <dt>分析</dt><dd>${escapeHtmlForDevDocs(data.analysis.summaryJa)}</dd>
+              </div>
+              ${(data.analysis.pointsJa || []).length ? `<div class="devdocs-qa-list" style="margin-top:10px;">${data.analysis.pointsJa.map((p) => `<div class="devdocs-qa-item"><div class="a">・${escapeHtmlForDevDocs(p)}</div></div>`).join("")}</div>` : ""}`;
+          } else {
+            analysisBox.innerHTML = `<div class="empty">まだ分析がありません。各ページでチェック→「📋 気になる記事をコピー」→Claude Codeのチャットへ貼り付けて反映を依頼してください。</div>`;
+          }
+        }
+        const itemsBox = document.getElementById("research-preferences-items");
+        if (itemsBox) {
+          const items = data.likedItems || [];
+          itemsBox.innerHTML = items.length
+            ? `<div class="devdocs-qa-list">${items.map((it) => `
+                <div class="devdocs-qa-item">
+                  <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
+                  ${it.summary ? `<div class="a">${escapeHtmlForDevDocs(it.summary)}</div>` : ""}
+                </div>`).join("")}</div>`
+            : `<div class="empty">まだ記録された項目がありません。</div>`;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("research-preferences-analysis");
+        if (box) box.innerHTML = `<div class="empty">データを読み込めませんでした(${err.message})</div>`;
+      });
   }
 
   (function setupResearchSubviewToggle() {
@@ -3822,6 +4026,7 @@
       hackathon: { btn: document.getElementById("research-subtab-hackathon"), panel: document.getElementById("research-subview-hackathon") },
       contest: { btn: document.getElementById("research-subtab-contest"), panel: document.getElementById("research-subview-contest") },
       ideas: { btn: document.getElementById("research-subtab-ideas"), panel: document.getElementById("research-subview-ideas") },
+      preferences: { btn: document.getElementById("research-subtab-preferences"), panel: document.getElementById("research-subview-preferences") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
       if (!btn) return;
@@ -3836,6 +4041,8 @@
   })();
   loadContestResearch();
   loadIdeaResearch();
+  loadPreferencesResearch();
+  updateResearchLikedCount();
 
   function devDocsSelectedRepo() {
     return devDocsCurrentRepo;
