@@ -475,6 +475,21 @@
         "costUsd": 1921.5743668
       },
       "rateLimitResetsAt": "2026-10-24T05:10:00+09:00"
+    },
+    {
+      "date": "2026-10-23",
+      "time": "16:40",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-094: 調査資料タブの一覧表をウィンドウ幅いっぱいに表示",
+      "note": "#research-view限定で.policy-wrapのmax-width制約を解除し、ウィンドウ幅に追従して表が伸縮するようにした。Playwrightで3段階の幅を確認、main push済み。ユーザーが「これはOK」と確認したため完了とした。",
+      "usage": {
+        "inputTokens": 5890294,
+        "outputTokens": 10595881,
+        "cacheReadTokens": 5908136155,
+        "cacheWriteTokens": 135226271,
+        "costUsd": 1928.79303204
+      },
+      "rateLimitResetsAt": "2026-10-24T05:10:00+09:00"
     }
   ]
 }

@@ -5209,6 +5209,33 @@
         }
       ],
       "updated": "2026-10-23"
+    },
+    {
+      "id": "PTD-094",
+      "title": "調査資料タブの一覧表をウィンドウ幅いっぱいに表示",
+      "task": "research-tableのレスポンシブ幅対応",
+      "repo": "progress-tracker-dashboard",
+      "category": "fix",
+      "priority": "低",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "ユーザー指示「調査資料側だけど、横はウィンドウにめいいっぱい表示するようにして、もしウインドウの横幅が小さくなったらそれに合うように表の横幅も調整できるようにしてほしい」。PTD-092で調査資料タブを一覧表形式へ変更した際、他タブ共通の.policy-wrap(max-width:720px)をそのまま使っていたため、ワイドディスプレイでも表が720px幅に収まったままで、余白が大きく見づらかったことが背景。",
+      "detail": "他タブ(AI基本設定・開発資料・クレジット等)が共通で使っている.policy-wrap(max-width:720px;margin:0 auto)を変更すると全タブへ影響するため、#research-view .policy-wrap { max-width: none; } というスコープ限定の上書きルールを追加する方式にした(他タブは無改修)。research-table自体は元々width:100%、親の.research-table-wrapはoverflow-x:autoだったため、ウィンドウが狭くなったときに表の幅が追従して縮む挙動は、.policy-wrapの幅制約さえ外せば既存CSSのままで満たされた(新規のレスポンシブCSSは不要だった)。Playwrightでビューポート幅1400px/900px/500pxの3段階を検証し、research-table-wrapの実測幅がそれぞれ1338px/838px/438px(=ビューポート幅-62pxのpolicy-wrapパディング分)と、ウィンドウ幅に連動して伸縮することを確認した。あわせて#ai-config-view側の.policy-wrapが従来通り720pxのままで、他タブに影響していないことも確認した。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html",
+      "relatedTasks": [
+        "PTD-092"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-23",
+          "summary": "#research-view限定で.policy-wrapのmax-width:720pxを解除し、調査資料タブの一覧表がウィンドウ幅いっぱいに表示・追従するようにした。Playwrightで1400/900/500pxの3段階と他タブへの非影響を確認、main push済み。ユーザーが「これはOK」と確認済みのため完了とした。"
+        }
+      ],
+      "updated": "2026-10-23"
     }
   ],
   "updatedAt": "2026-10-18"
