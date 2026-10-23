@@ -889,7 +889,22 @@
 
   /* 📱アプリ開発(2026-10-23追加、旧📋要件定義タブの再編) */
   .appdev-screen { margin-bottom: 10px; }
-  .appdev-stage-toggle { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  /* 工程切替サイドバー(2026-10-23追加、②基本設計フェーズ。ユーザー指示「左メニュに要件定義、
+     基本設計…と各工程を表示」)。PC幅はdevdocs-requirements/appdev-basicdesignの左に縦並びの
+     メニューとして配置し、携帯幅(640px以下)では.detail-tabsと同じ横スクロール方式に切り替えて
+     崩れを防ぐ(rule23: 既存のモバイル対応パターンを再利用)。 */
+  .appdev-stage-layout { display: flex; gap: 16px; align-items: flex-start; }
+  .appdev-stage-sidebar { flex: 0 0 168px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; }
+  .appdev-stage-sidebar .manager-subview-btn { width: 100%; text-align: left; border-radius: 8px; }
+  .appdev-stage-content { flex: 1 1 auto; min-width: 0; }
+  @media (max-width: 640px) {
+    .appdev-stage-layout { flex-direction: column; }
+    .appdev-stage-sidebar {
+      flex-direction: row; flex-wrap: nowrap; overflow-x: auto; width: 100%;
+      position: static; padding-bottom: 4px;
+    }
+    .appdev-stage-sidebar .manager-subview-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
+  }
   .appdev-home-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
   .appdev-big-btn {
     flex: 1 1 200px; min-height: 100px; border-radius: 14px; border: 1px solid var(--border);
@@ -1284,16 +1299,20 @@
               <label>アプリ: <select id="devdocs-app-select-req"></select></label>
             </div>
             <div id="devdocs-stats" class="relations-legend"></div>
-            <!-- 2026-10-23追加(②基本設計フェーズ): 工程切替タブ。元の要望は「左メニュー」だったが、
-                 携帯幅での表示崩れを避けるため、他タブ(調査資料のサブタブ等)と同じ横並びの
-                 manager-subview-btnパターンに揃えた(rule23: 既存の仕組みを再利用)。 -->
-            <div class="appdev-stage-toggle" id="appdev-stage-toggle">
+          </div>
+          <!-- 2026-10-23追加(②基本設計フェーズ)。ユーザー指示通り左メニュー形式で工程を切替える。
+               携帯幅(640px以下)では.detail-tabsと同じ横スクロール方式へ切り替え、崩れを防ぐ
+               (rule23: 既存のモバイル対応パターンを再利用)。 -->
+          <div class="appdev-stage-layout">
+            <div class="appdev-stage-sidebar" id="appdev-stage-toggle">
               <button type="button" class="manager-subview-btn active" id="appdev-stage-btn-requirements" data-stage="requirements">📋 要件定義</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
             </div>
+            <div class="appdev-stage-content">
+              <div id="devdocs-requirements"></div>
+              <div id="appdev-basicdesign" style="display:none;"></div>
+            </div>
           </div>
-          <div id="devdocs-requirements"></div>
-          <div id="appdev-basicdesign" style="display:none;"></div>
         </div>
 
       </div>
