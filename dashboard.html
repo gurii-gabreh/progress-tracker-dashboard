@@ -872,6 +872,24 @@
     background: var(--surface-2); color: var(--text); font-size: 13px; font-family: inherit;
   }
   .form-error { font-size: 12px; color: var(--status-skip-fg); }
+
+  /* 📱アプリ開発(2026-10-23追加、旧📋要件定義タブの再編) */
+  .appdev-screen { margin-bottom: 10px; }
+  .appdev-home-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+  .appdev-big-btn {
+    flex: 1 1 200px; min-height: 100px; border-radius: 14px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 15px; font-weight: 700;
+    cursor: pointer; box-shadow: var(--shadow); line-height: 1.8; transition: border-color .15s;
+  }
+  .appdev-big-btn:hover { border-color: var(--accent); }
+  .appdev-back-btn {
+    font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    cursor: pointer; margin-bottom: 10px;
+  }
+  #appdev-new-fields { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+  #appdev-new-fields .form-field textarea { resize: vertical; }
+  .appdev-new-actions { margin-top: 6px; }
   .settings-note {
     font-size: 12px; color: var(--text-muted); background: var(--surface-2);
     border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
@@ -1187,28 +1205,74 @@
        2026-10-18追加: ユーザー指示「学習資料、学習記録、学習方針をアプリ開発タブにまとめ、その中で
        表示しろ」により、独立していた🎓学習タブ(3サブタブ)をこの開発資料タブへ統合した(学習タブ自体は廃止)。 -->
   <div class="manager-subview-toggle">
-    <button type="button" class="manager-subview-btn active" id="devdocs-subtab-requirements" data-subview="requirements">📋 要件定義</button>
+    <button type="button" class="manager-subview-btn active" id="devdocs-subtab-requirements" data-subview="requirements">📱 アプリ開発</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-flow" data-subview="flow">🔀 段階別フロー図</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-materials" data-subview="materials">📖 学習資料</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
   </div>
 
+  <!-- 2026-10-23変更: 旧「📋 要件定義」(常にアプリ選択+Q&A一覧を表示するだけのビューアー)を、
+       ユーザー指示「新規開発・開発アプリ一覧のボタンを表示。開発アプリを押したら要件定義の項目を
+       表示し入力させる」に沿って、①ホーム(新規開発/開発アプリ一覧の2ボタン)②新規開発フォーム
+       ③開発アプリ一覧(旧来のビューアーをそのまま再利用)の3画面構成へ再編した。
+       既存の「🆕 新規相談」依頼文テンプレート(ヘッダーの依頼文作成ドロップダウン内、
+       buildNewConsultationPromptText())と同じ聞き取り・懸念照合・記録の指示を土台に、
+       フォームに入力済みの内容を動的に埋め込んだプロンプトを生成する(rule23: 既存の仕組みを再利用)。 -->
   <div id="devdocs-subview-requirements" class="manager-subview active">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <!-- 2026-10-18追加: ユーザー指示「要件定義と説明、アプリ欄登録アプリ数部分のボタンまとまりも
-             スクロールしても動かないようにして」により、タイトル・説明文・アプリ選択・統計タイルを
-             sticky化した。 -->
-        <div class="devdocs-sticky-head">
-          <div class="tab-page-title">📋 要件定義</div>
-          <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)を確認できます。</p>
-          <div class="relations-controls">
-            <label>アプリ: <select id="devdocs-app-select-req"></select></label>
+
+        <div id="appdev-home" class="appdev-screen">
+          <div class="tab-page-title">📱 アプリ開発</div>
+          <p class="tab-page-overview">新しいアプリの立ち上げの相談から、要件定義の記録・確認までをここで行います。</p>
+          <!-- 2026-10-23追加: ヘッダーの「📋 依頼文作成 ▾」(#prompt-dropdown-wrap)と同じ見た目・挙動の
+               ドロップダウンをアプリ開発ホームにも新設(ユーザー指示「これをベースに、アプリ開発側にも
+               作成して」→「ホーム画面に設置、項目は新規アプリ開発のみ」)。新規開発フォームへ遷移せず、
+               未入力状態のまま buildNewAppFormPromptText() を直接呼び出す(🆕新規相談ボタンと同じ動き)。 -->
+          <div class="dropdown-wrap" id="appdev-prompt-dropdown-wrap" style="margin-bottom:14px;">
+            <button type="button" class="settings-btn" id="appdev-prompt-dropdown-btn" aria-expanded="false" aria-haspopup="true" title="アプリ開発に関する依頼文テンプレートを選べます">📋 依頼文作成 ▾</button>
+            <div class="dropdown-menu" id="appdev-prompt-dropdown-menu" role="menu" hidden>
+              <button type="button" class="dropdown-item" id="appdev-new-prompt-menu-btn" role="menuitem">➕ 新規アプリ開発</button>
+            </div>
           </div>
-          <div id="devdocs-stats" class="relations-legend"></div>
+          <div id="appdev-home-stats" class="relations-legend" style="margin-bottom:16px;"></div>
+          <div class="appdev-home-buttons">
+            <button type="button" class="appdev-big-btn" id="appdev-go-new">➕<br>新規開発</button>
+            <button type="button" class="appdev-big-btn" id="appdev-go-list">📂<br>開発アプリ一覧</button>
+          </div>
         </div>
-        <div id="devdocs-requirements"></div>
+
+        <div id="appdev-new" class="appdev-screen" style="display:none;">
+          <button type="button" class="appdev-back-btn" id="appdev-new-back">← ホームへ戻る</button>
+          <div class="tab-page-title">➕ 新規開発</div>
+          <p class="tab-page-overview">分かる範囲でよいので入力してください。空欄のままでも後で構いません(開発に着手する段になってからClaudeと相談して埋めます)。入力し終えたら「📋 プロンプトを作成」でClaude Codeへの依頼文を生成できます。</p>
+          <div class="form-field">
+            <label for="appdev-new-overview">依頼内容(概要)</label>
+            <textarea id="appdev-new-overview" rows="2" placeholder="例: 日々の〇〇を記録・分析するアプリを作りたい"></textarea>
+          </div>
+          <div id="appdev-new-fields"></div>
+          <div class="appdev-new-actions">
+            <button type="button" class="modal-copy-btn" id="appdev-new-generate-btn">📋 プロンプトを作成</button>
+          </div>
+        </div>
+
+        <div id="appdev-list" class="appdev-screen" style="display:none;">
+          <button type="button" class="appdev-back-btn" id="appdev-list-back">← ホームへ戻る</button>
+          <!-- 2026-10-18追加: ユーザー指示「要件定義と説明、アプリ欄登録アプリ数部分のボタンまとまりも
+               スクロールしても動かないようにして」により、タイトル・説明文・アプリ選択・統計タイルを
+               sticky化した。 -->
+          <div class="devdocs-sticky-head">
+            <div class="tab-page-title">📂 開発アプリ一覧</div>
+            <p class="tab-page-overview">各アプリの要件定義(新規相談スキルでの聞き取り結果)を確認できます。</p>
+            <div class="relations-controls">
+              <label>アプリ: <select id="devdocs-app-select-req"></select></label>
+            </div>
+            <div id="devdocs-stats" class="relations-legend"></div>
+          </div>
+          <div id="devdocs-requirements"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -3673,7 +3737,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -3685,8 +3749,11 @@
       .then((data) => {
         REQUIREMENTS.requirements = data.requirements || [];
         REQUIREMENTS.concerns = data.concerns || { items: [] };
+        REQUIREMENTS.interviewChecklist = data.interviewChecklist || { items: [] };
         populateDevDocsAppSelect();
         renderDevDocsRequirements();
+        renderAppDevHomeStats();
+        renderAppDevNewForm();
       })
       .catch((err) => {
         console.error(err);
@@ -4114,6 +4181,142 @@
 
   function escapeHtmlForDevDocs(s) {
     return String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // 📱アプリ開発ホーム画面(2026-10-23追加)。①ホーム②新規開発フォーム③開発アプリ一覧の
+  // 3画面を切り替える。
+  function showAppDevScreen(name) {
+    ["home", "new", "list"].forEach((k) => {
+      const el = document.getElementById(`appdev-${k}`);
+      if (el) el.style.display = k === name ? "" : "none";
+    });
+  }
+  (function setupAppDevScreens() {
+    const goNew = document.getElementById("appdev-go-new");
+    const goList = document.getElementById("appdev-go-list");
+    const newBack = document.getElementById("appdev-new-back");
+    const listBack = document.getElementById("appdev-list-back");
+    if (goNew) goNew.addEventListener("click", () => showAppDevScreen("new"));
+    if (goList) goList.addEventListener("click", () => showAppDevScreen("list"));
+    if (newBack) newBack.addEventListener("click", () => showAppDevScreen("home"));
+    if (listBack) listBack.addEventListener("click", () => showAppDevScreen("home"));
+  })();
+
+  function renderAppDevHomeStats() {
+    const box = document.getElementById("appdev-home-stats");
+    if (!box) return;
+    const statusCounts = {};
+    REQUIREMENTS.requirements.forEach((r) => { const s = r.status || "不明"; statusCounts[s] = (statusCounts[s] || 0) + 1; });
+    const tiles = [{ num: REQUIREMENTS.requirements.length, label: "登録アプリ数" }, ...Object.entries(statusCounts).map(([s, n]) => ({ num: n, label: s }))];
+    box.innerHTML = `<div class="devdocs-stats">${tiles.map((t) => `<div class="devdocs-stat-tile"><div class="num">${t.num}</div><div class="label">${escapeHtmlForDevDocs(t.label)}</div></div>`).join("")}</div>`;
+  }
+
+  // 新規開発フォーム: interviewChecklist(15項目)を入力欄として描画する。
+  function renderAppDevNewForm() {
+    const box = document.getElementById("appdev-new-fields");
+    if (!box) return;
+    const items = (REQUIREMENTS.interviewChecklist && REQUIREMENTS.interviewChecklist.items) || [];
+    box.innerHTML = items.map((it) => `
+      <div class="form-field">
+        <label for="appdev-new-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-new-item-${it.n}" rows="2" placeholder="空欄のままでも可"></textarea>
+      </div>`).join("");
+  }
+
+  // 既存の「🆕 新規相談」テンプレート(buildNewConsultationPromptText)と同じ、過去実績の確認→
+  // 懸念照合→市場分析→記録、という指示内容を土台に、フォームに入力済みの内容を埋め込んだ
+  // プロンプトを生成する(rule23: 既存の仕組みを再利用)。空欄の項目は「開発着手時に確認する」扱いで
+  // 進めてよい旨を明記する(ユーザー指示: 足りない情報は開発をする段になってから確認する方針)。
+  function buildNewAppFormPromptText() {
+    const overview = (document.getElementById("appdev-new-overview") || {}).value || "";
+    const items = (REQUIREMENTS.interviewChecklist && REQUIREMENTS.interviewChecklist.items) || [];
+    const answerLines = items.map((it) => {
+      const el = document.getElementById(`appdev-new-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答。開発に着手する段になってから確認する)"}`;
+    }).join("\n");
+    return [
+      "新規相談ルームとして動いてほしい。既存タスクに紐付かない、新しいアプリの立ち上げの話。",
+      "ダッシュボードの「📱 アプリ開発」→「➕ 新規開発」フォームから、以下の内容が入力済みの状態で渡された。",
+      "",
+      "【依頼内容(概要)】",
+      overview.trim() || "(未記入)",
+      "",
+      "【入力済みの項目(1〜10が従来からの基本項目、11〜15はIPA非機能要求グレードとの突き合わせで",
+      "  2026-10-23に追加した項目)】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. まず gurii-gabreh/progress-tracker-dashboard の data/ai-config.json(AI基本設定)・",
+      "   data/policy.json(運用ポリシー)・data/tasks.json・data/concept-log.json・",
+      "   data/requirements.json(requirements配列・concernsの両方、必ず確認)と、",
+      "   gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json(横断集約された索引)を読み、",
+      "   関連する過去の実績・判断が無いか確認する",
+      "2. 上記で空欄になっている項目は、今すぐ全て埋めようとせず、このプロジェクトの実績・ナレッジ",
+      "   (concept-log.json・過去のrequirements配列・servicenow-sub-agentのresearch-items.json等、",
+      "   research-knowledge-lookupスキル参照)とWeb検索の両方を根拠にしながら、ユーザーと相談して",
+      "   方向性を決めていく。全項目が揃っていなくても先に進めてよく、相談してもなお方向性が定まらない",
+      "   項目は「開発に着手する段になったら確認する」として answer に明記してよい",
+      "   (今すぐ全部埋めることを強制しない)",
+      "3. 入力済みの回答と上記の確認が終わったら、data/requirements.json の concerns",
+      "   (confirmedByUser:trueのみ)・data/tasks.jsonのissues・data/concept-log.json・過去のrequirements",
+      "   配列と照合する。該当する事例が見つかったら黙って進めず指摘し、あわせて代替案を提示する。",
+      "   concernsに該当した場合は根拠(source・observedIn)を添えて「これまでの傾向・経緯からすると、",
+      "   こういう間違い・進み方になりやすいです」と一言添える。相談した結果の最終的な回答・決定は",
+      "   concernReviewとして必ず記録する(ユーザーが認めた新しい傾向があれば、本人の了承を得たうえで",
+      "   concernsへ追記してよい。AI側が一方的に決めつけて追加しない)",
+      "4. 聞き取りが十分固まったら要件定義シートの下書きを提示し、ユーザーの確定を得てから、",
+      "   市場分析7ステップ(PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニー、",
+      "   data/requirements.json の marketAnalysisFramework 参照)を必ず実施する。AIが調査・Web検索して",
+      "   各ステップの下書きを作成し、ユーザーの確認・修正を得る",
+      "5. 以上を data/requirements.json の requirements 配列へ1件追加してcommit・push する",
+      "   (answers配列は{n, question, answer}として15項目すべて格納、marketAnalysisは{pest, fiveForces,",
+      "   threeC, swot, stp, fourP, customerJourney}、concernReviewは{concernId, matchedBecause,",
+      "   resolution}または{concernId: null, description, resolution}の配列)。あわせて対応するタスクを",
+      "   依頼タスクタブ/data/tasks.jsonへ起票し、自動実装Routineが拾える状態にする。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発に自動で表示される",
+      "   (別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+  (function setupAppDevNewGenerateBtn() {
+    const btn = document.getElementById("appdev-new-generate-btn");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      showHandoffModal(buildNewAppFormPromptText(), "新規アプリ開発 依頼文", true);
+    });
+  })();
+
+  // アプリ開発ホームの「📋 依頼文作成 ▾」ドロップダウン(2026-10-23追加)。
+  // ヘッダーの setupPromptDropdown() と同じ開閉ロジックをそのまま流用(rule23: 既存の仕組みを再利用)。
+  (function setupAppDevPromptDropdown() {
+    const wrap = document.getElementById("appdev-prompt-dropdown-wrap");
+    const btn = document.getElementById("appdev-prompt-dropdown-btn");
+    const menu = document.getElementById("appdev-prompt-dropdown-menu");
+    if (!wrap || !btn || !menu) return;
+    const closeMenu = () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = menu.hidden;
+      menu.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    menu.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", () => closeMenu());
+    });
+    document.addEventListener("click", (e) => {
+      if (!wrap.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+  })();
+  const appdevNewPromptMenuBtn = document.getElementById("appdev-new-prompt-menu-btn");
+  if (appdevNewPromptMenuBtn) {
+    appdevNewPromptMenuBtn.addEventListener("click", () => {
+      showHandoffModal(buildNewAppFormPromptText(), "新規アプリ開発 依頼文", true);
+    });
   }
 
   function renderDevDocsRequirements() {
