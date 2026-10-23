@@ -350,6 +350,13 @@
      GitHub Pagesの静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態は
      まずlocalStorageへ一時保存し、「📋 気になる記事をコピー」ボタンでテキスト化してチャットへ
      貼り付け、Claudeがdata/user-preferences.jsonへ反映する運用(README参照)。 */
+  /* 🤖AI最新情報タブのフィルタバー(2026-10-23追加、ユーザー指示「この調査資料はフィルタ化できる
+     ようにして、後、今日取得した情報のみを表示する用のボタンを設けて」)。レイアウトは既存の
+     .relations-controls(連関図タブのアプリ選択プルダウン)を再利用(rule23)。 */
+  .research-filter-bar input[type="text"] {
+    padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; min-width: 180px;
+  }
   .research-table-wrap { overflow-x: auto; margin-bottom: 14px; }
   .research-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .research-table th { text-align: left; padding: 7px 10px; background: var(--border); color: var(--text-muted); font-weight: 700; font-size: 11px; white-space: nowrap; }
@@ -1571,6 +1578,13 @@
         <div class="tab-page-title">🤖 AI最新情報</div>
         <p class="tab-page-overview">AI技術・業界動向に関する調査結果です。YouTube・MarkTechPost・Hacker News・arXiv等から自動収集し、Claudeが内容を確認して日本語要約・ポイント・活用のヒントを付与した項目(servicenow-sub-agentリポジトリのdata/research-items.json)のみを表示します(自動収集された生データは英語中心・件数過多のため対象外)。気になる記事は左端のチェックボックスでマークできます(上部の「📋 気になる記事をコピー」から)。</p>
         <div class="policy-meta" id="research-ai-trends-meta"></div>
+        <div class="relations-controls research-filter-bar" id="ai-trends-filter-bar">
+          <label>カテゴリ: <select id="ai-trends-filter-category"><option value="">すべて</option></select></label>
+          <label>情報源: <select id="ai-trends-filter-source"><option value="">すべて</option></select></label>
+          <label>作成日(公開日): <select id="ai-trends-filter-date"><option value="">すべて</option></select></label>
+          <label>キーワード: <input type="text" id="ai-trends-filter-keyword" placeholder="タイトル・概要・ポイントなどで検索"></label>
+          <button type="button" class="manager-subview-btn" id="ai-trends-filter-today-btn">📅 今日取得した情報のみ</button>
+        </div>
         <div id="research-ai-trends-list"></div>
       </div>
     </div>
@@ -4075,6 +4089,11 @@
   // 🔍調査資料タブ→🤖AI最新情報(2026-10-23追加)。servicenow-sub-agentのdata/research-items.jsonを
   // raw.githubusercontent.com経由でfetchする(claude-voice-bridgeの既存パターンをrule23で再利用)。
   const AI_TRENDS_URL = "https://raw.githubusercontent.com/gurii-gabreh/servicenow-sub-agent/main/data/research-items.json";
+  let AI_TRENDS_ITEMS = [];
+  let AI_TRENDS_CATEGORIES = {};
+  let aiTrendsShowTodayOnly = false;
+  let aiTrendsFiltersWired = false;
+
   function loadAiTrendsResearch() {
     return fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" })
       .then((res) => {
@@ -4084,7 +4103,12 @@
       .then((data) => {
         const items = (data.items || []).filter((it) => it.curated);
         items.sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
-        renderAiTrendsItems(items, data.categories || {});
+        AI_TRENDS_ITEMS = items;
+        AI_TRENDS_CATEGORIES = data.categories || {};
+        items.forEach((it) => registerResearchItem(it.sysId, "ai-trend", it.title, it.summaryJa || it.rawSummary, it.sourceUrl));
+        populateAiTrendsFilterOptions();
+        wireAiTrendsFilters();
+        applyAiTrendsFilters();
         const meta = document.getElementById("research-ai-trends-meta");
         if (meta) meta.textContent = `更新日: ${data.generatedAt || "不明"} ／ キュレーション済み: ${items.length}件(収集した生データ全${data.itemCount || "不明"}件のうち、内容確認・要約済みのもののみ表示)`;
       })
@@ -4094,11 +4118,81 @@
         if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
       });
   }
-  function renderAiTrendsItems(items, categories) {
+
+  // カテゴリ・情報源・作成日(公開日)の各プルダウンを、実際に存在する値だけで動的に構築する。
+  function populateAiTrendsFilterOptions() {
+    const catSel = document.getElementById("ai-trends-filter-category");
+    const srcSel = document.getElementById("ai-trends-filter-source");
+    const dateSel = document.getElementById("ai-trends-filter-date");
+    if (catSel) {
+      const cats = [...new Set(AI_TRENDS_ITEMS.map((it) => String(it.category)))].sort();
+      catSel.innerHTML = `<option value="">すべて</option>` + cats.map((c) =>
+        `<option value="${escapeHtmlForDevDocs(c)}">${escapeHtmlForDevDocs(AI_TRENDS_CATEGORIES[c] || c)}</option>`).join("");
+    }
+    if (srcSel) {
+      const srcs = [...new Set(AI_TRENDS_ITEMS.map((it) => it.sourceName || "不明"))].sort();
+      srcSel.innerHTML = `<option value="">すべて</option>` + srcs.map((s) =>
+        `<option value="${escapeHtmlForDevDocs(s)}">${escapeHtmlForDevDocs(s)}</option>`).join("");
+    }
+    if (dateSel) {
+      const dates = [...new Set(AI_TRENDS_ITEMS.map((it) => (it.publishedAt || "").slice(0, 10)).filter(Boolean))].sort().reverse();
+      dateSel.innerHTML = `<option value="">すべて</option>` + dates.map((d) =>
+        `<option value="${escapeHtmlForDevDocs(d)}">${escapeHtmlForDevDocs(d)}</option>`).join("");
+    }
+  }
+
+  function jstTodayStr() {
+    return new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
+  }
+
+  function wireAiTrendsFilters() {
+    if (aiTrendsFiltersWired) return;
+    aiTrendsFiltersWired = true;
+    ["ai-trends-filter-category", "ai-trends-filter-source", "ai-trends-filter-date"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", applyAiTrendsFilters);
+    });
+    const kw = document.getElementById("ai-trends-filter-keyword");
+    if (kw) kw.addEventListener("input", applyAiTrendsFilters);
+    const todayBtn = document.getElementById("ai-trends-filter-today-btn");
+    if (todayBtn) {
+      todayBtn.addEventListener("click", () => {
+        aiTrendsShowTodayOnly = !aiTrendsShowTodayOnly;
+        todayBtn.classList.toggle("active", aiTrendsShowTodayOnly);
+        applyAiTrendsFilters();
+      });
+    }
+  }
+
+  // 「今日取得した情報のみ」は、取得日時(fetchedAt)がJST基準の今日と一致する項目に絞る
+  // (ユーザー指示「今日取得した情報のみを表示する用のボタン」)。他3項目はプルダウン/テキストでの
+  // 一般的な絞り込み(ユーザー指示「この調査資料はフィルタ化できるようにして」)。
+  function applyAiTrendsFilters() {
+    const cat = (document.getElementById("ai-trends-filter-category") || {}).value || "";
+    const src = (document.getElementById("ai-trends-filter-source") || {}).value || "";
+    const date = (document.getElementById("ai-trends-filter-date") || {}).value || "";
+    const kw = ((document.getElementById("ai-trends-filter-keyword") || {}).value || "").trim().toLowerCase();
+    const today = jstTodayStr();
+    const filtered = AI_TRENDS_ITEMS.filter((it) => {
+      if (cat && String(it.category) !== cat) return false;
+      if (src && (it.sourceName || "不明") !== src) return false;
+      if (date && (it.publishedAt || "").slice(0, 10) !== date) return false;
+      if (aiTrendsShowTodayOnly && (it.fetchedAt || "").slice(0, 10) !== today) return false;
+      if (kw) {
+        const hay = [it.title, it.summaryJa, it.rawSummary, (it.pointsJa || []).join(" "), it.applicableTechJa]
+          .filter(Boolean).join(" ").toLowerCase();
+        if (!hay.includes(kw)) return false;
+      }
+      return true;
+    });
+    renderAiTrendsTable(filtered);
+  }
+
+  function renderAiTrendsTable(items) {
     const box = document.getElementById("research-ai-trends-list");
     if (!box) return;
-    if (!items.length) { box.innerHTML = `<div class="empty">キュレーション済みの項目がまだありません。</div>`; return; }
-    items.forEach((it) => registerResearchItem(it.sysId, "ai-trend", it.title, it.summaryJa || it.rawSummary, it.sourceUrl));
+    if (!AI_TRENDS_ITEMS.length) { box.innerHTML = `<div class="empty">キュレーション済みの項目がまだありません。</div>`; return; }
+    if (!items.length) { box.innerHTML = `<div class="empty">条件に一致する項目がありません。</div>`; return; }
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
@@ -4107,7 +4201,7 @@
             ${items.map((it) => `
               <tr>
                 ${researchCheckboxTd(it.sysId)}
-                <td>${escapeHtmlForDevDocs(categories[String(it.category)] || String(it.category || "不明"))}</td>
+                <td>${escapeHtmlForDevDocs(AI_TRENDS_CATEGORIES[String(it.category)] || String(it.category || "不明"))}</td>
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.sourceName || "不明")}</td>
                 <td>${escapeHtmlForDevDocs((it.publishedAt || "不明").slice(0, 10))}</td>
