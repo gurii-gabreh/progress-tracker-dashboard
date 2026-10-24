@@ -505,6 +505,66 @@
         "costUsd": 1931.2703228
       },
       "rateLimitResetsAt": "2026-10-24T05:10:00+09:00"
+    },
+    {
+      "date": "2026-10-24",
+      "time": "13:00",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-096: アプリ開発に②基本設計+③課題管理表を追加、左サイドバー化・sticky固定",
+      "note": "②基本設計(IPA共通フレーム準拠11項目)と③課題管理表を追加。当初横並びタブで実装したがユーザー指摘で左サイドバー形式(PC)/横スクロールタブ(モバイル)へ作り直し、サイドメニュー・アプリタイトルのsticky固定も実装。main push・merge済み。この記録は本来2026-10-24のうちに追記すべきところ、claude-core-rules.mdルール5/7の記録漏れとして同日中にマネージャールーム日次ログ処理時に遡及backfillしたもの。",
+      "usage": {
+        "inputTokens": 5980340,
+        "outputTokens": 10861609,
+        "cacheReadTokens": 6081527445,
+        "cacheWriteTokens": 136348049,
+        "costUsd": 1970.64198142
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-24",
+      "time": "13:10",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-097: 要件定義チェックリストの統一+ブラウザ更新時のタブ状態保持",
+      "note": "新規相談/new-app-kickoffスキルが10項目のままハードコードされ、要件定義(15項目)と食い違っていた箇所を動的読み込みに統一。また上部タブの選択状態をlocalStorageに保存しリロード時に復元する機能を追加。main push・merge済み。遡及backfill(経緯はPTD-096の記録と同じ)。",
+      "usage": {
+        "inputTokens": 5980340,
+        "outputTokens": 10861609,
+        "cacheReadTokens": 6081527445,
+        "cacheWriteTokens": 136348049,
+        "costUsd": 1970.64198142
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-24",
+      "time": "13:20",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-098: progress-tracker-dashboard自身の基本設計を試験的に記入、課題管理表に7件記録",
+      "note": "②③の機能をprogress-tracker-dashboard自身に対して実際に使うドッグフーディングを実施。基本設計11項目の回答を記入し、過去解決済み含め課題管理表に7件記録。main push・merge済み。遡及backfill(経緯はPTD-096の記録と同じ)。",
+      "usage": {
+        "inputTokens": 5980340,
+        "outputTokens": 10861609,
+        "cacheReadTokens": 6081527445,
+        "cacheWriteTokens": 136348049,
+        "costUsd": 1970.64198142
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-24",
+      "time": "13:30",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-099: 調査資料タブに閲覧済み/保存チェック・非表示フィルタを追加",
+      "note": "調査資料タブ全5箇所(ハッカソン候補/入賞作品/コンテスト/アイデア/AI最新情報)に閲覧済みチェック(グレーアウト)・保存チェック(旧お気に入り)の2列を追加し、保存済みは閲覧済みにしてもグレーアウトしない例外ロジックを共通関数化。閲覧済み非表示フィルタ、説明文のデフォルト折りたたみ、タイトル/説明文/フィルタのsticky固定も実装。JSONへの保存ボタン(user-preferences.json)+ページ読込時のlocalStorageへのマージも実装。ユーザー指摘で消えていたチェック列の見出しラベル(👁/💾)も追加修正。main push・merge済み。遡及backfill(経緯はPTD-096の記録と同じ)。",
+      "usage": {
+        "inputTokens": 5980340,
+        "outputTokens": 10861609,
+        "cacheReadTokens": 6081527445,
+        "cacheWriteTokens": 136348049,
+        "costUsd": 1970.64198142
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
     }
   ]
 }
