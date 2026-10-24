@@ -368,6 +368,10 @@
   .research-table tbody tr:hover td { background: color-mix(in srgb, var(--accent) 6%, transparent); }
   .research-table td.rt-check { width: 28px; text-align: center; }
   .research-table td.rt-check input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+  /* 2026-10-24追加、ユーザー指摘「調査資料のチェックボックス部のラベル名が消えている」。
+     閲覧済み・保存の2列が並ぶようになり無地のth(空見出し)だと見分けがつかなくなったため、
+     アイコンで見出しを付けた(文字ラベルだと28px幅の列には入らないため)。 */
+  .research-table th.rt-check-head { width: 28px; text-align: center; padding: 7px 4px; font-size: 13px; }
   .research-table td a { color: var(--accent); }
   .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .research-copy-bar .count { font-size: 11.5px; color: var(--text-muted); }
@@ -4125,7 +4129,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th></th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
           <tbody>
             ${candidates.map((c) => `
               <tr>
@@ -4154,7 +4158,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th></th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
           <tbody>
             ${winners.map((w) => `
               <tr>
@@ -4205,7 +4209,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th></th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
           <tbody>
             ${entries.map((c) => `
               <tr>
@@ -4265,7 +4269,7 @@
           ${cat.note ? `<p class="tab-page-overview" style="margin:0 0 8px;">${escapeHtmlForDevDocs(cat.note)}</p>` : ""}
           <div class="research-table-wrap">
             <table class="research-table">
-              <thead><tr><th></th><th></th><th>タイトル</th><th>概要</th><th>URL</th></tr></thead>
+              <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>タイトル</th><th>概要</th><th>URL</th></tr></thead>
               <tbody>
                 ${(cat.items || []).map((it) => { const ideaId = it.url || `idea:${cat.name}:${it.title}`; return `
                   <tr>
@@ -4395,7 +4399,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th></th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
           <tbody>
             ${items.map((it) => `
               <tr>
