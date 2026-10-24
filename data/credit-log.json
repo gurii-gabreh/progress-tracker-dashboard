@@ -565,6 +565,36 @@
         "costUsd": 1970.64198142
       },
       "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-25",
+      "time": "00:30",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-100: ③機能要件タブを基本設計の下に新設、要件定義#11をセキュリティ/認証方法に分割",
+      "note": "基本設計完了を条件に使用システム/セキュリティ/認証方法/使用ケース起点の機能/データ構造を抜粋表示し、通知機能の有無だけをfunctionalRequirementsChecklistで新規に確認する設計。Playwrightで検証、main push・merge済み。",
+      "usage": {
+        "inputTokens": 5983831,
+        "outputTokens": 10958125,
+        "cacheReadTokens": 6100852043,
+        "cacheWriteTokens": 136541407,
+        "costUsd": 1976.2453787
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-25",
+      "time": "00:45",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-101: basic-design-kickoff/functional-requirements-kickoffスキルを新設、new-app-kickoffとチェイン",
+      "note": "①要件定義→②基本設計→③機能要件を、同じルームで続けて相談できるよう3スキルをチェイン。claude-voice-bridgeのtemplates.jsonへ起動フレーズも登録。両リポジトリmain push済み。",
+      "usage": {
+        "inputTokens": 5983831,
+        "outputTokens": 10958125,
+        "cacheReadTokens": 6100852043,
+        "cacheWriteTokens": 136541407,
+        "costUsd": 1976.2453787
+      },
+      "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
     }
   ]
 }

@@ -5377,6 +5377,61 @@
         }
       ],
       "updated": "2026-10-24"
+    },
+    {
+      "id": "PTD-100",
+      "title": "③機能要件タブを基本設計の下に新設、要件定義#11をセキュリティ/認証方法に分割",
+      "task": "機能要件タブ新設・抜粋表示・要件定義チェックリスト拡張",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「基本設計の下に機能要件のアイコン作ってそこに表示」「aにして2つに分けて(認証方法をセキュリティから独立)」「基本設計まで入力が完了したら、機能要件側のビューにも表示するようにして」「要件定義、基本設計で聞いていない内容は機能要件として確認するようにして」への対応。",
+      "detail": "data/requirements.jsonのinterviewChecklist#11(セキュリティ)から認証方法を12番として分離独立(全16→17項目、旧12〜16は13〜17へ繰り下げ、既存アプリはn=11未回答だったためデータ移行不要)。新規functionalRequirementsChecklist(現時点で「通知機能の有無」1項目)を追加。dashboard.htmlのAPPDEV_STAGESにfunctionalRequirementsを追加(要件定義→基本設計→機能要件→課題管理表の順)。renderAppDevFuncReq()は②基本設計の全項目入力完了を前提条件(devDocsIsBasicDesignComplete())とし、未完了時はプレースホルダーのみ、完了済みなら使用システム(基本設計#1)・セキュリティ(要件定義#11)・認証方法(要件定義#12)・使用ケース起点の機能(要件定義#17)・データ構造(基本設計#8)を抜粋表示、functionalRequirementsChecklist側は入力フォーム+プロンプト生成ボタンで確認(buildBasicDesignPromptTextと同パターン)。Playwrightで基本設計完了済み(PTD)/未着手(kizashi)の両パターン・既存タブへの回帰無し・モバイル幅での崩れ無し・JSエラー0件を確認。main push・merge済み。",
+      "output": "dashboard.html(functionalRequirements機能)、data/requirements.json(interviewChecklist 17項目化、functionalRequirementsChecklist新設)",
+      "relatedTasks": [
+        "PTD-096",
+        "PTD-097",
+        "PTD-098",
+        "PTD-099"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-25",
+          "summary": "Playwrightで機能要件タブの表示条件分岐・既存タブ回帰・モバイル崩れ・JSエラー0件を確認。main push・merge済み。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-101",
+      "title": "basic-design-kickoff/functional-requirements-kickoffスキルを新設、new-app-kickoffとチェイン",
+      "task": "既存アプリの②基本設計・③機能要件を聞き取るスキル2本の新設",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。実際の音声/チャットからの起動フレーズでの動作確認はまだ未実施。",
+      "note": "ユーザー指示「続けてやりたいけど一気にはできないと思う。要件定義側には基本設計の方も続けて相談するかを聞くようにしておき、聞かれたら基本設計のスキルを実行にしておいたほうがよいかなと、そのあと基本設計から開始の場合に、基本設計のスキルを発動すればいいかなと思うから」への対応。",
+      "detail": "basic-design-kickoff(新規、.claude/skills/basic-design-kickoff/SKILL.md)は①要件定義済みの既存アプリの②基本設計を聞き取るスキル。new-app-kickoffと異なりcreate_sessionを使わず呼ばれたルームでそのまま実行し、単独起動・①からの継続のどちらも可能。末尾で「続けて③機能要件も相談するか」を聞く分岐を持つ。functional-requirements-kickoff(新規)は②完了済みアプリの③機能要件を聞き取るスキルで、①②から抜粋可能な項目は聞き直さずfunctionalRequirementsChecklistだけを確認する。new-app-kickoff側にも、①要件定義の記録直後に「続けて②基本設計も相談しますか」と尋ね「はい」ならbasic-design-kickoffへ同じルームで継続する分岐を追加。data/ai-config.jsonのai.customSkills.registry/web.customSkills.tableへ2スキルを登録(governance-config-syncスキルの手順)、claude-voice-bridgeのdata/templates.jsonへ固定起動フレーズ(【基本設計相談】【機能要件相談】)を登録(ルール27)。Playwrightで🤖AI基本設定タブへの反映・JSエラー0件を確認。両リポジトリともmain push済み。",
+      "output": ".claude/skills/basic-design-kickoff/SKILL.md、.claude/skills/functional-requirements-kickoff/SKILL.md、.claude/skills/new-app-kickoff/SKILL.md(チェイン分岐追加)、data/ai-config.json、claude-voice-bridge:data/templates.json",
+      "relatedTasks": [
+        "PTD-100"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-25",
+          "summary": "Playwrightで🤖AI基本設定タブへの新規2スキル反映・JSエラー0件を確認。progress-tracker-dashboard/claude-voice-bridge両方mainへpush済み。固定フレーズでの実動作確認はまだ。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-10-18"
