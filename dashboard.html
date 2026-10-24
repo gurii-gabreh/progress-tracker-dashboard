@@ -371,6 +371,24 @@
   .research-table td a { color: var(--accent); }
   .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .research-copy-bar .count { font-size: 11.5px; color: var(--text-muted); }
+  /* 2026-10-24追加、ユーザー指示: ①一番左に「閲覧済み」チェック欄を追加(保存チェックの左)
+     ②閲覧済みにチェックした行はグレーアウト、ただし「保存」チェックが入っている行は対象外
+     ③「閲覧済みを非表示」フィルタ ④タイトル・説明文・フィルタ部をsticky化
+     ⑤説明文はdetailsで既定折りたたみ ⑥「気になる記事」表記を「保存」へ統一。
+     グレーアウト対象かどうか(research-row-dimmed)は、見た目(薄く)とhide-viewedフィルタの
+     両方が同じ1つのクラスを見て判定する(applyResearchRowDimState()で一元管理、ルール15:
+     その場しのぎでなく共通ロジック化)。 */
+  .research-table tr.research-row-dimmed td { opacity: 0.45; background: var(--surface-2); }
+  .research-hide-viewed tr.research-row-dimmed { display: none; }
+  .research-filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 2px; }
+  .research-overview-collapse { margin: 0 0 10px; }
+  .research-overview-collapse > summary {
+    font-size: 12.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none;
+  }
+  .research-overview-collapse > summary::-webkit-details-marker { display: none; }
+  .research-overview-collapse > summary::before { content: "▶ "; }
+  .research-overview-collapse[open] > summary::before { content: "▼ "; }
+  .research-overview-collapse .tab-page-overview { margin: 6px 0 0; }
   .devdocs-concern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; margin-bottom: 8px; }
   .devdocs-concern-card.novel { border-color: var(--status-running-fg, #d97706); }
   .devdocs-concern-card .concern-id { font-size: 10px; color: var(--accent); }
@@ -1556,21 +1574,33 @@
     <button type="button" class="manager-subview-btn" id="research-subtab-preferences" data-subview="preferences">👤 ユーザー思考</button>
   </div>
 
-  <!-- 2026-10-23追加: 各ページの一覧表でチェックした「気になる記事」をテキスト化してコピーするための
-       共通バー(どのサブタブからでも、それまでにチェックした全項目をまとめてコピーできる)。
-       チェック状態はlocalStorage(キー: researchLikedIds)に保存、永続化はClaudeへの反映依頼を介して
-       data/user-preferences.jsonへ行う(README参照、静的サイトのため直接書き込む手段が無いため)。 -->
+  <!-- 2026-10-23追加、2026-10-24「気になる記事」→「保存」に名称変更: 各ページの一覧表で
+       チェックした「保存」記事をテキスト化してコピーするための共通バー(どのサブタブからでも、
+       それまでにチェックした全項目をまとめてコピーできる)。チェック状態はlocalStorage(キー:
+       researchLikedIds/researchViewedIds)に保存、永続化はClaudeへの反映依頼を介して
+       data/user-preferences.jsonへ行う(README参照、静的サイトのため直接書き込む手段が無いため)。
+       2026-10-24追加: 保存・閲覧済みの状態はページ読み込み時にdata/user-preferences.jsonからも
+       読み込んでlocalStorageへマージする(initResearchChecklistState()参照、別端末・別ブラウザでも
+       以前commit済みの状態が反映されるように)。 -->
   <div class="research-copy-bar">
-    <button type="button" class="modal-copy-btn" id="research-copy-liked-btn">📋 気になる記事をコピー</button>
-    <span class="count" id="research-liked-count">チェック済み: 0件</span>
+    <button type="button" class="modal-copy-btn" id="research-copy-liked-btn">📋 保存した記事をコピー</button>
+    <span class="count" id="research-liked-count">保存済み: 0件</span>
   </div>
 
   <div id="research-subview-hackathon" class="manager-subview active">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">🏆 ハッカソン調査</div>
-        <p class="tab-page-overview">ハッカソンでの実績作り(PTD-020・PTD-065)に向けた調査資料です。data/hackathon-research.jsonから生成します。まず①狙っている/検討中のハッカソン候補(名前・内容・前回開催時期)、続いて②各ハッカソンの過去の入賞作品を一覧表で表示します。気になる記事は左端のチェックボックスでマークできます(上部の「📋 気になる記事をコピー」から)。</p>
-        <div class="policy-meta" id="research-hackathon-meta"></div>
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">🏆 ハッカソン調査</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">ハッカソンでの実績作り(PTD-020・PTD-065)に向けた調査資料です。data/hackathon-research.jsonから生成します。まず①狙っている/検討中のハッカソン候補(名前・内容・前回開催時期)、続いて②各ハッカソンの過去の入賞作品を一覧表で表示します。一番左のチェックは「閲覧済み」(チェックすると行がグレーアウト)、その隣が「保存」(上部の「📋 保存した記事をコピー」で取り出せます。保存済みの行は閲覧済みにしてもグレーアウトしません)。</p>
+          </details>
+          <div class="policy-meta" id="research-hackathon-meta"></div>
+          <div class="research-filter-row">
+            <button type="button" class="manager-subview-btn" id="research-hackathon-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
+        </div>
 
         <details class="devdocs-stage-group" open>
           <summary class="research-section-summary-lg">① 狙っている・検討中のハッカソン</summary>
@@ -1592,9 +1622,17 @@
   <div id="research-subview-contest" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">🎯 AI駆動型アプリコンテスト調査</div>
-        <p class="tab-page-overview">ハッカソン形式ではない、AI駆動型アプリ・個人開発アプリ向けのコンテスト/アワード/支援プログラムの調査資料です。data/contest-research.jsonから生成します。</p>
-        <div class="policy-meta" id="research-contest-meta"></div>
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">🎯 AI駆動型アプリコンテスト調査</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">ハッカソン形式ではない、AI駆動型アプリ・個人開発アプリ向けのコンテスト/アワード/支援プログラムの調査資料です。data/contest-research.jsonから生成します。一番左が「閲覧済み」、その隣が「保存」のチェックです。</p>
+          </details>
+          <div class="policy-meta" id="research-contest-meta"></div>
+          <div class="research-filter-row">
+            <button type="button" class="manager-subview-btn" id="research-contest-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
+        </div>
         <div id="research-contest-list"></div>
         <div class="devdocs-concern-card" id="research-contest-excluded" style="margin-top:14px;"></div>
       </div>
@@ -1604,9 +1642,17 @@
   <div id="research-subview-ideas" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">📱 Reddit事例集</div>
-        <p class="tab-page-overview">今後のアプリ作成のアイデア・着眼点の参考にするための、r/ClaudeAI(Reddit)の作品事例一覧です。data/app-idea-research.jsonから生成します(ユーザーがチャットに貼り付けた一次情報をもとに記録。自動収集は行っていません、閲覧専用)。タイトル・概要・参照先URLの一覧形式で表示します。</p>
-        <div class="policy-meta" id="research-ideas-meta"></div>
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">📱 Reddit事例集</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">今後のアプリ作成のアイデア・着眼点の参考にするための、r/ClaudeAI(Reddit)の作品事例一覧です。data/app-idea-research.jsonから生成します(ユーザーがチャットに貼り付けた一次情報をもとに記録。自動収集は行っていません、閲覧専用)。タイトル・概要・参照先URLの一覧形式で表示します。一番左が「閲覧済み」、その隣が「保存」のチェックです。</p>
+          </details>
+          <div class="policy-meta" id="research-ideas-meta"></div>
+          <div class="research-filter-row">
+            <button type="button" class="manager-subview-btn" id="research-ideas-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
+        </div>
         <div id="research-ideas-categories"></div>
         <div class="devdocs-section-title" style="margin-top:20px;">🔍 自分のアプリ群との比較所感</div>
         <div class="devdocs-concern-card" id="research-ideas-comparison"></div>
@@ -1624,15 +1670,21 @@
   <div id="research-subview-ai-trends" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
-        <div class="tab-page-title">🤖 AI最新情報</div>
-        <p class="tab-page-overview">AI技術・業界動向に関する調査結果です。YouTube・MarkTechPost・Hacker News・arXiv等から自動収集し、Claudeが内容を確認して日本語要約・ポイント・活用のヒントを付与した項目(servicenow-sub-agentリポジトリのdata/research-items.json)のみを表示します(自動収集された生データは英語中心・件数過多のため対象外)。気になる記事は左端のチェックボックスでマークできます(上部の「📋 気になる記事をコピー」から)。</p>
-        <div class="policy-meta" id="research-ai-trends-meta"></div>
-        <div class="relations-controls research-filter-bar" id="ai-trends-filter-bar">
-          <label>カテゴリ: <select id="ai-trends-filter-category"><option value="">すべて</option></select></label>
-          <label>情報源: <select id="ai-trends-filter-source"><option value="">すべて</option></select></label>
-          <label>作成日(公開日): <select id="ai-trends-filter-date"><option value="">すべて</option></select></label>
-          <label>キーワード: <input type="text" id="ai-trends-filter-keyword" placeholder="タイトル・概要・ポイントなどで検索"></label>
-          <button type="button" class="manager-subview-btn" id="ai-trends-filter-today-btn">📅 今日取得した情報のみ</button>
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">🤖 AI最新情報</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">AI技術・業界動向に関する調査結果です。YouTube・MarkTechPost・Hacker News・arXiv等から自動収集し、Claudeが内容を確認して日本語要約・ポイント・活用のヒントを付与した項目(servicenow-sub-agentリポジトリのdata/research-items.json)のみを表示します(自動収集された生データは英語中心・件数過多のため対象外)。一番左が「閲覧済み」、その隣が「保存」のチェックです(上部の「📋 保存した記事をコピー」から)。</p>
+          </details>
+          <div class="policy-meta" id="research-ai-trends-meta"></div>
+          <div class="relations-controls research-filter-bar" id="ai-trends-filter-bar">
+            <label>カテゴリ: <select id="ai-trends-filter-category"><option value="">すべて</option></select></label>
+            <label>情報源: <select id="ai-trends-filter-source"><option value="">すべて</option></select></label>
+            <label>作成日(公開日): <select id="ai-trends-filter-date"><option value="">すべて</option></select></label>
+            <label>キーワード: <input type="text" id="ai-trends-filter-keyword" placeholder="タイトル・概要・ポイントなどで検索"></label>
+            <button type="button" class="manager-subview-btn" id="ai-trends-filter-today-btn">📅 今日取得した情報のみ</button>
+            <button type="button" class="manager-subview-btn" id="research-ai-trends-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
         </div>
         <div id="research-ai-trends-list"></div>
       </div>
@@ -3860,12 +3912,15 @@
       });
   }
 
-  // 🔍調査資料タブ: 「気になる記事」チェック機構(2026-10-23追加)。このダッシュボードはGitHub Pagesの
-  // 静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態はまずlocalStorageへ
-  // 一時保存し(端末・ブラウザ限定)、「📋 気になる記事をコピー」ボタンでテキスト化してチャットへ
-  // 貼り付け、Claudeがdata/user-preferences.jsonへ反映する運用にした(mirai-journal等と同じ
-  // 「JSON正本+Claude経由の書き込み」方式をrule23に沿って踏襲)。
+  // 🔍調査資料タブ: 「保存」(旧「気になる記事」、2026-10-24改称)+「閲覧済み」チェック機構
+  // (2026-10-23追加、2026-10-24に閲覧済み列・グレーアウト・非表示フィルタを追加)。このダッシュボードは
+  // GitHub Pagesの静的サイトでブラウザから直接JSONを書き換える手段が無いため、チェック状態はまず
+  // localStorageへ一時保存し(端末・ブラウザ限定)、「📋 保存した記事をコピー」ボタンでテキスト化して
+  // チャットへ貼り付け、Claudeがdata/user-preferences.jsonへ反映する運用にした(mirai-journal等と同じ
+  // 「JSON正本+Claude経由の書き込み」方式をrule23に沿って踏襲)。ページ読み込み時にはこのJSONから
+  // 逆にlocalStorageへマージして反映する(initResearchChecklistState()参照)。
   const RESEARCH_LIKED_KEY = "researchLikedIds";
+  const RESEARCH_VIEWED_KEY = "researchViewedIds";
   const researchItemRegistry = new Map(); // id -> {sourceType, title, summary, url}
 
   function getResearchLikedIds() {
@@ -3875,19 +3930,43 @@
   function setResearchLikedIds(set) {
     try { localStorage.setItem(RESEARCH_LIKED_KEY, JSON.stringify([...set])); } catch (e) {}
   }
+  function getResearchViewedIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(RESEARCH_VIEWED_KEY) || "[]")); }
+    catch (e) { return new Set(); }
+  }
+  function setResearchViewedIds(set) {
+    try { localStorage.setItem(RESEARCH_VIEWED_KEY, JSON.stringify([...set])); } catch (e) {}
+  }
   function updateResearchLikedCount() {
     const el = document.getElementById("research-liked-count");
-    if (el) el.textContent = `チェック済み: ${getResearchLikedIds().size}件`;
+    if (el) el.textContent = `保存済み: ${getResearchLikedIds().size}件`;
   }
   function registerResearchItem(id, sourceType, title, summary, url) {
     if (!id) return;
     researchItemRegistry.set(id, { sourceType, title: title || "", summary: summary || "", url: url || "" });
   }
   function researchCheckboxTd(id) {
-    return `<td class="rt-check"><input type="checkbox" class="research-like-checkbox" data-id="${escapeHtmlForDevDocs(id)}"></td>`;
+    return `<td class="rt-check"><input type="checkbox" class="research-like-checkbox" data-id="${escapeHtmlForDevDocs(id)}" title="保存"></td>`;
+  }
+  function researchViewedCheckboxTd(id) {
+    return `<td class="rt-check"><input type="checkbox" class="research-viewed-checkbox" data-id="${escapeHtmlForDevDocs(id)}" title="閲覧済み"></td>`;
+  }
+  // 行をグレーアウトする/「閲覧済みを非表示」フィルタで隠す、両方の判定をここに一元化する
+  // (ユーザー指示「保存列にチェックがある場合は閲覧済みにチェックをしても灰色にしないように」)。
+  // 見た目(research-row-dimmed)と非表示フィルタ(.research-hide-viewed配下で同クラスを隠す)は
+  // 常に同じ1つのクラスで連動させ、ロジックが2箇所に分散しないようにしている(ルール15)。
+  function applyResearchRowDimState(row, id, likedSet, viewedSet) {
+    if (!row) return;
+    row.classList.toggle("research-row-dimmed", viewedSet.has(id) && !likedSet.has(id));
   }
   function wireResearchCheckboxes(container) {
     const liked = getResearchLikedIds();
+    const viewed = getResearchViewedIds();
+    container.querySelectorAll(".research-like-checkbox, .research-viewed-checkbox").forEach((cb) => {
+      const id = cb.dataset.id;
+      const row = cb.closest("tr");
+      applyResearchRowDimState(row, id, liked, viewed);
+    });
     container.querySelectorAll(".research-like-checkbox").forEach((cb) => {
       const id = cb.dataset.id;
       cb.checked = liked.has(id);
@@ -3896,7 +3975,30 @@
         if (cb.checked) ids.add(id); else ids.delete(id);
         setResearchLikedIds(ids);
         updateResearchLikedCount();
+        applyResearchRowDimState(cb.closest("tr"), id, getResearchLikedIds(), getResearchViewedIds());
       });
+    });
+    container.querySelectorAll(".research-viewed-checkbox").forEach((cb) => {
+      const id = cb.dataset.id;
+      cb.checked = viewed.has(id);
+      cb.addEventListener("change", () => {
+        const ids = getResearchViewedIds();
+        if (cb.checked) ids.add(id); else ids.delete(id);
+        setResearchViewedIds(ids);
+        applyResearchRowDimState(cb.closest("tr"), id, getResearchLikedIds(), getResearchViewedIds());
+      });
+    });
+  }
+  // 「👁 閲覧済みを非表示」フィルタボタン(2026-10-24追加)。対象サブタブのパネル要素に
+  // research-hide-viewedクラスを付け外しするだけで、表示/非表示はCSS側(.research-hide-viewed
+  // tr.research-row-dimmed)に任せる。
+  function setupResearchHideViewedToggle(btnId, panelId) {
+    const btn = document.getElementById(btnId);
+    const panel = document.getElementById(panelId);
+    if (!btn || !panel) return;
+    btn.addEventListener("click", () => {
+      const active = panel.classList.toggle("research-hide-viewed");
+      btn.classList.toggle("active", active);
     });
   }
 
@@ -3906,7 +4008,8 @@
     const defaultLabel = btn.textContent;
     btn.addEventListener("click", async () => {
       const likedIds = [...getResearchLikedIds()];
-      if (!likedIds.length) {
+      const viewedIds = [...getResearchViewedIds()];
+      if (!likedIds.length && !viewedIds.length) {
         btn.textContent = "チェックされた項目がありません";
         setTimeout(() => { btn.textContent = defaultLabel; }, 2000);
         return;
@@ -3916,6 +4019,7 @@
         "hackathon-winner": "🏆 ハッカソン入賞作品",
         "contest": "🎯 AI駆動型アプリコンテスト",
         "idea": "📱 Reddit事例集",
+        "ai-trend": "🤖 AI最新情報",
       };
       const bySrc = {};
       likedIds.forEach((id) => {
@@ -3923,7 +4027,7 @@
         if (!it) return;
         (bySrc[it.sourceType] = bySrc[it.sourceType] || []).push({ id, ...it });
       });
-      let text = `【気になる記事(${new Date().toISOString().slice(0, 10)}時点、計${likedIds.length}件)】\n\n`;
+      let text = `【保存した記事(${new Date().toISOString().slice(0, 10)}時点、計${likedIds.length}件)】\n\n`;
       Object.entries(groupLabels).forEach(([key, label]) => {
         const items = bySrc[key];
         if (!items || !items.length) return;
@@ -3933,6 +4037,12 @@
         });
         text += `\n`;
       });
+      // 2026-10-24追加、ユーザー指示「この保存列と閲覧済みの情報は...保存ボタンを設けて押した
+      // タイミングでJSON側に記録しておき」。閲覧済みはIDのみ(表示用の詳細情報は不要)で十分なため、
+      // 保存項目のような詳細な出典情報は付けずID一覧だけを記録する。
+      if (viewedIds.length) {
+        text += `【閲覧済みのID一覧(計${viewedIds.length}件、保存とは別管理)】\n${viewedIds.join(", ")}\n`;
+      }
       let copied = false;
       try {
         await navigator.clipboard.writeText(text);
@@ -3952,6 +4062,33 @@
       setTimeout(() => { btn.textContent = defaultLabel; btn.classList.remove("copied"); }, 2500);
     });
   })();
+
+  setupResearchHideViewedToggle("research-hackathon-hide-viewed-btn", "research-subview-hackathon");
+  setupResearchHideViewedToggle("research-contest-hide-viewed-btn", "research-subview-contest");
+  setupResearchHideViewedToggle("research-ideas-hide-viewed-btn", "research-subview-ideas");
+  setupResearchHideViewedToggle("research-ai-trends-hide-viewed-btn", "research-subview-ai-trends");
+
+  // 2026-10-24追加、ユーザー指示「この保存列と閲覧済みの情報は...ページを読み込む際にその内容も
+  // 読み取り反映して」。data/user-preferences.jsonのlikedItems/viewedIds(Claude経由で過去に
+  // 反映済みの状態)を、ページ読み込み時にlocalStorageへマージする。これにより、別ブラウザ・
+  // 別端末で開いた場合でも、以前「保存した記事をコピー」経由で記録済みの状態が反映される
+  // (localStorage単体は端末・ブラウザ限定のため、これが無いと初回は常に未チェックに見えてしまう)。
+  // 4つの一覧表(loadHackathonResearch等)がこの関数の完了を待ってから走るよう、呼び出し側で
+  // awaitする(research-view初期化部、下部参照)。
+  function initResearchChecklistState() {
+    return fetch(`data/user-preferences.json?t=${Date.now()}`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data) return;
+        const liked = getResearchLikedIds();
+        (data.likedItems || []).forEach((it) => { if (it.id) liked.add(it.id); });
+        setResearchLikedIds(liked);
+        const viewed = getResearchViewedIds();
+        (data.viewedIds || []).forEach((id) => { if (id) viewed.add(id); });
+        setResearchViewedIds(viewed);
+      })
+      .catch((err) => console.error("user-preferences.jsonからの状態読み込みに失敗:", err));
+  }
 
   // 🔍 調査資料タブ→🏆ハッカソン(2026-10-18追加、2026-10-23に一覧表+チェックボックス形式へ変更)。
   // data/hackathon-research.jsonを読み込み、①狙っている/検討中のハッカソン候補→②過去の入賞作品の
@@ -3988,10 +4125,11 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
+          <thead><tr><th></th><th></th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
           <tbody>
             ${candidates.map((c) => `
               <tr>
+                ${researchViewedCheckboxTd(c.id)}
                 ${researchCheckboxTd(c.id)}
                 <td>${escapeHtmlForDevDocs(c.name || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
@@ -4016,10 +4154,11 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
+          <thead><tr><th></th><th></th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
           <tbody>
             ${winners.map((w) => `
               <tr>
+                ${researchViewedCheckboxTd(w.id)}
                 ${researchCheckboxTd(w.id)}
                 <td>${escapeHtmlForDevDocs(w.hackathon || "")}</td>
                 <td>${escapeHtmlForDevDocs(w.edition || "")}</td>
@@ -4066,10 +4205,11 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
+          <thead><tr><th></th><th></th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
           <tbody>
             ${entries.map((c) => `
               <tr>
+                ${researchViewedCheckboxTd(c.id)}
                 ${researchCheckboxTd(c.id)}
                 <td>${escapeHtmlForDevDocs(c.name || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
@@ -4125,15 +4265,16 @@
           ${cat.note ? `<p class="tab-page-overview" style="margin:0 0 8px;">${escapeHtmlForDevDocs(cat.note)}</p>` : ""}
           <div class="research-table-wrap">
             <table class="research-table">
-              <thead><tr><th></th><th>タイトル</th><th>概要</th><th>URL</th></tr></thead>
+              <thead><tr><th></th><th></th><th>タイトル</th><th>概要</th><th>URL</th></tr></thead>
               <tbody>
-                ${(cat.items || []).map((it) => `
+                ${(cat.items || []).map((it) => { const ideaId = it.url || `idea:${cat.name}:${it.title}`; return `
                   <tr>
-                    ${researchCheckboxTd(it.url || `idea:${cat.name}:${it.title}`)}
+                    ${researchViewedCheckboxTd(ideaId)}
+                    ${researchCheckboxTd(ideaId)}
                     <td>${escapeHtmlForDevDocs(it.title || "")}</td>
                     <td>${escapeHtmlForDevDocs(it.description || "")}</td>
                     <td>${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">リンク ↗</a>` : ""}</td>
-                  </tr>`).join("")}
+                  </tr>`; }).join("")}
               </tbody>
             </table>
           </div>
@@ -4254,10 +4395,11 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th></th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
+          <thead><tr><th></th><th></th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
           <tbody>
             ${items.map((it) => `
               <tr>
+                ${researchViewedCheckboxTd(it.sysId)}
                 ${researchCheckboxTd(it.sysId)}
                 <td>${escapeHtmlForDevDocs(AI_TRENDS_CATEGORIES[String(it.category)] || String(it.category || "不明"))}</td>
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>
@@ -4335,11 +4477,10 @@
       });
     });
   })();
-  loadContestResearch();
-  loadIdeaResearch();
-  loadAiTrendsResearch();
-  loadPreferencesResearch();
-  updateResearchLikedCount();
+  // 🔍調査資料タブの一覧表の読み込みは、initResearchChecklistState()(保存/閲覧済み状態の
+  // JSONからの読み込み)完了後にまとめて行う(下部のresearch-view初期化ブロックを参照、
+  // 2026-10-24変更。以前はここで個別に呼んでいたが、localStorageへの状態マージより先に表が
+  // 描画されるとチェック状態の反映が1テンポ遅れるため、呼び出し箇所を1つに統合した)。
 
   function devDocsSelectedRepo() {
     return devDocsCurrentRepo;
@@ -5028,7 +5169,16 @@
     });
   })();
   loadRequirementsData();
-  loadHackathonResearch();
+  // 🔍調査資料タブの一覧5本は、保存/閲覧済み状態をdata/user-preferences.jsonから読み込んで
+  // localStorageへマージした後に実行する(2026-10-24変更、理由は上部のコメント参照)。
+  initResearchChecklistState().finally(() => {
+    loadHackathonResearch();
+    loadContestResearch();
+    loadIdeaResearch();
+    loadAiTrendsResearch();
+    loadPreferencesResearch();
+    updateResearchLikedCount();
+  });
 
   // data/policy.json(運用ポリシー)はAI(各ルーム)側が読んで従うためのファイルであり、人が
   // ブラウザで読む必要は無いという判断から、ダッシュボード上には表示しない(2026-08-11、
