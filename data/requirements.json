@@ -382,7 +382,68 @@
           "status": "解決済み",
           "resolution": "ResizeObserverでdevdocs-sticky-headの実高さを測定し、CSS変数--appdev-sticky-offsetへ反映することで、サイドメニューとアプリタイトル(devdocs-head)がその直下にずれなく固定されるよう修正した。固定px値ではなく実測値を使うことで、説明文の折返しで高さが変わっても追従する。"
         }
-      ]
+      ],
+      "basicDesign": {
+        "answers": [
+          {
+            "n": 1,
+            "question": "システム全体構成(オンプレ/クラウド/サーバー・DB・外部サービス等の全体図)",
+            "answer": "GitHub Pagesでホストする静的サイト(dashboard.html 1ファイル+data/*.json)。専用のアプリケーションサーバーは持たない。正本データは2系統ある: ①外部のGoogleスプレッドシート「実装進捗管理シート」+GAS(Google Apps Script) webapp(README記載の従来方式、依頼タスク/完了/コメントタブを管理)、②このリポジトリ自身のdata/*.json群(tasks.json/concept-log.json/requirements.json/credit-log.json/policy.json/ai-config.json等、Claude Codeセッションが直接commit・pushして正本管理するナレッジベース)。ブラウザ側は両方をfetchして表示するだけのビューアーで、書き込みは常にGAS経由またはClaude Code経由(出典: README.md「目標アーキテクチャ」、.github/workflows/deploy-pages.yml)。"
+          },
+          {
+            "n": 2,
+            "question": "機能のシステム要素への割当(どの機能をどのサブシステム/モジュールが担うか)",
+            "answer": "トップタブ(🏠一覧/🧭タスクWBS/📄開発資料/🇬🇧英語/🗂アプリ一覧/🧠ナレッジ/🤖AI基本設定/💳クレジット/🔄ルーティン/🔗連関図/🔍調査資料/📓ジャーナル)ごとにview-panelとして機能を分割。外部リポジトリの機能(英語・アプリ一覧・ナレッジ・ジャーナル・タスクスケジュール)はiframeで埋め込み、本体機能(タスク一覧・開発資料・AI基本設定・クレジット・連関図・調査資料)はこのリポジトリ自身のJSON+JSで完結する(出典: dashboard.html setupTopTabs()のtabsマップ、2026-08-10追加コメント)。"
+          },
+          {
+            "n": 3,
+            "question": "インフラ・基盤要件(ホスティング先、CI/CD、監視・ログ基盤等)",
+            "answer": "ホスティング: GitHub Pages(無料)。CI/CD: GitHub Actions 4本(deploy-pages.yml=mainへのpushで自動デプロイ、sync-claude-md.yml=claude-core-rules.md変更時に全管理対象リポジトリへCLAUDE.mdを配布、sync-claude-permissions.yml=許可リスト配布、build-vector-index.yml=vector-index.json生成)。専用の監視・ログ基盤は持たず、GitHub Actionsの実行履歴と、data/credit-log.json・data/manager-room-log.json(Claude Codeセッション自身が記録するログ)が実質的な代替となっている(出典: .github/workflows/配下の各yml)。"
+          },
+          {
+            "n": 4,
+            "question": "システム結合テストの方針(システム全体としての結合テスト要件)",
+            "answer": "自動テストスイート(CI上で動くE2Eテスト)は持たない。実装のたびにPlaywrightのヘッドレスブラウザで画面遷移・フォーム入力・既存機能への影響(行数・件数の数値比較)・JSエラー0件を手動実行で確認し、commit前にnode --checkでJS構文チェック、python3のjson.loadでJSON妥当性を確認する運用(CLAUDE.mdルール12「実装後は必ず確認テストを行い、複数ファイルにまたがる場合は全体の疎通確認をした上で完了とする」に基づく)。"
+          },
+          {
+            "n": 5,
+            "question": "ソフトウェア構造・コンポーネント分割(モジュール/クラス/サービスの大枠)",
+            "answer": "単一HTMLファイル(dashboard.html)内に、タブ(view)ごとの描画関数群(render*)・データ取得関数群(load*Data/fetch)・イベントハンドラ設定用IIFE(setup*)という3層のパターンが繰り返される構造。グローバル状態はJSのトップレベルconst/letオブジェクト(REQUIREMENTS、AI_TRENDS_ITEMS等)で保持。フレームワーク・バンドラは使わずバニラJS(出典: dashboard.html全体の構成パターン)。"
+          },
+          {
+            "n": 6,
+            "question": "外部インタフェース設計(他システム・外部APIとの連携方式)",
+            "answer": "①GitHub Pages上の他リポジトリ(English-Speaking-App/my-dashboard/Knowledge-Dashboard/mirai-journal/Task-WBS)をiframeで埋め込み。②servicenow-sub-agentのdata/research-items.jsonをraw.githubusercontent.com経由でクロスオリジンfetch(cache-bust付き、AI最新情報タブ、claude-voice-bridgeの既存パターンを再利用)。③従来のタスク管理はGAS webappへのHTTP POSTでスプレッドシートを更新。④GitHub ActionsがGitHub REST/Checks API等を利用(ワークフロー自体の実行基盤として)。"
+          },
+          {
+            "n": 7,
+            "question": "内部(コンポーネント間)インタフェース設計",
+            "answer": "dashboard.html内はDOM要素のid/classを介してJS関数同士が疎結合に連携する(例: REQUIREMENTSという共有オブジェクトを複数のrender関数が参照・更新する)。モジュールバンドラは無く、全てグローバルスコープ内の関数定義+IIFEによるスコープ分離で構成。"
+          },
+          {
+            "n": 8,
+            "question": "データベース/データ構造の最上位設計(主要テーブル・エンティティ)",
+            "answer": "リレーショナルDBは無し。data/配下のJSONファイル群がそれぞれ正本(tasks.json=タスク配列、requirements.json=アプリごとのrequirements配列、内部にanswers/concernReview/basicDesign/issueLog等のネスト構造、concept-log.json=カテゴリ別の設計判断ログ、credit-log.json=entries配列、policy.json=rules配列、ai-config.json=web/ai二層構造、user-preferences.json=likedItems+analysis)。ファイルの粒度分割は、更新頻度・書き込み方式との相性・破損時の被害範囲・git差分の見やすさを基準にするルール29(2026-10-04合意)に基づく。"
+          },
+          {
+            "n": 9,
+            "question": "画面・UI設計方針(画面遷移・レイアウトの大枠)",
+            "answer": "画面遷移は「上部タブ(view-panel)→サブタブ(manager-subview)」の2階層が基本パターン。固定ヘッダー(position:sticky)で見出し・フィルタ・統計タイルを常時表示し、本文のみスクロールする設計(アプリ開発タブでは左メニュー+アプリタイトルもsticky化、2026-10-24追加)。携帯幅(640px以下)はハンバーガーメニュー化・横並びタブの横スクロール化・テーブルのカード化等でレイアウト崩れを防ぐ一貫した方針(CLAUDE.mdルール8、PC/iPhone両対応が前提)。"
+          },
+          {
+            "n": 10,
+            "question": "結合テスト要件(ソフトウェア単位)",
+            "answer": "新しいタブ・機能を追加した際、既存タブの動作に影響が出ていないかをPlaywrightで都度横断確認する(例: 新機能追加後も既存のQ&A一覧行数・チェックボックス件数が変わっていないかを数値で検証)運用が、実質的なソフトウェア単位の結合テストとして機能している。専用のテストコードとしては保存されず、各実装時の一度限りのPlaywrightスクリプト(スクラッチパッド配下)として都度作成・破棄する形。"
+          },
+          {
+            "n": 11,
+            "question": "方式設計の評価基準(システム要件を実現できるか、運用・保守が可能かの見極め方)",
+            "answer": "①Playwrightで対象機能のJSエラー0件、②実データ(可能な場合は本番相当のJSON)での表示確認、③デスクトップ幅・携帯幅(375px等)の両方で崩れが無いこと、④既存タブ・既存機能に新規機能が影響していないこと、の4点を満たせば実装完了とみなす運用(CLAUDE.mdルール12)。保守性は、JSONファイルの粒度分割(ルール29)と、dashboard.htmlやSKILL.md内のコメントで実装箇所の経緯(何を・なぜ実装したか)を都度残す運用(ルール24)によって担保している。"
+          }
+        ],
+        "status": "対応中",
+        "note": "ユーザー指示「試しに、progress tracker dashboardの基本設計を今までの内容から埋めてくれる?」を受け、このセッションでのPTD-093〜097実装の過程で得た知見と、README.md・CLAUDE.md・各workflow(.github/workflows/)・data/policy.json・data/ai-config.json・dashboard.html自体のコード構造を根拠に埋めた(根拠を各answerの末尾に出典として明記)。初回の自動生成のため、内容の確認・修正をお願いしたい。"
+      }
     },
     {
       "id": "REQ-ARR-001",
