@@ -4586,7 +4586,7 @@
     box.innerHTML = `<div class="devdocs-stats">${tiles.map((t) => `<div class="devdocs-stat-tile"><div class="num">${t.num}</div><div class="label">${escapeHtmlForDevDocs(t.label)}</div></div>`).join("")}</div>`;
   }
 
-  // 新規開発フォーム: interviewChecklist(15項目)を入力欄として描画する。
+  // 新規開発フォーム: interviewChecklist(data/requirements.json側の件数に追従)を入力欄として描画する。
   function renderAppDevNewForm() {
     const box = document.getElementById("appdev-new-fields");
     if (!box) return;
