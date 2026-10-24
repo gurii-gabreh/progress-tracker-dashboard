@@ -331,7 +331,58 @@
       ],
       "approvedAt": null,
       "backfilledAt": "2026-09-27",
-      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。",
+      "issueLog": [
+        {
+          "title": "gas/Code.gsの変更が自動連携されない",
+          "content": "gas/Code.gsを変更しても、GitHubへのpushだけではApps Script側へ自動反映されない。Apps Scriptエディタでの手動再デプロイが完了するまで、confirmConcept等のアクションが実際には動作しない(このプロジェクトの他のGAS変更と同じ既知の制約)。",
+          "createdAt": "2026-09-某日(PTD-038記録時点、正確な日付は未記録)",
+          "status": "未対応",
+          "resolution": "恒久対応なし(GASの仕様上の制約)。変更のたびに手動再デプロイが必要なことを作業者が認識しておく運用でカバーしている。"
+        },
+        {
+          "title": "共有Routineのプロンプトにpolicy.json/ai-config.json読み込み行が未反映",
+          "content": "kizashi・gemini-monitor・progress-tracker-dashboardを一括処理する共有Routine(session_01DDATKE77mbQxkj4HUZ91Gt)自身のプロンプトに、「実行の最初にdata/policy.json・data/ai-config.jsonを読む」という起動用の1行がまだ入っていない。",
+          "createdAt": "2026-09-某日(PTD-028/032記録時点、正確な日付は未記録)",
+          "status": "未対応",
+          "resolution": "他セッションのプロンプトを直接書き換えられないプラットフォーム制約のため、次にそのセッションが起動した際、または人が明示的に依頼した際に反映する必要がある。"
+        },
+        {
+          "title": "create_triggerが原因不明のまま拒否された",
+          "content": "マネージャールーム日次ログ(全履歴)Routineの作成時、1回目のcreate_trigger呼び出しが原因不明のまま拒否された。ルール19記載の既知の不具合(MCP tool call requires approvalで承認ポップアップが出ないままブロックされる現象)が再現した可能性がある。",
+          "createdAt": "2026-10-某日(PTD-067記録時点、正確な日付は未記録)",
+          "status": "未対応",
+          "resolution": "再試行で2回目は成功したため実害はなかったが、根本原因は未解決のまま。再発時はルール19記載の手動リレー手順を検討する。"
+        },
+        {
+          "title": "usage-tracker用のCLAUDE.md配置先リポジトリが未作成",
+          "content": "全管理対象リポジトリへCLAUDE.mdを配布する作業(PTD-039)の際、usage-trackerは専用リポジトリがまだ作成されていない(UST-005が未着手)ため、CLAUDE.mdを置く先が存在せず対象外とした。",
+          "createdAt": "2026-09-某日(PTD-039記録時点、正確な日付は未記録)",
+          "status": "未対応",
+          "resolution": "usage-trackerの専用リポジトリ作成(UST-005)が完了した時点で、CLAUDE.mdの新設も忘れずに行う。"
+        },
+        {
+          "title": "Playwrightヘッドレスブラウザがこのセッションのプロキシを認識せずクロスオリジン取得に失敗",
+          "content": "AI最新情報タブ(PTD-095)実装時、Playwrightで起動したヘッドレスChromiumが、このセッション固有のネットワークプロキシ(HTTPS_PROXY)を認識せず、raw.githubusercontent.comへのクロスオリジンfetchがERR_TUNNEL_CONNECTION_FAILED/ERR_CERT_AUTHORITY_INVALIDで失敗した。curl・Node単体では同じURLへの到達を確認済みだったため、テスト環境固有の制約と判明。",
+          "createdAt": "2026-10-23",
+          "status": "解決済み",
+          "resolution": "Node側で実データ(research-items.json)を取得し、Playwrightのpage.route()でそのレスポンスを注入する方式に切り替えて検証を継続した。実際のユーザーのブラウザはこのセッション固有のプロキシを経由しないため、本番環境には影響しないと判断。"
+        },
+        {
+          "title": "mainへのデプロイ成功後もブラウザキャッシュで旧UIが表示される",
+          "content": "アプリ開発の工程切替UIを横並びタブからサイドバー形式へ変更した際、GitHub Actionsのデプロイは正常完了していたにもかかわらず、ユーザーの画面には変更前の横並びタブが表示されたままだった。",
+          "createdAt": "2026-10-23",
+          "status": "解決済み",
+          "resolution": "GitHub Actionsのデプロイ履歴を確認し、最新コミットが正常にデプロイ済みであることを確認した上で、ブラウザのハードリフレッシュを案内して解消した。静的サイトの更新直後によくある事象として、今後も同様の報告があれば同じ手順で切り分ける。"
+        },
+        {
+          "title": "サイドメニュー・アプリタイトルのsticky位置がdevdocs-sticky-headと重なっていた",
+          "content": "アプリ開発の工程切替サイドバーを実装した際、サイドバーに`position:sticky; top:0`を設定したが、同じスクロールコンテナ内に既に`top:0`でstickyな`devdocs-sticky-head`(タイトル・説明・アプリ選択・統計タイル)が存在していたため、スクロール時にサイドバーがその上に重なってしまう実装バグがあった。",
+          "createdAt": "2026-10-23",
+          "status": "解決済み",
+          "resolution": "ResizeObserverでdevdocs-sticky-headの実高さを測定し、CSS変数--appdev-sticky-offsetへ反映することで、サイドメニューとアプリタイトル(devdocs-head)がその直下にずれなく固定されるよう修正した。固定px値ではなく実測値を使うことで、説明文の折返しで高さが変わっても追従する。"
+        }
+      ]
     },
     {
       "id": "REQ-ARR-001",
