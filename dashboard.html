@@ -3361,15 +3361,12 @@
       "   data/requirements.json(requirements配列・concernsの両方、必ず確認)と、",
       "   gurii-gabreh/Knowledge-Dashboard の data/knowledge-index.json(横断集約された索引)を読み、",
       "   関連する過去の実績・判断が無いか確認する",
-      "2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、下記10項目を1つずつ順に確認する",
+      `2. 一度に全部聞かず、聞き取り形式(インタビュー形式)で、下記${(REQUIREMENTS.interviewChecklist.items || []).length}項目を1つずつ順に確認する`,
       "   (過去の実績・過去の要件定義シートで既に埋まる点は聞き直さない)。この段階では過去の",
-      "   トラブル事例との照合は行わず、まず10項目全ての回答を集め切ることを優先する",
+      "   トラブル事例との照合は行わず、まず全項目の回答を集め切ることを優先する",
       "   (1問ずつ照合すると、後の項目の回答で初めて見えてくる懸念を見落とすため):",
-      "   1) アプリ名(仮) 2) 目的・解決したい課題 3) きっかけ",
-      "   4) 使用機器(PC専用/iPhone専用/両対応)・提供形態(Webアプリ/ローカル/拡張機能等)・他アプリとの併用有無",
-      "   5) 費用面での制約 6) 主要機能(MVP) 7) 使うデータ 8) 技術選定の希望・制約",
-      "   9) 優先度・着手時期 10) progress-tracker-dashboardでの管理要否",
-      "2.3. 10項目全ての回答が揃ったら、そこで初めて回答全体をまとめて下記と照合する:",
+      ...(REQUIREMENTS.interviewChecklist.items || []).map((it) => `   ${it.n}) ${it.question}`),
+      "2.3. 全項目の回答が揃ったら、そこで初めて回答全体をまとめて下記と照合する:",
       "   data/requirements.json の concerns(陥りやすい問題の一覧、confirmedByUser:trueのみ)・",
       "   data/tasks.jsonのissues・data/concept-log.json・gurii-gabreh/servicenow-sub-agent の",
       "   data/research-items.json(AI/開発関連の外部調査ナレッジ、research-knowledge-lookup",
@@ -3390,11 +3387,11 @@
       "  ユーザーの確定を得てから、下記の市場分析7ステップ(PEST→ファイブフォース→3C→SWOT→",
       "  STP→4P→カスタマージャーニー)を毎回必ず実施する(2026-10-07追加、ユーザー指示。",
       "  data/requirements.json の marketAnalysisFramework 参照)。AIが調査・Web検索して各",
-      "  ステップの下書きを作成し、ユーザーの確認・修正を得てから、10項目の回答とあわせて",
+      "  ステップの下書きを作成し、ユーザーの確認・修正を得てから、全項目の回答とあわせて",
       "  同じrequirementsエントリへ記録する:",
       "  gurii-gabreh/progress-tracker-dashboard の",
       "  data/requirements.json の requirements配列へ1件追加してcommit・push(聞き取った内容は",
-      "  必ずJSONへ記録しナレッジ化する)。10項目の回答は answers 配列へ{n, question, answer}",
+      "  必ずJSONへ記録しナレッジ化する)。各項目の回答は answers 配列へ{n, question, answer}",
       "  としてそのまま1対1で格納する(対象外・未確定の話が出た場合は該当するnのanswer内に",
       "  書き添える)。市場分析7ステップは marketAnalysis フィールドへ{pest, fiveForces, threeC,",
       "  swot, stp, fourP, customerJourney}としてそれぞれの結論を文章で格納する。このとき、",
@@ -3537,6 +3534,13 @@
         iframeId: "journal-iframe", url: "https://gurii-gabreh.github.io/mirai-journal/",
       },
     };
+    // 2026-10-24追加、ユーザー指摘「ブラウザの更新ボタンを押すとタスクスケジュールのページに
+    // 推移してしまう。今開いているページにとどまって更新にできる?」。従来はHTML側で
+    // top-tab-managerに固定でactiveクラスが付いており、リロードのたびに必ず🧭タスクWBSへ
+    // 戻っていた。直前に開いていた上部タブをlocalStorageへ保存し、ページ読み込み時に復元する
+    // (タブを切り替えるたびに保存するだけの軽量な対応。各タブ内のサブタブ・選択中アプリ等、
+    // より深い状態までは今回は対象外)。
+    const TOP_TAB_STORAGE_KEY = "ptdActiveTopTab";
     function activate(view) {
       Object.entries(tabs).forEach(([key, { btn, panel }]) => {
         const active = key === view;
@@ -3548,12 +3552,16 @@
         const iframe = document.getElementById(tab.iframeId);
         if (!iframe.src) iframe.src = tab.url;
       }
+      try { localStorage.setItem(TOP_TAB_STORAGE_KEY, view); } catch (e) {}
       closeMobileTopTabBar(); // 携帯幅でタブを選んだらプルダウンを閉じる
     }
     Object.entries(tabs).forEach(([key, { btn }]) => btn.addEventListener("click", () => activate(key)));
     document.querySelectorAll("[data-hub-nav]").forEach((el) => {
       el.addEventListener("click", () => activate(el.dataset.hubNav));
     });
+    let savedTopTab = null;
+    try { savedTopTab = localStorage.getItem(TOP_TAB_STORAGE_KEY); } catch (e) {}
+    if (savedTopTab && tabs[savedTopTab] && savedTopTab !== "manager") activate(savedTopTab);
   })();
 
   // 🧭タスクWBSタブ内のサブ切り替え(タスクスケジュール/マネージャーアプリ、2026-08-16追加)。
