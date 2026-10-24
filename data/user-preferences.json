@@ -9,10 +9,39 @@
     "url": "参照先URL(あれば)",
     "addedAt": "このファイルへ記録した日時(ISO8601)"
   },
-  "likedItems": [],
+  "likedItems": [
+    {
+      "id": "hack-a-google-cloud",
+      "sourceType": "hackathon-candidate",
+      "title": "Agentic AI Hackathon with Google Cloud(旧: AI Agent Hackathon with Google Cloud)",
+      "summary": "自律的に考え行動するAIエージェントを、Google Cloud(Gemini・Vertex AI・ADK等)で構築するハッカソン。2024年12月の第1回(当時は「AI Agent Hackathon」、初心者歓迎)から継続し、第4回(2025/12-2026/2)で「Agentic AI Hackathon」に改称。回を追うごとに「参加しやすさ」から「実運用への耐性」へ重点がシフトしている。",
+      "url": "https://zenn.dev/hackathons/google-cloud-japan-ai-hackathon-vol5",
+      "addedAt": "2026-10-24T12:39:12.656238+00:00"
+    },
+    {
+      "id": "hack-c-tokyo-opendata",
+      "sourceType": "hackathon-candidate",
+      "title": "都知事杯オープンデータ・ハッカソン",
+      "summary": "東京都のオープンデータを活用し社会課題を解決するアプリを競うハッカソン。都民からの意見募集を踏まえテーマを毎年度選定する仕組みがあり、部門構成・賞の名称も年度ごとに変化している(2023年度にアイデア提案部門新設、2024年度にビジュアライズ部門新設、2026年度は賞を個人・分野特化型の8賞に再編)。",
+      "url": "https://www.metro.tokyo.lg.jp/information/press/2026/09/2026091813",
+      "addedAt": "2026-10-24T12:39:12.656238+00:00"
+    },
+    {
+      "id": "hack-b-microsoft",
+      "sourceType": "hackathon-candidate",
+      "title": "Microsoft Agent Hackathon powered by Tokyo Electron Device",
+      "summary": "Azure/Copilot Studio等を使ったAIエージェント開発ハッカソン。2026年開催が初回(Zenn初の企業対抗ハッカソン)で、個人部門を新設。前身イベント(同主催者による過去回)は調査の結果確認できなかった。",
+      "url": "https://zenn.dev/hackathons/microsoft-agent-hackathon-2026",
+      "addedAt": "2026-10-24T12:39:12.656238+00:00"
+    }
+  ],
   "analysis": {
-    "generatedAt": null,
-    "summaryJa": "",
-    "pointsJa": []
+    "generatedAt": "2026-10-24T12:39:12.656238+00:00",
+    "summaryJa": "2026-10-24時点、初めて記録された3件はいずれもハッカソン候補で、うち2件(Google Cloud/Microsoft)はAIエージェント(Agentic AI)をテーマにした技術系ハッカソン、1件(都知事杯オープンデータ)は社会課題解決・公共データ活用をテーマにした自治体主催のハッカソンだった。件数がまだ3件と少なく確度の高い傾向とまでは言えないが、「AIエージェント構築」という技術テーマへの関心と、「公共・社会課題向けアプリ」という応用テーマへの関心の両方が同時に見えている。",
+    "pointsJa": [
+      "Google Cloud/Microsoftの2件はどちらも「AIエージェント(Agentic AI)」がテーマで、個人開発での参加のしやすさ(初心者歓迎・個人部門の新設)が共通している",
+      "都知事杯オープンデータ・ハッカソンは、既存アプリ群(kizashi等の社会課題解決アプリ)との親和性が高く、実績作り(PTD-020・PTD-065)の観点でも相性が良い可能性がある",
+      "件数が少ないため、今後のチェック状況次第でこの分析は更新する(特に技術系/応用系のどちらに比重が寄るかは継続して見る必要がある)"
+    ]
   }
 }
