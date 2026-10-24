@@ -161,6 +161,12 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "summary": "②基本設計が完了している既存アプリの③機能要件を聞き取るスキル。固定フレーズ「【機能要件相談】functional-requirements-kickoffスキルを呼び出して実行してください。」で起動。①②から抜粋できる項目(使用システム・セキュリティ・認証方法・使用ケース起点の機能・データ構造)は聞き直さず、functionalRequirementsChecklist(通知機能の有無など、①②のどちらにも無い項目)だけを確認してrequirements[].functionalRequirementsへ記録する。②基本設計完了直後に「続けて③機能要件も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(basic-design-kickoffからのチェイン)。",
           "triggerType": "user"
+        },
+        {
+          "name": "detailed-design-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "②基本設計が完了している既存アプリの④詳細設計(IPA共通フレーム2013のソフトウェア詳細設計プロセス2.4.4相当)を聞き取るスキル。固定フレーズ「【詳細設計相談】detailed-design-kickoffスキルを呼び出して実行してください。」で起動。公式<ガイダンス>PDF抽出版に2.4.4自体の本文が無かったため、detailedDesignChecklistの8項目はbasicDesignChecklistからの類推+二次情報源による暫定案(ユーザー承認済み、2026-10-25)。requirements[].detailedDesignへ記録する。③機能要件完了直後に「続けて④詳細設計も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(functional-requirements-kickoffからのチェン、②基本設計完了のみが前提条件)。",
+          "triggerType": "user"
         }
       ]
     },
@@ -733,6 +739,14 @@
           "path": ".claude/skills/functional-requirements-kickoff/SKILL.md",
           "createdAt": "2026-10-25",
           "summary": "②基本設計が完了している既存アプリの③機能要件を聞き取るスキル。固定フレーズ「【機能要件相談】functional-requirements-kickoffスキルを呼び出して実行してください。」で起動。①②から抜粋できる項目(使用システム・セキュリティ・認証方法・使用ケース起点の機能・データ構造)は聞き直さず、functionalRequirementsChecklist(通知機能の有無など、①②のどちらにも無い項目)だけを確認してrequirements[].functionalRequirementsへ記録する。②基本設計完了直後に「続けて③機能要件も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(basic-design-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "detailed-design-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/detailed-design-kickoff/SKILL.md",
+          "createdAt": "2026-10-25",
+          "summary": "②基本設計が完了している既存アプリの④詳細設計(IPA共通フレーム2013のソフトウェア詳細設計プロセス2.4.4相当)を聞き取るスキル。固定フレーズ「【詳細設計相談】detailed-design-kickoffスキルを呼び出して実行してください。」で起動。公式<ガイダンス>PDF抽出版に2.4.4自体の本文が無かったため、detailedDesignChecklistの8項目はbasicDesignChecklistからの類推+二次情報源による暫定案(ユーザー承認済み、2026-10-25)。requirements[].detailedDesignへ記録する。③機能要件完了直後に「続けて④詳細設計も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(functional-requirements-kickoffからのチェン、②基本設計完了のみが前提条件)。",
           "triggerType": "user"
         }
       ],
