@@ -1,14 +1,16 @@
 {
-  "schemaVersion": 1,
-  "description": "🔍調査資料タブ(ハッカソン/AI駆動型アプリコンテスト/Reddit事例集)の一覧表で、ユーザーが「気になる」としてチェックした記事と、そこから読み取れる趣向の分析(2026-10-23新設)。記録手順: ①各ページの一覧表でチェックボックスを入れる(ブラウザのlocalStorageに一時保存される、端末・ブラウザ限定)→②研究資料タブ上部の「📋 気になる記事をコピー」ボタンでチェック済み項目をテキスト化→③それをClaude Codeのチャットへ貼り付けて反映を依頼→④ClaudeがこのファイルのlikedItemsへ追記し、蓄積された項目を読んで趣向の分析(analysis)を書き直し、commit・pushする。",
+  "schemaVersion": 2,
+  "description": "🔍調査資料タブ(ハッカソン/AI駆動型アプリコンテスト/Reddit事例集/AI最新情報)の一覧表で、ユーザーが「保存」(旧「気になる」、2026-10-24改称)としてチェックした記事と、そこから読み取れる趣向の分析(2026-10-23新設)。記録手順: ①各ページの一覧表で保存チェックボックスを入れる(ブラウザのlocalStorageに一時保存される、端末・ブラウザ限定)→②研究資料タブ上部の「📋 保存した記事をコピー」ボタンで保存済み項目(+閲覧済みID一覧)をテキスト化→③それをClaude Codeのチャットへ貼り付けて反映を依頼→④ClaudeがこのファイルのlikedItems/viewedIdsへ追記し、likedItemsを読んで趣向の分析(analysis)を書き直し、commit・pushする。ページ読み込み時には逆にこのJSONからlocalStorageへマージして反映する(initResearchChecklistState()参照、別端末・別ブラウザでも過去の状態が見えるようにするため)。",
   "entrySchema": {
-    "id": "元データの項目id(ハッカソン候補/コンテストはid、入賞作品はwinner-NN、Redditアイデアはurl)",
-    "sourceType": "hackathon-candidate | hackathon-winner | contest | idea",
+    "id": "元データの項目id(ハッカソン候補/コンテストはid、入賞作品はwinner-NN、RedditアイデアはURL、AI最新情報はsysId)",
+    "sourceType": "hackathon-candidate | hackathon-winner | contest | idea | ai-trend",
     "title": "項目のタイトル・名前",
     "summary": "元データの概要・内容(どのフィールドを使うかはsourceTypeによる)",
     "url": "参照先URL(あれば)",
     "addedAt": "このファイルへ記録した日時(ISO8601)"
   },
+  "viewedIdsNote": "2026-10-24追加。「閲覧済み」チェック(一覧表の一番左の列)に入れたidの一覧。保存(likedItems)とは別管理で、詳細情報は持たずid文字列のみ。閲覧済みでも保存済み(likedItemsに含まれる)の項目は、一覧表でグレーアウト・「閲覧済みを非表示」フィルタの対象外として扱う(ユーザー指示「保存列にチェックがある場合は閲覧済みにチェックをしても灰色にしないように」)。",
+  "viewedIds": [],
   "likedItems": [
     {
       "id": "hack-a-google-cloud",
