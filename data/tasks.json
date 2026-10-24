@@ -5268,6 +5268,115 @@
         }
       ],
       "updated": "2026-10-23"
+    },
+    {
+      "id": "PTD-096",
+      "title": "アプリ開発に②基本設計+③課題管理表を追加、左サイドバー化・sticky固定",
+      "task": "工程切替UI(左メニュー)・課題管理表・sticky修正",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー承認済みの段階的プラン「①要件定義→②基本設計以降のフォーマット→③フェーズ順次追加」のうち②③に着手。当初横並びタブで実装したところユーザーから「元の要望は左メニューだった」と指摘があり、AskUserQuestionで確認の上、PC幅は左サイドバー・携帯幅は横スクロールタブに作り直した。さらにユーザーから「それぞれのアプリ毎に課題管理表を作成してまとめたい」「左メニューに課題管理表としてボタンを作って」という依頼があり③として追加。続けて「左にあるサイドメニューとアプリタイトルは、固定にできる？」という依頼を受け、スクロール時のsticky固定も実装した。",
+      "detail": "📂開発アプリ一覧に「📋要件定義」「🏗基本設計」「📝課題管理表」の3つの左メニュー(appdev-stage-sidebar)を新設し、showAppDevStage()のstage→パネル/ボタンのマップ方式で工程を汎用的に切替できるようにした(APPDEV_STAGES)。基本設計は、IPA共通フレーム2013(原本PDFで確認済み)のシステム方式設計(2.3.3)+ソフトウェア方式設計(2.4.3)相当の11項目チェックリスト(data/requirements.jsonのbasicDesignChecklist)を要件定義フォームと同じ「空欄可・プロンプト生成」方式で実装。課題管理表は、タイトル・内容・作成日・ステータス・対応内容の5項目をrequirements[].issueLogから一覧表示する閲覧専用ビューアー(入力はClaude Codeが実装作業の中で直接JSONへ記録する運用)。工程切替UIは当初.manager-subview-btnの横並びタブで実装したが、ユーザー指摘を受けてPC幅は.appdev-stage-sidebar(縦並び、position:sticky)・携帯幅(640px以下)は横スクロールタブに作り直した。最後に、サイドバーがdevdocs-sticky-head(タイトル・説明・アプリ選択・統計タイル、top:0でsticky)と重なるバグが見つかり、ResizeObserverでdevdocs-sticky-headの実高さを測定しCSS変数--appdev-sticky-offsetへ反映することで、サイドメニュー・アプリタイトル(devdocs-head)がその直下に正しく固定されるよう修正した。あわせてアプリ開発タブ全体をウィンドウ幅いっぱいに表示するよう変更(#devdocs-subview-requirements .policy-wrap { max-width: none; })。Playwrightでデスクトップ幅・携帯幅375px・複数スクロール位置(0〜5000px)での動作を確認。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・data/requirements.json",
+      "relatedTasks": [
+        "PTD-093"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-24",
+          "summary": "②基本設計+③課題管理表を実装、横並びタブ→左サイドバーへ作り直し、sticky固定も修正。main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-24"
+    },
+    {
+      "id": "PTD-097",
+      "title": "要件定義チェックリストの統一+ブラウザ更新時のタブ状態保持",
+      "task": "10→15項目統一、localStorageでタブ記憶",
+      "repo": "progress-tracker-dashboard",
+      "category": "fix",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "「🆕 新規相談」とnew-app-kickoffスキルが10項目のままハードコードされており、PTD-093で作った「📱アプリ開発→➕新規開発」フォームだけがinterviewChecklist(15項目)を動的に読んでいたため、入口によって聞かれる項目数が食い違っていた。ユーザーへ相談のうえ「今相談していた最新仕様に統一して」との指示で、両方を動的読み込みに統一した。また別件で「ブラウザの更新ボタンを押すとタスクスケジュールのページに推移してしまう。今開いているページにとどまって更新にできる？」という指摘があり、直前の上部タブをlocalStorageへ保存しリロード時に復元するよう修正した。",
+      "detail": "①buildNewConsultationPromptText()をREQUIREMENTS.interviewChecklist.itemsから動的に項目リストを生成する方式に変更(3箇所の「10項目」ハードコード文言も修正)。.claude/skills/new-app-kickoff/SKILL.mdも同様に項目のハードコードをやめ「data/requirements.jsonのinterviewChecklist.itemsを都度読む」という指示に変更した。②setupTopTabs()のactivate()で、タブ切替のたびにlocalStorage(ptdActiveTopTab)へ保存し、ページ読み込み時に復元する処理を追加(保存値がmanager以外かつ有効なタブ名の場合のみ上書き、デフォルトは従来通り🧭タスクWBS)。Playwrightでチェックリスト項目数一致・リロード後のタブ復元・未保存時のデフォルト動作を確認。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・.claude/skills/new-app-kickoff/SKILL.md",
+      "relatedTasks": [
+        "PTD-093"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-24",
+          "summary": "要件定義チェックリストの10→15項目統一と、ブラウザ更新時のタブ状態保持を実装。main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-24"
+    },
+    {
+      "id": "PTD-098",
+      "title": "progress-tracker-dashboard自身の基本設計を試験的に記入、課題管理表に7件記録",
+      "task": "自己適用(ドッグフーディング)によるPTD-093〜096の動作確認",
+      "repo": "progress-tracker-dashboard",
+      "category": "docs",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ内容確認・完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「試しに、progress tracker dashboardの基本設計を今までの内容から埋めてくれる?」「課題管理表にも課題を抽出して明記して」「過去に解決したものも含めて全て明記して」への対応。新しく作ったアプリ開発②③の機能を、progress-tracker-dashboard自身に対して実際に使ってみる(ドッグフーディング)ことで、機能の実用性を検証する意図も兼ねている。",
+      "detail": "基本設計11項目全てに、README.md・CLAUDE.md・各GitHub Actionsワークフロー・data/policy.json・data/ai-config.json・dashboard.html自体のコード構造を出典として明記しながら回答を記入した(data/requirements.jsonのrequirements[].basicDesign)。課題管理表には、data/tasks.json内のPTD-028/032/038/039/067に記録済みだった未解決の既知課題4件と、このセッション内で実際に発生・解決した課題3件(Playwrightがこのセッション固有のプロキシを認識せずクロスオリジン取得に失敗した件/デプロイ後のブラウザキャッシュで旧UIが表示された件/サイドメニューのsticky重なりバグ)、計7件をrequirements[].issueLogへ記録した(tasks.json側との二重管理はルール28により許容)。",
+      "output": "gurii-gabreh/progress-tracker-dashboard data/requirements.json",
+      "relatedTasks": [
+        "PTD-096"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-24",
+          "summary": "基本設計11項目・課題管理表7件を記入、main push済み。ユーザーの内容確認・完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-24"
+    },
+    {
+      "id": "PTD-099",
+      "title": "調査資料タブに閲覧済み/保存チェック・非表示フィルタを追加",
+      "task": "グレーアウト・sticky・保存への改称・JSON連携",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「調査資料タブ全ての一番左に閲覧済みのチェック欄を設けて、クリックしたら行を灰色にして。フィルタに閲覧済みを非表示を追加して。各ページの説明文はdefaultを折りたたんだ状態にして。タイトル・説明文部・フィルタ部を固定にして。お気に入りチェック部は保存に名称を変えて。保存列にチェックがある場合は閲覧済みにチェックをしても灰色にしないようにして。この保存列と閲覧済みの情報は上部に保存ボタンを設けて押したタイミングでJSON側に記録しておき、ページを読み込む際にその内容も読み取り反映して」への対応。追加で「調査資料のチェックボックス部のラベル名が消えている」という指摘を受け、アイコン見出しも追加した。",
+      "detail": "🏆🎯📱🤖の全4ページに「閲覧済み」チェック列を新設(researchViewedCheckboxTd)、既存の「気になる記事」チェック列は「保存」へ改称。行のグレーアウト・非表示フィルタ対象判定はapplyResearchRowDimState()に一元化し、保存済みの行は閲覧済みにしても対象外とする仕様を実現。各ページに「👁 閲覧済みを非表示」フィルタボタンを追加(research-hide-viewedクラスの付け外し+CSSのみ、setupResearchHideViewedToggle)。各ページの説明文を<details class=\"research-overview-collapse\">でdefault折りたたみ化。タイトル・説明文・フィルタ部は既存のdevdocs-sticky-headパターンで固定(rule23再利用)。共通の「📋 保存した記事をコピー」ボタンで保存(詳細付き)+閲覧済み(ID一覧のみ)を一括コピーし、Claude経由でdata/user-preferences.json(viewedIds新設)へ反映する。ページ読み込み時はinitResearchChecklistState()でこのJSONからlocalStorageへ逆マージし、別端末・別ブラウザでも過去の状態が反映されるようにした。付随して見つかった既存バグ(保存記事コピーのgroupLabelsにai-trendが抜けておりAI最新情報タブの保存項目がコピー対象から漏れていた)も修正。さらにユーザー指摘「チェックボックス部のラベル名が消えている」を受け、2列とも空見出し(th)のままだったため見分けがつかなくなっていた点を、👁/💾のアイコン見出し(rt-check-head)追加で修正した。Playwrightで保存/閲覧済みの連動・JSON読み込み時のマージ・sticky headの安定動作(複数スクロール位置)・携帯幅375pxでの崩れ無しを確認。",
+      "output": "gurii-gabreh/progress-tracker-dashboard dashboard.html・data/user-preferences.json",
+      "relatedTasks": [
+        "PTD-092",
+        "PTD-095"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-24",
+          "summary": "閲覧済み/保存チェック・グレーアウト・非表示フィルタ・sticky化・JSON連携を実装、ヘッダーラベル消失バグも修正。main push済み。ユーザーの完了確認待ち。"
+        }
+      ],
+      "updated": "2026-10-24"
     }
   ],
   "updatedAt": "2026-10-18"
