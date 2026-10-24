@@ -1348,11 +1348,13 @@
             <div class="appdev-stage-sidebar" id="appdev-stage-toggle">
               <button type="button" class="manager-subview-btn active" id="appdev-stage-btn-requirements" data-stage="requirements">📋 要件定義</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-funcreq" data-stage="functionalRequirements">📐 機能要件</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-issuelog" data-stage="issueLog">📝 課題管理表</button>
             </div>
             <div class="appdev-stage-content">
               <div id="devdocs-requirements"></div>
               <div id="appdev-basicdesign" style="display:none;"></div>
+              <div id="appdev-funcreq" style="display:none;"></div>
               <div id="appdev-issuelog" style="display:none;"></div>
             </div>
           </div>
@@ -3890,7 +3892,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -3904,6 +3906,7 @@
         REQUIREMENTS.concerns = data.concerns || { items: [] };
         REQUIREMENTS.interviewChecklist = data.interviewChecklist || { items: [] };
         REQUIREMENTS.basicDesignChecklist = data.basicDesignChecklist || { items: [] };
+        REQUIREMENTS.functionalRequirementsChecklist = data.functionalRequirementsChecklist || { items: [] };
         populateDevDocsAppSelect();
         renderDevDocsRequirements();
         renderAppDevHomeStats();
@@ -4617,8 +4620,9 @@
       "【依頼内容(概要)】",
       overview.trim() || "(未記入)",
       "",
-      "【入力済みの項目(1〜10が従来からの基本項目、11〜15はIPA非機能要求グレードとの突き合わせで",
-      "  2026-10-23に追加した項目)】",
+      "【入力済みの項目(1〜10が従来からの基本項目、11〜16はIPA非機能要求グレードとの突き合わせで",
+      "  2026-10-23に追加した項目(2026-10-25、11番セキュリティから12番認証方法を分離)、",
+      "  17は③機能要件タブ新設時に追加した使用ケース起点の項目)】",
       answerLines,
       "",
       "【このルームにやってほしいこと】",
@@ -4645,7 +4649,7 @@
       "   data/requirements.json の marketAnalysisFramework 参照)を必ず実施する。AIが調査・Web検索して",
       "   各ステップの下書きを作成し、ユーザーの確認・修正を得る",
       "5. 以上を data/requirements.json の requirements 配列へ1件追加してcommit・push する",
-      "   (answers配列は{n, question, answer}として15項目すべて格納、marketAnalysisは{pest, fiveForces,",
+      "   (answers配列は{n, question, answer}として17項目すべて格納、marketAnalysisは{pest, fiveForces,",
       "   threeC, swot, stp, fourP, customerJourney}、concernReviewは{concernId, matchedBecause,",
       "   resolution}または{concernId: null, description, resolution}の配列)。あわせて対応するタスクを",
       "   依頼タスクタブ/data/tasks.jsonへ起票し、自動実装Routineが拾える状態にする。記録すれば",
@@ -4749,6 +4753,7 @@
   const APPDEV_STAGES = {
     requirements: { panel: "devdocs-requirements", btn: "appdev-stage-btn-requirements" },
     basicDesign: { panel: "appdev-basicdesign", btn: "appdev-stage-btn-basicdesign", render: () => renderAppDevBasicDesign() },
+    functionalRequirements: { panel: "appdev-funcreq", btn: "appdev-stage-btn-funcreq", render: () => renderAppDevFuncReq() },
     issueLog: { panel: "appdev-issuelog", btn: "appdev-stage-btn-issuelog", render: () => renderAppDevIssueLog() },
   };
   function showAppDevStage(stage) {
@@ -4864,6 +4869,137 @@
       "   格納、statusは「対応中」または「完了」)。commit・pushする",
       "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
       "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🏗基本設計に",
+      "   自動で表示される(別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+
+  // 📂開発アプリ一覧→📐機能要件(2026-10-25追加、ユーザー指示「基本設計の下に機能要件のアイコン作って
+  // そこに表示」)。要件定義・基本設計の既存回答から抜粋できる項目(使用システム/セキュリティ/認証方法/
+  // データ構造/使用ケース起点の機能)はここで読み取って表示し、どちらにも無かった項目
+  // (functionalRequirementsChecklist、現時点では通知機能の有無のみ)だけをこのタブ自身で聞き取る
+  // (rule23: 新しく聞き直すのではなく既存データの抜粋を優先)。②基本設計の全項目入力が完了するまでは、
+  // 抜粋内容を表示せず「基本設計の入力完了後に表示される」旨のプレースホルダーのみ出す
+  // (ユーザー指示「基本設計まで入力が完了したら、機能要件側のビューにも表示するようにして」)。
+  function devDocsIsBasicDesignComplete(req) {
+    const bdItems = (REQUIREMENTS.basicDesignChecklist && REQUIREMENTS.basicDesignChecklist.items) || [];
+    const bdAnswers = (req.basicDesign && req.basicDesign.answers) || [];
+    if (!bdItems.length) return false;
+    return bdItems.every((it) => {
+      const a = bdAnswers.find((x) => x.n === it.n);
+      return a && (a.answer || "").trim();
+    });
+  }
+
+  function renderAppDevFuncReq() {
+    const box = document.getElementById("appdev-funcreq");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+
+    const bdItems = (REQUIREMENTS.basicDesignChecklist && REQUIREMENTS.basicDesignChecklist.items) || [];
+    const bdAnswers = (req.basicDesign && req.basicDesign.answers) || [];
+    const bdDoneCount = bdItems.filter((it) => {
+      const a = bdAnswers.find((x) => x.n === it.n);
+      return a && (a.answer || "").trim();
+    }).length;
+    const headHtml = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">基本設計: ${bdDoneCount}/${bdItems.length}項目入力済み</span>
+      </div>`;
+
+    if (!devDocsIsBasicDesignComplete(req)) {
+      box.innerHTML = `${headHtml}<div class="empty">🏗 基本設計の全${bdItems.length}項目が入力完了すると、ここに機能要件の情報(要件定義・基本設計からの抜粋+個別確認項目)が表示されます。先に「🏗 基本設計」タブで入力を進めてください。</div>`;
+      return;
+    }
+
+    const reqAnswer = (n) => { const a = (req.answers || []).find((x) => x.n === n); return a ? a.answer : ""; };
+    const bdAnswer = (n) => { const a = bdAnswers.find((x) => x.n === n); return a ? a.answer : ""; };
+    const extractedSections = [
+      { label: "使用するシステム", value: bdAnswer(1), source: "基本設計#1 システム全体構成" },
+      { label: "セキュリティ", value: reqAnswer(11), source: "要件定義#11" },
+      { label: "認証方法", value: reqAnswer(12), source: "要件定義#12" },
+      { label: "ユーザーの使用ケースから見える必要な機能", value: reqAnswer(17), source: "要件定義#17" },
+      { label: "データ構造", value: bdAnswer(8), source: "基本設計#8 データベース/データ構造の最上位設計" },
+    ];
+    const extractedHtml = extractedSections.map((s) => `
+      <div class="devdocs-qa-item">
+        <div class="q">${escapeHtmlForDevDocs(s.label)} <span style="color:var(--text-muted); font-size:10.5px;">(${escapeHtmlForDevDocs(s.source)}から抜粋)</span></div>
+        <div class="a">${escapeHtmlForDevDocs(s.value) || "未回答"}</div>
+      </div>`).join("");
+
+    const frItems = (REQUIREMENTS.functionalRequirementsChecklist && REQUIREMENTS.functionalRequirementsChecklist.items) || [];
+    const frAnswers = (req.functionalRequirements && req.functionalRequirements.answers) || [];
+    const frAnswer = (n) => { const a = frAnswers.find((x) => x.n === n); return a ? a.answer : ""; };
+    const frHtml = frItems.map((it) => `
+      <div class="devdocs-qa-item">
+        <div class="q"><span class="n">${it.n}.</span>${escapeHtmlForDevDocs(it.question || "")}</div>
+        <div class="a">${escapeHtmlForDevDocs(frAnswer(it.n)) || "未回答"}</div>
+      </div>`).join("");
+    const frFieldsHtml = frItems.map((it) => `
+      <div class="form-field">
+        <label for="appdev-fr-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-fr-item-${it.n}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(frAnswer(it.n))}</textarea>
+      </div>`).join("");
+
+    box.innerHTML = `
+      ${headHtml}
+      <div class="devdocs-section-title">📐 要件定義・基本設計からの抜粋</div>
+      <div class="devdocs-qa-list">${extractedHtml}</div>
+      <div class="devdocs-section-title" style="margin-top:18px;">❓ 機能要件として個別に確認する項目</div>
+      <div class="devdocs-qa-list">${frHtml}</div>
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-fr-fields">${frFieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-fr-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-fr-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildFuncReqPromptText(req, frItems, extractedSections), `${req.title || req.repo} 機能要件 依頼文`, true);
+      });
+    }
+  }
+
+  // buildBasicDesignPromptText()と同じ考え方(rule23)で、抜粋済み項目+個別確認項目の入力値を
+  // Claude Codeへの依頼文として組み立てる。
+  function buildFuncReqPromptText(req, frItems, extractedSections) {
+    const extractedLines = extractedSections.map((s) => `   ${s.label}(${s.source}): ${s.value || "(未回答)"}`).join("\n");
+    const frLines = frItems.map((it) => {
+      const el = document.getElementById(`appdev-fr-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答)"}`;
+    }).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})の機能要件(③フェーズ、基本設計の下)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「📐 機能要件」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: 要件定義・基本設計から抜粋済みの項目(機能要件タブに自動表示される内容、このルームで改めて",
+      "  聞き直す必要はない)】",
+      extractedLines,
+      "",
+      "【機能要件として個別に確認が必要な項目(要件定義・基本設計のどちらにも無い内容)】",
+      frLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 上記の抜粋内容・個別確認項目の回答と、data/concept-log.json・data/policy.json・該当リポジトリ",
+      "   自身の既存実装を確認し、関連する過去の判断が無いか確認する",
+      "2. 空欄の項目は、このプロジェクトの実績・ナレッジとWeb調査の両方を根拠にしながらユーザーと相談して",
+      "   方向性を決めていく。全項目が揃っていなくても先に進めてよい",
+      "3. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   functionalRequirementsフィールドを追加・更新する(answers配列は{n, question, answer}として",
+      "   functionalRequirementsChecklist.items全件格納、statusは「対応中」または「完了」)。commit・pushする",
+      "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→📐機能要件に",
       "   自動で表示される(別途の書き込みは不要)",
       "",
       "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
