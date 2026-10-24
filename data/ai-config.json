@@ -149,6 +149,18 @@
           "repo": "gurii-gabreh/servicenow-sub-agent",
           "summary": "servicenow-sub-agentのdata/research-items.jsonのcategory 7(ハッカソン情報)のうち、開催終了・入賞発表済みのものについて、Devpostのプロジェクトギャラリーページを実際に読み、入賞作品の傾向・注目作品・次の自作ハッカソンへの活かし方を日本語で要約してcurated:trueにする手順。research-item-curationと同じ『AIが直接読んで理解する』方式をcategory 7向けに特化させたもの。",
           "triggerType": "ai"
+        },
+        {
+          "name": "basic-design-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "①要件定義が済んでいる既存アプリの②基本設計を聞き取るスキル。固定フレーズ「【基本設計相談】basic-design-kickoffスキルを呼び出して実行してください。」で起動。new-app-kickoffと違いcreate_sessionは使わず呼ばれたルームでそのまま実行し、対象アプリを選択肢方式で聞いてbasicDesignChecklistを1つずつ確認、requirements[].basicDesignへ記録する。①要件定義完了直後に「続けて②基本設計も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(new-app-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "functional-requirements-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "②基本設計が完了している既存アプリの③機能要件を聞き取るスキル。固定フレーズ「【機能要件相談】functional-requirements-kickoffスキルを呼び出して実行してください。」で起動。①②から抜粋できる項目(使用システム・セキュリティ・認証方法・使用ケース起点の機能・データ構造)は聞き直さず、functionalRequirementsChecklist(通知機能の有無など、①②のどちらにも無い項目)だけを確認してrequirements[].functionalRequirementsへ記録する。②基本設計完了直後に「続けて③機能要件も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(basic-design-kickoffからのチェイン)。",
+          "triggerType": "user"
         }
       ]
     },
@@ -706,6 +718,22 @@
           "createdAt": "2026-10-11",
           "summary": "Obsidian互換のJSON Canvas(.canvas)ファイルを、左→右のツリーレイアウト(根→構成要素→細分化→さらに細分化)で生成するスキル。放射状マインドマップ形式を何度か試した結果、見づらいというユーザー指摘を受けてこの形式に確定した。列=x座標・行=y座標を機械的に計算して重なりを防ぎ、枝ごとに色分けする。「今後のキャリア実績作り相談ルーム」のハッカソン選定Canvasで初適用。",
           "triggerType": "ai"
+        },
+        {
+          "name": "basic-design-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/basic-design-kickoff/SKILL.md",
+          "createdAt": "2026-10-25",
+          "summary": "①要件定義が済んでいる既存アプリの②基本設計を聞き取るスキル。固定フレーズ「【基本設計相談】basic-design-kickoffスキルを呼び出して実行してください。」で起動。new-app-kickoffと違いcreate_sessionは使わず呼ばれたルームでそのまま実行し、対象アプリを選択肢方式で聞いてbasicDesignChecklistを1つずつ確認、requirements[].basicDesignへ記録する。①要件定義完了直後に「続けて②基本設計も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(new-app-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "functional-requirements-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/functional-requirements-kickoff/SKILL.md",
+          "createdAt": "2026-10-25",
+          "summary": "②基本設計が完了している既存アプリの③機能要件を聞き取るスキル。固定フレーズ「【機能要件相談】functional-requirements-kickoffスキルを呼び出して実行してください。」で起動。①②から抜粋できる項目(使用システム・セキュリティ・認証方法・使用ケース起点の機能・データ構造)は聞き直さず、functionalRequirementsChecklist(通知機能の有無など、①②のどちらにも無い項目)だけを確認してrequirements[].functionalRequirementsへ記録する。②基本設計完了直後に「続けて③機能要件も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(basic-design-kickoffからのチェイン)。",
+          "triggerType": "user"
         }
       ],
       "note": "新しく定型作業をスキル化した場合は、このregistry配列にエントリを追記すること(SKILL.md本体は各リポジトリ側で管理し、ここへ複製しない)。加えて、そのスキルがチャット文言による固定の起動フレーズを持つ場合は、claude-voice-bridgeリポジトリのdata/templates.jsonにも\"type\": \"skill\"付きで追記すること(サイドパネルの「🔧 スキル呼び出し文言」の折りたたみに反映させるため。claude-core-rules.mdルール27、2026-09-19追加)。 triggerTypeフィールド: \"user\"はチャットへの固定フレーズでユーザーが能動的に呼び出すスキル(claude-voice-bridgeのdata/templates.jsonにも登録)、\"ai\"は依頼内容・状況をAIが判断して自分で適用するスキル(2026-09-19追加)。"
