@@ -5515,6 +5515,35 @@
           "summary": "Playwrightで4アプリの懸念点セクション非表示・課題管理表件数・JSエラー0件を確認。main push済み。"
         }
       ]
+    },
+    {
+      "id": "PTD-105",
+      "title": "⑥運用・保守/⑦リリース・移行タブ+ops-kickoff/release-kickoffスキルを新設、⑤テストからチェイン",
+      "task": "運用保守・リリース移行チェックリスト新設・入力フォーム実装・スキルチェイン",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「上記2つ(運用・保守、リリース・移行)も作っておいてくれる？」「これでいい、実装してマージまでして」への対応。",
+      "detail": "IPA公式PDF「第3部 共通フレームとガイダンス」の『3.運用・サービスプロセス』全体(3.1運用プロセス・2.6保守プロセス・3.2廃棄プロセス)を全文確認し、opsChecklist(⑥運用・保守、8項目)・releaseChecklist(⑦リリース・移行、8項目)を作成(⑤テストの教訓CL-046を踏まえた広い横断確認)。dashboard.htmlに⑥🔧運用・保守(⑤テスト完了が前提条件、devDocsIsTestComplete()新設)・⑦🚀リリース・移行(⑥運用・保守完了が前提条件、devDocsIsOpsComplete()新設)タブを追加、既存のdetailedDesign/testと同じ入力フォーム方式。ops-kickoff/release-kickoffスキルを新設し、test-kickoffの末尾に「続けて⑥運用・保守も相談しますか」、ops-kickoffの末尾に「続けて⑦リリース・移行も相談しますか」のチェイン分岐を追加。これでチェーンは要件定義→基本設計→機能要件→詳細設計→テスト→運用・保守→リリース・移行→課題管理表の全8段階、スキルはnew-app-kickoff→basic-design-kickoff→functional-requirements-kickoff→detailed-design-kickoff→test-kickoff→ops-kickoff→release-kickoffの計7本が繋がった。Playwrightでroute interceptionによるtest完了シミュレーションでops側の入力フォーム表示・release側のプレースホルダー表示・サイドバー8段階の順序・既存タブへの回帰無し・JSエラー0件を確認。progress-tracker-dashboard/claude-voice-bridge両方main push済み。",
+      "output": "dashboard.html(ops/release機能)、data/requirements.json(opsChecklist/releaseChecklist新設)、.claude/skills/ops-kickoff/SKILL.md、.claude/skills/release-kickoff/SKILL.md、.claude/skills/test-kickoff/SKILL.md(チェイン追加)、data/ai-config.json、claude-voice-bridge:data/templates.json",
+      "relatedTasks": [
+        "PTD-100",
+        "PTD-101",
+        "PTD-102",
+        "PTD-103"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-25",
+          "summary": "Playwrightでops/releaseのゲート動作・既存タブ回帰・JSエラー0件を確認。両リポジトリmain push済み。アプリ開発チェーンが全8段階・スキル7本まで拡張完了。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-10-18"

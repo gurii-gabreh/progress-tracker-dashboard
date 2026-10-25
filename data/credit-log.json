@@ -640,6 +640,21 @@
         "costUsd": 1990.2410751
       },
       "rateLimitResetsAt": "2026-10-25T22:00:00+09:00"
+    },
+    {
+      "date": "2026-10-25",
+      "time": "17:30",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-105: ⑥運用・保守/⑦リリース・移行タブ+ops-kickoff/release-kickoffスキルを新設、⑤テストからチェイン",
+      "note": "IPA共通フレームの運用・保守・廃棄プロセスに基づく8項目ずつのチェックリストを新設。アプリ開発チェーンが要件定義〜リリース・移行の全8段階、スキル7本まで拡張。両リポジトリmain push済み。",
+      "usage": {
+        "inputTokens": 6035998,
+        "outputTokens": 11088790,
+        "cacheReadTokens": 6165976171,
+        "cacheWriteTokens": 138474516,
+        "costUsd": 1998.33194634
+      },
+      "rateLimitResetsAt": "2026-10-26T03:00:00+09:00"
     }
   ]
 }
