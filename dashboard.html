@@ -4534,35 +4534,6 @@
     if (selFlow) selFlow.value = repo;
   }
 
-  function devDocsFindConcern(id) {
-    return (REQUIREMENTS.concerns.items || []).find((c) => c.id === id);
-  }
-
-  function devDocsConcernCard(review, isReviewEntry) {
-    if (isReviewEntry && review.concernId) {
-      const master = devDocsFindConcern(review.concernId);
-      const trend = master ? master.trend : "(懸念点マスタに見つかりません)";
-      return `<div class="devdocs-concern-card">
-        <span class="concern-id">${escapeHtmlForDevDocs(review.concernId)}</span>
-        <div class="concern-trend">${escapeHtmlForDevDocs(trend || "")}</div>
-        <dl><dt>該当した理由</dt><dd>${escapeHtmlForDevDocs(review.matchedBecause || "")}</dd>
-        <dt>相談した結果・最終的な結論</dt><dd>${escapeHtmlForDevDocs(review.resolution || "")}</dd></dl>
-      </div>`;
-    }
-    if (isReviewEntry) {
-      return `<div class="devdocs-concern-card novel">
-        <span class="concern-id">新規懸念(concerns未登録)</span>
-        <div class="concern-trend">${escapeHtmlForDevDocs(review.description || "")}</div>
-        <dl><dt>相談した結果・最終的な結論</dt><dd>${escapeHtmlForDevDocs(review.resolution || "")}</dd></dl>
-      </div>`;
-    }
-    return `<div class="devdocs-concern-card">
-      <span class="concern-id">${escapeHtmlForDevDocs(review.id)}</span>
-      <div class="concern-trend">${escapeHtmlForDevDocs(review.trend || "")}</div>
-      <dl><dt>対策</dt><dd>${escapeHtmlForDevDocs(review.mitigation || "")}</dd></dl>
-    </div>`;
-  }
-
   function escapeHtmlForDevDocs(s) {
     return String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
@@ -4729,12 +4700,6 @@
         <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
       </div>`).join("");
 
-    const reviewItems = req.concernReview || [];
-    const reviewHtml = reviewItems.length
-      ? reviewItems.map((r) => devDocsConcernCard(r, true)).join("")
-      : `<p style="font-size:11.5px; color:var(--text-muted); margin:0;">このアプリで該当した懸念点はありません。</p>`;
-    const masterHtml = (REQUIREMENTS.concerns.items || []).map((c) => devDocsConcernCard(c, false)).join("");
-
     box.innerHTML = `
       <div class="devdocs-head">
         <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
@@ -4742,10 +4707,6 @@
         <span class="devdocs-tag">${escapeHtmlForDevDocs(req.status || "不明")}</span>
       </div>
       <div class="devdocs-qa-list">${qaHtml}</div>
-      <div class="devdocs-section-title">⚠️ このアプリで該当した懸念点(concernReview)</div>
-      ${reviewHtml}
-      <div class="devdocs-section-title">📖 懸念点マスタ一覧(concerns)</div>
-      ${masterHtml}
     `;
   }
 

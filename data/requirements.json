@@ -133,16 +133,18 @@
           "answer": "はい(CLAUDE.md 8行目)"
         }
       ],
-      "concernReview": [
-        {
-          "concernId": "CN-001",
-          "matchedBecause": "concerns.items(CN-001)のobservedInに『kizashi(結)の企画整理.mdの変遷(前兆現象共有の再優先度付け、間取り共有の統合など、後出しの仕様変更が複数回発生)』と明記されており、CN-001自体がkizashiの実例から一般化されたパターンである",
-          "resolution": "2026-08-08、要件定義シートの仕組み自体を新設し、新規性の高い相談は実装前に聞き取り・要件定義を挟むようにした(CN-001のmitigationとして既に運用中)。kizashi自体は企画整理.mdという単一の要件文書を都度更新する運用により、後出し変更の影響範囲を1ファイルで追える状態を維持している"
-        }
-      ],
       "approvedAt": null,
       "backfilledAt": "2026-09-27",
-      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。",
+      "issueLog": [
+        {
+          "title": "CN-001: 思いついたアイデアをそのまま機能追加として投げてしまい、後から仕様が積み重なってシステムが複雑化し、不具合につながりやすい",
+          "content": "concerns.items(CN-001)のobservedInに『kizashi(結)の企画整理.mdの変遷(前兆現象共有の再優先度付け、間取り共有の統合など、後出しの仕様変更が複数回発生)』と明記されており、CN-001自体がkizashiの実例から一般化されたパターンである",
+          "createdAt": "2026-09-27(concernReviewからの移行のため正確な発生日ではなく、要件定義シート記録日を便宜上使用)",
+          "status": "解決済み",
+          "resolution": "2026-08-08、要件定義シートの仕組み自体を新設し、新規性の高い相談は実装前に聞き取り・要件定義を挟むようにした(CN-001のmitigationとして既に運用中)。kizashi自体は企画整理.mdという単一の要件文書を都度更新する運用により、後出し変更の影響範囲を1ファイルで追える状態を維持している"
+        }
+      ]
     },
     {
       "id": "REQ-SPT-001",
@@ -325,18 +327,6 @@
           "answer": "はい(このリポジトリ自体がtasks.jsonでの管理基盤)"
         }
       ],
-      "concernReview": [
-        {
-          "concernId": "CN-005",
-          "matchedBecause": "concerns.items(CN-005)のobservedInに『README「ルームマッピング」記載、2026-08-12〜13にgas/Code.gsの変更・別リポジトリへのGitHub Actionsワークフロー追加を直接実装してしまい、繰り返し指摘された』とあり、これはprogress-tracker-dashboard自身(manager-room)での実例",
-          "resolution": "CLAUDE.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。『実装作業をしているセッションはworker-role』という前提を明文化(CLAUDE.md最重要ルール)"
-        },
-        {
-          "concernId": "CN-006",
-          "matchedBecause": "concerns.items(CN-006)のobservedInに『claude-core-rules.md ルール18の2026-09-06追記(方針転換の理由として記載)』とあり、progress-tracker-dashboard自身の運用ルール変更の経緯そのものが根拠",
-          "resolution": "大きな実装・並行運用が必要な場合は事前に役割分担と調整方法を明確にする方針とし、worker-room方式の段階的廃止・サブエージェント/Codex連携への移行を決定した(ルール18)"
-        }
-      ],
       "approvedAt": null,
       "backfilledAt": "2026-09-27",
       "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。",
@@ -389,6 +379,20 @@
           "createdAt": "2026-10-23",
           "status": "解決済み",
           "resolution": "ResizeObserverでdevdocs-sticky-headの実高さを測定し、CSS変数--appdev-sticky-offsetへ反映することで、サイドメニューとアプリタイトル(devdocs-head)がその直下にずれなく固定されるよう修正した。固定px値ではなく実測値を使うことで、説明文の折返しで高さが変わっても追従する。"
+        },
+        {
+          "title": "CN-005: manager-room(状況把握・振り分け役)が、自分で実装作業を直接行ってしまう",
+          "content": "concerns.items(CN-005)のobservedInに『README「ルームマッピング」記載、2026-08-12〜13にgas/Code.gsの変更・別リポジトリへのGitHub Actionsワークフロー追加を直接実装してしまい、繰り返し指摘された』とあり、これはprogress-tracker-dashboard自身(manager-room)での実例",
+          "createdAt": "2026-09-27(concernReviewからの移行のため正確な発生日ではなく、要件定義シート記録日を便宜上使用)",
+          "status": "解決済み",
+          "resolution": "CLAUDE.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。『実装作業をしているセッションはworker-role』という前提を明文化(CLAUDE.md最重要ルール)"
+        },
+        {
+          "title": "CN-006: 複数のルーム(セッション)を同時稼働させると、同一ルールを異なる内容で重複追加してしまう等、調整不足が起きやすい",
+          "content": "concerns.items(CN-006)のobservedInに『claude-core-rules.md ルール18の2026-09-06追記(方針転換の理由として記載)』とあり、progress-tracker-dashboard自身の運用ルール変更の経緯そのものが根拠",
+          "createdAt": "2026-09-27(concernReviewからの移行のため正確な発生日ではなく、要件定義シート記録日を便宜上使用)",
+          "status": "解決済み",
+          "resolution": "大きな実装・並行運用が必要な場合は事前に役割分担と調整方法を明確にする方針とし、worker-room方式の段階的廃止・サブエージェント/Codex連携への移行を決定した(ルール18)"
         }
       ],
       "basicDesign": {
@@ -944,16 +948,18 @@
           "answer": "はい(tasks.jsonのCVB-001で管理中)"
         }
       ],
-      "concernReview": [
-        {
-          "concernId": "CN-005",
-          "matchedBecause": "concerns.items(CN-005)のobservedInに『claude-voice-bridgeの音声入出力の実装・デバッグも同様に直接行ってしまった(2026-08-25)』と明記されており、このリポジトリ自体がmanager-room直接実装の実例として記録されている",
-          "resolution": "claude-core-rules.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。以後の実装は『実装作業をしているセッションはworker-role』という前提で行う運用に変更"
-        }
-      ],
       "approvedAt": null,
       "backfilledAt": "2026-09-27",
-      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。"
+      "note": "2026-09-27、ユーザー指示により既存アプリの要件定義シートを遡及的に作成(新規相談での聞き取りではなく、各リポジトリのREADME/tasks.json/CLAUDE.md/git logを根拠に記入)。approvedAtはnull(実際のインタビュー承認を経ていないため)。",
+      "issueLog": [
+        {
+          "title": "CN-005: manager-room(状況把握・振り分け役)が、自分で実装作業を直接行ってしまう",
+          "content": "concerns.items(CN-005)のobservedInに『claude-voice-bridgeの音声入出力の実装・デバッグも同様に直接行ってしまった(2026-08-25)』と明記されており、このリポジトリ自体がmanager-room直接実装の実例として記録されている",
+          "createdAt": "2026-09-27(concernReviewからの移行のため正確な発生日ではなく、要件定義シート記録日を便宜上使用)",
+          "status": "解決済み",
+          "resolution": "claude-core-rules.mdルール18の方針転換(2026-09-06)により、CCR worker-room方式は段階的に廃止し、サブエージェント化・Codex連携(CCX-001)へ移行する方針とした。以後の実装は『実装作業をしているセッションはworker-role』という前提で行う運用に変更"
+        }
+      ]
     },
     {
       "id": "REQ-MJ-001",
@@ -1012,16 +1018,18 @@
           "answer": "管理対象に追加する(MJ-001として既に登録済み)"
         }
       ],
-      "concernReview": [
-        {
-          "concernId": "CN-005",
-          "matchedBecause": "mirai-journalの全面改修(JSON正本化・UI全ページ書き換え・README新設)を、このマネージャールーム自身が直接実装した。CN-005の典型パターン(manager-roomが実装作業を直接行う)に一致する。",
-          "resolution": "claude-core-rules.mdルール18(2026-09-06方針転換・2026-10-03のCodex委任基準追記)により、CCR worker-room方式は段階的廃止中で、移行先として『このセッション内での直接実装』も許容される運用に変わっている。本件は規模が大きかったが、設計方針の決定に至るまでユーザーと10回以上の確認・相談を重ねており(CLAUDE.mdルール10・21に沿った進め方)、実装着手前の合意形成は徹底した。CN-005が指す『無断での直接実装』には当たらないと判断する。"
-        }
-      ],
       "approvedAt": "2026-10-04T04:31:58.780163+00:00",
       "backfilledAt": null,
-      "note": "2026-10-04、ユーザーとの実際の相談(mirai-journal全面改修の設計議論)を踏まえてマネージャールームが標準10項目の回答を下書きし、ユーザーが内容を確認・承認(「問題なし」)した上で記録。他12件(REQ-PTD-001等)と異なり、README等からの一方的な遡及作成ではなく、ユーザー承認を経ているためapprovedAtを設定した。"
+      "note": "2026-10-04、ユーザーとの実際の相談(mirai-journal全面改修の設計議論)を踏まえてマネージャールームが標準10項目の回答を下書きし、ユーザーが内容を確認・承認(「問題なし」)した上で記録。他12件(REQ-PTD-001等)と異なり、README等からの一方的な遡及作成ではなく、ユーザー承認を経ているためapprovedAtを設定した。",
+      "issueLog": [
+        {
+          "title": "CN-005: manager-room(状況把握・振り分け役)が、自分で実装作業を直接行ってしまう",
+          "content": "mirai-journalの全面改修(JSON正本化・UI全ページ書き換え・README新設)を、このマネージャールーム自身が直接実装した。CN-005の典型パターン(manager-roomが実装作業を直接行う)に一致する。",
+          "createdAt": "2026-10-04(concernReviewからの移行のため正確な発生日ではなく、要件定義シート記録日を便宜上使用)",
+          "status": "解決済み",
+          "resolution": "claude-core-rules.mdルール18(2026-09-06方針転換・2026-10-03のCodex委任基準追記)により、CCR worker-room方式は段階的廃止中で、移行先として『このセッション内での直接実装』も許容される運用に変わっている。本件は規模が大きかったが、設計方針の決定に至るまでユーザーと10回以上の確認・相談を重ねており(CLAUDE.mdルール10・21に沿った進め方)、実装着手前の合意形成は徹底した。CN-005が指す『無断での直接実装』には当たらないと判断する。"
+        }
+      ]
     },
     {
       "id": "REQ-ESA-001",
