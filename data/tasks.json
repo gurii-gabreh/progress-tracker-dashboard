@@ -5491,6 +5491,30 @@
           "summary": "ユーザーから「一旦テストも完了でいいかな？」と明示的な確認があり、完了に更新した(ルール30準拠)。"
         }
       ]
+    },
+    {
+      "id": "PTD-104",
+      "title": "懸念点(concernReview)を課題管理表へ統合、要件定義タブの懸念点表示を非表示化",
+      "task": "concernReview→issueLog移行・ダッシュボード表示の整理",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。今後new-app-kickoff等で新たに見つかる懸念も同様にissueLogへ記録する運用に変えるかは別途確認予定。",
+      "note": "ユーザー指示「懸念点の情報は、全て課題管理表で管理にまとめたい、他のアプリに影響があるなら、データは削除せずに非表示として、これはただ表示しないようにすればいいだけだよね？」への対応。日次ログ処理中に対応し忘れていたことをCLAUDE.md定期確認Routine実行時に自己発見し、ユーザーへ再確認の上で実装した。",
+      "detail": "concernReviewを持つ4アプリ(kizashi/progress-tracker-dashboard/claude-voice-bridge/mirai-journal)について、各concernReviewエントリ(計5件)をissueLogへ移行した(title=懸念点マスタのtrend要約、content=matchedBecause、status=解決済み、resolution=そのまま、createdAtはconcernReview記録日を便宜上使用し移行である旨を注記)。移行後、各アプリのconcernReviewフィールド自体を削除。dashboard.htmlのrenderDevDocsRequirements()から「⚠️ このアプリで該当した懸念点」「📖 懸念点マスタ一覧」の2セクションを削除(表示のみを取りやめ、concerns.items自体のデータはdata/requirements.json側に残したまま。他アプリからの参照・new-app-kickoffスキルでの今後の懸念照合にはそのまま使う)。不要になったdevDocsConcernCard()/devDocsFindConcern()関数も削除。Playwrightで4アプリ全てについて懸念点セクションが表示されないこと・課題管理表の件数が移行分を含めて正しいこと(kizashi 1件/PTD 9件=既存7+移行2/claude-voice-bridge 1件/mirai-journal 1件)・JSエラー0件を確認。main push・merge済み。",
+      "output": "dashboard.html(懸念点表示セクション削除)、data/requirements.json(4アプリのconcernReview→issueLog移行)",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-10-25",
+          "summary": "Playwrightで4アプリの懸念点セクション非表示・課題管理表件数・JSエラー0件を確認。main push済み。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-10-18"

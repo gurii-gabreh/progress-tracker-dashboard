@@ -625,6 +625,21 @@
         "costUsd": 1984.40321246
       },
       "rateLimitResetsAt": "2026-10-25T22:00:00+09:00"
+    },
+    {
+      "date": "2026-10-25",
+      "time": "17:15",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-104: 懸念点(concernReview)を課題管理表へ統合、要件定義タブの懸念点表示を非表示化",
+      "note": "日次ログ処理中に未実装のまま放置していたことにCLAUDE.md定期確認時に気づき、ユーザー再確認のうえ実装。4アプリ分のconcernReview計5件をissueLogへ移行、concerns.itemsデータ自体は保持したまま表示のみ削除。main push済み。",
+      "usage": {
+        "inputTokens": 6033914,
+        "outputTokens": 11053947,
+        "cacheReadTokens": 6147793546,
+        "cacheWriteTokens": 137450128,
+        "costUsd": 1990.2410751
+      },
+      "rateLimitResetsAt": "2026-10-25T22:00:00+09:00"
     }
   ]
 }
