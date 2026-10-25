@@ -655,6 +655,54 @@
         "costUsd": 1998.33194634
       },
       "rateLimitResetsAt": "2026-10-26T03:00:00+09:00"
+    },
+    {
+      "date": "2026-08-22",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-008: RoutineからのcompleteTasks呼び出しが実際に完了タブへ反映されるか検証する",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-08-29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-047: テーブル作成",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-08-29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-049: Scheduled Job作成",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-08-29",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-050: 実機検証",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-08-31",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-056: 【相談】Architecture Weeklyの正しいRSS/AtomフィードURLの確認",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-09-01",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-057: Claude/Gemini/ChatGPT公式サイトを情報源に追加する調査・実装",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-09-05",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-059: 許可リストの正本化・自動同期",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-09-06",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-048: REST Message作成",
+      "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
     }
   ]
 }
