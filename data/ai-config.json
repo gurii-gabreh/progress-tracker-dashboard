@@ -173,6 +173,18 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "summary": "④詳細設計が完了している既存アプリの⑤テスト(IPA共通フレーム2013の検証プロセス4.3・妥当性確認プロセス4.4・品質保証プロセス4.2・共同レビュープロセス4.5、および結合・適格性確認テストプロセスに基づく9項目)を聞き取るスキル。固定フレーズ「【テスト相談】test-kickoffスキルを呼び出して実行してください。」で起動。④詳細設計チェックリスト作成時に条項番号だけで狭く検索し一次情報を見落としていた反省(CL-046参照)を踏まえ、関連キーワードでの全文横断確認によりdetailedDesignChecklistより裏付けの強い項目を作成した。requirements[].testへ記録する。④詳細設計完了直後に「続けて⑤テストも相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(detailed-design-kickoffからのチェイン)。",
           "triggerType": "user"
+        },
+        {
+          "name": "ops-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "⑤テストが完了している既存アプリの⑥運用・保守(IPA共通フレーム2013の運用プロセス3.1・保守プロセス2.6・廃棄プロセス3.2に基づく8項目)を聞き取るスキル。固定フレーズ「【運用保守相談】ops-kickoffスキルを呼び出して実行してください。」で起動。requirements[].opsへ記録する。⑤テスト完了直後に「続けて⑥運用・保守も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(test-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "release-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "summary": "⑥運用・保守が完了している既存アプリの⑦リリース・移行(IPA共通フレーム2013の運用プロセス3.1の移行アクティビティ・システム導入プロセス2.3.7に基づく8項目)を聞き取るスキル。固定フレーズ「【リリース移行相談】release-kickoffスキルを呼び出して実行してください。」で起動。requirements[].releaseへ記録する。⑥運用・保守完了直後に「続けて⑦リリース・移行も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(ops-kickoffからのチェイン)。2026-10-25時点でチェーンの最終段。",
+          "triggerType": "user"
         }
       ]
     },
@@ -761,6 +773,22 @@
           "path": ".claude/skills/test-kickoff/SKILL.md",
           "createdAt": "2026-10-25",
           "summary": "④詳細設計が完了している既存アプリの⑤テスト(IPA共通フレーム2013の検証プロセス4.3・妥当性確認プロセス4.4・品質保証プロセス4.2・共同レビュープロセス4.5、および結合・適格性確認テストプロセスに基づく9項目)を聞き取るスキル。固定フレーズ「【テスト相談】test-kickoffスキルを呼び出して実行してください。」で起動。④詳細設計チェックリスト作成時に条項番号だけで狭く検索し一次情報を見落としていた反省(CL-046参照)を踏まえ、関連キーワードでの全文横断確認によりdetailedDesignChecklistより裏付けの強い項目を作成した。requirements[].testへ記録する。④詳細設計完了直後に「続けて⑤テストも相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(detailed-design-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "ops-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/ops-kickoff/SKILL.md",
+          "createdAt": "2026-10-25",
+          "summary": "⑤テストが完了している既存アプリの⑥運用・保守(IPA共通フレーム2013の運用プロセス3.1・保守プロセス2.6・廃棄プロセス3.2に基づく8項目)を聞き取るスキル。固定フレーズ「【運用保守相談】ops-kickoffスキルを呼び出して実行してください。」で起動。requirements[].opsへ記録する。⑤テスト完了直後に「続けて⑥運用・保守も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(test-kickoffからのチェイン)。",
+          "triggerType": "user"
+        },
+        {
+          "name": "release-kickoff",
+          "repo": "gurii-gabreh/progress-tracker-dashboard",
+          "path": ".claude/skills/release-kickoff/SKILL.md",
+          "createdAt": "2026-10-25",
+          "summary": "⑥運用・保守が完了している既存アプリの⑦リリース・移行(IPA共通フレーム2013の運用プロセス3.1の移行アクティビティ・システム導入プロセス2.3.7に基づく8項目)を聞き取るスキル。固定フレーズ「【リリース移行相談】release-kickoffスキルを呼び出して実行してください。」で起動。requirements[].releaseへ記録する。⑥運用・保守完了直後に「続けて⑦リリース・移行も相談しますか」と聞かれ「はい」と答えた場合は、同じルームでこのスキルへそのまま継続する(ops-kickoffからのチェイン)。2026-10-25時点でチェーンの最終段。",
           "triggerType": "user"
         }
       ],

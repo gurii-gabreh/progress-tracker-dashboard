@@ -1351,6 +1351,8 @@
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-funcreq" data-stage="functionalRequirements">📐 機能要件</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-detaildesign" data-stage="detailedDesign">🧩 詳細設計</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-test" data-stage="test">🧪 テスト</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-ops" data-stage="ops">🔧 運用・保守</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-release" data-stage="release">🚀 リリース・移行</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-issuelog" data-stage="issueLog">📝 課題管理表</button>
             </div>
             <div class="appdev-stage-content">
@@ -1359,6 +1361,8 @@
               <div id="appdev-funcreq" style="display:none;"></div>
               <div id="appdev-detaildesign" style="display:none;"></div>
               <div id="appdev-test" style="display:none;"></div>
+              <div id="appdev-ops" style="display:none;"></div>
+              <div id="appdev-release" style="display:none;"></div>
               <div id="appdev-issuelog" style="display:none;"></div>
             </div>
           </div>
@@ -3896,7 +3900,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, testChecklist: { items: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -3913,6 +3917,8 @@
         REQUIREMENTS.functionalRequirementsChecklist = data.functionalRequirementsChecklist || { items: [] };
         REQUIREMENTS.detailedDesignChecklist = data.detailedDesignChecklist || { items: [] };
         REQUIREMENTS.testChecklist = data.testChecklist || { items: [] };
+        REQUIREMENTS.opsChecklist = data.opsChecklist || { items: [] };
+        REQUIREMENTS.releaseChecklist = data.releaseChecklist || { items: [] };
         populateDevDocsAppSelect();
         renderDevDocsRequirements();
         renderAppDevHomeStats();
@@ -4723,6 +4729,8 @@
     functionalRequirements: { panel: "appdev-funcreq", btn: "appdev-stage-btn-funcreq", render: () => renderAppDevFuncReq() },
     detailedDesign: { panel: "appdev-detaildesign", btn: "appdev-stage-btn-detaildesign", render: () => renderAppDevDetailedDesign() },
     test: { panel: "appdev-test", btn: "appdev-stage-btn-test", render: () => renderAppDevTest() },
+    ops: { panel: "appdev-ops", btn: "appdev-stage-btn-ops", render: () => renderAppDevOps() },
+    release: { panel: "appdev-release", btn: "appdev-stage-btn-release", render: () => renderAppDevRelease() },
     issueLog: { panel: "appdev-issuelog", btn: "appdev-stage-btn-issuelog", render: () => renderAppDevIssueLog() },
   };
   function showAppDevStage(stage) {
@@ -4867,6 +4875,26 @@
     if (!ddItems.length) return false;
     return ddItems.every((it) => {
       const a = ddAnswers.find((x) => x.n === it.n);
+      return a && (a.answer || "").trim();
+    });
+  }
+
+  function devDocsIsTestComplete(req) {
+    const items = (REQUIREMENTS.testChecklist && REQUIREMENTS.testChecklist.items) || [];
+    const answers = (req.test && req.test.answers) || [];
+    if (!items.length) return false;
+    return items.every((it) => {
+      const a = answers.find((x) => x.n === it.n);
+      return a && (a.answer || "").trim();
+    });
+  }
+
+  function devDocsIsOpsComplete(req) {
+    const items = (REQUIREMENTS.opsChecklist && REQUIREMENTS.opsChecklist.items) || [];
+    const answers = (req.ops && req.ops.answers) || [];
+    if (!items.length) return false;
+    return items.every((it) => {
+      const a = answers.find((x) => x.n === it.n);
       return a && (a.answer || "").trim();
     });
   }
@@ -5178,6 +5206,194 @@
       "   全件格納、statusは「対応中」または「完了」)。commit・pushする",
       "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
       "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🧪テストに",
+      "   自動で表示される(別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+
+  // 📂開発アプリ一覧→🔧運用・保守(2026-10-25追加)。detailedDesign/testと同じ入力フォーム方式(rule23)。
+  // ⑤テストの全項目入力完了を前提条件とする。
+  function renderAppDevOps() {
+    const box = document.getElementById("appdev-ops");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    const items = (REQUIREMENTS.opsChecklist && REQUIREMENTS.opsChecklist.items) || [];
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+    if (!devDocsIsTestComplete(req)) {
+      const tItems = (REQUIREMENTS.testChecklist && REQUIREMENTS.testChecklist.items) || [];
+      box.innerHTML = `<div class="empty">🧪 テストの全${tItems.length}項目が入力完了すると、ここで⑥運用・保守の聞き取りを進められます。先に「🧪 テスト」タブで入力を進めてください。</div>`;
+      return;
+    }
+
+    const ops = req.ops;
+    const opsAnswers = (ops && ops.answers) || [];
+    const qaHtml = opsAnswers.length
+      ? `<div class="devdocs-qa-list">${opsAnswers.map((a) => `
+          <div class="devdocs-qa-item">
+            <div class="q"><span class="n">${a.n}.</span>${escapeHtmlForDevDocs(a.question || "")}</div>
+            <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
+          </div>`).join("")}</div>`
+      : `<div class="empty">まだ運用・保守の記録がありません(未着手)。下のフォームに分かる範囲で入力し、「📋 プロンプトを作成」からClaude Codeへ相談してください。</div>`;
+
+    const fieldsHtml = items.map((it) => {
+      const existing = opsAnswers.find((a) => a.n === it.n);
+      return `
+      <div class="form-field">
+        <label for="appdev-ops-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-ops-item-${it.n}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(existing ? existing.answer : "")}</textarea>
+      </div>`;
+    }).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">運用・保守: ${escapeHtmlForDevDocs((ops && ops.status) || "未着手")}</span>
+      </div>
+      ${qaHtml}
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-ops-fields">${fieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-ops-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-ops-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildOpsPromptText(req, items), `${req.title || req.repo} 運用・保守 依頼文`, true);
+      });
+    }
+  }
+
+  function buildOpsPromptText(req, items) {
+    const answerLines = items.map((it) => {
+      const el = document.getElementById(`appdev-ops-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答)"}`;
+    }).join("\n");
+    const tSummary = ((req.test && req.test.answers) || []).map((a) => `   ${a.n}) ${a.question}: ${a.answer || "(未回答)"}`).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})の運用・保守(⑥フェーズ)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「🔧 運用・保守」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: このアプリのテスト(⑤フェーズ、data/requirements.jsonのrequirements[].test)】",
+      tSummary || "(テストの回答が見つかりません)",
+      "",
+      "【運用・保守の入力済み項目(IPA共通フレーム2013の運用プロセス3.1・保守プロセス2.6・廃棄プロセス3.2",
+      "  等に関連。data/requirements.jsonのopsChecklist.description参照)】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 上記のテスト・data/concept-log.json・data/policy.jsonと、該当リポジトリ自身の既存実装",
+      "   (README・運用関連の記述等)を確認し、関連する過去の判断が無いか確認する",
+      "2. 空欄の項目は、今すぐ全て埋めようとせず、このプロジェクトの実績・ナレッジとWeb調査の両方を",
+      "   根拠にしながらユーザーと相談して方向性を決めていく。全項目が揃っていなくても先に進めてよい",
+      "3. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   opsフィールドを追加・更新する(answers配列は{n, question, answer}としてopsChecklist.items",
+      "   全件格納、statusは「対応中」または「完了」)。commit・pushする",
+      "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🔧運用・保守に",
+      "   自動で表示される(別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+
+  // 📂開発アプリ一覧→🚀リリース・移行(2026-10-25追加)。opsと同じ入力フォーム方式(rule23)。
+  // ⑥運用・保守の全項目入力完了を前提条件とする。
+  function renderAppDevRelease() {
+    const box = document.getElementById("appdev-release");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    const items = (REQUIREMENTS.releaseChecklist && REQUIREMENTS.releaseChecklist.items) || [];
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+    if (!devDocsIsOpsComplete(req)) {
+      const oItems = (REQUIREMENTS.opsChecklist && REQUIREMENTS.opsChecklist.items) || [];
+      box.innerHTML = `<div class="empty">🔧 運用・保守の全${oItems.length}項目が入力完了すると、ここで⑦リリース・移行の聞き取りを進められます。先に「🔧 運用・保守」タブで入力を進めてください。</div>`;
+      return;
+    }
+
+    const rel = req.release;
+    const relAnswers = (rel && rel.answers) || [];
+    const qaHtml = relAnswers.length
+      ? `<div class="devdocs-qa-list">${relAnswers.map((a) => `
+          <div class="devdocs-qa-item">
+            <div class="q"><span class="n">${a.n}.</span>${escapeHtmlForDevDocs(a.question || "")}</div>
+            <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
+          </div>`).join("")}</div>`
+      : `<div class="empty">まだリリース・移行の記録がありません(未着手)。下のフォームに分かる範囲で入力し、「📋 プロンプトを作成」からClaude Codeへ相談してください。</div>`;
+
+    const fieldsHtml = items.map((it) => {
+      const existing = relAnswers.find((a) => a.n === it.n);
+      return `
+      <div class="form-field">
+        <label for="appdev-rel-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-rel-item-${it.n}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(existing ? existing.answer : "")}</textarea>
+      </div>`;
+    }).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">リリース・移行: ${escapeHtmlForDevDocs((rel && rel.status) || "未着手")}</span>
+      </div>
+      ${qaHtml}
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-rel-fields">${fieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-rel-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-rel-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildReleasePromptText(req, items), `${req.title || req.repo} リリース・移行 依頼文`, true);
+      });
+    }
+  }
+
+  function buildReleasePromptText(req, items) {
+    const answerLines = items.map((it) => {
+      const el = document.getElementById(`appdev-rel-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答)"}`;
+    }).join("\n");
+    const oSummary = ((req.ops && req.ops.answers) || []).map((a) => `   ${a.n}) ${a.question}: ${a.answer || "(未回答)"}`).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})のリリース・移行(⑦フェーズ)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「🚀 リリース・移行」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: このアプリの運用・保守(⑥フェーズ、data/requirements.jsonのrequirements[].ops)】",
+      oSummary || "(運用・保守の回答が見つかりません)",
+      "",
+      "【リリース・移行の入力済み項目(IPA共通フレーム2013の運用プロセス3.1の移行アクティビティ・",
+      "  システム導入プロセス2.3.7等に関連。data/requirements.jsonのreleaseChecklist.description参照)】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 上記の運用・保守・data/concept-log.json・data/policy.jsonと、該当リポジトリ自身の既存実装",
+      "   (README・デプロイ関連の記述等)を確認し、関連する過去の判断が無いか確認する",
+      "2. 空欄の項目は、今すぐ全て埋めようとせず、このプロジェクトの実績・ナレッジとWeb調査の両方を",
+      "   根拠にしながらユーザーと相談して方向性を決めていく。全項目が揃っていなくても先に進めてよい",
+      "3. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   releaseフィールドを追加・更新する(answers配列は{n, question, answer}としてreleaseChecklist.items",
+      "   全件格納、statusは「対応中」または「完了」)。commit・pushする",
+      "4. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🚀リリース・移行に",
       "   自動で表示される(別途の書き込みは不要)",
       "",
       "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
