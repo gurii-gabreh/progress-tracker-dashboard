@@ -610,6 +610,21 @@
         "costUsd": 1976.2453787
       },
       "rateLimitResetsAt": "2026-10-25T02:20:00+09:00"
+    },
+    {
+      "date": "2026-10-25",
+      "time": "17:05",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-103: ⑤テストタブ+test-kickoffスキルを新設、④詳細設計からチェイン。IPA資料の検索漏れをconcept-logに記録",
+      "note": "条項番号のみの狭い検索による一次情報見落としをユーザー指摘で訂正。関連キーワードでの全文横断確認により裏付けの強い9項目のチェックリストを作成。CL-046として検索方法の教訓も記録。両リポジトリmain push済み。",
+      "usage": {
+        "inputTokens": 6021327,
+        "outputTokens": 11022151,
+        "cacheReadTokens": 6128876000,
+        "cacheWriteTokens": 137017483,
+        "costUsd": 1984.40321246
+      },
+      "rateLimitResetsAt": "2026-10-25T22:00:00+09:00"
     }
   ]
 }
