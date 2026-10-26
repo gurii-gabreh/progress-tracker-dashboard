@@ -1,0 +1,77 @@
+---
+name: subagent-role-orchestration
+description: Apply when a task breaks into multiple independent units of work (e.g. researching/implementing/testing the same thing across several apps or repos) and parallelizing via subagents would genuinely help. Splits the work into 司令塔(commander, the current room)・Research・実装(implementation)・テスト(test) roles, so delegation decisions follow a consistent pattern instead of being re-derived from scratch each time. Not a chat-triggered skill (triggerType: ai) — the current room applies this judgment itself when a task fits the profile, per claude-core-rules.md rule 18's 2026-10-26 addendum.
+---
+
+# サブエージェントの役割分担パターン(司令塔/Research/実装/テスト)
+
+## これは何か
+
+claude-core-rules.mdルール18(サブエージェントと既存オーケストレーションの使い分け)の具体化。
+2026-10-25の③〜⑦タブ連続実装の経験から、ユーザーが「サブエージェント化をこのルーム内で
+うまくやればもう少し効率的にできるよね？」と相談を持ちかけ、2026-10-26にこのスキルとして
+明文化した。
+
+**適用判断**: 複数の独立したタスク(例: 複数アプリそれぞれの調査・複数アプリそれぞれへの
+同じ種類の変更)がある場合に適用する。逆に、同じ共有ファイル(例: 1つのdashboard.html、
+1つのdata/requirements.json)を前工程の判断を踏まえて逐次的に積み上げていく作業は、
+並列化してもファイル衝突のリスクが増えるだけで効果が薄いため、このパターンの対象外
+(2026-10-25の③〜⑦タブ実装がこのケース、逐次処理のまま進めた)。
+
+## 役割
+
+### 司令塔(このルーム自身)
+
+- タスクをResearch/実装/テストへ分解し、各サブエージェントへ指示を出す
+- **判断・指示は全て司令塔が出す**(ユーザー指示「判断や指示は、全て司令塔が出す方向に
+  切り替えて」、2026-10-26)。Research/実装/テストのサブエージェントが自律的に次の判断を
+  下したり、互いに直接やり取りしたりはしない
+- Researchの結果を一度必ず受け取り、内容を確認してから実装への指示を出す(ユーザー指示
+  「調査結果は一度司令塔が受け取ったうえで指示を出せ」)
+- 実装中に問題が出た場合は司令塔へ返される(ユーザー指示「実装時に問題が出てた場合は
+  司令塔に返し」)。司令塔が対応方針を判断する
+- 各ワークツリー(後述)の差分をレビューし、順番にmainへ取り込む(マージは性質上直列)
+- commit・push・main merge・data/tasks.json/data/credit-log.jsonへの記録・ユーザーへの
+  報告は司令塔が一本化して行う
+
+### Research
+
+- 独立した調査対象ごとにフォークし、並列で走らせる
+- 調査結果・下書きを**司令塔へ返すだけ**で、共有ファイルへの書き込みは行わない
+- 例: 16アプリそれぞれのREADME/tasks.jsonの実績/concept-log/git logを調べ、
+  各種チェックリストの回答案を下書きする
+
+### 実装
+
+- `isolation: "worktree"`(Gitワークツリー、独立した作業コピー)を与えて並列化してよい。
+  各実装サブエージェントは自分専用のブランチ・作業コピーの中で実際にファイルを編集・
+  コミットするため、他のサブエージェントや司令塔の作業とファイルレベルで衝突しない
+- 問題が出た場合は自己解決せず司令塔へ返す
+
+### テスト
+
+- 独立して並列検証できる範囲(例: 複数アプリの画面表示確認、JSON妥当性チェック)は
+  サブエージェント化してよい
+- 検証結果を司令塔へ返す
+
+## サブエージェント間の確認が必要な場面
+
+サブエージェント同士が直接会話する仕組みは技術的に無い(Agent/forkツールは結果を
+呼び出し元=司令塔へ返す構造のため)。このため、他のサブエージェントの結果と照合したい
+といった軽い確認が必要な場合も、司令塔を経由する。ただしこの場合、司令塔は重いレビューを
+挟まず、質問・回答をそのまま橋渡しする「軽い仲介」に徹してよい(2026-10-26、ユーザーへ
+技術的制約を説明した上で「司令塔経由でも問題なし」と合意済み)。大きな判断(Research結果の
+採否、実装方針の決定)は、引き続き司令塔がきちんと内容を確認してから次の指示を出す。
+
+## 具体例(16アプリへの③〜⑦内容入力、2026-10-26時点で未着手)
+
+1. 司令塔が16アプリを独立した単位(アプリ1本または数本のバッチ)に分解
+2. 各単位についてResearchフォークを並列起動し、③機能要件〜⑦リリース・移行の回答案を
+   下書きさせる(共有ファイルへの書き込みはしない)
+3. 司令塔が各フォークの結果を受け取り、内容を確認(根拠が薄い・矛盾が無いか等)
+4. 司令塔がdata/requirements.jsonへ確認済みの内容をまとめて書き込む(ここは一本化、
+   衝突回避のため)
+5. テスト(JSON妥当性・Playwrightでの表示確認)。独立して並列検証できる範囲は
+   テスト専用のサブエージェントに任せてよい
+6. 司令塔がcommit・push・main merge、data/tasks.json/data/credit-log.jsonへ記録
+7. ユーザーへ報告(1アプリごとではなく、ある程度まとまった単位で)
