@@ -1645,6 +1645,51 @@
       "sourceUrl": "https://www.digitalapplied.com/blog/agent-washing-definition-buyers-scorecard-2026",
       "collectedAt": "2026-09-06 10:00",
       "usedAI": "Claude"
+    },
+    {
+      "date": "2026-10-18",
+      "category": "マルチエージェント・オーケストレーション",
+      "title": "「Agent Swarm」という用語の普及 ― オーケストレーターが多数のサブエージェントを動的統制する構成",
+      "summary": "一般ニュースでも「Agent Swarm(AIエージェントの群れ)」という用語が取り上げられるようになっている。学術的には、オーケストレーターがタスクに応じて動的に生成したサブエージェント群を階層的に統制する仕組みとされ、数十〜数百体規模で並行動作する点が、2〜6体程度の小規模な「マルチエージェントcrew」と区別される。適切な統制がないとループ・競合・失敗が起きやすいという指摘もある。",
+      "sourceUrl": "https://arxiv.org/pdf/2608.30661",
+      "collectedAt": "2026-10-27 18:59",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-10-18",
+      "category": "開発ツール・プラットフォーム",
+      "title": "Claude Codeの新機能「mods」― インターフェース・動作を変更するプラグイン",
+      "summary": "Claude Code公式ドキュメントによると、modはJavaScript/TypeScriptのイベントハンドラ(ツール呼び出し・プロンプト送信等で発火)でClaude Code自身の見た目・挙動を変更するプラグイン。組み込みmod利用・Claudeに書かせる・自作、の3つの入手経路があり、CLIとClaude Desktopの「Code」タブで動作する。",
+      "sourceUrl": "https://code.claude.com/docs/en/plugins/mods/overview.md",
+      "collectedAt": "2026-10-27 18:59",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-04",
+      "category": "モデル性能・実運用品質",
+      "title": "AIコーディングエージェントのPRマージ率: Claude 84%・Codex 74%・Devin 43%・人間85%",
+      "summary": "AIコーディングエージェントが作成したプルリクエストの実際のマージ率を比較した調査結果。ClaudeとCodexを使い分けている現在の運用(ダブルチェック体制等)に直接関係する実データ。",
+      "sourceUrl": "https://arxiv.org/abs/2607.21832",
+      "collectedAt": "2026-10-27 18:59",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-02",
+      "category": "AIアプリ設計・アーキテクチャ",
+      "title": "「コンテキストエンジニアリング」― 単純なプロンプト設計を超えた本番運用向けのコンテキスト設計",
+      "summary": "本番稼働レベルのAIアプリケーション構築において、Redisを使った長期/短期記憶の統合、要約によるトークン上限管理、リランキング・セマンティックキャッシュによるコンテキスト劣化対策を扱う実践的アーキテクチャの講演。",
+      "sourceUrl": "https://www.infoq.com/presentations/context-engineering-redis-llm-architecture/",
+      "collectedAt": "2026-10-27 18:59",
+      "usedAI": "Claude"
+    },
+    {
+      "date": "2026-09-03",
+      "category": "アプリ作成時に活かせる技術",
+      "title": "zg (zvec-grep) ― ripgrep・BM25・ベクトル検索を統合したローカル完結型検索レイヤー",
+      "summary": "Qwen開発チームがApache 2.0でOSS公開。ripgrep(文字列検索)・BM25(キーワード検索)・ベクトル検索を1つに統合したローカル完結型の検索レイヤー。PTD-061で検討中の埋め込み検索の実装候補として直接関連する。",
+      "sourceUrl": "https://www.marktechpost.com/2026/09/02/qwen-developers-open-sources-zg-zvec-grep-a-local-first-search-layer-unifying-ripgrep-bm25-and-vector-search/",
+      "collectedAt": "2026-10-27 18:59",
+      "usedAI": "Claude"
     }
   ]
 }
