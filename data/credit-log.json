@@ -703,6 +703,21 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-048: REST Message作成",
       "note": "日次ログ処理のステップ9で判明した記録漏れの遡及backfill(2026-10-25)。2026-08-20〜10-03の記録停止期間(CLAUDE.md記載の既知のギャップ)に該当し、当時の実測usageデータが無いためusage/time欄は記録しない。"
+    },
+    {
+      "date": "2026-10-26",
+      "time": "23:55",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-106: subagent-role-orchestrationスキルを新設、ルール18へ司令塔/Research/実装/テストの役割分担モデルを追記",
+      "note": "サブエージェント化の相談から、判断・指示は全て司令塔が出す役割分担モデルを明文化。claude-core-rules.md・新規スキル・ai-config.jsonをmain push済み。",
+      "usage": {
+        "inputTokens": 6038656,
+        "outputTokens": 11142651,
+        "cacheReadTokens": 6208216603,
+        "cacheWriteTokens": 139140325,
+        "costUsd": 2009.99220376
+      },
+      "rateLimitResetsAt": "2026-10-27T06:00:00+09:00"
     }
   ]
 }

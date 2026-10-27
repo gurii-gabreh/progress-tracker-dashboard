@@ -5544,6 +5544,30 @@
           "summary": "Playwrightでops/releaseのゲート動作・既存タブ回帰・JSエラー0件を確認。両リポジトリmain push済み。アプリ開発チェーンが全8段階・スキル7本まで拡張完了。"
         }
       ]
+    },
+    {
+      "id": "PTD-106",
+      "title": "subagent-role-orchestrationスキルを新設、ルール18へ司令塔/Research/実装/テストの役割分担モデルを追記",
+      "task": "サブエージェント運用パターンの明文化",
+      "repo": "progress-tracker-dashboard",
+      "category": "governance",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。次の16アプリ遡及適用タスクで実際にこのパターンを使い、実運用で問題が無いか確認する予定。",
+      "note": "ユーザー相談「サブエージェント化をこのルーム内でうまくやればもう少し効率的にできるよね？」から始まり、「司令塔・Research・実装・テストの役割分担をスキル化したい」「判断や指示は全て司令塔が出す方向に切り替えて」という一連の指示への対応。",
+      "detail": "claude-core-rules.mdルール18へ、複数の独立タスクをサブエージェント化する際の役割分担モデル(司令塔が全ての判断・指示を出す、Researchは調査結果を司令塔へ返すのみで共有ファイルへの書き込みはしない、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化)を追記した。サブエージェント同士が直接会話する仕組みは技術的に無い(Agent/forkツールは結果を呼び出し元=司令塔へ返す構造)ことをユーザーへ説明し、軽い確認は司令塔が重いレビューを挟まず橋渡しするだけでよい、という形で合意を得た。.claude/skills/subagent-role-orchestration/SKILL.md(triggerType:ai、固定起動フレーズ無しのためclaude-voice-bridgeへの登録は不要)を新設し、data/ai-config.jsonのcustomSkills registry/tableへ登録。Playwrightで🤖AI基本設定タブへの反映・JSエラー0件を確認。mainへのpushによりsync-claude-md.ymlが自動発火し全管理対象リポジトリのCLAUDE.mdへ同期される見込み。",
+      "output": "data/claude-core-rules.md(ルール18追記)、.claude/skills/subagent-role-orchestration/SKILL.md、data/ai-config.json",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-10-26",
+          "summary": "Playwrightで🤖AI基本設定タブへの反映・JSエラー0件を確認。main push済み。sync-claude-md.yml経由での全リポジトリCLAUDE.md反映は自動(未確認、次回の定期確認Routineで検証予定)。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-10-18"
