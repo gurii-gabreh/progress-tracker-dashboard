@@ -24,7 +24,8 @@
           "title": "Build with Claude developer contest",
           "url": "https://docs.anthropic.com/claude/page/build-with-claude-developer-contest"
         }
-      ]
+      ],
+      "no": "B-001"
     },
     {
       "id": "contest-mitou-advanced",
@@ -45,7 +46,8 @@
           "title": "2026年度下期公募",
           "url": "https://www.ipa.go.jp/jinzai/mitou/advanced/2026second/rcu1hd0000015k6f-att/koubo20260716.pdf"
         }
-      ]
+      ],
+      "no": "B-002"
     },
     {
       "id": "contest-geniac-prize",
@@ -66,7 +68,8 @@
           "title": "内閣府資料",
           "url": "https://www8.cao.go.jp/cstp/ai/ai_kankeishoutyou/2kai/shiryo3.pdf"
         }
-      ]
+      ],
+      "no": "B-003"
     },
     {
       "id": "contest-japan-dx-award",
@@ -87,7 +90,8 @@
           "title": "尼崎市資料",
           "url": "https://www.city.amagasaki.hyogo.jp/_res/projects/default_project/_page_/001/043/644/260615-01.pdf"
         }
-      ]
+      ],
+      "no": "B-004"
     },
     {
       "id": "contest-u22",
@@ -104,7 +108,8 @@
           "title": "U-22プログラミング・コンテスト2026応募受付開始",
           "url": "https://resemom.jp/release/prtimes/20260701/192982.html"
         }
-      ]
+      ],
+      "no": "B-005"
     },
     {
       "id": "contest-ezuka",
@@ -121,7 +126,8 @@
           "title": "第15回e-ZUKAスマートアプリコンテスト2026",
           "url": "https://koubo.jp/contest/319408"
         }
-      ]
+      ],
+      "no": "B-006"
     },
     {
       "id": "contest-sabae",
@@ -138,7 +144,8 @@
           "title": "長崎県資料(参考情報として検索結果に混在、公式要項は未直接確認)",
           "url": "https://www.pref.nagasaki.jp/shared/uploads/2025/06/1750982685.pdf"
         }
-      ]
+      ],
+      "no": "B-007"
     },
     {
       "id": "contest-openinnovation",
@@ -155,7 +162,8 @@
           "title": "第9回日本オープンイノベーション大賞公募",
           "url": "https://www8.cao.go.jp/cstp/openinnovation/prize/2026"
         }
-      ]
+      ],
+      "no": "B-008"
     },
     {
       "id": "contest-nocodecamp",
@@ -172,7 +180,8 @@
           "title": "第8回NoCodeCampコンテスト",
           "url": "https://www.atpress.ne.jp/news/8098238"
         }
-      ]
+      ],
+      "no": "B-009"
     },
     {
       "id": "contest-product-hunt",
@@ -189,7 +198,8 @@
           "title": "Golden Kitty Awards(参考、要最新確認)",
           "url": "https://www.producthunt.com/p/producthunt/golden-kitty-awards-2017"
         }
-      ]
+      ],
+      "no": "B-010"
     }
   ]
 }

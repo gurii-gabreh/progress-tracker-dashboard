@@ -4144,12 +4144,13 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>名前</th><th>主催</th><th>内容</th><th>前回開催時期</th><th>直近テーマ</th><th>次回開催</th><th>状況</th><th>出典</th></tr></thead>
           <tbody>
             ${candidates.map((c) => `
               <tr>
                 ${researchViewedCheckboxTd(c.id)}
                 ${researchCheckboxTd(c.id)}
+                <td>${escapeHtmlForDevDocs(c.no || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.name || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.content || "")}</td>
@@ -4173,12 +4174,13 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>ハッカソン</th><th>回</th><th>順位</th><th>タイトル</th><th>チーム</th><th>概要</th><th>使用技術</th><th>出典</th></tr></thead>
           <tbody>
             ${winners.map((w) => `
               <tr>
                 ${researchViewedCheckboxTd(w.id)}
                 ${researchCheckboxTd(w.id)}
+                <td>${escapeHtmlForDevDocs(w.no || "")}</td>
                 <td>${escapeHtmlForDevDocs(w.hackathon || "")}</td>
                 <td>${escapeHtmlForDevDocs(w.edition || "")}</td>
                 <td>${escapeHtmlForDevDocs(w.rank || "")}</td>
@@ -4224,12 +4226,13 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>名前</th><th>主催</th><th>初心者向け度</th><th>開催頻度・直近募集</th><th>参加資格</th><th>評価基準・テーマ</th><th>メリット</th><th>備考</th><th>出典</th></tr></thead>
           <tbody>
             ${entries.map((c) => `
               <tr>
                 ${researchViewedCheckboxTd(c.id)}
                 ${researchCheckboxTd(c.id)}
+                <td>${escapeHtmlForDevDocs(c.no || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.name || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.organizer || "")}</td>
                 <td>${escapeHtmlForDevDocs(c.beginnerFriendliness || "不明")}</td>
