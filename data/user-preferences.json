@@ -10,7 +10,17 @@
     "addedAt": "このファイルへ記録した日時(ISO8601)"
   },
   "viewedIdsNote": "2026-10-24追加。「閲覧済み」チェック(一覧表の一番左の列)に入れたidの一覧。保存(likedItems)とは別管理で、詳細情報は持たずid文字列のみ。閲覧済みでも保存済み(likedItemsに含まれる)の項目は、一覧表でグレーアウト・「閲覧済みを非表示」フィルタの対象外として扱う(ユーザー指示「保存列にチェックがある場合は閲覧済みにチェックをしても灰色にしないように」)。",
-  "viewedIds": [],
+  "viewedIds": [
+    "hack-a-google-cloud",
+    "hack-b-microsoft",
+    "hack-c-tokyo-opendata",
+    "hack-d-ai-hack",
+    "hack-e-zennihon-ai",
+    "4df1f00d93885714043532edfaba1044",
+    "c5f1f00d93885714043532edfaba1045",
+    "0df1f00d93885714043532edfaba1045",
+    "85f1f00d93885714043532edfaba1046"
+  ],
   "likedItems": [
     {
       "id": "hack-a-google-cloud",
@@ -35,6 +45,22 @@
       "summary": "Azure/Copilot Studio等を使ったAIエージェント開発ハッカソン。2026年開催が初回(Zenn初の企業対抗ハッカソン)で、個人部門を新設。前身イベント(同主催者による過去回)は調査の結果確認できなかった。",
       "url": "https://zenn.dev/hackathons/microsoft-agent-hackathon-2026",
       "addedAt": "2026-10-24T12:39:12.656238+00:00"
+    },
+    {
+      "id": "c5f1f00d93885714043532edfaba1045",
+      "sourceType": "ai-trend",
+      "title": "Artificial Intelligence | AI ഇനി ജോലി ചെയ്തുതരും! എന്താണ് Agent AI, Agent Swarm? |AI agent | N18V",
+      "summary": "「Agent AI」「Agent Swarm(AIエージェントの群れ)」という概念を一般向けに解説する、インドのニュース解説動画。",
+      "url": "https://www.youtube.com/watch?v=bTgO70Pceos",
+      "addedAt": "2026-10-27T10:18:23.000000+00:00"
+    },
+    {
+      "id": "41f1f00d93885714043532edfaba1046",
+      "sourceType": "ai-trend",
+      "title": "클로드 신기능 mods 활용하기 #claude #claudecode #클로드 #mods #클로드코드",
+      "summary": "Claude Codeの新機能「mods」の活用方法を紹介する韓国語の解説動画(フル動画の一部切り出し)。",
+      "url": "https://www.youtube.com/watch?v=E2AyWVfzH7w",
+      "addedAt": "2026-10-27T10:18:23.000000+00:00"
     }
   ],
   "analysis": {
