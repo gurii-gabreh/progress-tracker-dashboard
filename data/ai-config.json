@@ -189,7 +189,7 @@
         {
           "name": "subagent-role-orchestration",
           "repo": "gurii-gabreh/progress-tracker-dashboard",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記)。",
           "triggerType": "ai"
         }
       ]
@@ -550,6 +550,12 @@
             "Claude側が担当する: このリポジトリ群の構造・経緯(tasks.json/concept-log.json等)への理解が前提となる実装(Codexにはその経緯情報が無いため)"
           ],
           "constraint": "Codex CLIのログイン状態・インストールは現時点でセッション(コンテナ)限定。恒久化(環境のセットアップスクリプトへのnpm install追加・ログイン情報の永続化方法)は未着手(CCX-001参照)。恒久化が完了するまでは『このルームが稼働中の間だけ使える手段』として扱う。",
+          "doubleCheckRequirement": {
+            "addedAt": "2026-10-27",
+            "rule": "重要な判断・結果に限り(例: 社内向け資料等に含める事実主張、Research結果の採否、実装の正しさ・完了判定)、Claude自身の確認に加えて、Codexなど別のAIにもダブルチェックを依頼する。文体修正・軽微な作業は対象外。",
+            "reason": "1つのAI(Claude自身)の判断だけに頼ると、見落とし・思い込みがそのまま結果に反映されるリスクがあるため(ユーザー指摘「違うAIによるダブルチェックを入れたほうがいいだろ」)。全作業に毎回挟むと時間・コストが常に増え、claude-core-rules.mdルール22(クレジット節約の使い分け)に反するため、対象は重要な判断・結果だけに絞っている(ユーザー確認済み)。",
+            "executorSelection": "実行役の選び方は上記delegationCriteriaと同じ基準に沿う。"
+          },
           "examples": [
             {
               "addedAt": "2026-10-04",
@@ -802,7 +808,7 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "path": ".claude/skills/subagent-role-orchestration/SKILL.md",
           "createdAt": "2026-10-26",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記、orchestration.workerRoomDeprecation.codexDelegation.doubleCheckRequirement参照)。",
           "triggerType": "ai"
         }
       ],
