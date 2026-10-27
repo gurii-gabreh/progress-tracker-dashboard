@@ -4488,6 +4488,9 @@
 
   // AI_TRENDS_ITEMS(🤖AI最新情報タブが既に読み込んでいるresearch-items.json)から
   // sysId一致で引き、「保存」コピー時に失われるpointsJa/applicableTechJa/sourceNameを補う。
+  // 他の調査資料サブタブ(ハッカソン・コンテスト・AI最新情報等)と同じresearch-table形式の
+  // 一覧表で表示する(2026-10-27、ユーザー指摘「一覧化しろというのがわからない？」を受けて、
+  // 当初のカード形式から他タブと統一したテーブル形式へ修正)。
   function renderKeywordsList(items) {
     const box = document.getElementById("research-keywords-list");
     if (!box) return;
@@ -4495,18 +4498,27 @@
       box.innerHTML = `<div class="empty">まだ保存された項目がありません。「🤖 AI最新情報」タブで気になった記事の「💾保存」をチェックし、「📋 保存した記事をコピー」からClaudeへ反映を依頼してください。</div>`;
       return;
     }
-    box.innerHTML = `<div class="devdocs-qa-list">${items.map((it) => {
-      const full = AI_TRENDS_ITEMS.find((t) => t.sysId === it.id);
-      return `
-      <div class="devdocs-qa-item">
-        <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
-        ${it.summary ? `<div class="a"><b>概要: </b>${escapeHtmlForDevDocs(it.summary)}</div>` : ""}
-        <div class="a"><b>情報源: </b>${escapeHtmlForDevDocs((full && full.sourceName) || (it.url ? new URL(it.url).hostname : "不明"))}</div>
-        <div class="a"><b>追加日: </b>${escapeHtmlForDevDocs((it.addedAt || "不明").slice(0, 10))}</div>
-        ${full && (full.pointsJa || []).length ? `<div class="a"><b>ポイント: </b><br>${full.pointsJa.map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</div>` : ""}
-        ${full && full.applicableTechJa ? `<div class="a"><b>活かせる技術: </b>${escapeHtmlForDevDocs(full.applicableTechJa)}</div>` : ""}
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th>タイトル</th><th>概要</th><th>情報源</th><th>追加日</th><th>ポイント</th><th>活かせる技術</th></tr></thead>
+          <tbody>
+            ${items.map((it) => {
+              const full = AI_TRENDS_ITEMS.find((t) => t.sysId === it.id);
+              const sourceLabel = (full && full.sourceName) || (it.url ? (() => { try { return new URL(it.url).hostname; } catch (e) { return "不明"; } })() : "不明");
+              return `
+              <tr>
+                <td>${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.summary || "")}</td>
+                <td>${escapeHtmlForDevDocs(sourceLabel)}</td>
+                <td>${escapeHtmlForDevDocs((it.addedAt || "不明").slice(0, 10))}</td>
+                <td>${full && (full.pointsJa || []).length ? full.pointsJa.map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>") : ""}</td>
+                <td>${escapeHtmlForDevDocs((full && full.applicableTechJa) || "")}</td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
       </div>`;
-    }).join("")}</div>`;
   }
 
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
