@@ -1585,6 +1585,7 @@
     <button type="button" class="manager-subview-btn" id="research-subtab-contest" data-subview="contest">🎯 AI駆動型アプリコンテスト</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">📱 Reddit事例集</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-ai-trends" data-subview="ai-trends">🤖 AI最新情報</button>
+    <button type="button" class="manager-subview-btn" id="research-subtab-keywords" data-subview="keywords">💬 気になるキーワード</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-preferences" data-subview="preferences">👤 ユーザー思考</button>
   </div>
 
@@ -1701,6 +1702,31 @@
           </div>
         </div>
         <div id="research-ai-trends-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💬気になるキーワードサブタブ(2026-10-27追加)。ユーザー指示「AI最新情報の横に、気になる
+       キーワードボタンを追加し一覧化して表示して」。data/ai-research-feed.json(このリポジトリ自身の
+       「AI技術リサーチ 日次深掘り調査」が記録してきた気になる用語・ニュースのログ、かつてはこの
+       Routineが生成したHTML(Signal Log Artifact)でのみ閲覧できたが、Routine自体が削除され更新が
+       止まっていたため、今後は手動で追記しつつこのダッシュボード上で直接閲覧できるようにした)を表示する。 -->
+  <div id="research-subview-keywords" class="manager-subview">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">💬 気になるキーワード</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">調査・会話の中で気になったAI関連の用語・ニュースの記録です(data/ai-research-feed.json)。かつて日次Routineが自動更新していましたが現在は削除されており、Claudeとの会話の中で随時手動追記しています。一番左が「閲覧済み」、その隣が「保存」のチェックです(上部の「📋 保存した記事をコピー」から)。</p>
+          </details>
+          <div class="policy-meta" id="research-keywords-meta"></div>
+          <div class="relations-controls research-filter-bar" id="keywords-filter-bar">
+            <label>カテゴリ: <select id="keywords-filter-category"><option value="">すべて</option></select></label>
+            <button type="button" class="manager-subview-btn" id="research-keywords-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
+        </div>
+        <div id="research-keywords-list"></div>
       </div>
     </div>
   </div>
@@ -4039,6 +4065,7 @@
         "contest": "🎯 AI駆動型アプリコンテスト",
         "idea": "📱 Reddit事例集",
         "ai-trend": "🤖 AI最新情報",
+        "keyword": "💬 気になるキーワード",
       };
       const bySrc = {};
       likedIds.forEach((id) => {
@@ -4086,6 +4113,7 @@
   setupResearchHideViewedToggle("research-contest-hide-viewed-btn", "research-subview-contest");
   setupResearchHideViewedToggle("research-ideas-hide-viewed-btn", "research-subview-ideas");
   setupResearchHideViewedToggle("research-ai-trends-hide-viewed-btn", "research-subview-ai-trends");
+  setupResearchHideViewedToggle("research-keywords-hide-viewed-btn", "research-subview-keywords");
 
   // 2026-10-24追加、ユーザー指示「この保存列と閲覧済みの情報は...ページを読み込む際にその内容も
   // 読み取り反映して」。data/user-preferences.jsonのlikedItems/viewedIds(Claude経由で過去に
@@ -4438,6 +4466,86 @@
     wireResearchCheckboxes(box);
   }
 
+  // 🔍調査資料タブ→💬気になるキーワード(2026-10-27追加)。data/ai-research-feed.jsonを
+  // 読み込み、カテゴリで絞り込める一覧表として表示する。
+  let KEYWORDS_ITEMS = [];
+  let keywordsFiltersWired = false;
+
+  function loadKeywordsResearch() {
+    return fetch("data/ai-research-feed.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/ai-research-feed.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        const items = (data.entries || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+        KEYWORDS_ITEMS = items;
+        items.forEach((it) => registerResearchItem(it.no || it.sourceUrl || it.title, "keyword", it.title, it.summary, it.sourceUrl));
+        populateKeywordsFilterOptions();
+        wireKeywordsFilters();
+        applyKeywordsFilters();
+        const meta = document.getElementById("research-keywords-meta");
+        if (meta) meta.textContent = `記録件数: ${items.length}件`;
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("research-keywords-list");
+        if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
+      });
+  }
+
+  function populateKeywordsFilterOptions() {
+    const catSel = document.getElementById("keywords-filter-category");
+    if (!catSel) return;
+    const cats = [...new Set(KEYWORDS_ITEMS.map((it) => it.category || "不明"))].sort();
+    catSel.innerHTML = `<option value="">すべて</option>` + cats.map((c) =>
+      `<option value="${escapeHtmlForDevDocs(c)}">${escapeHtmlForDevDocs(c)}</option>`).join("");
+  }
+
+  function wireKeywordsFilters() {
+    if (keywordsFiltersWired) return;
+    keywordsFiltersWired = true;
+    const catSel = document.getElementById("keywords-filter-category");
+    if (catSel) catSel.addEventListener("change", applyKeywordsFilters);
+  }
+
+  function applyKeywordsFilters() {
+    const cat = (document.getElementById("keywords-filter-category") || {}).value || "";
+    const filtered = KEYWORDS_ITEMS.filter((it) => !cat || (it.category || "不明") === cat);
+    renderKeywordsTable(filtered);
+  }
+
+  function renderKeywordsTable(items) {
+    const box = document.getElementById("research-keywords-list");
+    if (!box) return;
+    if (!KEYWORDS_ITEMS.length) { box.innerHTML = `<div class="empty">記録された項目がまだありません。</div>`; return; }
+    if (!items.length) { box.innerHTML = `<div class="empty">条件に一致する項目がありません。</div>`; return; }
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>日付</th><th>カテゴリ</th><th>タイトル</th><th>概要</th><th>記載日時</th><th>出典</th></tr></thead>
+          <tbody>
+            ${items.map((it) => {
+              const key = it.no || it.sourceUrl || it.title;
+              return `
+              <tr>
+                ${researchViewedCheckboxTd(key)}
+                ${researchCheckboxTd(key)}
+                <td>${escapeHtmlForDevDocs(it.no || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.date || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(it.category || "不明")}</td>
+                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.summary || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.collectedAt || "不明")}</td>
+                <td>${it.sourceUrl ? `<a href="${escapeHtmlForDevDocs(it.sourceUrl)}" target="_blank" rel="noopener">出典 ↗</a>` : ""}</td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
+  }
+
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
   // ビューアーのみ(書き込みは常にClaude Code経由)。
   function loadPreferencesResearch() {
@@ -4486,6 +4594,7 @@
       contest: { btn: document.getElementById("research-subtab-contest"), panel: document.getElementById("research-subview-contest") },
       ideas: { btn: document.getElementById("research-subtab-ideas"), panel: document.getElementById("research-subview-ideas") },
       "ai-trends": { btn: document.getElementById("research-subtab-ai-trends"), panel: document.getElementById("research-subview-ai-trends") },
+      keywords: { btn: document.getElementById("research-subtab-keywords"), panel: document.getElementById("research-subview-keywords") },
       preferences: { btn: document.getElementById("research-subtab-preferences"), panel: document.getElementById("research-subview-preferences") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
@@ -5713,6 +5822,7 @@
     loadContestResearch();
     loadIdeaResearch();
     loadAiTrendsResearch();
+    loadKeywordsResearch();
     loadPreferencesResearch();
     updateResearchLikedCount();
   });
