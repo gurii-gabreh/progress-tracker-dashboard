@@ -4486,6 +4486,8 @@
       });
   }
 
+  // AI_TRENDS_ITEMS(🤖AI最新情報タブが既に読み込んでいるresearch-items.json)から
+  // sysId一致で引き、「保存」コピー時に失われるpointsJa/applicableTechJa/sourceNameを補う。
   function renderKeywordsList(items) {
     const box = document.getElementById("research-keywords-list");
     if (!box) return;
@@ -4493,12 +4495,18 @@
       box.innerHTML = `<div class="empty">まだ保存された項目がありません。「🤖 AI最新情報」タブで気になった記事の「💾保存」をチェックし、「📋 保存した記事をコピー」からClaudeへ反映を依頼してください。</div>`;
       return;
     }
-    box.innerHTML = `<div class="devdocs-qa-list">${items.map((it) => `
+    box.innerHTML = `<div class="devdocs-qa-list">${items.map((it) => {
+      const full = AI_TRENDS_ITEMS.find((t) => t.sysId === it.id);
+      return `
       <div class="devdocs-qa-item">
         <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
-        ${it.summary ? `<div class="a">${escapeHtmlForDevDocs(it.summary)}</div>` : ""}
-        <div class="a" style="opacity:0.7; font-size:12px;">保存日時: ${escapeHtmlForDevDocs(it.addedAt || "不明")}</div>
-      </div>`).join("")}</div>`;
+        ${it.summary ? `<div class="a"><b>概要: </b>${escapeHtmlForDevDocs(it.summary)}</div>` : ""}
+        <div class="a"><b>情報源: </b>${escapeHtmlForDevDocs((full && full.sourceName) || (it.url ? new URL(it.url).hostname : "不明"))}</div>
+        <div class="a"><b>追加日: </b>${escapeHtmlForDevDocs((it.addedAt || "不明").slice(0, 10))}</div>
+        ${full && (full.pointsJa || []).length ? `<div class="a"><b>ポイント: </b><br>${full.pointsJa.map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</div>` : ""}
+        ${full && full.applicableTechJa ? `<div class="a"><b>活かせる技術: </b>${escapeHtmlForDevDocs(full.applicableTechJa)}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
   }
 
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
@@ -5776,8 +5784,7 @@
     loadHackathonResearch();
     loadContestResearch();
     loadIdeaResearch();
-    loadAiTrendsResearch();
-    loadKeywordsResearch();
+    loadAiTrendsResearch().finally(() => loadKeywordsResearch());
     loadPreferencesResearch();
     updateResearchLikedCount();
   });
