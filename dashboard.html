@@ -1706,11 +1706,14 @@
     </div>
   </div>
 
-  <!-- 💬気になるキーワードサブタブ(2026-10-27追加)。ユーザー指示「AI最新情報の横に、気になる
-       キーワードボタンを追加し一覧化して表示して」。data/ai-research-feed.json(このリポジトリ自身の
-       「AI技術リサーチ 日次深掘り調査」が記録してきた気になる用語・ニュースのログ、かつてはこの
-       Routineが生成したHTML(Signal Log Artifact)でのみ閲覧できたが、Routine自体が削除され更新が
-       止まっていたため、今後は手動で追記しつつこのダッシュボード上で直接閲覧できるようにした)を表示する。 -->
+  <!-- 💬気になるキーワードサブタブ(2026-10-27追加、同日に設計変更)。当初はdata/ai-research-feed.json
+       の全件を一覧表示する案で実装したが、ユーザー指摘「ちょっとごっちゃになってしまっている」
+       「私がチェックして気になったものだけの一覧にしたい」を受けて設計変更。自動収集された
+       ai-research-feed.jsonのデータは(今後は)🤖AI最新情報タブ側の対象とし、このタブは
+       🤖AI最新情報タブで「💾保存」チェックした項目(=ユーザー自身が選んだもの)だけを表示する
+       専用ビューにした。データソースはdata/user-preferences.jsonのlikedItems(既存の
+       👤ユーザー思考タブと同じ正本)で、sourceType==="ai-trend"のものだけに絞り込む
+       (rule23: 新しい保存の仕組みを作らず既存の保存チェック機能をそのまま再利用)。 -->
   <div id="research-subview-keywords" class="manager-subview">
     <div class="policy-scroll">
       <div class="policy-wrap">
@@ -1718,13 +1721,9 @@
           <div class="tab-page-title">💬 気になるキーワード</div>
           <details class="research-overview-collapse">
             <summary>ℹ️ このページについて</summary>
-            <p class="tab-page-overview">調査・会話の中で気になったAI関連の用語・ニュースの記録です(data/ai-research-feed.json)。かつて日次Routineが自動更新していましたが現在は削除されており、Claudeとの会話の中で随時手動追記しています。一番左が「閲覧済み」、その隣が「保存」のチェックです(上部の「📋 保存した記事をコピー」から)。</p>
+            <p class="tab-page-overview">「🤖 AI最新情報」タブで「💾保存」をチェックした項目だけが、ここに一覧表示されます。自分で選んだものだけを後からまとめて振り返るための専用ビューです(新しい保存の仕組みではなく、既存の「保存」チェック→「📋 保存した記事をコピー」→Claudeへの反映、という既存の流れをそのまま使います)。</p>
           </details>
           <div class="policy-meta" id="research-keywords-meta"></div>
-          <div class="relations-controls research-filter-bar" id="keywords-filter-bar">
-            <label>カテゴリ: <select id="keywords-filter-category"><option value="">すべて</option></select></label>
-            <button type="button" class="manager-subview-btn" id="research-keywords-hide-viewed-btn">👁 閲覧済みを非表示</button>
-          </div>
         </div>
         <div id="research-keywords-list"></div>
       </div>
@@ -4065,7 +4064,6 @@
         "contest": "🎯 AI駆動型アプリコンテスト",
         "idea": "📱 Reddit事例集",
         "ai-trend": "🤖 AI最新情報",
-        "keyword": "💬 気になるキーワード",
       };
       const bySrc = {};
       likedIds.forEach((id) => {
@@ -4113,7 +4111,6 @@
   setupResearchHideViewedToggle("research-contest-hide-viewed-btn", "research-subview-contest");
   setupResearchHideViewedToggle("research-ideas-hide-viewed-btn", "research-subview-ideas");
   setupResearchHideViewedToggle("research-ai-trends-hide-viewed-btn", "research-subview-ai-trends");
-  setupResearchHideViewedToggle("research-keywords-hide-viewed-btn", "research-subview-keywords");
 
   // 2026-10-24追加、ユーザー指示「この保存列と閲覧済みの情報は...ページを読み込む際にその内容も
   // 読み取り反映して」。data/user-preferences.jsonのlikedItems/viewedIds(Claude経由で過去に
@@ -4466,84 +4463,42 @@
     wireResearchCheckboxes(box);
   }
 
-  // 🔍調査資料タブ→💬気になるキーワード(2026-10-27追加)。data/ai-research-feed.jsonを
-  // 読み込み、カテゴリで絞り込める一覧表として表示する。
-  let KEYWORDS_ITEMS = [];
-  let keywordsFiltersWired = false;
-
+  // 🔍調査資料タブ→💬気になるキーワード(2026-10-27追加、同日設計変更)。data/user-preferences.json
+  // のlikedItemsのうち、sourceType==="ai-trend"(🤖AI最新情報タブで「保存」チェックした項目)
+  // だけを表示する。新しい保存の仕組みは作らず、既存のuser-preferences.json正本をそのまま再利用する。
   function loadKeywordsResearch() {
-    return fetch("data/ai-research-feed.json", { cache: "no-store" })
+    return fetch("data/user-preferences.json", { cache: "no-store" })
       .then((res) => {
-        if (!res.ok) throw new Error(`data/ai-research-feed.json の取得に失敗しました(HTTP ${res.status})`);
+        if (!res.ok) throw new Error(`data/user-preferences.json の取得に失敗しました(HTTP ${res.status})`);
         return res.json();
       })
       .then((data) => {
-        const items = (data.entries || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-        KEYWORDS_ITEMS = items;
-        items.forEach((it) => registerResearchItem(it.no || it.sourceUrl || it.title, "keyword", it.title, it.summary, it.sourceUrl));
-        populateKeywordsFilterOptions();
-        wireKeywordsFilters();
-        applyKeywordsFilters();
+        const items = (data.likedItems || []).filter((it) => it.sourceType === "ai-trend");
+        items.sort((a, b) => (b.addedAt || "").localeCompare(a.addedAt || ""));
         const meta = document.getElementById("research-keywords-meta");
-        if (meta) meta.textContent = `記録件数: ${items.length}件`;
+        if (meta) meta.textContent = `保存件数: ${items.length}件`;
+        renderKeywordsList(items);
       })
       .catch((err) => {
         console.error(err);
         const box = document.getElementById("research-keywords-list");
-        if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
+        if (box) box.innerHTML = `<div class="empty">データを読み込めませんでした(${err.message})</div>`;
       });
   }
 
-  function populateKeywordsFilterOptions() {
-    const catSel = document.getElementById("keywords-filter-category");
-    if (!catSel) return;
-    const cats = [...new Set(KEYWORDS_ITEMS.map((it) => it.category || "不明"))].sort();
-    catSel.innerHTML = `<option value="">すべて</option>` + cats.map((c) =>
-      `<option value="${escapeHtmlForDevDocs(c)}">${escapeHtmlForDevDocs(c)}</option>`).join("");
-  }
-
-  function wireKeywordsFilters() {
-    if (keywordsFiltersWired) return;
-    keywordsFiltersWired = true;
-    const catSel = document.getElementById("keywords-filter-category");
-    if (catSel) catSel.addEventListener("change", applyKeywordsFilters);
-  }
-
-  function applyKeywordsFilters() {
-    const cat = (document.getElementById("keywords-filter-category") || {}).value || "";
-    const filtered = KEYWORDS_ITEMS.filter((it) => !cat || (it.category || "不明") === cat);
-    renderKeywordsTable(filtered);
-  }
-
-  function renderKeywordsTable(items) {
+  function renderKeywordsList(items) {
     const box = document.getElementById("research-keywords-list");
     if (!box) return;
-    if (!KEYWORDS_ITEMS.length) { box.innerHTML = `<div class="empty">記録された項目がまだありません。</div>`; return; }
-    if (!items.length) { box.innerHTML = `<div class="empty">条件に一致する項目がありません。</div>`; return; }
-    box.innerHTML = `
-      <div class="research-table-wrap">
-        <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>日付</th><th>カテゴリ</th><th>タイトル</th><th>概要</th><th>記載日時</th><th>出典</th></tr></thead>
-          <tbody>
-            ${items.map((it) => {
-              const key = it.no || it.sourceUrl || it.title;
-              return `
-              <tr>
-                ${researchViewedCheckboxTd(key)}
-                ${researchCheckboxTd(key)}
-                <td>${escapeHtmlForDevDocs(it.no || "")}</td>
-                <td>${escapeHtmlForDevDocs(it.date || "不明")}</td>
-                <td>${escapeHtmlForDevDocs(it.category || "不明")}</td>
-                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
-                <td>${escapeHtmlForDevDocs(it.summary || "")}</td>
-                <td>${escapeHtmlForDevDocs(it.collectedAt || "不明")}</td>
-                <td>${it.sourceUrl ? `<a href="${escapeHtmlForDevDocs(it.sourceUrl)}" target="_blank" rel="noopener">出典 ↗</a>` : ""}</td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-      </div>`;
-    wireResearchCheckboxes(box);
+    if (!items.length) {
+      box.innerHTML = `<div class="empty">まだ保存された項目がありません。「🤖 AI最新情報」タブで気になった記事の「💾保存」をチェックし、「📋 保存した記事をコピー」からClaudeへ反映を依頼してください。</div>`;
+      return;
+    }
+    box.innerHTML = `<div class="devdocs-qa-list">${items.map((it) => `
+      <div class="devdocs-qa-item">
+        <div class="q">${it.url ? `<a href="${escapeHtmlForDevDocs(it.url)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</div>
+        ${it.summary ? `<div class="a">${escapeHtmlForDevDocs(it.summary)}</div>` : ""}
+        <div class="a" style="opacity:0.7; font-size:12px;">保存日時: ${escapeHtmlForDevDocs(it.addedAt || "不明")}</div>
+      </div>`).join("")}</div>`;
   }
 
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
