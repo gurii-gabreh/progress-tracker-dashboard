@@ -5566,9 +5566,66 @@
         {
           "date": "2026-10-26",
           "summary": "Playwrightで🤖AI基本設定タブへの反映・JSエラー0件を確認。main push済み。sync-claude-md.yml経由での全リポジトリCLAUDE.md反映は自動(未確認、次回の定期確認Routineで検証予定)。"
+        },
+        {
+          "date": "2026-10-27",
+          "summary": "ユーザー提案「違うAIによるダブルチェックを入れたほうがいいだろ？」を受け、ルール18・SKILL.md・ai-config.json(web/ai)へ「重要な判断・結果に限り別AIによるダブルチェックを挟む」を追記。対象を重要な判断・結果だけに限定し、文体修正等の軽微な作業は対象外とすることでユーザー確認済み。main反映済み。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-107",
+      "title": "調査資料タブ(ハッカソン・コンテスト)に閲覧用の連番ID(No.列)を追加",
+      "task": "会話中の参照用ID付与",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「ハッカソン：A-001...、AI駆動アプリコンテスト：B-001...、みたいな感じでそれぞれのページごとに通し番号でいいのでIDを振ってほしい」への対応。既存の意味付きID(hack-a-google-cloud等)がtasks.json/user-preferences.json/vector-index.jsonから参照されているため、置き換えず別フィールドとして追加する方針にした。",
+      "detail": "data/hackathon-research.json(candidates+winnersで共有連番A-001〜、配列の読み込み順)・data/contest-research.json(entriesにB-001〜)へ、閲覧用の連番\"no\"フィールドを追加した。既存の意味付きID(hack-a-google-cloud等)は他ファイルから参照されているため一切変更せず残した。dashboard.htmlの両タブの表に「No.」列を追加して表示する。",
+      "output": "data/hackathon-research.json, data/contest-research.json, dashboard.html",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-10-27",
+          "summary": "JSON妥当性確認・コミット・main反映済み。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-108",
+      "title": "調査資料タブに「💬気になるキーワード」サブタブを新設(AI最新情報での保存済み項目一覧)",
+      "task": "保存済みAI情報の振り返りビュー追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "data/ai-research-feed.jsonを更新していた日次Routine(trig_01PaKZWB3NQ23SxPg1AVgswP)が削除されていることが判明(2026-09-06以降データ停止の原因)。再作成するかどうかは未決定のまま保留。",
+        "ai-research-feed.json自体(187件、「no」フィールド付与済みだが現在どの画面からも参照されていない)を今後どう扱うか(🤖AI最新情報タブへの統合等)も未決定のまま保留。"
+      ],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。加えて上記issuesの2点(日次Routine再作成の有無、ai-research-feed.jsonの扱い)は別途相談が必要。",
+      "note": "ユーザー指示「AI最新情報の横に、気になるキーワードボタンを追加し、その先に一覧化して表示して」から始まり、当初data/ai-research-feed.json全件表示で実装したところ「ちょっとごっちゃになってしまっているから」「私がチェックして気になったものだけの一覧にしたい」と指摘を受け設計変更。さらに「一覧化しろというのがわからない？」という指摘を受け、カード形式からtable形式へ再修正した。",
+      "detail": "最終的に、既存の「💾保存」チェック機能(data/user-preferences.jsonのlikedItems、sourceType===\"ai-trend\"で絞り込み)を再利用し、🤖AI最新情報タブで保存した項目だけが並ぶtable形式の一覧(タイトル・概要・情報源・追加日・ポイント・活かせる技術の6列)として実装した。ポイント・活かせる技術はlikedItemsには含まれないため、AI最新情報タブが既に読み込んでいるAI_TRENDS_ITEMS(research-items.json)からsysId一致で補完している。合わせて、AI最新情報とキーワード一覧の読み込み順が並列で競合状態になっていたバグ(loadAiTrendsResearch完了前にloadKeywordsResearchが走る)も修正し直列化した。",
+      "output": "dashboard.html, data/user-preferences.json(保存した記事の反映)",
+      "relatedTasks": [
+        "PTD-107"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-27",
+          "summary": "設計変更を2回挟みつつ実装・JS構文チェック・main反映まで完了。ユーザーが実機で表示確認済み(「確認できた」)。"
         }
       ]
     }
   ],
-  "updatedAt": "2026-10-18"
+  "updatedAt": "2026-10-27"
 }

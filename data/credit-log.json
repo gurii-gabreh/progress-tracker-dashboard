@@ -718,6 +718,51 @@
         "costUsd": 2009.99220376
       },
       "rateLimitResetsAt": "2026-10-27T06:00:00+09:00"
+    },
+    {
+      "date": "2026-10-27",
+      "time": "23:50",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-106: 重要な判断・結果は別AIによるダブルチェックを挟むルールを追記",
+      "note": "ユーザー提案「違うAIによるダブルチェックを入れたほうがいいだろ？」を受け、ルール18・SKILL.md・ai-config.jsonへ追記。main反映済み。",
+      "usage": {
+        "inputTokens": 6156951,
+        "outputTokens": 11400445,
+        "cacheReadTokens": 6319527429,
+        "cacheWriteTokens": 140640343,
+        "costUsd": 2040.90350484
+      },
+      "rateLimitResetsAt": "2026-10-28T05:20:00+09:00"
+    },
+    {
+      "date": "2026-10-27",
+      "time": "23:51",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-107: 調査資料タブ(ハッカソン・コンテスト)に閲覧用の連番ID(No.列)を追加",
+      "note": "ユーザー指示によりA-001/B-001形式の連番を既存IDとは別フィールドで追加。main反映済み。",
+      "usage": {
+        "inputTokens": 6156951,
+        "outputTokens": 11400445,
+        "cacheReadTokens": 6319527429,
+        "cacheWriteTokens": 140640343,
+        "costUsd": 2040.90350484
+      },
+      "rateLimitResetsAt": "2026-10-28T05:20:00+09:00"
+    },
+    {
+      "date": "2026-10-27",
+      "time": "23:52",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-108: 調査資料タブに「気になるキーワード」サブタブを新設(AI最新情報での保存済み項目一覧)",
+      "note": "設計変更を2回挟みつつ、AI最新情報タブで保存した項目だけを表示するtable形式の一覧として実装。main反映済み。",
+      "usage": {
+        "inputTokens": 6156951,
+        "outputTokens": 11400445,
+        "cacheReadTokens": 6319527429,
+        "cacheWriteTokens": 140640343,
+        "costUsd": 2040.90350484
+      },
+      "rateLimitResetsAt": "2026-10-28T05:20:00+09:00"
     }
   ]
 }
