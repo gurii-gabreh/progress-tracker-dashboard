@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-10-29T00:15:00+09:00",
+  "lastProcessedAt": "2026-10-30T00:30:00+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -280,6 +280,24 @@
       "date": "2026-10-28",
       "generatedAt": "2026-10-29T00:15:00+09:00",
       "summary": "(この日は対象の会話なし。CLAUDE.md定期確認Routine・ワーカープロセス再起動の通知のみで、ユーザーとの実質的なやり取りは無かった)",
+      "unresolvedCarriedOver": [
+        "PTD-085・086・088のユーザー完了確認待ち(ルール30)",
+        "MJ-002: 日報記録経路+習慣チェック欄追加のユーザー完了確認待ち(ルール30)",
+        "PTD-090: 改善A(2回目)反映後のScheduled Job実行結果の実データ確認待ち",
+        "PTD-091: Anthropic News pageスクレイピングの構造変更対応を今すぐ行うか後回しにするか、ユーザー回答待ち",
+        "新規開発時の新規/継続確認ルール(②)の実装がまだ未着手",
+        "PTD-100・101・102・104・105・106・107・108はユーザーの完了確認待ち(PTD-103のみ確認済み)",
+        "16アプリへの③〜⑦実内容の遡及入力は未着手のまま保留",
+        "servicenow-sub-agentのYouTube調査へのIT全般クエリ新設(方針確定、実装未着手)",
+        "複業・収入相談(方向性提案のみ、ユーザーの意思決定・詳細調査は保留中)",
+        "ai-research-feed.jsonを生成していた日次Routine(trig_01PaKZWB3NQ23SxPg1AVgswP)の再作成有無がユーザー未回答",
+        "ai-research-feed.json(187件)自体を今後どう扱うか(🤖AI最新情報タブへの統合等)が未決定のまま保留"
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "generatedAt": "2026-10-30T00:30:00+09:00",
+      "summary": "【英会話レッスンレポートの記録】ユーザーから「昨日の英カワイのレポートね、いつも通りまとめておいて」と、スキマ英会話【初級】Lesson E-7「Your Home(住まい)」のChatGPT英会話レッスンレポート全文が貼り付けられた。既存のESA-002(English-Speaking-App、ChatGPTレッスンレポートをdata/lessons.jsonへ記録する既存フロー)をtasks.jsonで確認し、同じスキーマ(id/date/courseMaterial/expressions/corrections/homework/rawReport/recordedAt)で新規entryを追加した。\n\n内容: 表現5件(I live in an apartment./It's near the station./I share it with my family./Because I can relax there./My favorite room is the living room because I can relax there.)、訂正3件(love→live、sure is with→share it with、My favorite relax room is living room→My favorite room is the living room because I can relax there.)、宿題は「次回の復習ポイント」の文を途中で止まらず言えるようになること。前回(2026-10-23分)のレポートに書かれていた次回予告(Lesson 7 Your Home)と一致しており、継続性を確認した。\n\nEnglish-Speaking-Appリポジトリへmain直push完了(commit 0ecb804)。progress-tracker-dashboard側のtasks.json/credit-log.jsonへは記録していない(個別レッスンの記録は既存システムの日常的な利用であり、ESA-001/002のような実装タスクそのものではないため、従来の運用と同様に対象外とした)。\n\n【定期RoutineのみでCLAUDE.md定期確認を実施】2026-10-28 12時・2026-10-29 0時・12時の各発火で祝日判定(いずれも祝日ではなく平日)を行い、0時発火分のみ作業A(確認済み、問題なし)・作業B(週次ルームログ要約Routineの常駐セッション、コンテキスト使用率21.7%で健全)を実施。ワーカープロセスの再起動が複数回発生したが、処理すべき内容は次の発火・通知で問題なく継続できた。",
       "unresolvedCarriedOver": [
         "PTD-085・086・088のユーザー完了確認待ち(ルール30)",
         "MJ-002: 日報記録経路+習慣チェック欄追加のユーザー完了確認待ち(ルール30)",
