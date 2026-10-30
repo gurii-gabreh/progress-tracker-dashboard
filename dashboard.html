@@ -1347,6 +1347,7 @@
           <div class="appdev-stage-layout">
             <div class="appdev-stage-sidebar" id="appdev-stage-toggle">
               <button type="button" class="manager-subview-btn active" id="appdev-stage-btn-requirements" data-stage="requirements">📋 要件定義</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-marketanalysis" data-stage="marketAnalysis">📊 市場分析</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-funcreq" data-stage="functionalRequirements">📐 機能要件</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-detaildesign" data-stage="detailedDesign">🧩 詳細設計</button>
@@ -1357,6 +1358,7 @@
             </div>
             <div class="appdev-stage-content">
               <div id="devdocs-requirements"></div>
+              <div id="appdev-marketanalysis" style="display:none;"></div>
               <div id="appdev-basicdesign" style="display:none;"></div>
               <div id="appdev-funcreq" style="display:none;"></div>
               <div id="appdev-detaildesign" style="display:none;"></div>
@@ -4801,35 +4803,7 @@
         <span class="devdocs-tag">${escapeHtmlForDevDocs(req.status || "不明")}</span>
       </div>
       <div class="devdocs-qa-list">${qaHtml}</div>
-      ${renderMarketAnalysisSection(req)}
     `;
-  }
-
-  // 要件定義の下に表示する「📊 市場分析(7ステップ)」(2026-10-30追加、ユーザー指示「開発資料に
-  // 要件定義の下にタブを作って、詳細を表示して」)。data/requirements.jsonのmarketAnalysisFramework
-  // (2026-10-07追加、PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニーの7ステップ)を
-  // 常に表示し、選択中アプリのrequirements[].marketAnalysisに各ステップのkeyで値があれば
-  // その内容を、無ければ「まだ分析されていません」を表示する。既存の<details>折りたたみパターン
-  // (ℹ️ このページについて等)をrule23で再利用し、新しいUIパターンは増やさない。
-  function renderMarketAnalysisSection(req) {
-    const framework = REQUIREMENTS.marketAnalysisFramework;
-    const steps = framework.steps || [];
-    if (!steps.length) return "";
-    const ma = req.marketAnalysis || null;
-    const stepsHtml = steps.map((s) => {
-      const content = ma && ma[s.key];
-      return `
-        <div class="devdocs-qa-item">
-          <div class="q">${escapeHtmlForDevDocs(s.label || s.key)}<span style="opacity:0.7; font-weight:400;"> — ${escapeHtmlForDevDocs(s.focus || "")}</span></div>
-          <div class="a">${content ? escapeHtmlForDevDocs(content) : `<span class="empty">まだ分析されていません。</span>`}</div>
-        </div>`;
-    }).join("");
-    return `
-      <details class="research-overview-collapse" style="margin-top:20px;" ${ma ? "open" : ""}>
-        <summary>📊 市場分析(7ステップ)${ma ? "" : " — 未実施"}</summary>
-        <p class="tab-page-overview">${escapeHtmlForDevDocs(framework.description || "")}</p>
-        <div class="devdocs-qa-list">${stepsHtml}</div>
-      </details>`;
   }
 
   // 📂開発アプリ一覧→🏗基本設計(2026-10-23追加、②基本設計フェーズ)。選択中アプリの
@@ -4841,6 +4815,7 @@
   // stage→{パネルid, ボタンid, 表示時のrenderer}のマップ方式にしてある。
   const APPDEV_STAGES = {
     requirements: { panel: "devdocs-requirements", btn: "appdev-stage-btn-requirements" },
+    marketAnalysis: { panel: "appdev-marketanalysis", btn: "appdev-stage-btn-marketanalysis", render: () => renderAppDevMarketAnalysis() },
     basicDesign: { panel: "appdev-basicdesign", btn: "appdev-stage-btn-basicdesign", render: () => renderAppDevBasicDesign() },
     functionalRequirements: { panel: "appdev-funcreq", btn: "appdev-stage-btn-funcreq", render: () => renderAppDevFuncReq() },
     detailedDesign: { panel: "appdev-detaildesign", btn: "appdev-stage-btn-detaildesign", render: () => renderAppDevDetailedDesign() },
@@ -4878,6 +4853,95 @@
     new ResizeObserver(update).observe(head);
     update();
   })();
+
+  // 📂開発アプリ一覧→📊市場分析(2026-10-30追加、ユーザー指示「開発資料に要件定義の下にタブを
+  // 作って、詳細を表示して」「要件定義と基本設計の間に表示だからね」)。要件定義と基本設計の間に
+  // 独立タブとして新設し、data/requirements.jsonのmarketAnalysisFramework(2026-10-07追加、
+  // PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニーの7ステップ)を表示する。
+  // 基本設計タブと同じ「既存回答の表示+入力フォーム+プロンプト生成」パターンをrule23で再利用する。
+  function renderAppDevMarketAnalysis() {
+    const box = document.getElementById("appdev-marketanalysis");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    const steps = (REQUIREMENTS.marketAnalysisFramework && REQUIREMENTS.marketAnalysisFramework.steps) || [];
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+
+    const ma = req.marketAnalysis || null;
+    const qaHtml = ma
+      ? `<div class="devdocs-qa-list">${steps.map((s) => `
+          <div class="devdocs-qa-item">
+            <div class="q">${escapeHtmlForDevDocs(s.label || s.key)}<span style="opacity:0.7; font-weight:400;"> — ${escapeHtmlForDevDocs(s.focus || "")}</span></div>
+            <div class="a">${ma[s.key] ? escapeHtmlForDevDocs(ma[s.key]) : `<span class="empty">まだ分析されていません。</span>`}</div>
+          </div>`).join("")}</div>`
+      : `<div class="empty">まだ市場分析の記録がありません(未着手)。下のフォームに分かる範囲で入力し、「📋 プロンプトを作成」からClaude Codeへ相談してください。</div>`;
+
+    const fieldsHtml = steps.map((s) => {
+      const existing = ma && ma[s.key];
+      return `
+      <div class="form-field">
+        <label for="appdev-ma-item-${s.key}">${escapeHtmlForDevDocs(s.label || s.key)} — ${escapeHtmlForDevDocs(s.focus || "")}</label>
+        <textarea id="appdev-ma-item-${s.key}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(existing || "")}</textarea>
+      </div>`;
+    }).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">市場分析: ${ma ? "実施済み" : "未着手"}</span>
+      </div>
+      <p class="tab-page-overview">${escapeHtmlForDevDocs((REQUIREMENTS.marketAnalysisFramework && REQUIREMENTS.marketAnalysisFramework.description) || "")}</p>
+      ${qaHtml}
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-ma-fields">${fieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-ma-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-ma-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildMarketAnalysisPromptText(req, steps), `${req.title || req.repo} 市場分析 依頼文`, true);
+      });
+    }
+  }
+
+  // 要件定義の回答を参考情報として埋め込み、市場分析フォームの入力値と合わせてClaude Codeへの
+  // 依頼文を生成する(buildBasicDesignPromptText()と同じ考え方をrule23で再利用)。
+  function buildMarketAnalysisPromptText(req, steps) {
+    const answerLines = steps.map((s) => {
+      const el = document.getElementById(`appdev-ma-item-${s.key}`);
+      const val = (el && el.value || "").trim();
+      return `   ${s.label}(${s.focus})\n      入力: ${val || "(空欄・未入力。Web調査して下書きを作ってほしい)"}`;
+    }).join("\n");
+    const reqSummary = (req.answers || []).map((a) => `   ${a.n}) ${a.question}: ${a.answer || "(未回答)"}`).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})の市場分析(7ステップ)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「📊 市場分析」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: このアプリの要件定義(①フェーズ、data/requirements.jsonのrequirements[].answers)】",
+      reqSummary || "(要件定義の回答が見つかりません)",
+      "",
+      "【市場分析7ステップ(PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニー)の入力済み項目】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 空欄の項目は、Web検索で実際の市場・競合・顧客動向を調査し、根拠のある内容で下書きを作る",
+      "   (claude-core-rules.mdルール5、根拠の無い推測は含めない)",
+      "2. ユーザーと相談して内容を確認・修正する",
+      "3. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   marketAnalysisフィールド({pest, fiveForces, threeC, swot, stp, fourP, customerJourney}の",
+      "   各キーに文章を格納)を追加・更新する。commit・pushする",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
 
   function renderAppDevBasicDesign() {
     const box = document.getElementById("appdev-basicdesign");
