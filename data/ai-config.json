@@ -189,7 +189,7 @@
         {
           "name": "subagent-role-orchestration",
           "repo": "gurii-gabreh/progress-tracker-dashboard",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記)。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記)。Research/実装/テストはそれぞれ`.claude/agents/research.md`・`implementer.md`・`tester.md`(ツールをRead/Glob/Grep/WebFetch/WebSearch/Bash等に限定した役割定義ファイル)としてsubagent_type指定で起動できる(2026-10-30追記)。ただしこれは役割の型(ツール制限)を定義するだけで、どのタスクを並列化するかの判断は引き続き司令塔が行う(自動並列化機能ではない)。",
           "triggerType": "ai"
         }
       ]
