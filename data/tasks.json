@@ -5675,7 +5675,33 @@
           "summary": "JS構文チェック・main反映まで完了。"
         }
       ]
+    },
+    {
+      "id": "PTD-111",
+      "title": "servicenow-sub-agentカテゴリ6(世の中のニーズ・困りごと)681件の課題抽出と調査資料タブへの反映",
+      "task": "category6-issues.json新設+「💡社会課題・ニーズ」サブタブ追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指摘「本記事ネタが尽きないか心配だが、そこはリサーチして課題を見つけられるのか」→「各ニュースの課題をそれぞれ出して、捨て案だとしても全て吸い出してほしい」への対応。servicenow-sub-agentのdata/research-items.jsonカテゴリ6(681件・当時0件キュレーション済み)が対象。件数が多いため、.claude/agents/research.mdで定義したResearch役サブエージェントを10体並列実行(各69件前後ずつ、全体で681件を分担)し、全件フィルタなしで処理した。",
+      "detail": "① scratchpad内にカテゴリ6の681件を10分割したbatch_01〜10.jsonを作成し、Agent(subagent_type:\"research\", run_in_background:true)を10体並列起動。各エージェントに{sysId, title, rawSummary, sourceUrl}を渡し、記事ごとに概要ポイント(summaryPoints、1〜3個の日本語箇条書き)と課題ポイント(issuePoints、根拠が読み取れない場合は「明確な課題は読み取れない」と正直に書くよう指示)を抽出させた。② コンテナ再起動で1回目の10エージェントが全滅したため再起動し、2回目で全10体完了。③ 各エージェントの出力(JSONL形式の.outputファイル)から最終テキストを抜き出し、sysId重複除去(source側に1件の重複sysIdがあったため681件→680件)した上で、servicenow-sub-agent/data/category6-issues.json(新規ファイル、research-items.jsonとは分離。rule29のJSON分割原則=更新頻度・用途が異なるデータは別ファイルに、を踏襲)としてcommit・push(直接main、同リポジトリの既存運用に合わせた)。④ dashboard.htmlの🔍調査資料タブに「💡 社会課題・ニーズ」サブタブを新設。🤖AI最新情報タブと同じraw.githubusercontent.com経由fetchパターン(rule23で再利用、新しい取得方式は作らず既存パターンを踏襲)で読み込み、既存のresearch-table形式(タイトル/情報源/公開日/概要(ポイント)/課題)で一覧表示し、既存の👁閲覧済み・💾保存チェック機構(registerResearchItem/wireResearchCheckboxes)もそのまま再利用した。キーワード検索・閲覧済み非表示ボタンも既存パターンに合わせて実装。",
+      "output": "servicenow-sub-agent/data/category6-issues.json, progress-tracker-dashboard/dashboard.html",
+      "relatedTasks": [
+        "PTD-109"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-31",
+          "summary": "10エージェントの出力を自動抽出・sysId単位で元データ680件と1:1照合済み(欠落・余剰0件)。JS構文チェック(node --check)・ローカルHTTPサーバーでの表示確認(社会課題タブのDOM要素13箇所の整合性)まで完了。servicenow-sub-agent側はmainへcommit・push済み。progress-tracker-dashboard側は作業ブランチにcommit後main反映予定。"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-30"
+  "updatedAt": "2026-10-31"
 }
