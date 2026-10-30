@@ -793,6 +793,21 @@
         "costUsd": 2066.4626664
       },
       "rateLimitResetsAt": "2026-10-31T01:40:00+09:00"
+    },
+    {
+      "date": "2026-10-31",
+      "time": "00:55",
+      "repo": "servicenow-sub-agent / progress-tracker-dashboard",
+      "task": "PTD-111: カテゴリ6(681件)の課題抽出+調査資料タブ「💡社会課題・ニーズ」新設",
+      "note": "Research役サブエージェント10体並列実行で全件抽出、servicenow-sub-agentへcategory6-issues.json新設・main反映済み。dashboard.html側も反映済み。",
+      "usage": {
+        "inputTokens": 6323929,
+        "outputTokens": 11511857,
+        "cacheReadTokens": 6421622949,
+        "cacheWriteTokens": 143179467,
+        "costUsd": 2072.62319842
+      },
+      "rateLimitResetsAt": "2026-10-31T01:40:00+09:00"
     }
   ]
 }

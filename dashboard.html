@@ -1588,6 +1588,7 @@
     <button type="button" class="manager-subview-btn" id="research-subtab-ideas" data-subview="ideas">📱 Reddit事例集</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-ai-trends" data-subview="ai-trends">🤖 AI最新情報</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-keywords" data-subview="keywords">💬 気になるキーワード</button>
+    <button type="button" class="manager-subview-btn" id="research-subtab-social-issues" data-subview="social-issues">💡 社会課題・ニーズ</button>
     <button type="button" class="manager-subview-btn" id="research-subtab-preferences" data-subview="preferences">👤 ユーザー思考</button>
   </div>
 
@@ -1728,6 +1729,33 @@
           <div class="policy-meta" id="research-keywords-meta"></div>
         </div>
         <div id="research-keywords-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💡社会課題・ニーズサブタブ(2026-10-31追加)。ユーザー指示「各ニュースの課題をそれぞれ出して、
+       捨て案だとしても全て吸い出してほしい」「アウトプットはjsonにまとめて、調査資料側にも反映して」
+       への対応。servicenow-sub-agentのdata/research-items.jsonカテゴリ6(世の中のニーズ・困りごと、
+       681件・当時0件キュレーション済み)を、Research役サブエージェント10体を並列実行し全件
+       (捨て案も含めフィルタなし)処理した結果をdata/category6-issues.json(同リポジトリ内に新設)
+       として保存し、🤖AI最新情報タブと同じraw.githubusercontent.com経由fetchパターン(rule23)で
+       表示する。 -->
+  <div id="research-subview-social-issues" class="manager-subview">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">💡 社会課題・ニーズ</div>
+          <details class="research-overview-collapse">
+            <summary>ℹ️ このページについて</summary>
+            <p class="tab-page-overview">servicenow-sub-agentのdata/research-items.jsonのうち「世の中のニーズ・困りごと」カテゴリ(Hacker News等から自動収集)の全件について、記事ごとに概要をポイント整理した列と、そこから読み取れる課題を箇条書きにした列を抽出したものです(捨て案に見えるものも含め、全件フィルタなしで処理しています)。data/category6-issues.json(servicenow-sub-agentリポジトリ)から生成します。一番左が「閲覧済み」、その隣が「保存」のチェックです(上部の「📋 保存した記事をコピー」から)。</p>
+          </details>
+          <div class="policy-meta" id="research-social-issues-meta"></div>
+          <div class="research-filter-row">
+            <label>キーワード: <input type="text" id="social-issues-filter-keyword" placeholder="タイトル・概要・課題などで検索"></label>
+            <button type="button" class="manager-subview-btn" id="research-social-issues-hide-viewed-btn">👁 閲覧済みを非表示</button>
+          </div>
+        </div>
+        <div id="research-social-issues-list"></div>
       </div>
     </div>
   </div>
@@ -4114,6 +4142,7 @@
   setupResearchHideViewedToggle("research-contest-hide-viewed-btn", "research-subview-contest");
   setupResearchHideViewedToggle("research-ideas-hide-viewed-btn", "research-subview-ideas");
   setupResearchHideViewedToggle("research-ai-trends-hide-viewed-btn", "research-subview-ai-trends");
+  setupResearchHideViewedToggle("research-social-issues-hide-viewed-btn", "research-subview-social-issues");
 
   // 2026-10-24追加、ユーザー指示「この保存列と閲覧済みの情報は...ページを読み込む際にその内容も
   // 読み取り反映して」。data/user-preferences.jsonのlikedItems/viewedIds(Claude経由で過去に
@@ -4524,6 +4553,80 @@
       </div>`;
   }
 
+  // 🔍調査資料タブ→💡社会課題・ニーズ(2026-10-31追加)。servicenow-sub-agentの
+  // data/category6-issues.json(カテゴリ6「世の中のニーズ・困りごと」681件の課題抽出結果)を
+  // 🤖AI最新情報タブと同じraw.githubusercontent.com経由fetchパターン(rule23)で表示する。
+  const CATEGORY6_ISSUES_URL = "https://raw.githubusercontent.com/gurii-gabreh/servicenow-sub-agent/main/data/category6-issues.json";
+  let SOCIAL_ISSUES_ITEMS = [];
+  let socialIssuesFiltersWired = false;
+
+  function loadSocialIssuesResearch() {
+    return fetch(`${CATEGORY6_ISSUES_URL}?t=${Date.now()}`, { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`category6-issues.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        const items = data.items || [];
+        items.sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
+        SOCIAL_ISSUES_ITEMS = items;
+        items.forEach((it) => registerResearchItem(it.sysId, "social-issue", it.title, (it.summaryPoints || []).join(" / "), it.sourceUrl));
+        wireSocialIssuesFilter();
+        applySocialIssuesFilter();
+        const meta = document.getElementById("research-social-issues-meta");
+        if (meta) meta.textContent = `更新日: ${(data.generatedAt || "不明").slice(0, 10)} ／ 件数: ${items.length}件(捨て案も含め全件、フィルタなし)`;
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("research-social-issues-list");
+        if (box) box.innerHTML = `<div class="empty">調査データを読み込めませんでした(${err.message})</div>`;
+      });
+  }
+
+  function wireSocialIssuesFilter() {
+    if (socialIssuesFiltersWired) return;
+    socialIssuesFiltersWired = true;
+    const kw = document.getElementById("social-issues-filter-keyword");
+    if (kw) kw.addEventListener("input", applySocialIssuesFilter);
+  }
+
+  function applySocialIssuesFilter() {
+    const kw = ((document.getElementById("social-issues-filter-keyword") || {}).value || "").trim().toLowerCase();
+    const filtered = SOCIAL_ISSUES_ITEMS.filter((it) => {
+      if (!kw) return true;
+      const hay = [it.title, (it.summaryPoints || []).join(" "), (it.issuePoints || []).join(" "), it.sourceName]
+        .filter(Boolean).join(" ").toLowerCase();
+      return hay.includes(kw);
+    });
+    renderSocialIssuesTable(filtered);
+  }
+
+  function renderSocialIssuesTable(items) {
+    const box = document.getElementById("research-social-issues-list");
+    if (!box) return;
+    if (!SOCIAL_ISSUES_ITEMS.length) { box.innerHTML = `<div class="empty">データがまだありません。</div>`; return; }
+    if (!items.length) { box.innerHTML = `<div class="empty">条件に一致する項目がありません。</div>`; return; }
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要(ポイント)</th><th>課題</th></tr></thead>
+          <tbody>
+            ${items.map((it) => `
+              <tr>
+                ${researchViewedCheckboxTd(it.sysId)}
+                ${researchCheckboxTd(it.sysId)}
+                <td>${it.sourceUrl ? `<a href="${escapeHtmlForDevDocs(it.sourceUrl)}" target="_blank" rel="noopener">${escapeHtmlForDevDocs(it.title || "")} ↗</a>` : escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.sourceName || "不明")}</td>
+                <td>${escapeHtmlForDevDocs((it.publishedAt || "不明").slice(0, 10))}</td>
+                <td>${(it.summaryPoints || []).map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</td>
+                <td>${(it.issuePoints || []).map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+    wireResearchCheckboxes(box);
+  }
+
   // 🔍調査資料タブ→👤ユーザー思考(2026-10-23追加)。data/user-preferences.jsonを表示する
   // ビューアーのみ(書き込みは常にClaude Code経由)。
   function loadPreferencesResearch() {
@@ -4573,6 +4676,7 @@
       ideas: { btn: document.getElementById("research-subtab-ideas"), panel: document.getElementById("research-subview-ideas") },
       "ai-trends": { btn: document.getElementById("research-subtab-ai-trends"), panel: document.getElementById("research-subview-ai-trends") },
       keywords: { btn: document.getElementById("research-subtab-keywords"), panel: document.getElementById("research-subview-keywords") },
+      "social-issues": { btn: document.getElementById("research-subtab-social-issues"), panel: document.getElementById("research-subview-social-issues") },
       preferences: { btn: document.getElementById("research-subtab-preferences"), panel: document.getElementById("research-subview-preferences") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
@@ -5890,6 +5994,7 @@
     loadContestResearch();
     loadIdeaResearch();
     loadAiTrendsResearch().finally(() => loadKeywordsResearch());
+    loadSocialIssuesResearch();
     loadPreferencesResearch();
     updateResearchLikedCount();
   });
