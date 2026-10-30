@@ -3925,7 +3925,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] }, marketAnalysisFramework: { description: "", steps: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -3944,6 +3944,7 @@
         REQUIREMENTS.testChecklist = data.testChecklist || { items: [] };
         REQUIREMENTS.opsChecklist = data.opsChecklist || { items: [] };
         REQUIREMENTS.releaseChecklist = data.releaseChecklist || { items: [] };
+        REQUIREMENTS.marketAnalysisFramework = data.marketAnalysisFramework || { description: "", steps: [] };
         populateDevDocsAppSelect();
         renderDevDocsRequirements();
         renderAppDevHomeStats();
@@ -4800,7 +4801,35 @@
         <span class="devdocs-tag">${escapeHtmlForDevDocs(req.status || "不明")}</span>
       </div>
       <div class="devdocs-qa-list">${qaHtml}</div>
+      ${renderMarketAnalysisSection(req)}
     `;
+  }
+
+  // 要件定義の下に表示する「📊 市場分析(7ステップ)」(2026-10-30追加、ユーザー指示「開発資料に
+  // 要件定義の下にタブを作って、詳細を表示して」)。data/requirements.jsonのmarketAnalysisFramework
+  // (2026-10-07追加、PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニーの7ステップ)を
+  // 常に表示し、選択中アプリのrequirements[].marketAnalysisに各ステップのkeyで値があれば
+  // その内容を、無ければ「まだ分析されていません」を表示する。既存の<details>折りたたみパターン
+  // (ℹ️ このページについて等)をrule23で再利用し、新しいUIパターンは増やさない。
+  function renderMarketAnalysisSection(req) {
+    const framework = REQUIREMENTS.marketAnalysisFramework;
+    const steps = framework.steps || [];
+    if (!steps.length) return "";
+    const ma = req.marketAnalysis || null;
+    const stepsHtml = steps.map((s) => {
+      const content = ma && ma[s.key];
+      return `
+        <div class="devdocs-qa-item">
+          <div class="q">${escapeHtmlForDevDocs(s.label || s.key)}<span style="opacity:0.7; font-weight:400;"> — ${escapeHtmlForDevDocs(s.focus || "")}</span></div>
+          <div class="a">${content ? escapeHtmlForDevDocs(content) : `<span class="empty">まだ分析されていません。</span>`}</div>
+        </div>`;
+    }).join("");
+    return `
+      <details class="research-overview-collapse" style="margin-top:20px;" ${ma ? "open" : ""}>
+        <summary>📊 市場分析(7ステップ)${ma ? "" : " — 未実施"}</summary>
+        <p class="tab-page-overview">${escapeHtmlForDevDocs(framework.description || "")}</p>
+        <div class="devdocs-qa-list">${stepsHtml}</div>
+      </details>`;
   }
 
   // 📂開発アプリ一覧→🏗基本設計(2026-10-23追加、②基本設計フェーズ)。選択中アプリの
