@@ -763,6 +763,36 @@
         "costUsd": 2040.90350484
       },
       "rateLimitResetsAt": "2026-10-28T05:20:00+09:00"
+    },
+    {
+      "date": "2026-10-30",
+      "time": "23:50",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-109: Research/実装/テストの役割を.claude/agents/*.mdとして定義",
+      "note": "ツール制限付きのカスタムエージェント定義ファイル3件を新設。main反映済み。",
+      "usage": {
+        "inputTokens": 6322847,
+        "outputTokens": 11491107,
+        "cacheReadTokens": 6392639679,
+        "cacheWriteTokens": 143141246,
+        "costUsd": 2066.4626664
+      },
+      "rateLimitResetsAt": "2026-10-31T01:40:00+09:00"
+    },
+    {
+      "date": "2026-10-30",
+      "time": "23:51",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-110: 要件定義タブに「市場分析(7ステップ)」セクションを追加",
+      "note": "既存のmarketAnalysisFrameworkを要件定義パネルの下に表示。main反映済み。",
+      "usage": {
+        "inputTokens": 6322847,
+        "outputTokens": 11491107,
+        "cacheReadTokens": 6392639679,
+        "cacheWriteTokens": 143141246,
+        "costUsd": 2066.4626664
+      },
+      "rateLimitResetsAt": "2026-10-31T01:40:00+09:00"
     }
   ]
 }

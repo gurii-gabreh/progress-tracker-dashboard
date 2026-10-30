@@ -5625,7 +5625,57 @@
           "summary": "設計変更を2回挟みつつ実装・JS構文チェック・main反映まで完了。ユーザーが実機で表示確認済み(「確認できた」)。"
         }
       ]
+    },
+    {
+      "id": "PTD-109",
+      "title": "Research/実装/テストの役割を.claude/agents/*.mdとして定義",
+      "task": "サブエージェント役割のツール制限付き定義ファイル化",
+      "repo": "progress-tracker-dashboard",
+      "category": "governance",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。実運用(実際にsubagent_typeで起動)での検証はまだ行っていない。",
+      "note": "ユーザー提案「サブエージェントを社員に見立てて、ユーザーを社長として一つの会社みたいに役割設定したほうがいい」「各役割の設定は、どこかに管理しているの？もう少しそれぞれの役割に特化した設定を作ったほうがいい」への対応。",
+      "detail": "Claude Code標準のカスタムエージェント定義機能(.claude/agents/*.md、frontmatterでname/description/tools)を使い、research.md(Read/Glob/Grep/WebFetch/WebSearch/Bash、Edit/Write無し)・implementer.md(Read/Edit/Write/Glob/Grep/Bash)・tester.md(Read/Glob/Grep/Bash、Edit/Write無し)の3ファイルを新設した。ツール制限により「Researchは書き込みをしない」等のルールを物理的に保証できる。ただしこれは役割の型(ツール制限)を定義するだけで、どのタスクを並列化するかの判断は引き続き司令塔が行う(自動並列化機能ではない)点をユーザーに明示的に確認し、誤解を解消した。subagent-role-orchestrationスキル・ai-config.jsonへも反映。",
+      "output": ".claude/agents/research.md, .claude/agents/implementer.md, .claude/agents/tester.md, subagent-role-orchestrationスキル, data/ai-config.json",
+      "relatedTasks": [
+        "PTD-106"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-30",
+          "summary": "ファイル作成・SKILL.md/ai-config.json反映・main反映まで完了。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-110",
+      "title": "要件定義タブに「市場分析(7ステップ)」セクションを追加",
+      "task": "marketAnalysisFrameworkの画面表示",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指摘「前に7つぐらいの分析方式をまとめたアプリとかあった？要件定義とかにあったような気がするけど」から発見した、data/requirements.jsonのmarketAnalysisFramework(2026-10-07追加、PEST→ファイブフォース→3C→SWOT→STP→4P→カスタマージャーニーの7ステップ)が、これまでどの画面にも表示されていなかったことへの対応。",
+      "detail": "要件定義パネル(devdocs-requirements)の下に、既存の<details>折りたたみパターンを再利用した「📊 市場分析(7ステップ)」セクションを追加した。選択中アプリのrequirements[].marketAnalysisに値があれば表示し、無ければ「まだ分析されていません」と表示する(現在16件中0件が未実施)。",
+      "output": "dashboard.html",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-10-30",
+          "summary": "JS構文チェック・main反映まで完了。"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-27"
+  "updatedAt": "2026-10-30"
 }
