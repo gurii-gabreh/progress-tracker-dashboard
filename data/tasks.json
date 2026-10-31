@@ -5701,6 +5701,32 @@
           "summary": "10エージェントの出力を自動抽出・sysId単位で元データ680件と1:1照合済み(欠落・余剰0件)。JS構文チェック(node --check)・ローカルHTTPサーバーでの表示確認(社会課題タブのDOM要素13箇所の整合性)まで完了。servicenow-sub-agent側はmainへcommit・push済み。progress-tracker-dashboard側は作業ブランチにcommit後main反映予定。"
         }
       ]
+    },
+    {
+      "id": "PTD-112",
+      "title": "data/blog-articles.json新設+「気になるキーワード」タブに記事作成済み列(読み取り専用)を追加",
+      "task": "複業相談(ブログ記事作成)の記事原稿保存先+作成済みフラグのダッシュボード表示",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。残り記事(mods編)の作成待ち。",
+      "note": "複業相談(①SNS動画→②ブログで作り方を販売のファネル)の一環。「気になるキーワード」タブに保存したAIトレンド記事(data/user-preferences.jsonのlikedItems)を元にブログ記事を書くことになり、ユーザー指示「作成した記事内容は、調査資料の記事をまとめているJSONにも保存しておくように」「記事作成列を追加しチェックを入れて、この欄は読み取り専用で編集不可に」への対応。",
+      "detail": "① data/blog-articles.jsonを新設(rule29のJSON分割原則: likedItemsは『何を保存したか』、blog-articlesは『実際に書いた記事の原稿』で性質・更新頻度が異なるため別ファイルに分離)。sourceItemIdでuser-preferences.jsonのlikedItemsと紐付ける構造。1本目(Agent AI/Agent Swarm解説)をsections形式(WordPressのカスタムHTMLブロック単位に分割、画像挿入箇所はimage-placeholderで明示)で格納した。② user-preferences.jsonの該当likedItemに articleCreated(bool)/articleCreatedAtフィールドを追加し、entrySchemaにも説明を追記。③ dashboard.htmlのrenderKeywordsList()(🔍調査資料→💬気になるキーワード)に「📝記事作成」列を追加。researchCheckboxTd等の既存チェック列と同じrt-checkクラスを使い見た目を統一しつつ、disabled属性で編集不可(読み取り専用)にした(ユーザー明示指示)。",
+      "output": "progress-tracker-dashboard/data/blog-articles.json, data/user-preferences.json, dashboard.html",
+      "relatedTasks": [
+        "PTD-108"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-10-31",
+          "summary": "JSON妥当性チェック・JS構文チェック(node --check)まで完了。main反映はこれから。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-10-31"

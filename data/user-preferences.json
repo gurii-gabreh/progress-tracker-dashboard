@@ -7,7 +7,9 @@
     "title": "項目のタイトル・名前",
     "summary": "元データの概要・内容(どのフィールドを使うかはsourceTypeによる)",
     "url": "参照先URL(あれば)",
-    "addedAt": "このファイルへ記録した日時(ISO8601)"
+    "addedAt": "このファイルへ記録した日時(ISO8601)",
+    "articleCreated": "(任意、sourceType=ai-trendのみ) trueの場合、この項目を元にdata/blog-articles.jsonへブログ記事を作成済み。調査資料タブ「💬気になるキーワード」の表に読み取り専用チェックとして表示される(2026-10-31追加)。",
+    "articleCreatedAt": "(任意) articleCreatedをtrueにした日付。"
   },
   "viewedIdsNote": "2026-10-24追加。「閲覧済み」チェック(一覧表の一番左の列)に入れたidの一覧。保存(likedItems)とは別管理で、詳細情報は持たずid文字列のみ。閲覧済みでも保存済み(likedItemsに含まれる)の項目は、一覧表でグレーアウト・「閲覧済みを非表示」フィルタの対象外として扱う(ユーザー指示「保存列にチェックがある場合は閲覧済みにチェックをしても灰色にしないように」)。",
   "viewedIds": [
@@ -52,7 +54,9 @@
       "title": "Artificial Intelligence | AI ഇനി ജോലി ചെയ്തുതരും! എന്താണ് Agent AI, Agent Swarm? |AI agent | N18V",
       "summary": "「Agent AI」「Agent Swarm(AIエージェントの群れ)」という概念を一般向けに解説する、インドのニュース解説動画。",
       "url": "https://www.youtube.com/watch?v=bTgO70Pceos",
-      "addedAt": "2026-10-27T10:18:23.000000+00:00"
+      "addedAt": "2026-10-27T10:18:23.000000+00:00",
+      "articleCreated": true,
+      "articleCreatedAt": "2026-10-31"
     },
     {
       "id": "41f1f00d93885714043532edfaba1046",

@@ -1,0 +1,49 @@
+{
+  "schema": "progress-tracker-dashboard blog articles v1",
+  "description": "複業相談(①SNS動画で実演を無料公開→②ブログで作り方を有料販売、のファネル)のために作成したブログ記事の原稿。調査資料タブ「💬気になるキーワード」に保存した項目(data/user-preferences.jsonのlikedItems、sourceType==ai-trend)を元に作成する。実際の投稿作業は、WordPress側のアクセス制限(XServerの国外IPアクセス制限)によりこのセッションから直接連携できないため、カスタムHTMLブロックへユーザー自身が貼り付ける方式(2026-10-31、ユーザーと合意)で行う。sectionsの各要素はWordPressのカスタムHTMLブロック単位(image-placeholderの箇所には別途、画像ブロックをユーザーがドラッグ&ドロップで挿入する)。",
+  "generatedAt": "2026-10-31",
+  "articles": [
+    {
+      "id": "BLOG-001",
+      "sourceItemId": "c5f1f00d93885714043532edfaba1045",
+      "sourceTitle": "Artificial Intelligence | AI agent / Agent Swarm (News18 Kerala)",
+      "sourceUrl": "https://www.youtube.com/watch?v=bTgO70Pceos",
+      "title": "「Agent AI」と「Agent Swarm」とは？複数のAIが協力して動く仕組みをわかりやすく解説",
+      "status": "draft",
+      "createdAt": "2026-10-31",
+      "publishedAt": null,
+      "wordpressUrl": null,
+      "sections": [
+        {
+          "type": "html",
+          "note": "導入〜Agent AIとは",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<p>最近、ニュースやSNSで「Agent AI」「Agent Swarm」という言葉を見かけることが増えてきました。難しそうに聞こえますが、考え方自体はシンプルです。今回はこの2つの言葉を、専門用語を使わずに整理してみます。</p>\n\n<h2>Agent AIとは何か</h2>\n<p>Agent AI(エージェントAI)とは、ただ質問に答えるだけのAIではなく、「目的を与えると、自分で手順を考えて、実際に作業まで進めてくれるAI」のことです。例えば「資料を作って」とお願いすると、情報を調べる→文章を書く→体裁を整える、という一連の作業を自分で判断しながら進めてくれます。</p>\n\n</div>"
+        },
+        {
+          "type": "image-placeholder",
+          "note": "Agent AI/Agent Swarmのイメージ画像。ネットワーク許可待ちのため未取得(商用利用可の素材サイトから別途用意)。"
+        },
+        {
+          "type": "html",
+          "note": "Agent Swarmとは〜注意点",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>Agent Swarm(エージェントの群れ)とは何か</h2>\n<p>Agent Swarmは、1つの万能なAIに全部任せるのではなく、役割を分担した複数のAIが協力して1つの仕事を進める仕組みです。名前の由来は、昆虫の群れのように、それぞれは単純な動きでも、集まることで複雑な作業をこなせる、という自然界の仕組みにちなんでいます。</p>\n<p>例えば、「調べる係」「書く係」「チェックする係」をそれぞれ別のAIが担当し、全体を取りまとめる「司令塔」役のAIが指示を出す、という形がよく使われます。</p>\n\n<h2>なぜ今話題になっているのか</h2>\n<p>1つのAIに多くの作業をまとめて任せると、途中で混乱したり、適切でない方法を選んでしまったりすることがあります。役割を分担することで、それぞれのAIが自分の担当に集中でき、結果として精度が上がりやすくなる、という利点があります。一般のニュース番組でもこの概念が取り上げられるようになってきており、専門家だけの話ではなくなりつつあります。</p>\n\n<h2>注意しておきたい点</h2>\n<p>便利な仕組みですが、AI同士の情報のやり取りがうまくいかないと、逆に作業内容がバラバラになってしまうリスクもあります。「誰が最終的に責任を持って取りまとめるか」という設計が重要だとされています。</p>\n\n</div>"
+        },
+        {
+          "type": "html",
+          "note": "まとめ+用語解説",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>まとめ</h2>\n<p>Agent AIは「自分で考えて作業するAI」、Agent Swarmは「複数のAIが役割分担して協力する仕組み」です。今後、様々なサービスの裏側でこうした仕組みが当たり前になっていくかもしれません。</p>\n\n<hr>\n\n<h3>用語解説</h3>\n<ul>\n<li><strong>Agent AI(エージェントAI)</strong>: 目的を与えると、自分で手順を考えて作業まで行うAIのこと。</li>\n<li><strong>Agent Swarm(エージェントスウォーム)</strong>: 複数のAIエージェントが役割を分担して協調し、1つの仕事を進める仕組み。</li>\n<li><strong>オーケストレーター</strong>: 複数のAIをまとめて指示を出す、司令塔役のAIやプログラムのこと。</li>\n<li><strong>マルチエージェント</strong>: 1つではなく複数のAIを組み合わせて動かす仕組み全般を指す言葉。</li>\n</ul>\n\n</div>"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Agent swarm(IBM Think)",
+          "url": "https://www.ibm.com/jp-ja/think/topics/agent-swarm"
+        },
+        {
+          "title": "Agent swarm: what it is, how it works, and how to build one",
+          "url": "https://mastra.ai/articles/agent-swarm"
+        }
+      ]
+    }
+  ]
+}
