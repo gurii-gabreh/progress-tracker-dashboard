@@ -4533,7 +4533,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th>タイトル</th><th>概要</th><th>情報源</th><th>追加日</th><th>ポイント</th><th>活かせる技術</th></tr></thead>
+          <thead><tr><th>タイトル</th><th>概要</th><th>情報源</th><th>追加日</th><th>ポイント</th><th>活かせる技術</th><th class="rt-check-head" title="記事作成済み(読み取り専用)">📝記事作成</th></tr></thead>
           <tbody>
             ${items.map((it) => {
               const full = AI_TRENDS_ITEMS.find((t) => t.sysId === it.id);
@@ -4546,6 +4546,7 @@
                 <td>${escapeHtmlForDevDocs((it.addedAt || "不明").slice(0, 10))}</td>
                 <td>${full && (full.pointsJa || []).length ? full.pointsJa.map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>") : ""}</td>
                 <td>${escapeHtmlForDevDocs((full && full.applicableTechJa) || "")}</td>
+                <td class="rt-check"><input type="checkbox" disabled ${it.articleCreated ? "checked" : ""} title="${it.articleCreated ? `作成日: ${escapeHtmlForDevDocs(it.articleCreatedAt || "不明")}(data/blog-articles.json参照)` : "未作成"}"></td>
               </tr>`;
             }).join("")}
           </tbody>
