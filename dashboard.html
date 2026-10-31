@@ -361,9 +361,13 @@
     padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border);
     background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; min-width: 180px;
   }
-  .research-table-wrap { overflow-x: auto; margin-bottom: 14px; }
+  /* 2026-11-01追加、ユーザー指示「一覧表の一番上の項目名はスクロールしないように固定」。
+     ページ全体(.policy-scroll)に対してスティッキーにすると、上の.devdocs-sticky-headと
+     top位置が競合して隠れてしまうため、表ごとに独立したスクロール領域(max-height+overflow-y)を
+     持たせ、その領域内でthead(見出し行)だけをposition:stickyで固定する方式にした。 */
+  .research-table-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; margin-bottom: 14px; }
   .research-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  .research-table th { text-align: left; padding: 7px 10px; background: var(--border); color: var(--text-muted); font-weight: 700; font-size: 11px; white-space: nowrap; }
+  .research-table th { position: sticky; top: 0; z-index: 2; text-align: left; padding: 7px 10px; background: var(--border); color: var(--text-muted); font-weight: 700; font-size: 11px; white-space: nowrap; }
   .research-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .research-table tbody tr:hover td { background: color-mix(in srgb, var(--accent) 6%, transparent); }
   .research-table td.rt-check { width: 28px; text-align: center; }
@@ -1009,6 +1013,38 @@
     border: none; background: var(--accent); color: #fff; cursor: pointer;
   }
   .modal-copy-btn.copied { background: var(--status-done-fg); }
+
+  /* 2026-11-01追加、ブログ記事プレビュー用モーダル(ユーザー指示「プレビュー押したらモーダル画面を
+     表示して、各ブロックのHTMLをクリックしたらそのコードをコピーできるように」)。既存の
+     modal-overlay/modal-box/modal-header/modal-bodyパターンをそのまま再利用し(rule23)、
+     幅だけ記事プレビュー用に広げるモディファイアクラスを追加。 */
+  .article-preview-modal-box { max-width: 760px; }
+  .ap-meta { font-size: 12px; color: var(--text-muted); margin: -4px 0 4px; }
+  .ap-block {
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer;
+    background: var(--surface-2); position: relative;
+  }
+  .ap-block:hover { border-color: var(--accent); }
+  .ap-block:hover .ap-copy-badge { opacity: 1; }
+  .ap-block-content { padding: 14px 16px; font-size: 14px; line-height: 1.7; }
+  .ap-block-content h2, .ap-block-content h3 { margin-top: 0; }
+  .ap-block-content p:last-child, .ap-block-content ul:last-child { margin-bottom: 0; }
+  .ap-copy-badge {
+    position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 700;
+    background: var(--accent); color: #fff; padding: 4px 9px; border-radius: 999px;
+    opacity: 0.85; pointer-events: none; transition: opacity 0.15s;
+  }
+  .ap-copy-badge.copied { background: var(--status-done-fg); }
+  .ap-img-slot {
+    border: 1.5px dashed var(--border); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--text-muted);
+    cursor: default;
+  }
+  .ap-img-slot img { max-width: 100%; border-radius: 8px; cursor: grab; }
+  .ap-uncertainty {
+    background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 8px;
+    padding: 10px 12px; font-size: 12.5px; line-height: 1.6;
+  }
 
   .orch-modal-box { max-width: 640px; }
   .orch-diagram { display: flex; flex-direction: column; align-items: center; gap: 6px; }
@@ -4533,7 +4569,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th>タイトル</th><th>概要</th><th>情報源</th><th>追加日</th><th>ポイント</th><th>活かせる技術</th><th class="rt-check-head" title="記事作成済み(読み取り専用)">📝記事作成</th></tr></thead>
+          <thead><tr><th>タイトル</th><th>概要</th><th>情報源</th><th>追加日</th><th>ポイント</th><th>活かせる技術</th><th class="rt-check-head" title="記事作成済み(読み取り専用)">📝記事作成</th><th>プレビュー</th></tr></thead>
           <tbody>
             ${items.map((it) => {
               const full = AI_TRENDS_ITEMS.find((t) => t.sysId === it.id);
@@ -4547,11 +4583,104 @@
                 <td>${full && (full.pointsJa || []).length ? full.pointsJa.map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>") : ""}</td>
                 <td>${escapeHtmlForDevDocs((full && full.applicableTechJa) || "")}</td>
                 <td class="rt-check"><input type="checkbox" disabled ${it.articleCreated ? "checked" : ""} title="${it.articleCreated ? `作成日: ${escapeHtmlForDevDocs(it.articleCreatedAt || "不明")}(data/blog-articles.json参照)` : "未作成"}"></td>
+                <td>${it.articleCreated ? `<button type="button" class="modal-copy-btn ap-preview-btn" data-source-id="${escapeHtmlForDevDocs(it.id)}" style="padding:4px 10px;font-size:11px;">👁プレビュー</button>` : ""}</td>
               </tr>`;
             }).join("")}
           </tbody>
         </table>
       </div>`;
+    box.querySelectorAll(".ap-preview-btn").forEach((btn) => {
+      btn.addEventListener("click", () => openArticlePreviewBySourceId(btn.dataset.sourceId));
+    });
+  }
+
+  // ブログ記事原稿(data/blog-articles.json、PTD-112で新設)のプレビュー機能(2026-11-01追加)。
+  // ユーザー指示「プレビュー押したらモーダル画面を表示して、各ブロックのHTMLをクリックしたら
+  // そのコードをコピーできるように」。以前作ったArtifact版プレビューと同じ考え方を、ダッシュボード
+  // 本体に組み込み直したもの(ユーザー指示「さっきのプレビューは気になるキーワードページに適用して」)。
+  let BLOG_ARTICLES = [];
+  function loadBlogArticles() {
+    return fetch("data/blog-articles.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/blog-articles.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => { BLOG_ARTICLES = data.articles || []; })
+      .catch((err) => { console.error(err); });
+  }
+
+  function openArticlePreviewBySourceId(sourceId) {
+    const article = BLOG_ARTICLES.find((a) => a.sourceItemId === sourceId);
+    if (!article) { showToast("記事データを読み込めませんでした。少し待って再度お試しください。"); return; }
+    showArticlePreviewModal(article);
+  }
+
+  // 画像挿入箇所(image-placeholder)は、section.imageUrlがあれば実際の<img draggable>を表示し、
+  // そのままブラウザの標準ドラッグ機能でWordPress側のタブへドラッグ&ドロップできるようにする。
+  // 現時点ではこのセッションのネットワーク許可設定で画像素材サイトに接続できないため、imageUrlは
+  // まだどの記事にも無い(= 常に「画像は未取得」表示になる)。許可後、画像を取得したらこのimageUrl
+  // フィールドをdata/blog-articles.jsonへ追加するだけで、ここが自動的にドラッグ可能な画像表示に切り替わる。
+  function showArticlePreviewModal(article) {
+    const root = document.getElementById("modal-root");
+    const sectionsHtml = (article.sections || []).map((s, idx) => {
+      if (s.type === "html") {
+        return `<div class="ap-block" data-section-index="${idx}"><div class="ap-copy-badge">📋 クリックでコピー</div><div class="ap-block-content">${s.content}</div></div>`;
+      }
+      if (s.type === "image-placeholder") {
+        if (s.imageUrl) {
+          return `<div class="ap-img-slot"><img src="${escapeHtmlForDevDocs(s.imageUrl)}" alt="${escapeHtmlForDevDocs(s.note || "")}" draggable="true"><span>この画像をワードプレスの編集画面へドラッグ&ドロップしてください</span></div>`;
+        }
+        return `<div class="ap-img-slot"><span>🖼</span><span>${escapeHtmlForDevDocs(s.note || "ここに画像を挿入")}(画像は未取得です)</span></div>`;
+      }
+      return "";
+    }).join("");
+    const uncertainty = article.uncertaintyNote ? `<div class="ap-uncertainty">⚠ ${escapeHtmlForDevDocs(article.uncertaintyNote)}</div>` : "";
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box article-preview-modal-box">
+          <div class="modal-header">
+            <h2>${escapeHtmlForDevDocs(article.title || "")}</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="ap-meta">ステータス: ${article.status === "draft" ? "下書き" : escapeHtmlForDevDocs(article.status || "")} ／ 作成日: ${escapeHtmlForDevDocs(article.createdAt || "不明")} ／ 各ブロックをクリックするとそのHTMLをコピーできます。</div>
+            ${uncertainty}
+            ${sectionsHtml}
+          </div>
+        </div>
+      </div>`;
+
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => { if (e.target.id === "modal-overlay") closeModal(); });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+
+    root.querySelectorAll(".ap-block").forEach((block) => {
+      block.addEventListener("click", async () => {
+        const idx = Number(block.dataset.sectionIndex);
+        const section = (article.sections || [])[idx];
+        if (!section) return;
+        const badge = block.querySelector(".ap-copy-badge");
+        let copied = false;
+        try {
+          await navigator.clipboard.writeText(section.content);
+          copied = true;
+        } catch (err) {
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = section.content;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            copied = document.execCommand("copy");
+            document.body.removeChild(ta);
+          } catch (err2) { copied = false; }
+        }
+        badge.textContent = copied ? "コピーしました ✓" : "コピー不可";
+        badge.classList.toggle("copied", copied);
+        setTimeout(() => { badge.textContent = "📋 クリックでコピー"; badge.classList.remove("copied"); }, 1800);
+      });
+    });
   }
 
   // 🔍調査資料タブ→💡社会課題・ニーズ(2026-10-31追加)。servicenow-sub-agentの
@@ -5994,6 +6123,7 @@
     loadHackathonResearch();
     loadContestResearch();
     loadIdeaResearch();
+    loadBlogArticles();
     loadAiTrendsResearch().finally(() => loadKeywordsResearch());
     loadSocialIssuesResearch();
     loadPreferencesResearch();

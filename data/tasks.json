@@ -5716,7 +5716,7 @@
       "issues": [],
       "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。残り記事(mods編)の作成待ち。",
       "note": "複業相談(①SNS動画→②ブログで作り方を販売のファネル)の一環。「気になるキーワード」タブに保存したAIトレンド記事(data/user-preferences.jsonのlikedItems)を元にブログ記事を書くことになり、ユーザー指示「作成した記事内容は、調査資料の記事をまとめているJSONにも保存しておくように」「記事作成列を追加しチェックを入れて、この欄は読み取り専用で編集不可に」への対応。",
-      "detail": "① data/blog-articles.jsonを新設(rule29のJSON分割原則: likedItemsは『何を保存したか』、blog-articlesは『実際に書いた記事の原稿』で性質・更新頻度が異なるため別ファイルに分離)。sourceItemIdでuser-preferences.jsonのlikedItemsと紐付ける構造。1本目(Agent AI/Agent Swarm解説)をsections形式(WordPressのカスタムHTMLブロック単位に分割、画像挿入箇所はimage-placeholderで明示)で格納した。② user-preferences.jsonの該当likedItemに articleCreated(bool)/articleCreatedAtフィールドを追加し、entrySchemaにも説明を追記。③ dashboard.htmlのrenderKeywordsList()(🔍調査資料→💬気になるキーワード)に「📝記事作成」列を追加。researchCheckboxTd等の既存チェック列と同じrt-checkクラスを使い見た目を統一しつつ、disabled属性で編集不可(読み取り専用)にした(ユーザー明示指示)。",
+      "detail": "① data/blog-articles.jsonを新設(rule29のJSON分割原則: likedItemsは『何を保存したか』、blog-articlesは『実際に書いた記事の原稿』で性質・更新頻度が異なるため別ファイルに分離)。sourceItemIdでuser-preferences.jsonのlikedItemsと紐付ける構造。1本目(Agent AI/Agent Swarm解説)をsections形式(WordPressのカスタムHTMLブロック単位に分割、画像挿入箇所はimage-placeholderで明示)で格納した。② user-preferences.jsonの該当likedItemに articleCreated(bool)/articleCreatedAtフィールドを追加し、entrySchemaにも説明を追記。③ dashboard.htmlのrenderKeywordsList()(🔍調査資料→💬気になるキーワード)に「📝記事作成」列を追加。researchCheckboxTd等の既存チェック列と同じrt-checkクラスを使い見た目を統一しつつ、disabled属性で編集不可(読み取り専用)にした(ユーザー明示指示)。\n\n【2026-11-01追記】ユーザー指示「さっきのプレビューは気になるキーワードページに適用して/一覧表の見出し行を固定して/プレビュー押したらモーダルでブロックごとにHTMLをコピーできるように/画像もドラッグでワードプレスへ貼れるように」への対応。① 調査資料タブ全体(research-tableクラスの全テーブル)について、.research-table-wrapにoverflow-y:auto+max-height:65vhを持たせ、theadをposition:stickyにすることで、表ごとに独立したスクロール領域内で見出し行が固定されるようにした(ページ全体のdevdocs-sticky-headとのtop位置競合を避けるため、ページ単位ではなく表単位のスクロールコンテナを採用)。② dashboard.html本体にdata/blog-articles.jsonを読み込むloadBlogArticles()を追加し、気になるキーワード表の「記事作成」済み行に「👁プレビュー」ボタンを追加。押すと既存のmodal-overlay/modal-boxパターンを再利用したモーダルが開き、記事のsectionsを1ブロックずつ表示、各ブロックをクリックするとそのHTML(生コード)をクリップボードへコピーできる。③ 画像挿入箇所(image-placeholder)はsection.imageUrlがあれば実際の<img draggable>として表示し、ブラウザ標準のドラッグ機能でWordPress側タブへドラッグできる設計にした。ただしこのセッションのネットワーク許可設定で画像素材サイト(Pixabay等)に接続できないため、現時点でimageUrlを持つsectionは無く、実際に試せる画像はまだ無い(ユーザーへ要報告)。以前作成したスタンドアロンArtifact版プレビュー(https://claude.ai/artifact/UndxREv3uiyMca5Gyn5fje)は、この本実装により役目を終えたが削除はしていない。",
       "output": "progress-tracker-dashboard/data/blog-articles.json, data/user-preferences.json, dashboard.html",
       "relatedTasks": [
         "PTD-108"
@@ -5725,9 +5725,13 @@
         {
           "date": "2026-10-31",
           "summary": "JSON妥当性チェック・JS構文チェック(node --check)まで完了。main反映はこれから。"
+        },
+        {
+          "date": "2026-11-01",
+          "summary": "JS構文チェック(node --check)・ID/クラス整合性チェック・ローカルHTTPサーバーでの表示確認まで完了。main反映はこれから。"
         }
       ]
     }
   ],
-  "updatedAt": "2026-10-31"
+  "updatedAt": "2026-11-01"
 }
