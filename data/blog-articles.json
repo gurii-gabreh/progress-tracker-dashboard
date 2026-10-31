@@ -44,6 +44,49 @@
           "url": "https://mastra.ai/articles/agent-swarm"
         }
       ]
+    },
+    {
+      "id": "BLOG-002",
+      "sourceItemId": "41f1f00d93885714043532edfaba1046",
+      "sourceTitle": "클로드 신기능 mods 활용하기 #claude #claudecode #클로드 #mods #클로드코드 (Aiden의 친절한 AI)",
+      "sourceUrl": "https://www.youtube.com/watch?v=E2AyWVfzH7w",
+      "title": "Claude Codeの新機能「mods」とは？SkillsやPluginsとの違いをわかりやすく解説",
+      "status": "draft",
+      "createdAt": "2026-10-31",
+      "publishedAt": null,
+      "wordpressUrl": null,
+      "sections": [
+        {
+          "type": "html",
+          "note": "導入〜modsとは",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<p>AIにコーディングを手伝ってもらう「Claude Code」というツールに、「mods(モッズ)」という新しい拡張機能が登場しました。似た言葉に「Skills」「Plugins」もあり、混同しやすいので、今回は違いを整理して解説します。</p>\n\n<h2>modsとは何か</h2>\n<p>modsは、Claude Code自体の「見た目」や「振る舞い」を変更できる拡張機能です。たとえば、何かのツールが呼び出されたタイミングや、入力が送信されたタイミングなど、特定の「出来事(イベント)」が起きたときに、決められた処理を自動で動かす仕組みになっています。</p>\n\n</div>"
+        },
+        {
+          "type": "image-placeholder",
+          "note": "mods/Claude Codeのイメージ画像。ネットワーク許可待ちのため未取得。"
+        },
+        {
+          "type": "html",
+          "note": "Skills・Pluginsとの違い〜注意点",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>Skills・Pluginsとの違い</h2>\n<p>3つとも「Claude Codeを拡張する仕組み」という点は共通していますが、役割が異なります。</p>\n<ul>\n<li><strong>Skills</strong>: Claudeに「特定の作業のやり方を教える」ための仕組みです。</li>\n<li><strong>mods</strong>: Claude Code自体の動き方・見た目を変える仕組みです。</li>\n<li><strong>Plugins</strong>: Skills・mods・その他の機能をまとめてパッケージ化する、入れ物のような存在です。</li>\n</ul>\n<p>つまり、Pluginsという大きな箱の中に、SkillsやModsが入っている、というイメージです。</p>\n\n<h2>使うときの注意点</h2>\n<p>modsは、Claude Codeが実行されるときと同じ権限で動くプログラムで、安全な箱(サンドボックス)の中だけで動くわけではありません。信頼できる提供元のmodsだけを使う、必要なければ無効化する、といった基本的な注意は必要です。</p>\n\n</div>"
+        },
+        {
+          "type": "html",
+          "note": "まとめ+用語解説",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>まとめ</h2>\n<p>modsは、Claude Code自体をカスタマイズできる新しい拡張機能です。Skills(作業のやり方を教える)・Plugins(まとめる箱)とセットで理解しておくと、全体像がつかみやすくなります。</p>\n\n<hr>\n\n<h3>用語解説</h3>\n<ul>\n<li><strong>mods(モッズ)</strong>: Claude Codeの見た目・振る舞いを変更できる拡張機能。特定の出来事(イベント)が起きたときに処理を自動実行する。</li>\n<li><strong>Skills(スキル)</strong>: Claudeに特定の作業のやり方を教えるための設定の仕組み。</li>\n<li><strong>Plugins(プラグイン)</strong>: Skills・mods・その他の機能をまとめてパッケージ化する入れ物。</li>\n<li><strong>サンドボックス</strong>: プログラムの影響範囲を限定し、安全に実行するための隔離された実行環境のこと。</li>\n</ul>\n\n</div>"
+        }
+      ],
+      "sources": [
+        {
+          "title": "What are Mods in Claude Code(claudelog.com)",
+          "url": "https://claudelog.com/faqs/what-are-mods-in-claude-code/"
+        },
+        {
+          "title": "Claude Code Skills vs Mods vs Plugins vs Agents: What's the Difference?(UX Planet)",
+          "url": "https://uxplanet.org/claude-code-skills-vs-mods-vs-plugins-vs-agents-whats-the-difference-5fccf8c1b4e6"
+        }
+      ],
+      "uncertaintyNote": "modsの正式リリース時期は情報源間で記述が食い違っており(claudelog.comは2026年10月1日のv2.1.287で標準搭載としているが、別のコミュニティリポジトリは早期アクセスAPIに依存すると記載)、断定できなかったため本文では時期に触れていない。"
     }
   ]
 }
