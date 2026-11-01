@@ -883,6 +883,21 @@
         "costUsd": 2124.51790992
       },
       "rateLimitResetsAt": "2026-11-01T16:30:00+09:00"
+    },
+    {
+      "date": "2026-11-01",
+      "time": "15:14",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-116: design学習資料にUI要素の名称集(namethatui.com参照)を追加",
+      "note": "App-Development-Infoにmaterials/design-lesson7-3.html新規作成(main push済み)、design.htmlに自作/外部サイト参照トグル追加。tasks.jsonへ記録。",
+      "usage": {
+        "inputTokens": 6940764,
+        "outputTokens": 11958899,
+        "cacheReadTokens": 6602713401,
+        "cacheWriteTokens": 146086878,
+        "costUsd": 2124.51790992
+      },
+      "rateLimitResetsAt": "2026-11-02T05:00:00+09:00"
     }
   ]
 }
