@@ -1051,6 +1051,16 @@
     border: none; background: var(--accent); color: #fff; cursor: pointer;
   }
   .ap-img-prompt-copy.copied { background: var(--status-done-fg); }
+  /* 2026-11-01追加、ユーザー指示「記事作成時に、本文+画像生成プロンプト+SNS投稿文の3点をまとめて作る」。
+     snsPost.textがある記事で、インスタ/X投稿文案を同じクリックコピー方式で表示する。 */
+  .ap-sns-post-box { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--surface-2); }
+  .ap-sns-post-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+  .ap-sns-post-text { font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; margin-bottom: 8px; }
+  .ap-sns-post-copy {
+    font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px;
+    border: none; background: var(--accent); color: #fff; cursor: pointer;
+  }
+  .ap-sns-post-copy.copied { background: var(--status-done-fg); }
   .ap-uncertainty {
     background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 8px;
     padding: 10px 12px; font-size: 12.5px; line-height: 1.6;
@@ -4665,6 +4675,11 @@
       return "";
     }).join("");
     const uncertainty = article.uncertaintyNote ? `<div class="ap-uncertainty">⚠ ${escapeHtmlForDevDocs(article.uncertaintyNote)}</div>` : "";
+    // 2026-11-01追加、ユーザー指示「記事作成時に、本文+画像生成プロンプト+SNS投稿文の3点をまとめて作る」の
+    // 3点目。article.snsPost.textがあれば、記事本文・画像プロンプトと同じクリックコピー方式で表示する。
+    const snsPostHtml = (article.snsPost && article.snsPost.text)
+      ? `<div class="ap-sns-post-box"><div class="ap-sns-post-label">📱 インスタ/X投稿文案</div><div class="ap-sns-post-text">${escapeHtmlForDevDocs(article.snsPost.text)}</div><button type="button" class="ap-sns-post-copy">📋 クリックでコピー</button></div>`
+      : "";
     root.innerHTML = `
       <div class="modal-overlay" id="modal-overlay">
         <div class="modal-box article-preview-modal-box">
@@ -4676,6 +4691,7 @@
             <div class="ap-meta">ステータス: ${article.status === "draft" ? "下書き" : escapeHtmlForDevDocs(article.status || "")} ／ 作成日: ${escapeHtmlForDevDocs(article.createdAt || "不明")} ／ 各ブロックをクリックするとそのHTMLをコピーできます。</div>
             ${uncertainty}
             ${sectionsHtml}
+            ${snsPostHtml}
           </div>
         </div>
       </div>`;
@@ -4740,6 +4756,33 @@
         setTimeout(() => { btn.textContent = "📋 Geminiへの指示文をコピー"; btn.classList.remove("copied"); }, 1800);
       });
     });
+
+    const snsPostBtn = root.querySelector(".ap-sns-post-copy");
+    if (snsPostBtn) {
+      snsPostBtn.addEventListener("click", async () => {
+        const text = (article.snsPost || {}).text;
+        if (!text) return;
+        let copied = false;
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch (err) {
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            copied = document.execCommand("copy");
+            document.body.removeChild(ta);
+          } catch (err2) { copied = false; }
+        }
+        snsPostBtn.textContent = copied ? "コピーしました ✓" : "コピー不可";
+        snsPostBtn.classList.toggle("copied", copied);
+        setTimeout(() => { snsPostBtn.textContent = "📋 クリックでコピー"; snsPostBtn.classList.remove("copied"); }, 1800);
+      });
+    }
   }
 
   // 🔍調査資料タブ→💡社会課題・ニーズ(2026-10-31追加)。servicenow-sub-agentの
