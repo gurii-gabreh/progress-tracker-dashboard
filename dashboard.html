@@ -4405,11 +4405,27 @@
   const AI_TRENDS_URL = "https://raw.githubusercontent.com/gurii-gabreh/servicenow-sub-agent/main/data/research-items.json";
   let AI_TRENDS_ITEMS = [];
   let AI_TRENDS_CATEGORIES = {};
+  // 2026-11-01追加、ユーザー指示「AI最新情報にもIDを振って」。research-items.json自体は
+  // GitHub Actions(servicenow-sub-agent側)がsysId単位でマージ再生成するため、No.列をそこに
+  // 直接持たせると次回の自動実行で消えてしまう。そのため連番ID(data/hackathon-research.jsonの
+  // A-、data/contest-research.jsonのB-に続くC-)は、このリポジトリ側のdata/ai-trends-ids.json
+  // (Claude専用、append-onlyで採番)に永続化し、ここでjoinして表示する。
+  let AI_TRENDS_IDS = {};
   let aiTrendsShowTodayOnly = false;
   let aiTrendsFiltersWired = false;
 
+  function loadAiTrendsIds() {
+    return fetch("data/ai-trends-ids.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/ai-trends-ids.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => { AI_TRENDS_IDS = data.mapping || {}; })
+      .catch((err) => { console.error(err); AI_TRENDS_IDS = {}; });
+  }
+
   function loadAiTrendsResearch() {
-    return fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" })
+    return loadAiTrendsIds().then(() => fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" }))
       .then((res) => {
         if (!res.ok) throw new Error(`research-items.json の取得に失敗しました(HTTP ${res.status})`);
         return res.json();
@@ -4510,12 +4526,13 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
           <tbody>
             ${items.map((it) => `
               <tr>
                 ${researchViewedCheckboxTd(it.sysId)}
                 ${researchCheckboxTd(it.sysId)}
+                <td>${escapeHtmlForDevDocs(AI_TRENDS_IDS[it.sysId] || "—")}</td>
                 <td>${escapeHtmlForDevDocs(AI_TRENDS_CATEGORIES[String(it.category)] || String(it.category || "不明"))}</td>
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.sourceName || "不明")}</td>
