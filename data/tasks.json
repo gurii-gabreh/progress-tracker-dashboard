@@ -5815,6 +5815,32 @@
           "summary": "ページ作成・ダッシュボードへのタブ追加完了。JS構文チェック済み。"
         }
       ]
+    },
+    {
+      "id": "PTD-116",
+      "title": "design学習資料に「UI要素の名称集(namethatui.com参照)」を追加",
+      "task": "namethatui.com(UI要素のビジュアル辞典)の無料枠の内容をApp-Development-Infoのdesign学習資料に取り込み、自作資料と切り替えて見られるようにする",
+      "repo": "progress-tracker-dashboard",
+      "category": "content",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「namethatui.comの内容をアプリの学習資料一覧に追加したい。自作とこのサイトの内容を学習資料一覧内で切り替えられるようにしてほしい。それと、今までやっていたカテゴリーで必要なところを吸い出せる？」への対応。範囲は全91件(Web 58件・macOS 33件)に決定(ユーザー選択)。",
+      "detail": "namethatui.comのsitemap.xmlから全91件のURLを取得し、各ページをcurlで並列取得、name/description(meta description)をPythonスクリプトで抽出(rule22: 大量データ処理はスクリプト経由)。App-Development-Infoに`materials/design-lesson7-3.html`を新規作成し、Web/macOSのカテゴリ別トグル(既存のmanager-subview-toggleと同じパターン、rule23)で表示。`materials/design.html`(design分野の学習資料ハブ)に「自作」/「外部サイト参照」のトグルを追加し、既存のlesson7-1/7-2(自作)とlesson7-3(namethatui.com参照)を切り替えて見られるようにした。有料(Proプラン、画像アップロード検索等)は使わず、無料枠で閲覧できる各ページの内容のみを抽出する方針(ユーザーと合意済み)。App-Development-Infoはmain直push。",
+      "output": "App-Development-Info/materials/design-lesson7-3.html, materials/design.html",
+      "relatedTasks": [
+        "PTD-115"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-01",
+          "summary": "91件抽出・ページ作成・design.htmlへのトグル追加完了。JS構文チェック済み。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-01"
