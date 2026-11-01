@@ -5762,6 +5762,33 @@
           "summary": "No.列(C-xxx)の永続化方式を実装、JS構文チェック完了。main反映はこれから。"
         }
       ]
+    },
+    {
+      "id": "PTD-114",
+      "title": "「AI最新情報キュレーション+ブログ記事作成」専用ルームの新設",
+      "task": "servicenow-sub-agentのキュレーション追いつかせ(PTD-113)とブログ記事下書き作成(PTD-112)を1つの専用ルームに一本化し、日次Routineで自動実行する",
+      "repo": "progress-tracker-dashboard",
+      "category": "architecture",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "日次Routine初回実行(2026-11-02 09:45 JST)の結果を確認する。ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー提案「この分析って別ルームでやったほうがいい気がするけどどうかな？今後ブログに乗せる記事は、別にしたほうが埋もれないかな」への対応(2026-10-31)。あわせて「servicenowの収集が終わったら気になる記事を記事用にまとめて保存してほしい」「記事を作成した際に、画像生成プロンプトもクリックでコピーできるようにしてほしい」「本文+画像生成プロンプト+SNS投稿文の3点をまとめて作成してほしい」という一連の指示を1つの日次ルームにまとめて反映した。",
+      "detail": "CCRの`create_session`で新しいセッション(session_011sXeDkL7GLJJzVs7TBrjgz、source_url: progress-tracker-dashboard)を作成し、`create_trigger`で日次Routine(trig_011zBuNxpYB52P52yZwZaqsG、cron 45 0 * * * = JST 09:45、servicenow-sub-agentの収集ワークフローservicenow-export-research.yml(JST 09:30完了)の15分後)を自己バインドで設定した。日次の処理内容: ①servicenow-sub-agentのdata/research-items.jsonの未キュレーション項目(対象カテゴリ1,2,3,4,5,6,8,9、カテゴリ10除外)をResearchサブエージェント並列実行で選択的キュレーション(PTD-113と同じ基準・手順) ②新たにcurated:trueになった項目からAIが「特に注目すべき記事」を自動選定(件数の目安なし) ③選定項目ごとにdata/blog-articles.jsonへ記事本文(sections構成、用語解説含む)+画像生成プロンプト(imagePrompt、Geminiでの生成前提。抽象的・概念的表現で実在人物・企業ロゴ・キャラクターを避ける方針)+SNS投稿文案(snsPost.text、インスタ/X向け)の3点を同じタイミングでまとめて作成、の3段階。進捗記録(tasks.json/concept-log.json/credit-log.json)・mainへのマージもこのルーム自身が担当する。README.md「ルームマッピング」にも記録済み。",
+      "output": "session_011sXeDkL7GLJJzVs7TBrjgz, trig_011zBuNxpYB52P52yZwZaqsG",
+      "relatedTasks": [
+        "PTD-112",
+        "PTD-113"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-01",
+          "summary": "専用ルーム・日次Routine作成完了。初回実行は2026-11-02 09:45 JST予定。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-01"

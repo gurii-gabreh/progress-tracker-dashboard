@@ -214,6 +214,13 @@
           "context": "2026-11-01、🤖AI最新情報タブに会話参照用の連番ID(No.列)を追加した際(PTD-113)。",
           "note": "servicenow-sub-agentのdata/research-items.jsonは、GitHub Actions(export_research_items.mjs)がServiceNow側のテーブルから毎回全件取得してsysId単位でマージ再生成する。その際、スクリプトが明示的に引き継ぐと書かれているフィールド(curated/summaryJa/pointsJa/applicableTechJa)以外は`{...normalized, curated, summaryJa, pointsJa, applicableTechJa}`という形で再構築されるため、ここに無い独自フィールド(例: No.列用の連番ID)を直接追加しても次回の自動実行で消えてしまう。この種の『外部プロセスが所有・定期上書きするJSON』に対しては、安定させたい付加情報はそのJSONの中ではなく、Claude/ダッシュボード側が単独で所有する別ファイル(sysId等の共通キーで引けるマッピング)に分離して持たせ、表示時にjoinする設計にすることで、外部プロセスの仕様を一切変更せずに安全に拡張できる。",
           "date": "2026-11-01"
+        },
+        {
+          "id": "CL-050",
+          "concept": "定常的に繰り返される『収集→選別→成果物作成』のような一連のワークフローは、司令塔(manager-room)で都度アドホックに行うのではなく、専用の常駐ルーム+日次Routineへ切り出すことで、埋もれ・抜け漏れを防げる",
+          "context": "2026-11-01、🤖AI最新情報キュレーション(PTD-113)とブログ記事作成(PTD-112)を1つの専用ルームへ切り出した際。",
+          "note": "ユーザー提案「この分析って別ルームでやったほうがいい気がするけどどうかな？今後ブログに乗せる記事は、別にしたほうが埋もれないかな」が起点。manager-roomは全リポジトリ横断の状況把握・振り分け役(ルール18)であり、AI最新情報のキュレーションやブログ記事作成のような、特定のリズム(servicenowの日次収集に合わせたタイミング)で繰り返し発生する作業を、その都度manager-room内でアドホックに処理し続けると、他の相談に押されて埋もれる・タイミングを逃す、という問題が起きやすい。weekly-log-digest-routine(claude-voice-bridge常駐セッション)・manager-room-log.json日次Routine・CLAUDE.md定期確認Routineで既に確立していた『常駐セッション+自己バインドRoutine』パターンを、content生成(ブログ記事下書き作成)を含むワークフローにも適用した初めての例。",
+          "date": "2026-11-01"
         }
       ]
     },

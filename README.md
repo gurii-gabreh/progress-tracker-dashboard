@@ -64,6 +64,8 @@ session_01LeHQUz9gH8bU9uVNdJBBF5自身が自己バインドの専用Routine(trig
 
 **2026-08-25追記: claude-voice-bridgeもこの作業ルームの担当に追加**。claude.aiのブラウザ画面を音声で操作するChrome拡張機能(`gurii-gabreh/claude-voice-bridge`)を、このマネージャールームのセッション内で直接実装・デバッグしてしまう同種の違反が発生した(音声入出力の相談から着手し、送信タイミング・応答判定・マイク再開処理の不具合修正まで一通り直接手を動かしてしまった)ことをユーザーから指摘され、`session_012kTdgM1PApMPsJC8N4ew95`(既存の作業ルーム)へ担当リポジトリとして引き継いだ。以降、claude-voice-bridgeの実装・修正もマネージャールームが自分で行わず、このセッションへ依頼する。
 
+**2026-11-01追記: 「AI最新情報キュレーション+ブログ記事作成」専用ルームを新設**。servicenow-sub-agentの`data/research-items.json`のキュレーション追いつかせ(PTD-113)とブログ記事下書き作成(PTD-112)が、どちらもこのマネージャールームでその都度アドホックに行われ埋もれがちだったため、1つの専用ルーム(`session_011sXeDkL7GLJJzVs7TBrjgz`、CCRの`create_session`で作成)に一本化した(ユーザー指示「AI最新情報キュレーションとブログ記事作成を1つのルームにまとめ、servicenowの収集が終わったら気になる記事を記事用にまとめて保存してほしい」)。日次Routine(`trig_011zBuNxpYB52P52yZwZaqsG`、JST毎日09:45=servicenowの収集完了09:30の15分後)がこのセッションへ自己バインドで発火し、①未キュレーション項目の選別的キュレーション②注目記事の自動選定③記事本文+Gemini用画像生成プロンプト+SNS(インスタ/X)投稿文案の3点セット作成、をdata/blog-articles.jsonへ保存する。画像はこのセッションに生成機能が無く、フリー素材サイトもCloudflareのJS challengeで取得できないため、ユーザーがGeminiで生成する運用(2026-11-01、ユーザーと合意)。
+
 ## 現在の状態
 
 - GASウェブアプリ: デプロイ済み(`gas/Code.gs`。GitHubとは自動連携していないため、コード変更時は
