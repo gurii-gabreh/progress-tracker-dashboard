@@ -207,6 +207,13 @@
           "context": "2026-11-01、🔍調査資料タブの一覧表(research-table)の見出し行固定を実装した際(PTD-112)。",
           "note": "ページ全体のスクロールコンテナ(.policy-scroll)に対して、既にtop:0でposition:stickyな見出しブロック(.devdocs-sticky-head)が存在する状態で、表のtheadも同じtop:0でposition:stickyにすると、両者が同じY座標(ビューポート上端)を取り合い、theadが見出しブロックの下に隠れてしまう(stickyはソース順で重なるため)。この競合を解消するパターンとして、表をラップする要素(.research-table-wrap)自体にoverflow-y:auto+max-heightを持たせ、その要素を独立したスクロールコンテナにした上で、thead側のposition:stickyをそのローカルなコンテナ基準で効かせる、という方法を採った。ページ全体のスクロール位置を計算してオフセットをJSで動的に設定する方式(高さが可変で壊れやすい)より、CSSだけで完結し壊れにくい。",
           "date": "2026-11-01"
+        },
+        {
+          "id": "CL-049",
+          "concept": "外部パイプラインが定期的にマージ再生成するJSONには、安定IDなど永続化したい独自フィールドを直接追加しない。別ファイルに分離してsysId等のキーでjoinする",
+          "context": "2026-11-01、🤖AI最新情報タブに会話参照用の連番ID(No.列)を追加した際(PTD-113)。",
+          "note": "servicenow-sub-agentのdata/research-items.jsonは、GitHub Actions(export_research_items.mjs)がServiceNow側のテーブルから毎回全件取得してsysId単位でマージ再生成する。その際、スクリプトが明示的に引き継ぐと書かれているフィールド(curated/summaryJa/pointsJa/applicableTechJa)以外は`{...normalized, curated, summaryJa, pointsJa, applicableTechJa}`という形で再構築されるため、ここに無い独自フィールド(例: No.列用の連番ID)を直接追加しても次回の自動実行で消えてしまう。この種の『外部プロセスが所有・定期上書きするJSON』に対しては、安定させたい付加情報はそのJSONの中ではなく、Claude/ダッシュボード側が単独で所有する別ファイル(sysId等の共通キーで引けるマッピング)に分離して持たせ、表示時にjoinする設計にすることで、外部プロセスの仕様を一切変更せずに安全に拡張できる。",
+          "date": "2026-11-01"
         }
       ]
     },
