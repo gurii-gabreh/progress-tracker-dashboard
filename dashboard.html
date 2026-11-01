@@ -1152,7 +1152,7 @@
           <button type="button" class="hub-card" data-hub-nav="devdocs">
             <span class="hub-card-icon">📄</span>
             <span class="hub-card-title">開発資料</span>
-            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」の5つのサブタブがあります。</span>
+            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」「📐 図の種類」の6つのサブタブがあります。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
@@ -1337,6 +1337,7 @@
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-materials" data-subview="materials">📖 学習資料</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-diagramtypes" data-subview="diagramtypes">📐 図の種類</button>
   </div>
 
   <!-- 2026-10-23変更: 旧「📋 要件定義」(常にアプリ選択+Q&A一覧を表示するだけのビューアー)を、
@@ -1459,6 +1460,9 @@
   </div>
   <div id="devdocs-subview-policy" class="manager-subview">
     <iframe id="policy-iframe" title="学習方針" loading="lazy"></iframe>
+  </div>
+  <div id="devdocs-subview-diagramtypes" class="manager-subview">
+    <iframe id="diagramtypes-iframe" title="図の種類" loading="lazy"></iframe>
   </div>
   </div>
 
@@ -6195,12 +6199,16 @@
     const MATERIALS_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/index.html";
     const RECORDS_URL = "https://gurii-gabreh.github.io/App-Development-Info/records/index.html";
     const POLICY_URL = "https://gurii-gabreh.github.io/App-Development-Info/policy.html";
+    // 2026-11-01追加、ユーザー指示「学習方針の横に、図の種類を追加して。アクティビティ図やガントチャートなど、
+    // 基本情報・応用情報で出てくる図の種類をサンプル図と概要でまとめたページ」。学習方針と同じiframe方式。
+    const DIAGRAM_TYPES_URL = "https://gurii-gabreh.github.io/App-Development-Info/diagram-types.html";
     const subviews = {
       requirements: { btn: document.getElementById("devdocs-subtab-requirements"), panel: document.getElementById("devdocs-subview-requirements") },
       flow: { btn: document.getElementById("devdocs-subtab-flow"), panel: document.getElementById("devdocs-subview-flow") },
       materials: { btn: document.getElementById("devdocs-subtab-materials"), panel: document.getElementById("devdocs-subview-materials"), iframeId: "materials-iframe", url: MATERIALS_URL },
       records: { btn: document.getElementById("devdocs-subtab-records"), panel: document.getElementById("devdocs-subview-records"), iframeId: "records-iframe", url: RECORDS_URL },
       policy: { btn: document.getElementById("devdocs-subtab-policy"), panel: document.getElementById("devdocs-subview-policy"), iframeId: "policy-iframe", url: POLICY_URL },
+      diagramtypes: { btn: document.getElementById("devdocs-subtab-diagramtypes"), panel: document.getElementById("devdocs-subview-diagramtypes"), iframeId: "diagramtypes-iframe", url: DIAGRAM_TYPES_URL },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
       if (!btn) return;
