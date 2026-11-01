@@ -5789,6 +5789,32 @@
           "summary": "専用ルーム・日次Routine作成完了。初回実行は2026-11-02 09:45 JST予定。"
         }
       ]
+    },
+    {
+      "id": "PTD-115",
+      "title": "開発資料タブに「図の種類」まとめページを追加",
+      "task": "基本情報/応用情報技術者試験で登場する代表的な図をサンプル図付きでまとめたページをApp-Development-Infoに作成し、開発資料タブのサブタブに追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "content",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "IPA公式シラバス(ipa.go.jp)はこのセッションのネットワーク許可外のため、二次情報(ITmedia等)をもとに作成した。公式シラバスでの項目名・分類との一致は未確認。"
+      ],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。必要な図の種類の追加はその都度リクエストを受ける運用。",
+      "note": "ユーザー指示「開発資料に追加、学習方針の横に、図の種類を追加して。アクティビティ図とガントチャートなど、基本情報や応用情報で出てくる図の種類をサンプル図と概要でまとめたページを追加してくれる？今後の資料の作成方針にも使えるから」への対応。",
+      "detail": "App-Development-Infoリポジトリに`diagram-types.html`を新規作成(既存のpolicy.htmlと同じCSS/レイアウトパターンを再利用、rule23)。フローチャート・DFD・E-R図・状態遷移図・UMLクラス図/シーケンス図/アクティビティ図・ガントチャート・アローダイアグラム(PERT図)の9種類を、各概要+インラインSVGのサンプル図付きで収録。公式シラバスへの直接アクセスができなかったため、ページ内に「二次情報ベースで作成、網羅的ではなく必要に応じて追加する」旨を明記した。progress-tracker-dashboard側のdashboard.htmlに「📐 図の種類」サブタブを追加し、学習資料/学習記録/学習方針と同じiframe方式で表示する(既存のsubviews toggleパターンを再利用)。App-Development-Infoはmain直push、progress-tracker-dashboardは作業ブランチ→main反映済み。",
+      "output": "App-Development-Info/diagram-types.html, dashboard.html「📐 図の種類」タブ",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-01",
+          "summary": "ページ作成・ダッシュボードへのタブ追加完了。JS構文チェック済み。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-01"

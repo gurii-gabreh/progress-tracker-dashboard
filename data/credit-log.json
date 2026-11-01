@@ -868,6 +868,21 @@
         "costUsd": 2115.78779922
       },
       "rateLimitResetsAt": "2026-11-01T16:30:00+09:00"
+    },
+    {
+      "date": "2026-11-01",
+      "time": "07:30",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-115: 開発資料タブに「図の種類」まとめページを追加",
+      "note": "App-Development-Infoにdiagram-types.html新規作成(main push済み)、dashboard.htmlに「📐 図の種類」サブタブ追加、main反映済み。",
+      "usage": {
+        "inputTokens": 6940764,
+        "outputTokens": 11958899,
+        "cacheReadTokens": 6602713401,
+        "cacheWriteTokens": 146086878,
+        "costUsd": 2124.51790992
+      },
+      "rateLimitResetsAt": "2026-11-01T16:30:00+09:00"
     }
   ]
 }
