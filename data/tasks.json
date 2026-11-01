@@ -5731,6 +5731,33 @@
           "summary": "JS構文チェック(node --check)・ID/クラス整合性チェック・ローカルHTTPサーバーでの表示確認まで完了。main反映はこれから。"
         }
       ]
+    },
+    {
+      "id": "PTD-113",
+      "title": "🤖AI最新情報タブのキュレーション追いつかせ(10/18で止まっていた問題への対応)",
+      "task": "research-items.jsonの未キュレーション545件をResearchサブエージェント10体で審査し140件を追加",
+      "repo": "servicenow-sub-agent",
+      "category": "data",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "カテゴリ3・4の収集データでrawSummaryが空欄になっている(複数のResearchサブエージェントから同一の報告)。タイトルのみでの判断を強いられ、キュレーション精度が他カテゴリより低い可能性がある。収集パイプライン(servicenow側のScheduled Job/Business Rule)側の不具合調査が必要。",
+        "カテゴリ9(Allwork.Space、働き方/コワーキング業界ニュース)はAI関連率が95%除外(60件中3件のみ採用)と非常に低い。この収集源を継続するかどうかユーザー判断が必要。"
+      ],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。上記issuesの2点(rawSummary欠落調査、カテゴリ9継続可否)も合わせて相談。",
+      "note": "ユーザー指摘「AI最新情報を見ると公開日が10/18で止まっているけど、これ取得できていないの？」への対応。調査の結果、生データ収集自体は正常(10/23まで継続)だが、curated:trueを付与するキュレーション作業が10/18以降止まっていたことが判明(収集と選別は別工程で、選別だけが滞っていた)。",
+      "detail": "data/research-items.jsonのうち、fetchedAtが2026-10-18以降かつcurated:falseの項目を抽出したところ636件(カテゴリ別: 1=19,2=157,3=15,4=121,5=31,6=108,8=34,9=60,10=91)。ユーザーに対象範囲を確認したところ、公式のcategories定義一覧(1〜7)に無いカテゴリ10(YouTube急上昇、AIと無関係なゲーム予告編・音楽MV等と判明)は除外、カテゴリ8・9(SEO業界ニュース/働き方業界ニュース)は含める、という指示を得た(対象545件)。カテゴリ2・4は件数が多いため2分割し、計10バッチをResearch役サブエージェント(.claude/agents/research.md)で並列処理。各エージェントに『rawSummary/titleの内容だけを根拠に、個人開発者(アーキテクチャ・AI/LLM・セキュリティ・テスト・DB・サーバーインフラ関心層)にとって読む価値がある項目だけを選別し、日本語でsummaryJa/pointsJa/applicableTechJaを付与する』よう指示(過去の運用が5622件中44件という選別的なキュレーションだったため、全件へ無理に付与しないことを明記)。10エージェントの結果(計140件、重複なし)をsysId単位で元データと照合(欠落・余剰なし)した上で、research-items.jsonへcurated:true+各フィールドを反映した(curatedCount 44→184)。servicenow-sub-agentのmainへcommit・push済み。",
+      "output": "servicenow-sub-agent/data/research-items.json",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-01",
+          "summary": "sysId単位での元データ照合(欠落0件)完了。servicenow-sub-agent側main反映済み。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-01"
