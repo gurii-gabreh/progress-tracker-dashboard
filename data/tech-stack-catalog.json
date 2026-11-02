@@ -1,0 +1,92 @@
+{
+  "schema": "tech stack catalog v1",
+  "description": "これまで管理対象リポジトリ群で実際に使用したシステム・プラットフォームの一覧(2026-11-02新設、ユーザー指示「開発資料にcloudflareのような今まで使用したシステム一覧を作っておきたい。こういうシステムが来たときはこれを使うみたいなことができる」)。基本設計(data/requirements.jsonのbasicDesignChecklist#3インフラ・基盤要件)の参照先として使う。各システムの無料枠・条件は変化するため、verifiedAtとconfidence(official=公式ドキュメントで確認/secondary=二次情報のみ、公式未確認)を必ず付与し、古くなったら都度確認し直す。",
+  "lastReviewedAt": "2026-11-02",
+  "systems": [
+    {
+      "id": "github-pages-actions",
+      "name": "GitHub Pages + GitHub Actions",
+      "category": "静的ホスティング + 自動化(CI/CD)",
+      "bestFor": "サーバー側処理が不要な静的サイト(HTML/CSS/JS、JSONを直接fetchして表示するダッシュボード等)。mainへのpushをトリガーに自動デプロイできるため、このセッション(Claude Code)だけでcommit→push→公開まで完全に完結できるのが最大の利点。",
+      "conditions": "公開サイトのサイズ1GBまで(ソースリポジトリも1GB推奨上限)、帯域は月100GBのソフトリミット、ビルドは1時間10回のソフトリミット(ただしカスタムのGitHub Actionsワークフローでビルド・公開する場合はこの制限の対象外)、デプロイは10分でタイムアウト。GitHub Actionsは2026年1月の改定でFreeプラン月2,000分(パブリックリポジトリの標準ランナーは無制限無料とする記事もあり)。",
+      "usedIn": [
+        { "repo": "progress-tracker-dashboard", "note": "dashboard.html本体、deploy-pages.yml" },
+        { "repo": "App-Development-Info", "note": "学習資料・学習方針・図の種類・UI要素名称集" },
+        { "repo": "servicenow-sub-agent", "note": "AI研究ビューアーサイト" },
+        { "repo": "claude-voice-bridge", "note": "拡張機能に関連する公開ページ" },
+        { "repo": "Task-WBS", "note": "WBSカレンダー表示" }
+      ],
+      "concerns": "サーバー側処理(APIキーを隠した外部連携・Webhook受信・認証・定期cron)ができない。データはJSONファイルをgit管理する形になるため、大規模なリレーショナル検索には不向き。",
+      "setupNeeded": "リポジトリのPages設定を有効化するだけ(初回のみユーザー側でON)。以降の更新はClaude Code側のgit push+Actionsで完結し、追加のユーザー操作は不要。",
+      "officialDocs": ["https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits"],
+      "verifiedAt": "2026-11-02",
+      "confidence": "official(GitHub Pagesの制限値のみ公式ドキュメントで確認。Actionsの無料枠分数は二次情報)"
+    },
+    {
+      "id": "google-apps-script-sheets",
+      "name": "Google Apps Script(GAS) + Google Sheets",
+      "category": "軽量バックエンド + スプレッドシートDB",
+      "bestFor": "スプレッドシートを人が直接見る/編集するUIとして使いたい場合。Webアプリとしてデプロイすれば、認証無しの簡易API(doGet/doPost)としても使える。",
+      "conditions": "スクリプト本体の実行時間は1実行あたり6分、カスタム関数は30秒、同時実行数は30、という情報があるが2026年時点の正確な数値は公式未確認。",
+      "usedIn": [
+        { "repo": "progress-tracker-dashboard", "note": "gas/Code.gs、GASウェブアプリ経由の依頼タスクタブ⇄完了タブ移動(README記載、現在はtasks.json直接管理が主流で縮小傾向)" },
+        { "repo": "ai-research-radar", "note": "Gemini APIによる1日1回自動調査、依頼タスクタブのステータス直接更新" },
+        { "repo": "study-app", "note": "gas/" },
+        { "repo": "gemini-monitor", "note": "gas/" },
+        { "repo": "claude-voice-bridge", "note": "gas/" },
+        { "repo": "supermarket-price-tracker", "note": "Code.gs" },
+        { "repo": "prompt-manager", "note": "Code.gs" }
+      ],
+      "concerns": "コード変更のたびに手動での再デプロイが必要(GitHubと自動連携していない)。ghGetJson_/ghPut_パターンはファイル全体を読んで全体を書き戻す方式のため、頻繁に書くログと滅多に書かないデータを同居させると非効率(data/claude-core-rules.mdルール29参照)。",
+      "setupNeeded": "初回のGASエディタでのデプロイ(ウェブアプリとして公開、アクセス権限設定)はユーザー側で行う必要がある。コード自体はClaude Codeが書ける。",
+      "officialDocs": [],
+      "verifiedAt": "2026-11-02",
+      "confidence": "secondary(実行時間等のクォータ数値は二次情報のみ、公式クォータページ未確認)"
+    },
+    {
+      "id": "cloudflare-workers-d1-pages",
+      "name": "Cloudflare Workers + D1 + Pages + Workers AI",
+      "category": "サーバーレスバックエンド + SQLiteデータベース + AI推論",
+      "bestFor": "本格的なサーバー側処理(認証・暗号化・定期cron・AI推論)が必要なアプリ。D1はSQLite互換のリレーショナルDBとして使える。",
+      "conditions": "Workers無料枠は1日10万リクエスト(UTC 0時リセット)、CPU時間30ms、スクリプトサイズ1MB。Pagesは月500ビルド・同時1ビルド・ファイル数2万。D1の無料枠の具体的数値は今回未確認。",
+      "usedIn": [
+        { "repo": "kizashi", "note": "都知事杯オープンデータ・ハッカソン2026提出作品。D1(事案データ)・Workers AI(傾聴AIチャット)・cron(毎日19:00 UTC=日本時間4:00に事案自動削除)を使用。本番URL: kizashi-app.yui-gurii.workers.dev" }
+      ],
+      "concerns": "実際のCloudflareアカウントへのデプロイ(wrangler login/d1 create/secret put/deploy)はユーザー自身の認証情報が必要で、このセッションだけでは完結できない(PTD系の他アプリと違う最大の制約)。ハッカソン等でイベント運営から「Paidプラン相当」の招待を受けた組織アカウントを使う場合、自分がBilling権限を持たない可能性があり、請求状況の自己確認ができないことがある(2026-11-01、kizashiのtokyo_odh_260アカウントで確認)。",
+      "setupNeeded": "wrangler login(ブラウザでの認証)、D1データベースの実体作成、マイグレーション適用、secret put(APIキー等。Claude Codeは入力しない)、wrangler deploy。いずれもユーザー自身の操作が必要。",
+      "officialDocs": [],
+      "verifiedAt": "2026-11-02",
+      "confidence": "secondary(Workers/Pagesの無料枠数値は二次情報、公式Limitsページ未確認。D1は未確認)"
+    },
+    {
+      "id": "servicenow-pdi",
+      "name": "ServiceNow PDI(Personal Developer Instance)",
+      "category": "無料開発者インスタンス(Scheduled Job・REST連携)",
+      "bestFor": "定期実行(Scheduled Job)でAPI/RSSから情報を自動収集し、GitHub Actionsへエクスポートするパイプライン。",
+      "conditions": "個人開発者向けに無料で提供されるインスタンス。定期的に使わないと非アクティブ判定され、最終的に回収(reclaim)される可能性がある(具体的な日数は公式未確認)。回収されると復旧できない。新規申請の待機期間は2〜3週間以上かかる場合があるとの報告あり。",
+      "usedIn": [
+        { "repo": "servicenow-sub-agent", "note": "AI/開発関連情報の自動収集パイプライン(Scheduled Job→REST Message→u_ai_research_itemテーブル→GitHub Actionsでresearch-items.jsonへエクスポート)" }
+      ],
+      "concerns": "非アクティブによる自動回収リスクがある(定期的なログイン・利用が必要)。障害時にPDI自体が一時利用不可になることがある(2026年7月に発生例あり、コミュニティ報告ベース)。",
+      "setupNeeded": "developer.servicenow.comでのPDI申請・取得(ユーザー側)。Scheduled Job・REST Messageの設定はClaude Codeが支援できるが、PDIへのログイン自体はユーザーの認証情報が必要。",
+      "officialDocs": [],
+      "verifiedAt": "2026-11-02",
+      "confidence": "secondary(ServiceNow公式ドキュメントではなくコミュニティ投稿ベース)"
+    },
+    {
+      "id": "line-messaging-api",
+      "name": "LINE Messaging API",
+      "category": "メッセージング連携(無料コミュニケーションプラン)",
+      "bestFor": "ユーザーへのプッシュ通知・Bot的な応答機能。",
+      "conditions": "無料の「コミュニケーションプラン」は月200通まで(送信回数×友だち数で計算)。応答メッセージ(Reply API)は無料枠にカウントされない、とする解説が複数あるが公式料金ページでの裏付けは今回未確認。2026年10月に追加メッセージの単価改定があったとの報道あり(具体的な金額は未確認)。",
+      "usedIn": [
+        { "repo": "kizashi", "note": "crisisResponse.js・chat.jsで使用" }
+      ],
+      "concerns": "無料枠の月200通は少なく、友だち数が増えると配信回数が制限される。応答メッセージ中心の設計にすれば枠消費を抑えられる(二次情報ベース)。",
+      "setupNeeded": "LINE Developersコンソールでのチャネル作成・アクセストークン発行はユーザー側で行う必要がある。",
+      "officialDocs": ["https://developers.line.biz/ja/docs/messaging-api/overview/"],
+      "verifiedAt": "2026-11-02",
+      "confidence": "secondary(無料枠の通数等は二次情報、公式料金ページでの金額未確認)"
+    }
+  ]
+}
