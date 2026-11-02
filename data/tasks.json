@@ -15,7 +15,8 @@
     "claude-voice-bridge",
     "mirai-journal",
     "English-Speaking-App",
-    "PROMPT-MANAGER"
+    "PROMPT-MANAGER",
+    "ai-lab"
   ],
   "tasks": [
     {
@@ -5839,6 +5840,32 @@
         {
           "date": "2026-11-01",
           "summary": "91件抽出・ページ作成・design.htmlへのトグル追加完了。JS構文チェック済み。"
+        }
+      ]
+    },
+    {
+      "repo": "ai-lab",
+      "id": "AIL-001",
+      "task": "AI Lab(AI技術公開サイト)新規構築",
+      "title": "AI Lab 新規構築",
+      "priority": "高",
+      "status": "未着手",
+      "updated": "2026-11-02",
+      "category": "feature",
+      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。",
+      "content": [
+        "目的: 自分が作成したAI作品の紹介、最新AI技術の紹介。将来的に広告収入・制作手順の販売・個別の有料Lessonで収益化を目指す。",
+        "MVP機能: ①プロフィール・サイト紹介 ②AI最新情報の記事一覧(servicenow-sub-agentのresearch-items.jsonを土台にClaudeが実装視点で要約・書き直し) ③作品紹介ページ ④コメント機能 ⑤いいねボタン ⑥X・Instagram拡散用SNS記事作成。",
+        "収益化機能(広告・販売・Lesson)・課題受付機能は将来フェーズ(MVPには含めない)。",
+        "懸念照合: CN-004(既存の仕組みを確認せず新しい仕組みを作ってしまう)について、servicenow-sub-agent(個人用の収集・分析基盤)とAI Lab(外部ユーザー向け収益化目的の別サイト)は対象ユーザー・目的が異なるため重複に当たらないとユーザー確認済み。詳細はrequirements.json REQ-AIL-001のconcernReview参照。"
+      ],
+      "issues": [],
+      "output": "",
+      "nextAction": "②基本設計(basic-design-kickoffスキル)に進むかどうかをユーザーに確認する。",
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "①要件定義の聞き取り(全17項目)・市場分析7ステップを完了し、requirements.json(REQ-AIL-001)へ記録。実装はまだ着手していない。"
         }
       ]
     }
