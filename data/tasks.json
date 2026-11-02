@@ -5852,7 +5852,7 @@
       "status": "未着手",
       "updated": "2026-11-02",
       "category": "feature",
-      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。",
+      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。",
       "content": [
         "目的: 自分が作成したAI作品の紹介、最新AI技術の紹介。将来的に広告収入・制作手順の販売・個別の有料Lessonで収益化を目指す。",
         "MVP機能: ①プロフィール・サイト紹介 ②AI最新情報の記事一覧(servicenow-sub-agentのresearch-items.jsonを土台にClaudeが実装視点で要約・書き直し) ③作品紹介ページ ④コメント機能 ⑤いいねボタン ⑥X・Instagram拡散用SNS記事作成。",
@@ -5861,7 +5861,7 @@
       ],
       "issues": [],
       "output": "",
-      "nextAction": "③機能要件(functional-requirements-kickoffスキル)に進むかどうかをユーザーに確認する。",
+      "nextAction": "④詳細設計(detailed-design-kickoffスキル)に進むかどうかをユーザーに確認する。",
       "checkHistory": [
         {
           "date": "2026-11-02",
@@ -5870,6 +5870,10 @@
         {
           "date": "2026-11-02",
           "summary": "②基本設計(全12項目)を完了。GitHub Pages+GAS Webアプリ+GA4+Playwright Testの構成、comments/likesは記事・作品ごとにJSON分割、Claude Code Remote側Routineによるpush通知等を確定。requirements.jsonへ記録済み。"
+        },
+        {
+          "date": "2026-11-02",
+          "summary": "③機能要件(通知機能の有無)を完了。スパム対策2段構え(GAS簡易NGワードフィルタ+日次Routineでの怪しいコメント報告・削除確認)を確定し、n=11/12/17も合わせて記入した。"
         }
       ]
     },
