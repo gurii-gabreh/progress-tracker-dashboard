@@ -5852,7 +5852,7 @@
       "status": "未着手",
       "updated": "2026-11-02",
       "category": "feature",
-      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。",
+      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。",
       "content": [
         "目的: 自分が作成したAI作品の紹介、最新AI技術の紹介。将来的に広告収入・制作手順の販売・個別の有料Lessonで収益化を目指す。",
         "MVP機能: ①プロフィール・サイト紹介 ②AI最新情報の記事一覧(servicenow-sub-agentのresearch-items.jsonを土台にClaudeが実装視点で要約・書き直し) ③作品紹介ページ ④コメント機能 ⑤いいねボタン ⑥X・Instagram拡散用SNS記事作成。",
@@ -5861,11 +5861,15 @@
       ],
       "issues": [],
       "output": "",
-      "nextAction": "②基本設計(basic-design-kickoffスキル)に進むかどうかをユーザーに確認する。",
+      "nextAction": "③機能要件(functional-requirements-kickoffスキル)に進むかどうかをユーザーに確認する。",
       "checkHistory": [
         {
           "date": "2026-11-02",
           "summary": "①要件定義の聞き取り(全17項目)・市場分析7ステップを完了し、requirements.json(REQ-AIL-001)へ記録。実装はまだ着手していない。"
+        },
+        {
+          "date": "2026-11-02",
+          "summary": "②基本設計(全12項目)を完了。GitHub Pages+GAS Webアプリ+GA4+Playwright Testの構成、comments/likesは記事・作品ごとにJSON分割、Claude Code Remote側Routineによるpush通知等を確定。requirements.jsonへ記録済み。"
         }
       ]
     },
@@ -5896,6 +5900,30 @@
         {
           "date": "2026-11-02",
           "summary": "構想ルーム側で①要件定義(全17項目)・市場分析7ステップが完了。requirements.json(REQ-AIL-001)・tasks.json(AIL-001)へ記録済み。②基本設計へ進むかをユーザーに確認中。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-118",
+      "title": "テスト一覧(test-patterns.json)の新設",
+      "task": "どのアプリでも使い回せるPlaywrightテスト観点・パターンの共有JSONとビューアーを新設",
+      "category": "feature",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-02",
+      "note": "AI Lab(ai-lab)の②基本設計相談中、ユーザー指示「テスト一覧の仕組みつくって、開発資料のところにテスト一覧をつくって...データ内容はテスト用でJSONを一つ作りその中にまとめておいてほしい、これを基に他のアプリでも参照としたい」への対応。既存の「📐図の種類」(PTD-115)「UI要素名称集」(PTD-116)と同じ開発資料サブタブの並びに追加したが、データがこのリポジトリ自身のJSONのためiframeではなく直接fetchして描画する方式にした(PTD-116で発生した表示漏れの事象を踏まえた判断、原因は未調査のまま)。",
+      "detail": "data/test-patterns.json(新規、schemaVersion 1、patterns配列は初期状態で空)を作成。dashboard.htmlの開発資料サブタブに「🧪 テスト一覧」ボタン・パネルを追加し、loadTestPatterns()/renderTestPatterns()で直接fetch・描画(既存のrenderAppDevIssueLogと同じresearch-table/devdocs-tagクラスを再利用、rule23)。data/ai-config.jsonのjsonDataIndexにも追記(web/ai両セクション)。test-kickoffスキル(SKILL.md)に新しい手順6を追加: testChecklistの方針確定後、test-patterns.jsonを参照しつつAIが具体的なテストケース・観点を提案し、確定した内容を同JSONへ追記する。また、テスト容易性は⑤テストだけでなく②基本設計・④詳細設計の既存項目(それぞれ項目4・10、項目7)から早期に検討する旨もSKILL.mdに明記した。",
+      "issues": [],
+      "output": "dashboard.html(🧪テスト一覧タブ), data/test-patterns.json, data/ai-config.json, .claude/skills/test-kickoff/SKILL.md",
+      "nextAction": "AI Labが⑤テストフェーズに進んだ際、実際にPlaywrightテストを作成しながらtest-patterns.jsonへ初めてのパターンを追記する。",
+      "relatedTasks": [
+        "AIL-001"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "test-patterns.json新設・dashboard.htmlへのビューアー追加・ai-config.json更新・test-kickoffスキル拡張を完了。初期データは空のため、実際のテストパターンはAI Labが⑤テストフェーズに進んだ時に追記される。"
         }
       ]
     }

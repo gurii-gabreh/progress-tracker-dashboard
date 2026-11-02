@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "description": "各管理対象リポジトリでPlaywrightテストを作成する際に蓄積する、使い回せるテスト観点・パターンの一覧(2026-11-02追加、AI Lab(ai-lab)の②基本設計相談時のユーザー指示)。新しいアプリでテストを書く際は、まずここに近いパターンが無いか確認し、無ければ新規パターンとして追記する(test-kickoffスキル参照)。progress-tracker-dashboardのdashboard.html「📄開発資料→🧪テスト一覧」から、どのアプリからでも閲覧できる。",
+  "updatedAt": "2026-11-02",
+  "patterns": []
+}

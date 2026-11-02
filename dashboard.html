@@ -1338,6 +1338,12 @@
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-diagramtypes" data-subview="diagramtypes">📐 図の種類</button>
+    <!-- 2026-11-02追加、AI Lab(ai-lab)基本設計相談時のユーザー指示「テスト一覧を作り、データはJSONに
+         まとめてどのアプリでもアクセスできるようにして、ビューアーとしてマネージャアプリに表示」。
+         図の種類(iframeでApp-Development-Info参照)とは異なり、データがこのリポジトリ自身の
+         data/test-patterns.jsonのため、iframeではなく直接fetchして描画する(PTD-116で発生した
+         iframe越しの表示漏れを避ける狙い、詳細はdata/tasks.jsonのAIL-001参照)。 -->
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-testpatterns" data-subview="testpatterns">🧪 テスト一覧</button>
   </div>
 
   <!-- 2026-10-23変更: 旧「📋 要件定義」(常にアプリ選択+Q&A一覧を表示するだけのビューアー)を、
@@ -1463,6 +1469,18 @@
   </div>
   <div id="devdocs-subview-diagramtypes" class="manager-subview">
     <iframe id="diagramtypes-iframe" title="図の種類" loading="lazy"></iframe>
+  </div>
+  <div id="devdocs-subview-testpatterns" class="manager-subview">
+    <div class="policy-scroll">
+      <div class="policy-wrap">
+        <div class="devdocs-sticky-head">
+          <div class="tab-page-title">🧪 テスト一覧</div>
+          <p class="tab-page-overview">各アプリの実装時に作成したPlaywrightテストの観点・パターンを蓄積したものです(data/test-patterns.json)。新しいアプリでテストを書く際、ここから使い回せるパターンが無いか確認し、新しいパターンがあれば追記します(test-kickoffスキル参照)。</p>
+          <div id="devdocs-testpatterns-meta" class="relations-legend"></div>
+        </div>
+        <div id="devdocs-testpatterns-content"></div>
+      </div>
+    </div>
   </div>
   </div>
 
@@ -4473,6 +4491,55 @@
       });
   }
 
+  // 🧪テスト一覧(2026-11-02追加)。data/test-patterns.json(このリポジトリ自身のJSON)を直接fetchし、
+  // どのアプリでも使い回せるPlaywrightテストの観点・パターンを一覧表示する(iframeではなく直接描画、
+  // 経緯はdevdocs-subview-testpatterns定義部のコメント参照)。
+  function loadTestPatterns() {
+    return fetch(`data/test-patterns.json?t=${Date.now()}`, { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/test-patterns.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => { renderTestPatterns(data); })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("devdocs-testpatterns-content");
+        if (box) box.innerHTML = `<div class="empty">テスト一覧を読み込めませんでした(${err.message})</div>`;
+      });
+  }
+
+  // 既存の課題管理表(renderAppDevIssueLog)と同じresearch-table/devdocs-tagクラスを再利用する(rule23)。
+  function renderTestPatterns(data) {
+    const box = document.getElementById("devdocs-testpatterns-content");
+    const meta = document.getElementById("devdocs-testpatterns-meta");
+    if (!box) return;
+    const patterns = data.patterns || [];
+    if (meta) meta.textContent = `登録件数: ${patterns.length}件(更新日: ${data.updatedAt || "不明"})`;
+    if (patterns.length === 0) {
+      box.innerHTML = `<div class="empty">まだ登録されたテストパターンはありません。各アプリでPlaywrightテストを作成する際、test-kickoffスキルの手順に沿ってここへ追記されます。</div>`;
+      return;
+    }
+    box.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th>タイトル</th><th>カテゴリ</th><th>内容</th><th>実装例</th><th>使用アプリ</th><th>追加日</th></tr></thead>
+          <tbody>
+            ${patterns.map((p) => {
+              const usedIn = (p.usedInApps || []).map((u) => escapeHtmlForDevDocs(u.repo)).join("、") || "不明";
+              return `<tr>
+                <td>${escapeHtmlForDevDocs(p.title || p.id || "")}</td>
+                <td><span class="devdocs-tag">${escapeHtmlForDevDocs(p.category || "")}</span></td>
+                <td>${escapeHtmlForDevDocs(p.description || "")}</td>
+                <td>${escapeHtmlForDevDocs(p.suggestedApproach || "")}</td>
+                <td>${usedIn}</td>
+                <td>${escapeHtmlForDevDocs(p.addedAt || "")}</td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
   // カテゴリ・情報源・作成日(公開日)の各プルダウンを、実際に存在する値だけで動的に構築する。
   function populateAiTrendsFilterOptions() {
     const catSel = document.getElementById("ai-trends-filter-category");
@@ -6209,6 +6276,7 @@
       records: { btn: document.getElementById("devdocs-subtab-records"), panel: document.getElementById("devdocs-subview-records"), iframeId: "records-iframe", url: RECORDS_URL },
       policy: { btn: document.getElementById("devdocs-subtab-policy"), panel: document.getElementById("devdocs-subview-policy"), iframeId: "policy-iframe", url: POLICY_URL },
       diagramtypes: { btn: document.getElementById("devdocs-subtab-diagramtypes"), panel: document.getElementById("devdocs-subview-diagramtypes"), iframeId: "diagramtypes-iframe", url: DIAGRAM_TYPES_URL },
+      testpatterns: { btn: document.getElementById("devdocs-subtab-testpatterns"), panel: document.getElementById("devdocs-subview-testpatterns") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
       if (!btn) return;
@@ -6227,6 +6295,7 @@
     });
   })();
   loadRequirementsData();
+  loadTestPatterns();
   // 🔍調査資料タブの一覧5本は、保存/閲覧済み状態をdata/user-preferences.jsonから読み込んで
   // localStorageへマージした後に実行する(2026-10-24変更、理由は上部のコメント参照)。
   initResearchChecklistState().finally(() => {
