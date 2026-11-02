@@ -1152,7 +1152,7 @@
           <button type="button" class="hub-card" data-hub-nav="devdocs">
             <span class="hub-card-icon">📄</span>
             <span class="hub-card-title">開発資料</span>
-            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」「📐 図の種類」「🗂 使用システム一覧」の7つのサブタブがあります。</span>
+            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」「📐 図の種類」「🔤 UI要素名称集」「🗂 使用システム一覧」の8つのサブタブがあります。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
@@ -1338,6 +1338,7 @@
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-diagramtypes" data-subview="diagramtypes">📐 図の種類</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-uinames" data-subview="uinames">🔤 UI要素名称集</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-techstack" data-subview="techstack">🗂 使用システム一覧</button>
   </div>
 
@@ -1464,6 +1465,9 @@
   </div>
   <div id="devdocs-subview-diagramtypes" class="manager-subview">
     <iframe id="diagramtypes-iframe" title="図の種類" loading="lazy"></iframe>
+  </div>
+  <div id="devdocs-subview-uinames" class="manager-subview">
+    <iframe id="uinames-iframe" title="UI要素名称集" loading="lazy"></iframe>
   </div>
   <div id="devdocs-subview-techstack" class="manager-subview">
     <iframe id="techstack-iframe" title="使用システム一覧" loading="lazy"></iframe>
@@ -6208,6 +6212,9 @@
     const DIAGRAM_TYPES_URL = "https://gurii-gabreh.github.io/App-Development-Info/diagram-types.html";
     // 2026-11-02追加、ユーザー指示「開発資料にcloudflareのような今まで使用したシステム一覧を作っておきたい」。
     const TECH_STACK_URL = "https://gurii-gabreh.github.io/App-Development-Info/tech-stack-catalog.html";
+    // 2026-11-02追加、ユーザー指示「UI要素名称集は現物のサンプルみたいだから、図の種類の横に追加して」。
+    // design.html内の自作/外部サイト参照トグルから切り出し、図の種類と同じ独立タブへ昇格させた。
+    const UI_NAMES_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/design-lesson7-3.html";
     const subviews = {
       requirements: { btn: document.getElementById("devdocs-subtab-requirements"), panel: document.getElementById("devdocs-subview-requirements") },
       flow: { btn: document.getElementById("devdocs-subtab-flow"), panel: document.getElementById("devdocs-subview-flow") },
@@ -6215,6 +6222,7 @@
       records: { btn: document.getElementById("devdocs-subtab-records"), panel: document.getElementById("devdocs-subview-records"), iframeId: "records-iframe", url: RECORDS_URL },
       policy: { btn: document.getElementById("devdocs-subtab-policy"), panel: document.getElementById("devdocs-subview-policy"), iframeId: "policy-iframe", url: POLICY_URL },
       diagramtypes: { btn: document.getElementById("devdocs-subtab-diagramtypes"), panel: document.getElementById("devdocs-subview-diagramtypes"), iframeId: "diagramtypes-iframe", url: DIAGRAM_TYPES_URL },
+      uinames: { btn: document.getElementById("devdocs-subtab-uinames"), panel: document.getElementById("devdocs-subview-uinames"), iframeId: "uinames-iframe", url: UI_NAMES_URL },
       techstack: { btn: document.getElementById("devdocs-subtab-techstack"), panel: document.getElementById("devdocs-subview-techstack"), iframeId: "techstack-iframe", url: TECH_STACK_URL },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
