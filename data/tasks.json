@@ -5927,6 +5927,30 @@
           "summary": "カタログ作成・ページ作成・ダッシュボードタブ追加・基本設計チェックリスト反映完了。"
         }
       ]
+    },
+    {
+      "id": "PTD-119",
+      "title": "デザイン設計フェーズ(番号なし、④詳細設計と⑤テストの間)を新設",
+      "task": "開発工程に、ボタン使用方針・UI要素名称統一等をまとめる「デザイン設計」フェーズを追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "architecture",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。実際にdesign-spec-kickoffを使ってみて動作確認する。",
+      "note": "ユーザー指示「ある程度アプリが出来上がってから、詳細設計とテストの間にデザイン設計(ボタン使用・UI関連のまとめ)を入れたい」「番号入れなくていい」への対応。",
+      "detail": "requirements.jsonにdesignSpecChecklist(8項目: ボタン種別/デザイントークン/Claude Designでの一貫性確保/UI要素名称統一(UI要素名称集参照)/レスポンシブ・PC-iPhone両対応/ダークモード/アクセシビリティ/画面間一貫性)を新設。IPA共通フレーム2013に対応する工程が無いため、一般的なUI/UXデザインシステムの実務慣行ベースである旨を明記した。新規スキルdesign-spec-kickoff(.claude/skills/design-spec-kickoff/SKILL.md)をdetailed-design-kickoff.mdと同じパターンで作成(rule23)、detailed-design-kickoffのチェイン先をtest-kickoffからdesign-spec-kickoffへ変更、test-kickoff側の前提条件もdetailedDesign完了からdesignSpec完了へ変更した。dashboard.htmlに「🎨 デザイン設計」タブ(円数字の番号なし)を追加し、renderAppDevDesignSpec()・buildDesignSpecPromptText()・devDocsIsDesignSpecComplete()を新設、⑤テストのゲート判定も更新。ai-config.jsonのcustomSkills registryとclaude-voice-bridgeのtemplates.json(起動フレーズ、ルール27)にも登録した。",
+      "output": "requirements.json designSpecChecklist, .claude/skills/design-spec-kickoff/, dashboard.html「🎨 デザイン設計」タブ",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "requirements.json・新規スキル・既存スキル2つ・dashboard.html・ai-config.json・claude-voice-bridge templates.json、全て反映完了。JS構文チェック済み。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-02"

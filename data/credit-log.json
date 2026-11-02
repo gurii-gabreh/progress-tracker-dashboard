@@ -913,6 +913,21 @@
         "costUsd": 2145.28341234
       },
       "rateLimitResetsAt": "2026-11-02T20:10:00+09:00"
+    },
+    {
+      "date": "2026-11-02",
+      "time": "09:41",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-119: デザイン設計フェーズ(番号なし)新設",
+      "note": "requirements.json・新規スキルdesign-spec-kickoff・既存スキル2つ・dashboard.html・ai-config.json・claude-voice-bridge templates.json、全てmain反映済み。",
+      "usage": {
+        "inputTokens": 7043002,
+        "outputTokens": 12039468,
+        "cacheReadTokens": 6680838508,
+        "cacheWriteTokens": 147981984,
+        "costUsd": 2148.5672467
+      },
+      "rateLimitResetsAt": "2026-11-02T20:10:00+09:00"
     }
   ]
 }
