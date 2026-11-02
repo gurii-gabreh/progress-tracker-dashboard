@@ -5898,6 +5898,35 @@
           "summary": "構想ルーム側で①要件定義(全17項目)・市場分析7ステップが完了。requirements.json(REQ-AIL-001)・tasks.json(AIL-001)へ記録済み。②基本設計へ進むかをユーザーに確認中。"
         }
       ]
+    },
+    {
+      "id": "PTD-118",
+      "title": "開発資料に「使用システム一覧(実績つき)」を追加",
+      "task": "Cloudflare・GAS・GitHub Pages等、これまで実際に使用したシステムの一覧を用途・条件・実績・懸念・必要な設定つきでまとめ、基本設計の参照先にする",
+      "repo": "progress-tracker-dashboard",
+      "category": "content",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "各システムの無料枠・条件は、公式ドキュメントで直接確認できたのはGitHub Pagesの制限値のみ。他(GAS/Cloudflare/ServiceNow PDI/LINE)は二次情報ベースで、confidenceフィールドに明記済み。"
+      ],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「開発資料にcloudflareのような今まで使用したシステム一覧を作っておきたい。こういうシステムが来たときはこれを使うみたいなことができる、実績も明記、JSON化したデータを下に設計できると思う」への対応。項目(用途/条件/実績/懸念/必要な設定)に加え、確認日・情報の確度(公式/二次情報)もAI提案で追加した。",
+      "detail": "data/tech-stack-catalog.jsonを新規作成し、GitHub Pages+Actions・Google Apps Script+Sheets・Cloudflare Workers/D1/Pages/Workers AI・ServiceNow PDI・LINE Messaging APIの5システムを収録。usedIn(実績)は実際にtasks.json・各リポジトリのgas/フォルダ・workflowsファイルを確認して裏付けた(例: GASはstudy-app/gemini-monitor/claude-voice-bridge/supermarket-price-tracker/ai-research-radar/prompt-manager等で実際に使用を確認)。concerns(懸念箇所)には、kizashiのCloudflareアカウント権限問題(2026-11-01に判明した「Billing権限なし」の件)も反映。App-Development-Infoにtech-stack-catalog.htmlを作成し(diagram-types.html/policy.htmlと同じデザインパターンを再利用、rule23)、dashboard.htmlに「🗂 使用システム一覧」サブタブとして追加。基本設計チェックリスト#3(インフラ・基盤要件)にも参照先として追記した。",
+      "output": "data/tech-stack-catalog.json, App-Development-Info/tech-stack-catalog.html, dashboard.html「🗂 使用システム一覧」タブ",
+      "relatedTasks": [
+        "PTD-115",
+        "PTD-116"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "カタログ作成・ページ作成・ダッシュボードタブ追加・基本設計チェックリスト反映完了。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-02"

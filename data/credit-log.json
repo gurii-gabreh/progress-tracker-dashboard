@@ -898,6 +898,21 @@
         "costUsd": 2124.51790992
       },
       "rateLimitResetsAt": "2026-11-02T05:00:00+09:00"
+    },
+    {
+      "date": "2026-11-02",
+      "time": "09:11",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-118: 使用システム一覧(実績つき)を開発資料に追加",
+      "note": "tech-stack-catalog.json新規作成、App-Development-Infoにtech-stack-catalog.html追加(main push済み)、dashboard.htmlに「🗂 使用システム一覧」タブ追加、基本設計チェックリストにも反映。",
+      "usage": {
+        "inputTokens": 7042457,
+        "outputTokens": 12027592,
+        "cacheReadTokens": 6665468670,
+        "cacheWriteTokens": 147959843,
+        "costUsd": 2145.28341234
+      },
+      "rateLimitResetsAt": "2026-11-02T20:10:00+09:00"
     }
   ]
 }
