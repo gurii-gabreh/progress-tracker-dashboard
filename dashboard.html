@@ -5020,7 +5020,22 @@
     const prevValue = devDocsCurrentRepo;
     // 要件定義がまだ無いリポジトリも選べるよう、REQUIREMENTSのrepo一覧とKNOWN_REPOSを合わせる
     const reqRepos = new Map(REQUIREMENTS.requirements.map((r) => [r.repo, r]));
-    const allRepos = Array.from(new Set([...KNOWN_REPOS, ...reqRepos.keys()]));
+    const unsortedRepos = Array.from(new Set([...KNOWN_REPOS, ...reqRepos.keys()]));
+    // 2026-11-02追加、ユーザー指示「作成日が一番古いやつが一番下に表示されるようにして」。
+    // requirements[].approvedAt(新規相談フローでの実際の承認日)が無い遡及作成分はbackfilledAtを
+    // 代わりに使う(要件定義シート自体の作成日の近似値)。どちらも無いリポジトリ(要件定義未登録)は
+    // 日付が分からないため最後尾にまとめ、その中では元のKNOWN_REPOS順を保つ(安定ソート)。
+    const allRepos = unsortedRepos.slice().sort((a, b) => {
+      const dateOf = (repo) => {
+        const r = reqRepos.get(repo);
+        return r ? (r.approvedAt || r.backfilledAt || "") : "";
+      };
+      const da = dateOf(a), db = dateOf(b);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return db.localeCompare(da);
+    });
     [selReq, selFlow].forEach((sel) => {
       sel.innerHTML = "";
       allRepos.forEach((repo) => {
