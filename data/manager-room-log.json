@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-01T00:20:00+09:00",
+  "lastProcessedAt": "2026-11-02T00:20:00+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -350,6 +350,18 @@
         "次のハッカソン・コンテストに向けたResearchが停滞しているとユーザーから指摘があり、未対応のまま",
         "ai-research-feed.jsonを生成していた日次Routine(trig_01PaKZWB3NQ23SxPg1AVgswP)の再作成有無がユーザー未回答",
         "ai-research-feed.json(187件)自体を今後どう扱うか(🤖AI最新情報タブへの統合等)が未決定のまま保留"
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "generatedAt": "2026-11-02T00:20:00+09:00",
+      "summary": "【ブログ運用: 画像調達方針の確定】Pixabayをネットワーク許可リストに追加後も、Cloudflareのボット対策(JS challenge)で画像取得できないことが判明(cdn.pixabay.comも未許可)。画像生成はユーザーがGemini側で行う運用に決定。Gemini生成画像の著作権(学習データに既存画像が使われている点、「完全オリジナル」ではない)・商用利用可否(プランによって記載が食い違い、無料版は未確定)を正直に報告。類似チェックの実務線引き(著作権は「アイデア」でなく「具体的表現」を保護する、という一般原則をもとに、逆引き検索は簡易チェック・実在人物/ブランドを避けることが実務的と回答)についても相談・回答した。\n\n【ブログ記事: 本文+画像プロンプト+SNS投稿文の3点セット化】ユーザーの「突発的アイディア」への反応として、記事作成時に①本文②Gemini向け画像生成プロンプト③インスタ/X投稿文案、の3点をまとめて作る方式を提案・承認(PTD-112拡張)。blog-articles.jsonにimagePrompt/snsPostフィールドを追加し、dashboard.htmlのプレビューモーダルに既存の.ap-block HTMLコピー機能と同じclipboardパターンでコピーボタンを実装(新しい仕組みを増やさず既存パターンを再利用)。\n\n【AI最新情報キュレーション+ブログ記事作成 専用ルーム新設(PTD-114)】2026-10-31に出た「分析は別ルームでやった方がいい」という相談を受け、PTD-112/113の作業を1つの専用ルームに一本化。新規セッション(session_011sXeDkL7GLJJzVs7TBrjgz)を作成し、日次Routine(trig_011zBuNxpYB52P52yZwZaqsG、JST09:45=servicenow収集完了09:30の15分後)を自己バインドで設定。日次処理: ①未キュレーション項目の選択的キュレーション②AIが注目記事を自動選定③本文+画像プロンプト+SNS投稿文を3点セットでblog-articles.jsonへ保存。README.mdのルームマッピングにも記録。CL-050(定常ワークフローの専用ルーム切り出しパターン)を記録。\n\n【新規運用ルール2件追加】ルール31「アプリ構築・設計は使用する機能/ツールの標準機能をベースに考え、カスタマイズが必要な場合は必ず事前承認を得る」、ルール32「アプリ開発の相談・提案時は、常識を壊した突発的なアイディアも『突発的なアイディアですが』と前置きして積極的に出す」。両方claude-core-rules.md+ai-config.json(web/ai)に反映、ルール31はrequirements.jsonのconcerns(CN-007)・basicDesignChecklist項目12にも反映。\n\n【開発資料「図の種類」まとめページ新設(PTD-115)】「学習方針の横に、図の種類を追加して」という指示に対応し、App-Development-Infoにdiagram-types.htmlを新規作成。フローチャート・DFD・E-R図・状態遷移図・UMLクラス図/シーケンス図/アクティビティ図・ガントチャート・アローダイアグラムの9種類をインラインSVGのサンプル図付きで収録(IPA公式シラバスへ直接アクセスできず二次情報ベース、その旨を明記)。dashboard.htmlに「📐 図の種類」サブタブを追加。\n\n【基本設計チェックリックに外部参照先を2件追加】ユーザー発見の2つの無料ツール一覧サイトを、基本設計の該当項目に参照先として追記。①github.com/public-apis/public-apis(無料・認証不要APIの一覧、ルール9の方針と合致)を「外部インタフェース設計」項目に、②namethatui.com(UI要素のビジュアル辞典)を「画面・UI設計方針」項目に追記。\n\n【design学習資料にUI要素名称集を追加(PTD-116)】namethatui.comの無料枠で公開されている全91件(Web 58・macOS 33)を、sitemap.xml経由で並列取得・スクリプトで抽出し、App-Development-Infoのmaterials/design-lesson7-3.htmlとして新規作成。materials/design.htmlに「自作」/「外部サイト参照」のトグルを追加し、既存の自作レッスンと切り替えて見られるようにした。\n\n【開発工程に⑤デザイン設計フェーズを挿入する計画を承認】「ある程度アプリが出来上がってから、詳細設計とテストの間にデザイン設計(ボタン使用・UI関連のまとめ)を入れたい」という相談に対し、番号の振り方(⑤デザイン設計として挿入し以降+1)をユーザーが選択・承認。requirements.json新規designChecklist・新規スキルdesign-spec-kickoff作成・dashboard.html工程ゲートの更新・ai-config.json registry登録・claude-voice-bridge templates.json登録という影響範囲を提示済みだが、**実装はまだ着手していない**(承認を得た直後にルーティン発火によりこのエントリの記録作業に移ったため)。\n\n【各種ツール調査(Web検索・一部直接アクセスで確認)】\n- Instagram/X単体での直接広告収入: Xの旧Revenue Sharingは2026-09-07終了、後継Original Content Rewards Programの具体条件は未確認(単一ソースのみ)。Instagramは2026年時点の公式な収益化条件が確認できず、Xより不確か。\n- Weabee(weabee.com、AIイベント検索サイト): 直接アクセスし実際の掲載内容(ChatGPT 20件等のツール別イベント数、AI導入・事業活用22件等のテーマ別件数)を確認。\n- GitMind(マインドマップ+UML/フローチャート作成): 無料枠でマインドマップ無制限、AI機能の無料/有料の境界は情報源間で食い違い未確定。gitmind.comは未許可のまま。\n- TheToolBus.AI(PDF変換・画像圧縮等の単発ツール集): public-apisとは性質が違うため、基本設計チェックリストへの追記は保留中(ユーザーからの具体的な使い道の回答待ち)。\n- ViralFindr/Viralspy(インスタのバズ投稿・キーワード調査): いずれも有料(月$9.99〜$15程度)、「トレンドキーワード発見」機能の裏付けは取れず。ユーザー判断で見送り。\n- NameThatUI(namethatui.com): 公式サイトに直接アクセスし確認(全91件、Pro機能は$12/月)。design学習資料への統合に発展(PTD-116)。\n- Claude Design: 2026年4月発表のAnthropic公式機能であることを確認。dashboard.html等のコードベースからデザインシステムを自動構築できる。将来の⑤デザイン設計フェーズで使う方針。\n- OpenAI Academy: 公式の無料学習ハブと確認したが、academy.openai.comは未許可のままで、既存学習資料への追加可否は持ち越し。\n- Google AdSense: 自作サイト(WordPress以外)でも申し込み可能という理解を回答したが、support.google.comが未許可のため公式ポリシーでの裏付けは取れていない。\n\n【引き継がれた未解決事項】\n- ⑤デザイン設計フェーズの実装(承認済み、未着手)\n- TheToolBus.AIの具体的な使い道(ユーザー回答待ち)\n- academy.openai.com / gitmind.com / support.google.com / viralspy.io / weabee系以外の各サイトのネットワーク許可\n- カテゴリ3・4のrawSummary欠落調査、カテゴリ9継続可否(PTD-113 issues、未解決のまま持ち越し)\n- PTD-111〜116含む本日の全タスクはいずれも「対応中」のままユーザーの完了確認待ち(ルール30)",
+      "unresolvedCarriedOver": [
+        "⑤デザイン設計フェーズの実装(requirements.json/新規スキル/dashboard.html/ai-config.json/claude-voice-bridge templates.jsonへの反映、承認済みだが未着手)",
+        "TheToolBus.AIの具体的な使い道(ユーザー回答待ち、現状は基本設計チェックリストへの追記を保留)",
+        "academy.openai.com・gitmind.com・support.google.com・viralspy.io等、未許可のままのサイトが複数残っている",
+        "PTD-113のissues: カテゴリ3・4のrawSummary欠落調査、カテゴリ9(Allwork.Space)継続可否の判断",
+        "PTD-111〜116はいずれも「対応中」のままユーザーの完了確認待ち(ルール30)"
       ]
     }
   ]
