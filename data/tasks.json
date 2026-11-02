@@ -5904,15 +5904,68 @@
       ]
     },
     {
-      "repo": "progress-tracker-dashboard",
       "id": "PTD-118",
+      "title": "開発資料に「使用システム一覧(実績つき)」を追加",
+      "task": "Cloudflare・GAS・GitHub Pages等、これまで実際に使用したシステムの一覧を用途・条件・実績・懸念・必要な設定つきでまとめ、基本設計の参照先にする",
+      "repo": "progress-tracker-dashboard",
+      "category": "content",
+      "priority": "低",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "各システムの無料枠・条件は、公式ドキュメントで直接確認できたのはGitHub Pagesの制限値のみ。他(GAS/Cloudflare/ServiceNow PDI/LINE)は二次情報ベースで、confidenceフィールドに明記済み。"
+      ],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。",
+      "note": "ユーザー指示「開発資料にcloudflareのような今まで使用したシステム一覧を作っておきたい。こういうシステムが来たときはこれを使うみたいなことができる、実績も明記、JSON化したデータを下に設計できると思う」への対応。項目(用途/条件/実績/懸念/必要な設定)に加え、確認日・情報の確度(公式/二次情報)もAI提案で追加した。",
+      "detail": "data/tech-stack-catalog.jsonを新規作成し、GitHub Pages+Actions・Google Apps Script+Sheets・Cloudflare Workers/D1/Pages/Workers AI・ServiceNow PDI・LINE Messaging APIの5システムを収録。usedIn(実績)は実際にtasks.json・各リポジトリのgas/フォルダ・workflowsファイルを確認して裏付けた(例: GASはstudy-app/gemini-monitor/claude-voice-bridge/supermarket-price-tracker/ai-research-radar/prompt-manager等で実際に使用を確認)。concerns(懸念箇所)には、kizashiのCloudflareアカウント権限問題(2026-11-01に判明した「Billing権限なし」の件)も反映。App-Development-Infoにtech-stack-catalog.htmlを作成し(diagram-types.html/policy.htmlと同じデザインパターンを再利用、rule23)、dashboard.htmlに「🗂 使用システム一覧」サブタブとして追加。基本設計チェックリスト#3(インフラ・基盤要件)にも参照先として追記した。",
+      "output": "data/tech-stack-catalog.json, App-Development-Info/tech-stack-catalog.html, dashboard.html「🗂 使用システム一覧」タブ",
+      "relatedTasks": [
+        "PTD-115",
+        "PTD-116"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "カタログ作成・ページ作成・ダッシュボードタブ追加・基本設計チェックリスト反映完了。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-119",
+      "title": "デザイン設計フェーズ(番号なし、④詳細設計と⑤テストの間)を新設",
+      "task": "開発工程に、ボタン使用方針・UI要素名称統一等をまとめる「デザイン設計」フェーズを追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "architecture",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了してよいか確認中(ルール30)。実際にdesign-spec-kickoffを使ってみて動作確認する。",
+      "note": "ユーザー指示「ある程度アプリが出来上がってから、詳細設計とテストの間にデザイン設計(ボタン使用・UI関連のまとめ)を入れたい」「番号入れなくていい」への対応。",
+      "detail": "requirements.jsonにdesignSpecChecklist(8項目: ボタン種別/デザイントークン/Claude Designでの一貫性確保/UI要素名称統一(UI要素名称集参照)/レスポンシブ・PC-iPhone両対応/ダークモード/アクセシビリティ/画面間一貫性)を新設。IPA共通フレーム2013に対応する工程が無いため、一般的なUI/UXデザインシステムの実務慣行ベースである旨を明記した。新規スキルdesign-spec-kickoff(.claude/skills/design-spec-kickoff/SKILL.md)をdetailed-design-kickoff.mdと同じパターンで作成(rule23)、detailed-design-kickoffのチェイン先をtest-kickoffからdesign-spec-kickoffへ変更、test-kickoff側の前提条件もdetailedDesign完了からdesignSpec完了へ変更した。dashboard.htmlに「🎨 デザイン設計」タブ(円数字の番号なし)を追加し、renderAppDevDesignSpec()・buildDesignSpecPromptText()・devDocsIsDesignSpecComplete()を新設、⑤テストのゲート判定も更新。ai-config.jsonのcustomSkills registryとclaude-voice-bridgeのtemplates.json(起動フレーズ、ルール27)にも登録した。",
+      "output": "requirements.json designSpecChecklist, .claude/skills/design-spec-kickoff/, dashboard.html「🎨 デザイン設計」タブ",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "requirements.json・新規スキル・既存スキル2つ・dashboard.html・ai-config.json・claude-voice-bridge templates.json、全て反映完了。JS構文チェック済み。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-120",
       "title": "テスト一覧(test-patterns.json)の新設",
       "task": "どのアプリでも使い回せるPlaywrightテスト観点・パターンの共有JSONとビューアーを新設",
       "category": "feature",
       "priority": "中",
       "status": "完了",
       "updated": "2026-11-02",
-      "note": "AI Lab(ai-lab)の②基本設計相談中、ユーザー指示「テスト一覧の仕組みつくって、開発資料のところにテスト一覧をつくって...データ内容はテスト用でJSONを一つ作りその中にまとめておいてほしい、これを基に他のアプリでも参照としたい」への対応。既存の「📐図の種類」(PTD-115)「UI要素名称集」(PTD-116)と同じ開発資料サブタブの並びに追加したが、データがこのリポジトリ自身のJSONのためiframeではなく直接fetchして描画する方式にした(PTD-116で発生した表示漏れの事象を踏まえた判断、原因は未調査のまま)。",
+      "note": "AI Lab(ai-lab)の②基本設計相談中、ユーザー指示「テスト一覧の仕組みつくって、開発資料のところにテスト一覧をつくって...データ内容はテスト用でJSONを一つ作りその中にまとめておいてほしい、これを基に他のアプリでも参照としたい」への対応。既存の「📐図の種類」(PTD-115)「UI要素名称集」(PTD-116)と同じ開発資料サブタブの並びに追加したが、データがこのリポジトリ自身のJSONのためiframeではなく直接fetchして描画する方式にした(PTD-116で発生した表示漏れの事象を踏まえた判断、原因は未調査のまま)。マージ時点で発覚: 同じタイミングでmanager-room側がPTD-118/119(使用システム一覧・デザイン設計フェーズ)を起票していたため、本タスクのIDをPTD-118からPTD-120へ採番し直した。",
       "detail": "data/test-patterns.json(新規、schemaVersion 1、patterns配列は初期状態で空)を作成。dashboard.htmlの開発資料サブタブに「🧪 テスト一覧」ボタン・パネルを追加し、loadTestPatterns()/renderTestPatterns()で直接fetch・描画(既存のrenderAppDevIssueLogと同じresearch-table/devdocs-tagクラスを再利用、rule23)。data/ai-config.jsonのjsonDataIndexにも追記(web/ai両セクション)。test-kickoffスキル(SKILL.md)に新しい手順6を追加: testChecklistの方針確定後、test-patterns.jsonを参照しつつAIが具体的なテストケース・観点を提案し、確定した内容を同JSONへ追記する。また、テスト容易性は⑤テストだけでなく②基本設計・④詳細設計の既存項目(それぞれ項目4・10、項目7)から早期に検討する旨もSKILL.mdに明記した。",
       "issues": [],
       "output": "dashboard.html(🧪テスト一覧タブ), data/test-patterns.json, data/ai-config.json, .claude/skills/test-kickoff/SKILL.md",

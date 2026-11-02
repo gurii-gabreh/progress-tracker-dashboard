@@ -52,10 +52,12 @@ description: Conduct the ④詳細設計(detailed design) interview for an exist
    mainへのマージまで行う(claude-core-rules.mdルール25)。対応するタスクを`data/tasks.json`へ
    起票する。この記録だけで、dashboard.htmlの🧩詳細設計タブに自動で表示される。
 
-6. **チェイン(続けて⑤テストも相談するか聞く、2026-10-25追加)**: 手順5の記録が終わったら、
-   ユーザーへ「続けて⑤テストも相談しますか？」と尋ねる。
-   - 「はい」→ 新しいセッションを作らず、同じルームのまま`test-kickoff`スキル
-     (`.claude/skills/test-kickoff/SKILL.md`)の手順2以降を続けて実施する(対象アプリは今回
+6. **チェイン(続けてデザイン設計も相談するか聞く、2026-10-25追加・2026-11-02チェイン先変更)**:
+   手順5の記録が終わったら、ユーザーへ「続けてデザイン設計も相談しますか？」と尋ねる
+   (2026-11-02、④詳細設計と⑤テストの間にデザイン設計フェーズが挿入されたため、チェイン先を
+   test-kickoffからdesign-spec-kickoffへ変更した)。
+   - 「はい」→ 新しいセッションを作らず、同じルームのまま`design-spec-kickoff`スキル
+     (`.claude/skills/design-spec-kickoff/SKILL.md`)の手順2以降を続けて実施する(対象アプリは今回
      確定したものを使うため選択はスキップ)。
    - 「いいえ」→ ここで終了してよい。
 

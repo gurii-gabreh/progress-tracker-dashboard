@@ -1152,7 +1152,7 @@
           <button type="button" class="hub-card" data-hub-nav="devdocs">
             <span class="hub-card-icon">📄</span>
             <span class="hub-card-title">開発資料</span>
-            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」「📐 図の種類」の6つのサブタブがあります。</span>
+            <span class="hub-card-desc">各アプリの要件定義・段階別フロー図に加え、アーキテクチャ・セキュリティ・AI/LLM等8分野の学習管理(2026-10-18、🎓学習タブを統合)もここにまとまっています。「📋 要件定義」「🔀 段階別フロー図」「📖 学習資料」「📝 学習記録」「🧭 学習方針」「📐 図の種類」「🔤 UI要素名称集」「🗂 使用システム一覧」の8つのサブタブがあります。</span>
             <span class="hub-card-cta">開く →</span>
           </button>
           <button type="button" class="hub-card" data-hub-nav="applist">
@@ -1338,6 +1338,8 @@
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-records" data-subview="records">📝 学習記録</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-policy" data-subview="policy">🧭 学習方針</button>
     <button type="button" class="manager-subview-btn" id="devdocs-subtab-diagramtypes" data-subview="diagramtypes">📐 図の種類</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-uinames" data-subview="uinames">🔤 UI要素名称集</button>
+    <button type="button" class="manager-subview-btn" id="devdocs-subtab-techstack" data-subview="techstack">🗂 使用システム一覧</button>
     <!-- 2026-11-02追加、AI Lab(ai-lab)基本設計相談時のユーザー指示「テスト一覧を作り、データはJSONに
          まとめてどのアプリでもアクセスできるようにして、ビューアーとしてマネージャアプリに表示」。
          図の種類(iframeでApp-Development-Info参照)とは異なり、データがこのリポジトリ自身の
@@ -1414,6 +1416,7 @@
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-basicdesign" data-stage="basicDesign">🏗 基本設計</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-funcreq" data-stage="functionalRequirements">📐 機能要件</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-detaildesign" data-stage="detailedDesign">🧩 詳細設計</button>
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-designspec" data-stage="designSpec">🎨 デザイン設計</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-test" data-stage="test">🧪 テスト</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-ops" data-stage="ops">🔧 運用・保守</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-release" data-stage="release">🚀 リリース・移行</button>
@@ -1425,6 +1428,7 @@
               <div id="appdev-basicdesign" style="display:none;"></div>
               <div id="appdev-funcreq" style="display:none;"></div>
               <div id="appdev-detaildesign" style="display:none;"></div>
+              <div id="appdev-designspec" style="display:none;"></div>
               <div id="appdev-test" style="display:none;"></div>
               <div id="appdev-ops" style="display:none;"></div>
               <div id="appdev-release" style="display:none;"></div>
@@ -1469,6 +1473,12 @@
   </div>
   <div id="devdocs-subview-diagramtypes" class="manager-subview">
     <iframe id="diagramtypes-iframe" title="図の種類" loading="lazy"></iframe>
+  </div>
+  <div id="devdocs-subview-uinames" class="manager-subview">
+    <iframe id="uinames-iframe" title="UI要素名称集" loading="lazy"></iframe>
+  </div>
+  <div id="devdocs-subview-techstack" class="manager-subview">
+    <iframe id="techstack-iframe" title="使用システム一覧" loading="lazy"></iframe>
   </div>
   <div id="devdocs-subview-testpatterns" class="manager-subview">
     <div class="policy-scroll">
@@ -4033,7 +4043,7 @@
   //   それに対して最終的にどう対応したかを明記」「さっきの一直線の下の項目に沿って記載」への対応、
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
-  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] }, marketAnalysisFramework: { description: "", steps: [] } };
+  const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, designSpecChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] }, marketAnalysisFramework: { description: "", steps: [] } };
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -4049,6 +4059,7 @@
         REQUIREMENTS.basicDesignChecklist = data.basicDesignChecklist || { items: [] };
         REQUIREMENTS.functionalRequirementsChecklist = data.functionalRequirementsChecklist || { items: [] };
         REQUIREMENTS.detailedDesignChecklist = data.detailedDesignChecklist || { items: [] };
+        REQUIREMENTS.designSpecChecklist = data.designSpecChecklist || { items: [] };
         REQUIREMENTS.testChecklist = data.testChecklist || { items: [] };
         REQUIREMENTS.opsChecklist = data.opsChecklist || { items: [] };
         REQUIREMENTS.releaseChecklist = data.releaseChecklist || { items: [] };
@@ -5226,6 +5237,7 @@
     basicDesign: { panel: "appdev-basicdesign", btn: "appdev-stage-btn-basicdesign", render: () => renderAppDevBasicDesign() },
     functionalRequirements: { panel: "appdev-funcreq", btn: "appdev-stage-btn-funcreq", render: () => renderAppDevFuncReq() },
     detailedDesign: { panel: "appdev-detaildesign", btn: "appdev-stage-btn-detaildesign", render: () => renderAppDevDetailedDesign() },
+    designSpec: { panel: "appdev-designspec", btn: "appdev-stage-btn-designspec", render: () => renderAppDevDesignSpec() },
     test: { panel: "appdev-test", btn: "appdev-stage-btn-test", render: () => renderAppDevTest() },
     ops: { panel: "appdev-ops", btn: "appdev-stage-btn-ops", render: () => renderAppDevOps() },
     release: { panel: "appdev-release", btn: "appdev-stage-btn-release", render: () => renderAppDevRelease() },
@@ -5466,6 +5478,17 @@
     });
   }
 
+  // 2026-11-02追加、デザイン設計フェーズ(④詳細設計と⑤テストの間、番号なし)のゲート判定。
+  function devDocsIsDesignSpecComplete(req) {
+    const dsItems = (REQUIREMENTS.designSpecChecklist && REQUIREMENTS.designSpecChecklist.items) || [];
+    const dsAnswers = (req.designSpec && req.designSpec.answers) || [];
+    if (!dsItems.length) return false;
+    return dsItems.every((it) => {
+      const a = dsAnswers.find((x) => x.n === it.n);
+      return a && (a.answer || "").trim();
+    });
+  }
+
   function devDocsIsTestComplete(req) {
     const items = (REQUIREMENTS.testChecklist && REQUIREMENTS.testChecklist.items) || [];
     const answers = (req.test && req.test.answers) || [];
@@ -5701,6 +5724,105 @@
     ].join("\n");
   }
 
+  // 📂開発アプリ一覧→🎨デザイン設計(2026-11-02追加、ユーザー指示「ある程度アプリが出来上がってから、
+  // 詳細設計とテストの間にデザイン設計(ボタン使用・UI関連のまとめ)を入れたい」)。他の工程と違い
+  // 円数字の番号は付けない(ユーザー指示「番号入れなくていい」)。detailedDesignと同じ入力フォーム
+  // 方式(rule23)。④詳細設計の全項目入力完了を前提条件とする。IPA共通フレーム2013に対応する工程が
+  // 無いため、designSpecChecklist.descriptionの通り一般的なUI/UXデザインシステムの実務慣行ベース。
+  function renderAppDevDesignSpec() {
+    const box = document.getElementById("appdev-designspec");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    const items = (REQUIREMENTS.designSpecChecklist && REQUIREMENTS.designSpecChecklist.items) || [];
+
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+    if (!devDocsIsDetailedDesignComplete(req)) {
+      const ddItems = (REQUIREMENTS.detailedDesignChecklist && REQUIREMENTS.detailedDesignChecklist.items) || [];
+      box.innerHTML = `<div class="empty">🧩 詳細設計の全${ddItems.length}項目が入力完了すると、ここでデザイン設計の聞き取りを進められます。先に「🧩 詳細設計」タブで入力を進めてください。</div>`;
+      return;
+    }
+
+    const ds = req.designSpec;
+    const dsAnswers = (ds && ds.answers) || [];
+    const qaHtml = dsAnswers.length
+      ? `<div class="devdocs-qa-list">${dsAnswers.map((a) => `
+          <div class="devdocs-qa-item">
+            <div class="q"><span class="n">${a.n}.</span>${escapeHtmlForDevDocs(a.question || "")}</div>
+            <div class="a">${escapeHtmlForDevDocs(a.answer || "")}</div>
+          </div>`).join("")}</div>`
+      : `<div class="empty">まだデザイン設計の記録がありません(未着手)。下のフォームに分かる範囲で入力し、「📋 プロンプトを作成」からClaude Codeへ相談してください。開発資料タブの「🔤 UI要素名称集」も参考にできます。</div>`;
+
+    const fieldsHtml = items.map((it) => {
+      const existing = dsAnswers.find((a) => a.n === it.n);
+      return `
+      <div class="form-field">
+        <label for="appdev-ds-item-${it.n}">${it.n}. ${escapeHtmlForDevDocs(it.question || "")}</label>
+        <textarea id="appdev-ds-item-${it.n}" rows="2" placeholder="空欄のままでも可">${escapeHtmlForDevDocs(existing ? existing.answer : "")}</textarea>
+      </div>`;
+    }).join("");
+
+    box.innerHTML = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">デザイン設計: ${escapeHtmlForDevDocs((ds && ds.status) || "未着手")}</span>
+      </div>
+      ${qaHtml}
+      <div class="devdocs-section-title" style="margin-top:18px;">✏️ 入力・プロンプト生成</div>
+      <div id="appdev-ds-fields">${fieldsHtml}</div>
+      <div class="appdev-new-actions">
+        <button type="button" class="modal-copy-btn" id="appdev-ds-generate-btn">📋 プロンプトを作成</button>
+      </div>
+    `;
+    const genBtn = document.getElementById("appdev-ds-generate-btn");
+    if (genBtn) {
+      genBtn.addEventListener("click", () => {
+        showHandoffModal(buildDesignSpecPromptText(req, items), `${req.title || req.repo} デザイン設計 依頼文`, true);
+      });
+    }
+  }
+
+  function buildDesignSpecPromptText(req, items) {
+    const answerLines = items.map((it) => {
+      const el = document.getElementById(`appdev-ds-item-${it.n}`);
+      const val = (el && el.value || "").trim();
+      return `   ${it.n}) ${it.question}\n      回答: ${val || "(空欄・未回答。設計を詰める段になってから確認する)"}`;
+    }).join("\n");
+    const ddSummary = ((req.detailedDesign && req.detailedDesign.answers) || []).map((a) => `   ${a.n}) ${a.question}: ${a.answer || "(未回答)"}`).join("\n");
+    return [
+      `${req.title || req.repo}(${req.repo})のデザイン設計(④詳細設計と⑤テストの間、番号なし)を進めたい。`,
+      "ダッシュボードの「📱 アプリ開発」→「📂 開発アプリ一覧」→対象アプリ→「🎨 デザイン設計」フォームから、",
+      "以下の内容が入力済みの状態で渡された。",
+      "",
+      "【参考: このアプリの詳細設計(④フェーズ、data/requirements.jsonのrequirements[].detailedDesign)】",
+      ddSummary || "(詳細設計の回答が見つかりません)",
+      "",
+      "【デザイン設計の入力済み項目(IPA共通フレーム2013に対応する工程が無いため、一般的なUI/UX",
+      "  デザインシステムの実務慣行ベース。data/requirements.jsonのdesignSpecChecklist.description参照)】",
+      answerLines,
+      "",
+      "【このルームにやってほしいこと】",
+      "1. 上記の詳細設計・data/concept-log.json・data/policy.jsonと、該当リポジトリ自身の既存実装",
+      "   (CSS・コンポーネント構成等)を確認し、関連する過去の設計判断が無いか確認する",
+      "2. UI要素の名称に迷う箇所は、progress-tracker-dashboardの開発資料タブ「🔤 UI要素名称集」",
+      "   (namethatui.com参照、91件)を参考に、候補をいくつか提示して選んでもらう",
+      "3. 空欄の項目は、今すぐ全て埋めようとせず、ユーザーと相談して方向性を決めていく。全項目が",
+      "   揃っていなくても先に進めてよい",
+      "4. data/requirements.jsonのrequirements配列から該当アプリ(repo一致)のエントリを見つけ、",
+      "   designSpecフィールドを追加・更新する(answers配列は{n, question, answer}として",
+      "   designSpecChecklist.items全件格納、statusは「対応中」または「完了」)。commit・pushする",
+      "5. 対応するタスクを依頼タスクタブ/data/tasks.jsonへ起票する。記録すれば",
+      "   progress-tracker-dashboardの📄開発資料タブ→📱アプリ開発→開発アプリ一覧→🎨デザイン設計に",
+      "   自動で表示される(別途の書き込みは不要)",
+      "",
+      "このルームでのやり取り自体が、この相談の壁打ち履歴になる。",
+    ].join("\n");
+  }
+
   // 📂開発アプリ一覧→🧪テスト(2026-10-25追加)。detailedDesignと同じ入力フォーム方式(rule23)。
   // ④詳細設計の全項目入力完了を前提条件とする。testChecklist.descriptionの経緯の通り、④詳細設計の
   // ときに一次情報源(IPA公式PDF)の検索が狭すぎたという見落としをユーザー指摘で修正し、同一PDF内の
@@ -5716,9 +5838,9 @@
       box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
       return;
     }
-    if (!devDocsIsDetailedDesignComplete(req)) {
-      const ddItems = (REQUIREMENTS.detailedDesignChecklist && REQUIREMENTS.detailedDesignChecklist.items) || [];
-      box.innerHTML = `<div class="empty">🧩 詳細設計の全${ddItems.length}項目が入力完了すると、ここで⑤テストの聞き取りを進められます。先に「🧩 詳細設計」タブで入力を進めてください。</div>`;
+    if (!devDocsIsDesignSpecComplete(req)) {
+      const dsItems = (REQUIREMENTS.designSpecChecklist && REQUIREMENTS.designSpecChecklist.items) || [];
+      box.innerHTML = `<div class="empty">🎨 デザイン設計の全${dsItems.length}項目が入力完了すると、ここで⑤テストの聞き取りを進められます。先に「🎨 デザイン設計」タブで入力を進めてください。</div>`;
       return;
     }
 
@@ -6269,6 +6391,11 @@
     // 2026-11-01追加、ユーザー指示「学習方針の横に、図の種類を追加して。アクティビティ図やガントチャートなど、
     // 基本情報・応用情報で出てくる図の種類をサンプル図と概要でまとめたページ」。学習方針と同じiframe方式。
     const DIAGRAM_TYPES_URL = "https://gurii-gabreh.github.io/App-Development-Info/diagram-types.html";
+    // 2026-11-02追加、ユーザー指示「開発資料にcloudflareのような今まで使用したシステム一覧を作っておきたい」。
+    const TECH_STACK_URL = "https://gurii-gabreh.github.io/App-Development-Info/tech-stack-catalog.html";
+    // 2026-11-02追加、ユーザー指示「UI要素名称集は現物のサンプルみたいだから、図の種類の横に追加して」。
+    // design.html内の自作/外部サイト参照トグルから切り出し、図の種類と同じ独立タブへ昇格させた。
+    const UI_NAMES_URL = "https://gurii-gabreh.github.io/App-Development-Info/materials/design-lesson7-3.html";
     const subviews = {
       requirements: { btn: document.getElementById("devdocs-subtab-requirements"), panel: document.getElementById("devdocs-subview-requirements") },
       flow: { btn: document.getElementById("devdocs-subtab-flow"), panel: document.getElementById("devdocs-subview-flow") },
@@ -6276,6 +6403,8 @@
       records: { btn: document.getElementById("devdocs-subtab-records"), panel: document.getElementById("devdocs-subview-records"), iframeId: "records-iframe", url: RECORDS_URL },
       policy: { btn: document.getElementById("devdocs-subtab-policy"), panel: document.getElementById("devdocs-subview-policy"), iframeId: "policy-iframe", url: POLICY_URL },
       diagramtypes: { btn: document.getElementById("devdocs-subtab-diagramtypes"), panel: document.getElementById("devdocs-subview-diagramtypes"), iframeId: "diagramtypes-iframe", url: DIAGRAM_TYPES_URL },
+      uinames: { btn: document.getElementById("devdocs-subtab-uinames"), panel: document.getElementById("devdocs-subview-uinames"), iframeId: "uinames-iframe", url: UI_NAMES_URL },
+      techstack: { btn: document.getElementById("devdocs-subtab-techstack"), panel: document.getElementById("devdocs-subview-techstack"), iframeId: "techstack-iframe", url: TECH_STACK_URL },
       testpatterns: { btn: document.getElementById("devdocs-subtab-testpatterns"), panel: document.getElementById("devdocs-subview-testpatterns") },
     };
     Object.entries(subviews).forEach(([key, { btn }]) => {
