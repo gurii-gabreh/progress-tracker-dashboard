@@ -1,6 +1,6 @@
 ---
 name: test-kickoff
-description: Conduct the ⑤テスト(test) interview for an existing app whose ④詳細設計 is already fully answered, via a voice/chat-triggered phrase. Triggered by claude-voice-bridge's fixed skill phrase "【テスト相談】test-kickoffスキルを呼び出して実行してください。". Like the other *-kickoff skills, this does NOT spin up a new session — it runs in whichever room it is invoked from, either as a direct standalone entry point or chained from detailed-design-kickoff finishing ④詳細設計 in the same room. Interviews data/requirements.json's testChecklist items (grounded in IPA共通フレーム2013's 検証プロセス4.3・妥当性確認プロセス4.4・品質保証プロセス4.2・共同レビュープロセス4.5 and the 結合/適格性確認テストプロセス, found in the same <ガイダンス> PDF extract used for basicDesignChecklist) and writes the result into that app's requirements[].test field.
+description: Conduct the ⑤テスト(test) interview for an existing app whose デザイン設計(design spec, inserted between ④詳細設計 and ⑤テスト without a number) is already fully answered, via a voice/chat-triggered phrase. Triggered by claude-voice-bridge's fixed skill phrase "【テスト相談】test-kickoffスキルを呼び出して実行してください。". Like the other *-kickoff skills, this does NOT spin up a new session — it runs in whichever room it is invoked from, either as a direct standalone entry point or chained from design-spec-kickoff finishing デザイン設計 in the same room (2026-11-02 changed from detailed-design-kickoff, see note below). Interviews data/requirements.json's testChecklist items (grounded in IPA共通フレーム2013's 検証プロセス4.3・妥当性確認プロセス4.4・品質保証プロセス4.2・共同レビュープロセス4.5 and the 結合/適格性確認テストプロセス, found in the same <ガイダンス> PDF extract used for basicDesignChecklist) and writes the result into that app's requirements[].test field.
 ---
 
 # ⑤テストの立ち上げ(Test kickoff)
@@ -23,25 +23,30 @@ IPA公式資料から別フェーズのチェックリストを作る際は、**
 関連キーワード(品質・検証・妥当性確認・レビュー等)での全文横断確認を必ず行うこと**
 (同じ見落としを繰り返さないための教訓として明記)。
 
+**チェイン元の変更について(2026-11-02)**: ④詳細設計と⑤テストの間に、番号なしの「デザイン設計」
+フェーズが挿入された(ユーザー指示)。このため、このスキルの前提条件・チェイン元はdetailed-design-kickoff
+(④詳細設計)ではなく、design-spec-kickoff(デザイン設計)の完了に変更した。デザイン設計自体の
+前提条件が④詳細設計完了であるため、結果として④詳細設計完了も間接的に保証される。
+
 ## 手順
 
 1. **固定フレーズで起動する**(誤発火防止のため自然文からのAI自動判断はしない)。
    ```
    【テスト相談】test-kickoffスキルを呼び出して実行してください。
    ```
-   ただし、detailed-design-kickoffの④詳細設計インタビューが完了した直後、ユーザーが「続けて
+   ただし、design-spec-kickoffのデザイン設計インタビューが完了した直後、ユーザーが「続けて
    ⑤テストも相談しますか？」という問いに「はい」と答えた場合は、この固定フレーズを経由せず
    同じルームでそのまま手順2以降に進んでよい(対象アプリは直前に確定したものを使うため選択は
    スキップ)。
 
 2. **対象アプリを選択肢方式で聞く**。`data/requirements.json`の`requirements[]`のうち、
-   `detailedDesign.answers`が`detailedDesignChecklist.items`全件分埋まっているアプリ
-   (詳細設計完了済み)だけを候補として提示する。該当アプリの詳細設計がまだ未完了の場合は、先に
-   detailed-design-kickoffで④詳細設計を済ませるよう案内し、ここで終了する。
+   `designSpec.answers`が`designSpecChecklist.items`全件分埋まっているアプリ
+   (デザイン設計完了済み)だけを候補として提示する。該当アプリのデザイン設計がまだ未完了の場合は、
+   先にdesign-spec-kickoffでデザイン設計を済ませるよう案内し、ここで終了する。
 
-3. **参考情報を読む**: 選択したアプリの`requirements[].detailedDesign.answers`(④詳細設計の回答)、
-   既存の`test`(途中まで入力済みの場合がある)、対象リポジトリ自身の既存実装・既存テストコード
-   (README・テストディレクトリ等)を確認する。
+3. **参考情報を読む**: 選択したアプリの`requirements[].detailedDesign.answers`(④詳細設計の回答)・
+   `requirements[].designSpec.answers`(デザイン設計の回答)、既存の`test`(途中まで入力済みの場合が
+   ある)、対象リポジトリ自身の既存実装・既存テストコード(README・テストディレクトリ等)を確認する。
 
 4. **`data/requirements.json`の`testChecklist.items`を1つずつ順に確認する**
    (basic-design-kickoff/detailed-design-kickoffと同じ聞き取りスタイルをrule23で踏襲)。
