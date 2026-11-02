@@ -5868,7 +5868,37 @@
           "summary": "①要件定義の聞き取り(全17項目)・市場分析7ステップを完了し、requirements.json(REQ-AIL-001)へ記録。実装はまだ着手していない。"
         }
       ]
+    },
+    {
+      "id": "PTD-117",
+      "title": "新規アプリ構想「AI技術公開サイト」の立ち上げ",
+      "task": "new-app-kickoffスキル経由で、AI技術情報を公開するサイトの新規相談ルームを作成",
+      "repo": "progress-tracker-dashboard",
+      "category": "manual",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)側で①要件定義の聞き取り(全17項目)・市場分析7ステップが完了し、data/requirements.json(REQ-AIL-001)・data/tasks.json(AIL-001)へ記録済み。②基本設計へ進むかをユーザーに確認中(2026-11-02、構想ルーム側で追記)。",
+      "note": "ユーザー指示「AI技術公開サイトを作ろうか、要件定義から始めたい」への対応。manager-room自身は構想の中身に踏み込まず、new-app-kickoffスキルに沿って専用ルームへ切り出した(ルール「manager-roomは実装が必要な作業を見つけたら自分でコードを書かず作業ルームへ依頼する」、README参照)。",
+      "detail": "new-app-kickoffスキルを起動し、`create_session`(source_url: progress-tracker-dashboard)で専用ルーム(session_011sXeDjvTxjWcKQoJBPHuFu、タイトル「AI技術公開サイト 構想ルーム」)を作成。新規セッションがまだ最初のターンを開始していないためSendMessageでは届かず(claude-core-rules.mdルール19の既知の到達性問題と同種の現象)、create_trigger(persistent_session_id指定・cron無し)→fire_trigger→delete_triggerの標準手順で初回メッセージを配信した。配信内容はbuildNewConsultationPromptText()と同一の聞き取りフロー(①関連ナレッジ確認②interviewChecklist逐次聞き取り③懸念点照合④a〜d分類⑤要件定義シート記録+市場分析7ステップ⑥②基本設計へのチェーン確認)。2026-11-02、構想ルーム側で①〜⑤まで完了(詳細はAIL-001・REQ-AIL-001参照)。",
+      "output": "session_011sXeDjvTxjWcKQoJBPHuFu",
+      "relatedTasks": [
+        "AIL-001"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "構想ルーム作成・初回メッセージ配信完了。聞き取りはルーム側で進行中。"
+        },
+        {
+          "date": "2026-11-02",
+          "summary": "構想ルーム側で①要件定義(全17項目)・市場分析7ステップが完了。requirements.json(REQ-AIL-001)・tasks.json(AIL-001)へ記録済み。②基本設計へ進むかをユーザーに確認中。"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-11-01"
+  "updatedAt": "2026-11-02"
 }
