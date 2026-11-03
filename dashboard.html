@@ -1423,6 +1423,12 @@
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-ops" data-stage="ops">🔧 運用・保守</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-release" data-stage="release">🚀 リリース・移行</button>
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-issuelog" data-stage="issueLog">📝 課題管理表</button>
+              <!-- 2026-11-02追加、AI Lab(ai-lab)④詳細設計相談時のユーザー指示「エラーの通知だけで消えてしまうと
+                   後で見返せない、エラー一覧で管理したほうがいい」「開発資料内の課題管理表の下にエラー一覧タブを
+                   作って」。課題管理表(人が記録する開発課題)とは別物で、各アプリ自身のリポジトリが持つ
+                   実行時エラーの記録(例: ai-lab/data/error-log.json)を、progress-tracker-dashboard側が
+                   クロスリポジトリで読み取り表示する(書き込み・集約はしない、詳細はtasks.jsonのAIL-001参照)。 -->
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-errorlog" data-stage="errorLog">🐞 エラー一覧</button>
             </div>
             <div class="appdev-stage-content">
               <div id="devdocs-requirements"></div>
@@ -1435,6 +1441,7 @@
               <div id="appdev-ops" style="display:none;"></div>
               <div id="appdev-release" style="display:none;"></div>
               <div id="appdev-issuelog" style="display:none;"></div>
+              <div id="appdev-errorlog" style="display:none;"></div>
             </div>
           </div>
         </div>
@@ -4567,6 +4574,117 @@
       </div>`;
   }
 
+  // 🐞エラー一覧(2026-11-02追加)。選択中アプリ自身のリポジトリが持つdata/error-log.json
+  // (例: ai-lab/data/error-log.json)を、raw.githubusercontent.com経由でクロスリポジトリ
+  // fetchする(AI最新情報タブ=servicenow-sub-agentのresearch-items.jsonと同じパターン、rule23)。
+  // 課題管理表(renderAppDevIssueLog)と違い、データはこのリポジトリ側に保存せず都度読み取るのみ。
+  let ERROR_LOG_REPO = null;
+  let ERROR_LOG_ITEMS = [];
+
+  function renderAppDevErrorLog() {
+    const box = document.getElementById("appdev-errorlog");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
+    if (!req) {
+      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
+      return;
+    }
+    if (ERROR_LOG_REPO === repo) {
+      renderErrorLogTable(req);
+      return;
+    }
+    box.innerHTML = `<div class="empty">読み込み中...</div>`;
+    const url = `https://raw.githubusercontent.com/gurii-gabreh/${encodeURIComponent(repo)}/main/data/error-log.json?t=${Date.now()}`;
+    fetch(url, { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) return null; // 404等: このアプリはまだerror-log.jsonを持っていない
+        return res.json();
+      })
+      .then((data) => {
+        const items = Array.isArray(data) ? data : (data && Array.isArray(data.errors) ? data.errors : []);
+        ERROR_LOG_REPO = repo;
+        ERROR_LOG_ITEMS = items;
+        renderErrorLogTable(req);
+      })
+      .catch((err) => {
+        console.error(err);
+        ERROR_LOG_REPO = repo;
+        ERROR_LOG_ITEMS = [];
+        renderErrorLogTable(req, err.message);
+      });
+  }
+
+  function renderErrorLogTable(req, fetchErrorMessage) {
+    const box = document.getElementById("appdev-errorlog");
+    if (!box) return;
+    const headHtml = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
+        <span class="devdocs-tag repo">${escapeHtmlForDevDocs(req.repo || "")}</span>
+        <span class="devdocs-tag">エラー: ${ERROR_LOG_ITEMS.length}件</span>
+      </div>`;
+    if (fetchErrorMessage) {
+      box.innerHTML = `${headHtml}<div class="empty">エラー一覧の取得に失敗しました(${escapeHtmlForDevDocs(fetchErrorMessage)})。data/error-log.jsonがこのリポジトリに存在しないか、一時的な通信エラーの可能性があります。</div>`;
+      return;
+    }
+    if (!ERROR_LOG_ITEMS.length) {
+      box.innerHTML = `${headHtml}<div class="empty">このアプリのエラー一覧はまだありません(data/error-log.json未登録、または記録されたエラーが0件)。</div>`;
+      return;
+    }
+    const dates = [...new Set(ERROR_LOG_ITEMS.map((it) => String(it.createdAt || "").slice(0, 10)).filter(Boolean))].sort().reverse();
+    const cats = [...new Set(ERROR_LOG_ITEMS.map((it) => it.category || "未分類"))].sort();
+    const statuses = [...new Set(ERROR_LOG_ITEMS.map((it) => it.status || "未対応"))].sort();
+    box.innerHTML = `
+      ${headHtml}
+      <div class="relations-controls">
+        <label>作成日: <select id="appdev-errorlog-filter-date"><option value="">すべて</option>${dates.map((d) => `<option value="${escapeHtmlForDevDocs(d)}">${escapeHtmlForDevDocs(d)}</option>`).join("")}</select></label>
+        <label>カテゴリ: <select id="appdev-errorlog-filter-category"><option value="">すべて</option>${cats.map((c) => `<option value="${escapeHtmlForDevDocs(c)}">${escapeHtmlForDevDocs(c)}</option>`).join("")}</select></label>
+        <label>ステータス: <select id="appdev-errorlog-filter-status"><option value="">すべて</option>${statuses.map((s) => `<option value="${escapeHtmlForDevDocs(s)}">${escapeHtmlForDevDocs(s)}</option>`).join("")}</select></label>
+      </div>
+      <div id="appdev-errorlog-table-wrap"></div>`;
+    ["date", "category", "status"].forEach((key) => {
+      const sel = document.getElementById(`appdev-errorlog-filter-${key}`);
+      if (sel) sel.addEventListener("change", applyErrorLogFilters);
+    });
+    applyErrorLogFilters();
+  }
+
+  function applyErrorLogFilters() {
+    const wrap = document.getElementById("appdev-errorlog-table-wrap");
+    if (!wrap) return;
+    const dateVal = document.getElementById("appdev-errorlog-filter-date")?.value || "";
+    const catVal = document.getElementById("appdev-errorlog-filter-category")?.value || "";
+    const statusVal = document.getElementById("appdev-errorlog-filter-status")?.value || "";
+    const filtered = ERROR_LOG_ITEMS.filter((it) => {
+      if (dateVal && String(it.createdAt || "").slice(0, 10) !== dateVal) return false;
+      if (catVal && (it.category || "未分類") !== catVal) return false;
+      if (statusVal && (it.status || "未対応") !== statusVal) return false;
+      return true;
+    }).sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+    if (!filtered.length) {
+      wrap.innerHTML = `<div class="empty">条件に一致するエラーはありません。</div>`;
+      return;
+    }
+    wrap.innerHTML = `
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th>タイトル</th><th>カテゴリ</th><th>概要</th><th>対策</th><th>ステータス</th><th>作成日</th></tr></thead>
+          <tbody>
+            ${filtered.map((it) => `
+              <tr>
+                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                <td><span class="devdocs-tag">${escapeHtmlForDevDocs(it.category || "未分類")}</span></td>
+                <td>${escapeHtmlForDevDocs(it.summary || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.resolution || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.status || "未対応")}</td>
+                <td>${escapeHtmlForDevDocs(it.createdAt || "")}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
   // カテゴリ・情報源・作成日(公開日)の各プルダウンを、実際に存在する値だけで動的に構築する。
   function populateAiTrendsFilterOptions() {
     const catSel = document.getElementById("ai-trends-filter-category");
@@ -5274,6 +5392,7 @@
     ops: { panel: "appdev-ops", btn: "appdev-stage-btn-ops", render: () => renderAppDevOps() },
     release: { panel: "appdev-release", btn: "appdev-stage-btn-release", render: () => renderAppDevRelease() },
     issueLog: { panel: "appdev-issuelog", btn: "appdev-stage-btn-issuelog", render: () => renderAppDevIssueLog() },
+    errorLog: { panel: "appdev-errorlog", btn: "appdev-stage-btn-errorlog", render: () => renderAppDevErrorLog() },
   };
   function showAppDevStage(stage) {
     Object.entries(APPDEV_STAGES).forEach(([key, cfg]) => {
