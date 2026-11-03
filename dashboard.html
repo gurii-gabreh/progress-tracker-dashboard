@@ -387,6 +387,8 @@
      両方が同じ1つのクラスを見て判定する(applyResearchRowDimState()で一元管理、ルール15:
      その場しのぎでなく共通ロジック化)。 */
   .research-table tr.research-row-dimmed td { opacity: 0.45; background: var(--surface-2); }
+  /* 2026-11-02追加、🤖AI最新情報タブのキーワード列(タグ形式、1件あたり2〜3個) */
+  .rt-keyword-tag { display: inline-block; padding: 2px 7px; margin: 1px 2px 1px 0; border-radius: 10px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-size: 11px; white-space: nowrap; }
   .research-hide-viewed tr.research-row-dimmed { display: none; }
   .research-filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 2px; }
   .research-overview-collapse { margin: 0 0 10px; }
@@ -4471,6 +4473,10 @@
   // A-、data/contest-research.jsonのB-に続くC-)は、このリポジトリ側のdata/ai-trends-ids.json
   // (Claude専用、append-onlyで採番)に永続化し、ここでjoinして表示する。
   let AI_TRENDS_IDS = {};
+  // 2026-11-02追加、ユーザー指示「ServiceNowで調査した記事はキーワード列を追加して表示してほしい」。
+  // AI_TRENDS_IDSと同じ理由(research-items.jsonはActionsが毎回再生成するため直接列を持てない)で、
+  // data/ai-trends-keywords.json(Claude専用、sysId→キーワード配列)を同じパターンでjoinする。
+  let AI_TRENDS_KEYWORDS = {};
   let aiTrendsShowTodayOnly = false;
   let aiTrendsFiltersWired = false;
 
@@ -4484,8 +4490,18 @@
       .catch((err) => { console.error(err); AI_TRENDS_IDS = {}; });
   }
 
+  function loadAiTrendsKeywords() {
+    return fetch("data/ai-trends-keywords.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/ai-trends-keywords.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => { AI_TRENDS_KEYWORDS = data.mapping || {}; })
+      .catch((err) => { console.error(err); AI_TRENDS_KEYWORDS = {}; });
+  }
+
   function loadAiTrendsResearch() {
-    return loadAiTrendsIds().then(() => fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" }))
+    return Promise.all([loadAiTrendsIds(), loadAiTrendsKeywords()]).then(() => fetch(`${AI_TRENDS_URL}?t=${Date.now()}`, { cache: "no-store" }))
       .then((res) => {
         if (!res.ok) throw new Error(`research-items.json の取得に失敗しました(HTTP ${res.status})`);
         return res.json();
@@ -4746,7 +4762,7 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>キーワード</th><th>出典</th></tr></thead>
           <tbody>
             ${items.map((it) => `
               <tr>
@@ -4760,6 +4776,7 @@
                 <td>${escapeHtmlForDevDocs(it.summaryJa || "")}</td>
                 <td>${(it.pointsJa || []).map((p) => `・${escapeHtmlForDevDocs(p)}`).join("<br>")}</td>
                 <td>${escapeHtmlForDevDocs(it.applicableTechJa || "")}</td>
+                <td>${(AI_TRENDS_KEYWORDS[it.sysId] || []).map((k) => `<span class="rt-keyword-tag">${escapeHtmlForDevDocs(k)}</span>`).join(" ") || "—"}</td>
                 <td>${it.sourceUrl ? `<a href="${escapeHtmlForDevDocs(it.sourceUrl)}" target="_blank" rel="noopener">出典 ↗</a>` : ""}</td>
               </tr>`).join("")}
           </tbody>

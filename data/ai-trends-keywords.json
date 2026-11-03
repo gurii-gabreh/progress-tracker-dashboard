@@ -1,0 +1,5 @@
+{
+  "schema": "ai-trends keyword tags mapping v1",
+  "description": "servicenow-sub-agentのdata/research-items.jsonはGitHub Actions(export_research_items.mjs)が毎回sysId単位でマージ再生成するため、研究項目自体にキーワード列を直接持たせると次回の自動実行で消えてしまう(curated/summaryJa/pointsJa/applicableTechJa以外のフィールドは引き継がれない仕様のため)。そのため、ユーザー指示「ServiceNowで調査した記事にキーワード列を追加して表示したい」(2026-11-02)への対応として、data/ai-trends-ids.json(C-連番ID)と同じパターンで、キーワードタグ(1件あたり2〜3個)をこのファイルにsysId単位で永続化し、dashboard.html側でjoinして表示する。過去分(184件)は平日に分解して遡及的に埋める運用、新規分は日次キュレーションルーティン(session_011sXeDkL7GLJJzVs7TBrjgz、trig_011zBuNxpYB52P52yZwZaqsG)内でcurated化と同時に付与する運用(ユーザー指示「過去のものは、平日に分解して対応して、今後のやつは取得処理のルーティン内で実施して」)。",
+  "mapping": {}
+}
