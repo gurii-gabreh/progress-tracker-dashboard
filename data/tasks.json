@@ -6014,6 +6014,32 @@
           "summary": "claude-core-rules.md・ai-config.json両方へ反映完了。各リポジトリへの自動同期はpush後のGitHub Actionsに委ねる。"
         }
       ]
+    },
+    {
+      "id": "PTD-122",
+      "title": "🤖AI最新情報タブへキーワード列を追加",
+      "task": "servicenow-sub-agentの調査記事に2〜3個のキーワードタグを表示する列を追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "日次ルーティン(trig_011zBuNxpYB52P52yZwZaqsG)のプロンプト更新は、そのルーティンの投稿先ルーム(session_011sXeDkL7GLJJzVs7TBrjgz)自身からでないとupdate_triggerできない制約が判明(manager-roomから直接変更不可)。ルール19の中継手順で依頼する方向でユーザー確認待ち。"
+      ],
+      "nextAction": "ルール19の手順(create_trigger→fire_trigger→delete_trigger)でAI最新情報ルームへプロンプト更新を依頼する(ユーザー確認待ち)。184件の過去分バックログのキーワード付けは、平日判定ロジックを入れたプロンプト案は作成済みで、ルーム側へ反映され次第、平日ごとに進んでいく想定。",
+      "note": "ユーザー指示「serviceNowで調査した記事は、キーワード列追加して、そこにキーワードを表示してほしい」(2026-11-02)への対応。表示個数は「2〜3個(タグ形式)」、184件の過去分バックログは「平日に分解して対応」、今後の新規分は「取得処理のルーティン内で実施」とユーザーが回答(AskUserQuestion)。",
+      "detail": "CL-049パターン(research-items.jsonはGitHub Actionsが毎回sysId単位で再生成し、curated/summaryJa/pointsJa/applicableTechJa以外のフィールドを保持しないため、新規フィールドを直接持たせられない)を踏襲し、既存のdata/ai-trends-ids.json(C-連番ID)と同じ分離マッピングファイル方式を採用。data/ai-trends-keywords.json(sysId→キーワード配列、空のmappingで新規作成)を追加。dashboard.htmlにloadAiTrendsKeywords()(loadAiTrendsIdsと同じ形)を追加しloadAiTrendsResearch()のPromise.allに組み込み、renderAiTrendsTable()に「キーワード」列(タグ形式、.rt-keyword-tag CSSクラス)を追加した。node --checkでJS構文確認済み。日次ルーティンのプロンプトへ(a)新規curated項目への2〜3個のキーワード付与、(b)平日(JST月〜金)判定での過去分バックログ10件程度ずつの処理、を追記する案を作成したが、update_triggerがそのルーティンの投稿先ルーム以外からの変更を拒否する制約に当たり、まだ反映できていない。",
+      "output": "data/ai-trends-keywords.json, dashboard.html「キーワード」列",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "ai-trends-keywords.json新設・dashboard.html列追加・JS構文チェック完了。日次ルーティンへのプロンプト反映は制約に当たり未完了。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-02"
