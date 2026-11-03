@@ -1403,6 +1403,52 @@
         ],
         "status": "完了",
         "note": "2026-11-02、①②から抜粋した内容(n=11セキュリティ・n=12認証方法・n=17使用ケース)を今回のタイミングで確定・記入。functionalRequirementsChecklist自体の項目(通知機能の有無)も確定。"
+      },
+      "detailedDesign": {
+        "answers": [
+          {
+            "n": 1,
+            "question": "ソフトウェアユニット(モジュール)への分割とユニットごとの責務定義",
+            "answer": "実装済みコード(ai-labリポジトリ)を根拠に記載。js/common.js(ヘッダー/フッター描画・loadJSON・getQueryParam・escapeHTML・formatDateの共通ユーティリティ)、js/comments.js(submitComment/toggleLike、GAS連携のpostToGas。今回の相談でeditComment/deleteComment(パスワード方式)も追加予定)、js/articles.js(AI最新情報記事一覧・詳細の描画)、js/portfolio.js(作品紹介一覧・詳細の描画)、js/research-feed.js(servicenow-sub-agentのresearch-items.json読み取り専用フィード)、gas/Code.gs(doPost(e)でのaction分岐: addComment/toggleLike、今回の相談でeditComment/deleteComment/logErrorも追加予定)の6ユニットに分割済み。"
+          },
+          {
+            "n": 2,
+            "question": "ユニット内部のアルゴリズム・処理ロジック設計",
+            "answer": "【実装済み】comments.js: isGasUrlConfigured()でGAS_WEBAPP_URLが未確定間はpostToGasがネットワーク呼び出しをスキップし楽観的UI更新のみ行うフォールバック分岐。gas/Code.gs: GitHub Contents APIのread-modify-writeパターンだが実際のcommit呼び出しはTODOのまま未有効化。【今回の相談で確定、未実装】コメント編集・削除: 投稿成功時にランダムなパスワードを自動生成し画面に表示(ユーザーが好きな文字列に変更可能、ブラウザのlocalStorageにも保存して同一端末では自動入力)。投稿から1時間以内のみ編集・削除ボタンを表示し、実行時は必ずパスワード入力を求め、GAS側でパスワード(ハッシュ)が一致するか検証してから実行する(時間制限はサーバー負荷軽減の目的で維持)。エラーログ: JSの例外・fetch失敗時、コンソール出力と同時にGASのlogError actionへ送信し、ai-lab自身のdata/error-log.jsonへ記録する。"
+          },
+          {
+            "n": 3,
+            "question": "ユニット間・外部との詳細インタフェース設計(引数・戻り値・データ形式)",
+            "answer": "【実装済み】comments.js→GAS: POST {action:\"addComment\"|\"toggleLike\", itemId, text|liked}。GAS→GitHub Contents API: GET/PUT。【今回追加、未実装】POST {action:\"editComment\", itemId, commentId, password, newText}、POST {action:\"deleteComment\", itemId, commentId, password}(いずれもGAS側でpasswordのハッシュ照合後に実行、1時間超過時はGAS側でも拒否する)。POST {action:\"logError\", title, category, summary, stack}→ai-lab/data/error-log.jsonへ追記。progress-tracker-dashboard側は選択中アプリのdata/error-log.jsonをraw.githubusercontent.com経由でクロスリポジトリ読み取りするのみで、書き込みは行わない。"
+          },
+          {
+            "n": 4,
+            "question": "データベース/データ構造の詳細設計(物理設計・テーブル定義・クラス図等)",
+            "answer": "data/comments/<itemId>.json: {itemId, comments:[{id(UUID), text, createdAt, passwordHash}]}(今回の相談でpasswordHashフィールドを追加)。data/likes/<itemId>.json: {itemId, count: number}(実装済みのまま)。data/error-log.json(ai-lab自身のリポジトリ、今回新規): [{id, title, category, summary, resolution, status, createdAt}](issueLogと似た構造だが、issueLogは人が記録する開発課題、error-logはシステムが自動記録する実行時エラーという役割の違い)。data/ai-articles.json・data/portfolio.jsonは現状スキーマのみ(空配列)。"
+          },
+          {
+            "n": 5,
+            "question": "画面・帳票の詳細デザイン(基本設計#9の画面・UI設計方針を、具体的なレイアウト・項目まで詳細化)",
+            "answer": "【実装済み】ヘッダー(ロゴ+3項目ナビ+ハンバーガー)、いいねボタン(data-liked属性トグル)、コメントフォーム(送信後prepend+クリア)。【今回追加、未実装】コメント投稿成功時、「編集・削除用パスワード: XXXXXX(保存しておいてください)」という表示+変更用の入力欄を出す。各コメントに編集・削除ボタンを用意し、投稿から1時間以内のみ表示(時間切れ後は非表示)。ボタン押下時は必ず「このパスワードが必要です」というメッセージとパスワード入力欄を表示し、不一致の場合は失敗メッセージを出す。"
+          },
+          {
+            "n": 6,
+            "question": "エラー処理・例外処理の設計方針",
+            "answer": "【実装済み】データ読み込み系(loadJSON、fetchCuratedResearchItems)はtry/catchで例外を握り、失敗時はnull/空配列を返して空状態表示にフォールバック。postToGas失敗時は{ok:false,error}を返すが楽観的UI更新のロールバックは未実装(TODO)。【今回追加、未実装】上記のコンソール出力に加え、GASのlogError actionへ送信してai-lab/data/error-log.jsonへ記録する(ユーザー指摘「通知だけで消えてしまうと後で見返せない」への対応)。progress-tracker-dashboard側は📂開発アプリ一覧の左メニュー、📝課題管理表の下に「🐞エラー一覧」を追加し、タイトル・カテゴリ・概要・対策・ステータス・作成日の列+作成日/カテゴリ/ステータスでの絞り込みフィルタを備えたビューアーとしてクロスリポジトリ表示する。"
+          },
+          {
+            "n": 7,
+            "question": "単体テスト要件(ユニットテストの方針・観点。基本設計#10の結合テスト要件のユニットレベル版)",
+            "answer": "【実装済み】tests/pages.spec.js(各ページ表示確認)、tests/comments.spec.js(いいねトグル・コメント投稿のDOM反映)。Playwright8件、ローカル・CIとも全件パス確認済み。【今回追加分、実装時に追加予定】パスワード編集・削除機能(正しいパスワードで成功・誤ったパスワードで拒否・1時間超過後にボタン非表示になること)、エラーログ記録(logError呼び出し後にdata/error-log.jsonへ反映されること、実際のGAS呼び出しは引き続きGAS_WEBAPP_URL未確定時はスキップされるためモック前提)のテストケースを追加する。"
+          },
+          {
+            "n": 8,
+            "question": "詳細設計の評価基準(ユニット分割・詳細設計が要件定義・基本設計を実現できるかの見極め方。基本設計#11の方式設計評価基準を踏襲)",
+            "answer": "基本設計#11の8点評価基準を継承。加えて、①GAS_WEBAPP_URL未確定時のフォールバックが機能しているか ②正しいパスワードでのみ編集・削除が成功し誤ったパスワードでは拒否されること ③投稿から1時間を超えた編集・削除ボタンが非表示になること ④JSエラー発生時にlogError経由でai-lab/data/error-log.jsonへ記録され、progress-tracker-dashboard側の🐞エラー一覧タブに反映されること、を追加の評価基準とする。"
+          }
+        ],
+        "status": "完了",
+        "note": "2026-11-02、実装済みコード(サブエージェントがバックグラウンドで実装したai-labの初期スキャフォールド)を根拠に基本的な8項目を記入した上で、相談の中で新たに確定した2つの追加機能(①パスワード方式のコメント編集・削除、②エラーログのクロスリポジトリ表示)を反映した。これらの追加機能自体はこの時点ではまだ未実装(スキャフォールド段階)で、別途実装作業が必要。"
       }
     }
   ],
