@@ -1,7 +1,7 @@
 {
   "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json・servicenow-sub-agentのresearch-items.json[日本語要約済みcurated:trueのみ])から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "generatedAt": "2026-11-03T13:37:14Z",
+  "generatedAt": "2026-11-03T13:43:05Z",
   "chunkCount": 484,
   "chunks": [
     {
@@ -94721,8 +94721,8 @@
       "id": "tasks:AIL-001",
       "source": "tasks.json",
       "ref": "ai-lab/AIL-001",
-      "text": "AI Lab(AI技術公開サイト)新規構築\n2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。 2026-11-02、④詳細設計完了(実装済みコード根拠+パスワード方式コメント編集削除・エラーログ機能の追加設計)。 2026-11-03、デザイン設計完了(全8項目)。トップページモックアップ(Claude Design)の内容を反映、ダーク固定方針へ転換。 2026-11-03、⑤テスト完了(全9項目)。test-patterns.jsonへ初めてのパターン6件(TP-001〜006)を登録した。 2026-11-03、⑥運用・保守完了(全8項目)。",
-      "hash": "bbcb6bef79f4065e",
+      "text": "AI Lab(AI技術公開サイト)新規構築\n2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。 2026-11-02、④詳細設計完了(実装済みコード根拠+パスワード方式コメント編集削除・エラーログ機能の追加設計)。 2026-11-03、デザイン設計完了(全8項目)。トップページモックアップ(Claude Design)の内容を反映、ダーク固定方針へ転換。 2026-11-03、⑤テスト完了(全9項目)。test-patterns.jsonへ初めてのパターン6件(TP-001〜006)を登録した。 2026-11-03、⑥運用・保守完了(全8項目)。 2026-11-03、⑦リリース・移行完了(全8項目)。これで①〜⑦の全フェーズの聞き取り・記録が完了した。",
+      "hash": "a8e2661334c77f36",
       "embedding": [
         -0.155382439494133,
         -0.09174135327339172,
