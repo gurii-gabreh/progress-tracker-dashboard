@@ -6064,6 +6064,32 @@
           "summary": "ai-trends-keywords.json新設・dashboard.html列追加・JS構文チェック完了。日次ルーティンへのプロンプト反映は制約に当たり未完了。"
         }
       ]
+    },
+    {
+      "id": "PTD-123",
+      "title": "市場分析フレームワークに「リポジショニング分析」を別途管理で追加",
+      "task": "新規アプリ構想時の市場分析7ステップとは別に、業界・買い手・用途を変えた切り口を洗い出す分析を追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "architecture",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "new-app-kickoffスキル(SKILL.md)側への組み込み(いつ・どう実施するかの手順明記)はまだ未着手。"
+      ],
+      "nextAction": "new-app-kickoffスキルの手順に、このrepositioningAnalysisをいつ実施するか(概念上はSWOT④とSTP⑤の間)を追記するかどうか、ユーザーに確認してから進める。",
+      "note": "ユーザー指摘(2026-11-03)「今の世の中、モノが溢れすぎているから、同じものでも、違う業界、使用場所の違い、ユーザの違いにより、売ることのできる切り口が増えると思う」「戦略的な部分って観点の中になかったような気がする」への対応。既存のmarketAnalysisFramework(①PEST〜⑦カスタマージャーニー)のSTP⑤ポジショニングは単一ターゲットへの位置づけを決める工程であり、複数の切り口を洗い出す工程が無いことを確認。対応案として「既存STPへ統合」と「SWOTとSTPの間に独立ステップとして追加」の2案を提示し、ユーザーは後者(B案)を選択。ただし既存の7ステップの番号(①〜⑦)は振り直さず、別フィールドとして独立管理する方針(ユーザー指示「別途管理としたい」)。",
+      "detail": "data/requirements.jsonに新規トップレベルキー`repositioningAnalysis`を追加(marketAnalysisFrameworkの直後に挿入、既存のmarketAnalysisFramework.steps配列・番号は一切変更していない)。内容はWeb調査で確認したブルーオーシャン戦略の「6つのパス」(代替産業・業界内の戦略グループ・買い手グループ・補完財・機能訴求と感性訴求・時間軸、出典: mba.globis.ac.jp/about_mba/glossary/detail-20788.html 、swingroot.com/six-path-blue-ocean/)をベースに6項目を定義した。designSpecChecklist(PTD-119)で④詳細設計と⑤テストの間に番号なしでデザイン設計を挿入した前例と同じ『別管理・番号非付与』パターンを踏襲(SECI確認: concept-log.jsonはAIエンジニア方向性(AIE-*)6分野向けのログでありmarketAnalysisFramework自体も記録されていないため、今回も同様にrequirements.json側のdescriptionへ経緯を直接記載する形にした、concept-log.jsonへの追記はしていない)。各アプリごとの実施結果の格納先(`requirements[].repositioning`)は定義のみで、実際にnew-app-kickoffフローへ組み込む作業はまだ行っていない。",
+      "output": "data/requirements.json repositioningAnalysis",
+      "relatedTasks": [],
+      "checkHistory": [
+        {
+          "date": "2026-11-03",
+          "summary": "repositioningAnalysis定義(description+6パス)をrequirements.jsonへ追加完了。JSON構文確認済み。new-app-kickoffへの組み込みは未着手。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-03"
