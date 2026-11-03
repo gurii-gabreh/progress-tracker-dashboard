@@ -489,7 +489,8 @@
         "mirai-journal(面談→journals.json)・English-Speaking-App(レッスン→lessons.json)・study-app(受験→history.json/progress.json)は、いずれも①②(体験→記録)まではできているが、③④(過去記録の横断分析・次回への反映)の仕組みが無い(2026-10-05確認)。",
         "このprogress-tracker-dashboard自身のdata/concept-log.json(実装ナレッジの蓄積)も同じ課題を抱えていた。②表出化(蓄積)のみで、実装・提案のたびに過去の記録を組み合わせて活かす③結合の処理が行われていなかった。",
         "対策として、claude-core-rules.mdルール23に『実装・提案前にconcept-log.jsonの関連エントリを確認し、活かした/活かさなかった理由を回答に明記する』を追記。見落とし防止のため、progress-tracker-dashboardの.claude/settings.jsonにPreToolUseフック(Edit|Write発火、.claude/hooks/concept-log-reminder.sh)を設定し、実装・編集のたびに機械的にリマインドする(2026-10-05追加)。",
-        "④内面化はアプリの実装だけでは完結せず、最終的にユーザー自身がその知識を使って行動を変えるかどうかに依存する。アプリ側でできるのは、結合された知識を適切なタイミングで提示するところまで。"
+        "④内面化はアプリの実装だけでは完結せず、最終的にユーザー自身がその知識を使って行動を変えるかどうかに依存する。アプリ側でできるのは、結合された知識を適切なタイミングで提示するところまで。",
+        "【2026-11-02追記・確認対象の拡大】AI Lab(ai-lab)の④詳細設計相談でのユーザー指示を受け、実装前に確認する対象をconcept-log.jsonだけでなく、他アプリのrequirements.json(basicDesign/detailedDesign等、類似機能の実装実績)・関連アプリ自身のdata/error-log.json(存在する場合、過去のエラーと対策)にも拡大した(claude-core-rules.mdルール23)。"
       ]
     },
     "managerRoomDailyLog": {
@@ -1200,8 +1201,8 @@
       "plainText": "通常の回答・質問・相談は、そのまま地の文で書く。"
     },
     "seciModel": {
-      "ref": "data/claude-core-rules.md ルール23(2026-10-05追記)",
-      "summary": "SECIモデル(共同化→表出化→結合→内面化)の観点で、mirai-journal・English-Speaking-App・study-appは①②(体験の記録)までしか実装されておらず、③結合(過去記録の横断分析)・④内面化(次回への反映)の仕組みが無い。progress-tracker-dashboard自身のdata/concept-log.jsonも同様に②表出化のみで③結合が無く、実装・提案前にconcept-log.jsonを確認し活かした/活かさなかった理由を明記する運用と、.claude/settings.jsonのPreToolUseフック(.claude/hooks/concept-log-reminder.sh)による機械的なリマインドを導入した。④内面化はユーザー自身の行動変化に依存するため、実装側で完結させられない点に注意。"
+      "ref": "data/claude-core-rules.md ルール23(2026-10-05追記、2026-11-02追記で確認対象を拡大)",
+      "summary": "SECIモデル(共同化→表出化→結合→内面化)の観点で、mirai-journal・English-Speaking-App・study-appは①②(体験の記録)までしか実装されておらず、③結合(過去記録の横断分析)・④内面化(次回への反映)の仕組みが無い。progress-tracker-dashboard自身のdata/concept-log.jsonも同様に②表出化のみで③結合が無く、実装・提案前にconcept-log.jsonを確認し活かした/活かさなかった理由を明記する運用と、.claude/settings.jsonのPreToolUseフック(.claude/hooks/concept-log-reminder.sh)による機械的なリマインドを導入した。④内面化はユーザー自身の行動変化に依存するため、実装側で完結させられない点に注意。2026-11-02追記: AI Lab(ai-lab)の④詳細設計相談でのユーザー指示により、確認対象をconcept-log.jsonだけでなく、他アプリのrequirements.json(basicDesign/detailedDesign等の実装実績)・関連アプリ自身のdata/error-log.json(存在する場合)にも拡大した。"
     },
     "managerRoomDailyLog": {
       "repo": "gurii-gabreh/progress-tracker-dashboard",

@@ -5983,6 +5983,33 @@
           "summary": "test-patterns.json新設・dashboard.htmlへのビューアー追加・ai-config.json更新・test-kickoffスキル拡張を完了。初期データは空のため、実際のテストパターンはAI Labが⑤テストフェーズに進んだ時に追記される。"
         }
       ]
+    },
+    {
+      "id": "PTD-121",
+      "title": "ルール23の確認対象を他アプリの実績・エラーログへ拡大",
+      "task": "実装・提案前に確認する対象を、concept-log.jsonだけでなく他アプリのrequirements.json(basicDesign/detailedDesign)・関連アプリのdata/error-log.jsonにも広げる運用ルールを追加",
+      "repo": "progress-tracker-dashboard",
+      "category": "architecture",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-02",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "",
+      "note": "AI Lab(ai-lab)の④詳細設計相談で、エラー一覧機能(各アプリ自身のリポジトリにdata/error-log.jsonを持つ設計)を決めた際、ユーザー指示「このアプリ以外にも実装前アプリの過去実績を確認することみたいにしておいてほしい」への対応。governance-config-syncスキルの手順に沿って実施。",
+      "detail": "data/claude-core-rules.mdルール23(2026-10-05 SECI追記)に2026-11-02追記を追加し、確認対象を(1)他アプリのrequirements.json内basicDesign/detailedDesign等(類似機能の実装実績)、(2)関連アプリ自身のdata/error-log.json(存在する場合)にも拡大した。data/ai-config.jsonのweb.seciModel.points・ai.seciModel.summaryの両方に同趣旨を反映。dashboard.htmlは既存キー(seciModel)の内容追加のみのためAI_CONFIG_SECTIONS配列の変更は不要と判断した(governance-config-syncスキル手順5参照)。claude-core-rules.md変更はpush後、sync-claude-md.ymlにより各リポジトリのCLAUDE.mdへ自動反映される。",
+      "output": "data/claude-core-rules.md ルール23, data/ai-config.json (web.seciModel, ai.seciModel)",
+      "relatedTasks": [
+        "AIL-001"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-02",
+          "summary": "claude-core-rules.md・ai-config.json両方へ反映完了。各リポジトリへの自動同期はpush後のGitHub Actionsに委ねる。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-02"
