@@ -6090,7 +6090,40 @@
           "summary": "repositioningAnalysis定義(description+6パス)をrequirements.jsonへ追加完了。JSON構文確認済み。new-app-kickoffへの組み込みは未着手。"
         }
       ]
+    },
+    {
+      "id": "PTD-124",
+      "title": "ServiceNow PDI(dev395932)がリクレーム(自動回収)され再構築対応中",
+      "task": "ServiceNow PDIのOAuth 401連続失敗を調査し、PDIリクレームと判明。新PDIでの再構築を進行中",
+      "repo": "servicenow-sub-agent",
+      "category": "architecture",
+      "priority": "高",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [
+        "servicenow-setup.ymlのdry_run実行で3ジョブ全てがTypeError: fetch failed(接続自体に失敗、401ではない)。SERVICENOW_INSTANCE_URL secretの値が誤っているか未反映の可能性が高く、ユーザーへ正しい新インスタンスのホスト名を確認中(未回答)。",
+        "(今回の件とは別、既知の制約が実際に発生): Anthropic Newsページ(https://www.anthropic.com/news)のHTML構造が変わり、既存の正規表現抽出パターンが一致しなくなった(verify-source-urlsジョブで検出)。README記載の既知の制約(サイト再デプロイで壊れる可能性)が実際に顕在化。対応は別途。"
+      ],
+      "nextAction": "ユーザーから新インスタンスの正しいホスト名を確認し、servicenow-setup.ymlのdry_runを再実行する。",
+      "note": "ユーザー指摘(2026-11-04)「servicenowの調査の件、今動いていない?」をきっかけに調査。servicenow-export-researchワークフローが10/28〜11/4まで7回連続失敗(OAuth 401)、research-items.jsonも10/24を最後に更新停止していたことを確認。ユーザーから「SN側の環境がクリアされている」「今、再度インスタンスセットアップしているから一から作り直し」と報告あり。README「既知の制約」に元々記載されていたPDIリクレームポリシー(90日以上経過+10日間ログイン無しで自動回収、ServiceNowコミュニティ記事で確認)が実際に発生したと判断。",
+      "detail": "README「セットアップ手順」に沿って再構築作業をユーザーと一緒に進行中。手動(ServiceNow UI側)・自動(GitHub Actions)の役割分担を整理して提示: ①テーブルu_ai_research_item新規作成(8フィールド+Choice1〜10)②OAuth Application Registry新規作成(New Inbound Integration Experience > OAuth - Client credentials grant、Auth scopeは未割当のまま進める方針を公式ドキュメント・Google連携ガイドで確認済み)③Scheduled Job新規作成④GitHub Secrets更新、は完了との報告を受けた。OAuthアプリ作成時のグラント有効化システムプロパティ(glide.oauth.inbound.client.credential.grant_type.enabled、Globalスコープ)も設定済み。その後servicenow-setup.ymlをdry_run=trueで実行したところ、ServiceNow接続を要する3ジョブ全てがfetch failed(DNS解決失敗等、HTTPエラーですらない)で失敗。GitHub Actions側の他の20件のHTTPS通信は正常だったため、SERVICENOW_INSTANCE_URL secretの値自体が怪しいと判断し、ユーザーへ正しいホスト名の確認を依頼中(ユーザーの返信が文字化けしており再確認待ち)。",
+      "output": "",
+      "relatedTasks": [
+        "PTD-046",
+        "PTD-047",
+        "PTD-048",
+        "PTD-049",
+        "PTD-050"
+      ],
+      "checkHistory": [
+        {
+          "date": "2026-11-04",
+          "summary": "障害発覚・原因調査(PDIリクレーム)・再構築手順の案内・OAuth/システムプロパティ設定のガイドまで完了。dry_run実行はSERVICENOW_INSTANCE_URLの疑いで失敗、ユーザー確認待ちで中断中。"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-11-03"
+  "updatedAt": "2026-11-04"
 }
