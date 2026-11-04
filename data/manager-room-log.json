@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-04T00:20:00+09:00",
+  "lastProcessedAt": "2026-11-05T00:30:00+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -392,6 +392,25 @@
         "PTD-113のissues: カテゴリ3・4のrawSummary欠落調査、カテゴリ9(Allwork.Space)継続可否の判断",
         "kizashiのtokyo_odh_260アカウントについて、運営側へメンバー脱退を依頼するかどうかは未定(放置で問題ないという結論のため緊急性は無い)",
         "PTD-111〜123はいずれも「対応中」のままユーザーの完了確認待ち(ルール30)"
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "generatedAt": "2026-11-05T00:30:00+09:00",
+      "summary": "【servicenow-sub-agentのServiceNow PDIがリクレーム(自動回収)され再構築対応(PTD-124、新設)】ユーザー「servicenowの調査の件、今動いていない?」をきっかけに調査。servicenow-export-researchワークフロー(日次)が10/28〜11/4まで7回連続で失敗(OAuthトークン取得エラー、HTTP 401 access_denied)しており、data/research-items.jsonも10/24を最後に更新が止まっていたことを確認した。ユーザーから「SN側の環境がクリアされている」「今、再度インスタンスセットアップしているから一から作り直し」との報告があり、README「既知の制約」に元々記載されていたServiceNow PDIのリクレームポリシー(インスタンス作成から90日以上経過+10日間ログイン無しで自動回収、Web調査でもServiceNowコミュニティ記事と一致を確認)が実際に発生したと判断した。\n\nこのリポジトリのREADME「セットアップ手順」に沿って再構築作業をユーザーと一緒に進めた。①テーブル`u_ai_research_item`新規作成(8フィールド+Choice 1〜10)②OAuth Application Registry新規作成③Scheduled Job新規作成④GitHub Secrets更新、を手動(ServiceNow UI側)、REST Message自動作成・YouTube APIキー設定・Scheduled Job同期を自動(GitHub Actions)という役割分担で整理して提示した。②のOAuthアプリ作成では、「New Inbound Integration Experience」の選択、「Provider name」欄の意味、「Auth scope」セクションでの「Allow access only to APIs in selected scope」を**あえて外す**べき理由(チェックしたまま・Auth scope未選択だと認証は通るがどのAPIも呼べなくなるという既知の落とし穴、ServiceNow公式ドキュメント・Google連携ガイドの複数ソースで確認)、Client Credentials grant自体をシステム全体で有効化するシステムプロパティ(`glide.oauth.inbound.client.credential.grant_type.enabled`、Globalスコープ)など、README未記載の細部をWeb調査で都度補いながら実機の画面を見て1ステップずつ案内した。\n\nユーザーが①〜④完了を報告した後、`servicenow-setup.yml`をdry_run=trueで実行したところ、ServiceNow接続を要する3ジョブ全てが`TypeError: fetch failed`(401のような認証エラーではなく、そもそも接続自体に失敗)で失敗した。同じワークフロー内の別ジョブ(認証不要な20件のRSS/API)は正常に通っていたため、GitHub Actions側のネットワークではなく`SERVICENOW_INSTANCE_URL`secretの値そのものが誤っている可能性が高いと判断し、ユーザーへ正しいホスト名の確認を依頼した。ユーザーの返信(\"妻孥更新したけど\")が文字化け(IME誤変換の可能性)しており、再確認を依頼して本日のやり取りは中断している。\n\nあわせて、今回とは無関係の既知の問題も1件見つかった: 「情報源URLの実地検証」ジョブで、Anthropic Newsページ(https://www.anthropic.com/news)のHTML構造が変わっており(CSS Modulesのハッシュ変化ではなく構造自体の変更)、既存の正規表現抽出パターンが一致しなくなっていた。README内で元々「サイト再設計で壊れる可能性がある」と明記されていた既知の制約が実際に顕在化したもので、他の20件は全て正常。SN再構築とは別件として、後日対応することで合意(未着手)。\n\ntasks.jsonへPTD-124(ServiceNow PDIリクレーム対応・再構築、対応中)を新設し、Task-WBS側にも同期した。\n\n【AI技術公開サイト(ai-lab)構想ルーム側の並行作業】CCR全セッション一覧(前日作成のCCRルーム一覧ダッシュボード)を確認したところ、ai-labルームが継続して作業しておりtasks.json/requirements.json/test-patterns.json等への更新がmainへ複数回pushされているのを確認した(manager-room側は関与せず、通常のgit fetch/mergeで追従)。\n\n【定期ルーティン(CLAUDE.md確認・週次Routine健康チェック)】JST 11/4の0時・12時双方のCLAUDE.md定期確認Routineを実行。11/4(水)・11/5(木)ともに祝日でないことを確認済み。claude-core-rules.mdの内容に新たな矛盾は見つからず(ルール19への追記保留は既知・継続監視)。週次ルームログ要約Routineの常駐セッション(session_01DTRNY4tA8x34WyJvQYF9D7)のcontext使用率は23.6%で、70%の切替基準を下回るため対応不要(0時・12時それぞれで確認)。",
+      "unresolvedCarriedOver": [
+        "PTD-124: servicenow-setup.ymlのdry_run再実行待ち。SERVICENOW_INSTANCE_URLの正しい値をユーザーへ再確認中(前回の返信が文字化けし未確認のまま)",
+        "Anthropic Newsページのスクレイピング用正規表現がサイト構造変更で壊れている(SN再構築とは別件、未着手)",
+        "ルール19の既知の不具合リストへ、update_triggerの新しい制約を追記してよいか、ユーザー確認待ち(2026-11-03から継続)",
+        "AI LabトップページのAIらしいビジュアル強化・作成済みアプリ画像の追加の2点は未着手のまま",
+        "AI技術公開サイト(ai-lab)構想ルーム側で、セキュリティ・認証方法・使用ケース3項目を今埋めるか開発着手時まで保留するかの確認待ち(そのルーム自身で回答、manager-room側は踏み込まない)",
+        "CCRルーム一覧で判明した重複セッション(session_01Qg8AMd6VC7CvhzbQ93sjTt)・progress-tracker-dashboard起源の可能性があるセッション(session_01XXySCiFKeZdazYy97NxMim)等、削除対象の最終判断はユーザー待ち",
+        "repositioningAnalysisをnew-app-kickoffスキルの実施フローへ組み込むかどうか、ユーザー確認待ち",
+        "TheToolBus.AIの具体的な使い道(2026-11-01から継続、ユーザー回答待ち)",
+        "academy.openai.com・gitmind.com・viralspy.io等、未許可のままのサイトが複数残っている",
+        "PTD-113のissues: カテゴリ3・4のrawSummary欠落調査、カテゴリ9(Allwork.Space)継続可否の判断",
+        "kizashiのtokyo_odh_260アカウントについて、運営側へメンバー脱退を依頼するかどうかは未定",
+        "PTD-111〜124はいずれも「対応中」のままユーザーの完了確認待ち(ルール30)"
       ]
     }
   ]
