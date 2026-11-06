@@ -3724,7 +3724,7 @@
       "task": "ServiceNowが収集したリサーチデータの閲覧サイト化(日本語要約・日/週/月表示・おすすめ順)",
       "priority": "中",
       "status": "対応中",
-      "updated": "2026-11-04",
+      "updated": "2026-11-06",
       "category": "manual",
       "note": "2026-09-02、ユーザーから「ServiceNowで調査してもらっている内容を日付/週/月ごとに表示できるサイトを作ってほしい。概要が既に明記されていなければ日本語で概要・ポイント・活かせる技術を明記してほしい」との依頼。既存のu_ai_research_item(PTD-046)のu_summaryは各情報源の生の英語要約に過ぎず日本語の概要・ポイント・活かせる技術は無いことを確認した上で、対象範囲・表示件数についてユーザーへ相談(既存2,363件全件を対象に要約する、表示は全件出しつつ好みの分析で上位表示、との回答)。「まずは進めて、要約の部分は現物を見て指摘があればする」との承認を受けて着手。",
       "detail": "【実施内容(2026-09-02)】\n\n(1) servicenow/scripts/export_research_items.mjs: u_ai_research_itemテーブルの全件(2,363件、arXiv 40・Hacker News 99・OpenAI Blog 1,164・Hugging Face Blog 855・Google DeepMind Blog 100・Architecture Weekly 20・ByteByteGo 20・InfoQ 15・MarkTechPost 10・MIT Technology Review AI 10)をTable API経由でページング取得し、data/research-items.jsonへエクスポートするスクリプトを実装。既存の日本語要約(summaryJa/pointsJa/applicableTechJa)は上書きせずマージする設計(Claudeによる手動キュレーションのみが更新する一方向設計)。\n\n(2) .github/workflows/servicenow-export-research.yml: workflow_dispatch+日次cron(00:30 UTC=09:30 JST)。初回実行時、`git diff --quiet`(add前)では新規未追跡ファイルの差分を検出できず「変化なし」と誤判定されコミットがスキップされるバグを発見・修正した(`git add`後に`git diff --cached --quiet`で判定するよう変更。同種のパターンを使うprogress-tracker-dashboard側のbuild-vector-index.ymlは、対象ファイルが既に追跡済みのため今のところこのバグは顕在化していないが、同じ地雷を踏む可能性がある点は要注意としてconcept-log.jsonに記録)。\n\n(3) servicenow/scripts/lib/score_items.mjs: 「おすすめ順」表示用のキーワードベース簡易スコアリング。明示的な評価データ(いいね等)がまだ存在しないため、このプロジェクトで繰り返し重視されてきたキーワード(agent/architecture/MCP/RAG/security/free/Anthropic・Claude等)との一致度で代用。将来的にフィードバック機能が実装されたらそちらを優先するロジックへ差し替える想定。\n\n(4) index.html: data/research-items.jsonをfetchして表示する単一ページビューア。日/週/月のグループ切替、おすすめ順/新着順のソート切替、観点(5分類)フィルタ、要約済み/未要約バッジ、グループごとの折りたたみ+もっと見るページング(初期30件)。.github/workflows/deploy-pages.ymlでGitHub Pagesへ自動デプロイする構成(Study-Schedule/Knowledge-Dashboardと同一パターン)。\n\n(5) 初回キュレーション: 直近(2026-08-31〜09-02公開分)の中から、rawSummaryに実質的な内容がある23件を選び、日本語のsummaryJa・pointsJa(2〜4点)・applicableTechJaを付与(curated:true)。タイトルのみでrawSummaryが空の項目(Hacker Newsのリンク投稿等に多い)は、推測での要約を避けるため今回は対象外とした(CLAUDE.mdルール1・5の「根拠のない情報は含めない」に従った判断)。\n\n(6) ナレッジ化: ユーザーからの追加依頼「このJSONデータをチャンク化してナレッジとして使えるようにして」を受け、progress-tracker-dashboardのscripts/knowledge/build_vector_index.pyに、servicenow-sub-agentのresearch-items.jsonを取得してチャンク化する関数を追加(chunks_from_sn_research_items)。生データ2,000件超をそのまま索引化するとノイズだらけになるため、curated:trueの項目のみをナレッジ化対象にする設計とした(要約が進むにつれてチャンクも自然に増えていく)。",
@@ -3746,9 +3746,17 @@
         {
           "date": "2026-11-04",
           "summary": "追跡確認: servicenow-export-research.ymlはrun#68(2026-11-03実行)も失敗(OAuth 401継続中)。前回(2026-11-02)報告した相談への回答待ちのまま。"
+        },
+        {
+          "date": "2026-11-05",
+          "summary": "追跡確認: manager-room側でOAuth 401の根本原因がServiceNow PDIのリクレーム(自動回収)と判明し、新PDIでの再構築がPTD-124として進行中(ユーザー確認待ちで中断中)と判明。このタスク(PTD-058)・PTD-114から新たに出していた相談はPTD-124に一本化、以後はPTD-124を参照。"
+        },
+        {
+          "date": "2026-11-06",
+          "summary": "追跡確認: servicenow-export-research.ymlがrun#70・71と2回連続成功(OAuth 401解消)。research-items.jsonは更新されたが内容はitemCount=1・全フィールド空欄の1件のみで、実データ収集はまだ本格稼働していない模様。PTD-124側の対応状況に依存。"
         }
       ],
-      "issues": "2026-09-28〜10-11、research-items.jsonへの日次自動pushが14回連続で失敗していた(GitHub Push Protection)。Hacker News(Ask HN)投稿内に含まれていた実在のOpenAIAPIキー形式の文字列(sk-svcacct-〜)が原因と判明し、export_research_items.mjsに自動マスク処理(redactSecrets)を追加して2026-10-11に解消済み(下記checkHistory参照)。\n\n2026-10-25〜継続中(2026-11-02時点も未解消)、ServiceNowからのOAuthトークン発行が`HTTP 401 access_denied/server_error`で拒否され、research-items.jsonへの日次自動収集(servicenow-export-research.yml)が9日連続で失敗中。原因はServiceNow PDI側にあると見られるが未確定。ServiceNow PDI管理コンソールでの確認が必要なためユーザー対応待ち(下記checkHistory参照)。"
+      "issues": "2026-09-28〜10-11、research-items.jsonへの日次自動pushが14回連続で失敗していた(GitHub Push Protection)。Hacker News(Ask HN)投稿内に含まれていた実在のOpenAIAPIキー形式の文字列(sk-svcacct-〜)が原因と判明し、export_research_items.mjsに自動マスク処理(redactSecrets)を追加して2026-10-11に解消済み(下記checkHistory参照)。\n\n2026-10-25〜継続中(2026-11-02時点も未解消)、ServiceNowからのOAuthトークン発行が`HTTP 401 access_denied/server_error`で拒否され、research-items.jsonへの日次自動収集(servicenow-export-research.yml)が9日連続で失敗中。原因はServiceNow PDI側にあると見られるが未確定。ServiceNow PDI管理コンソールでの確認が必要なためユーザー対応待ち(下記checkHistory参照)。\n\n2026-11-05追記: 根本原因はServiceNow PDIのリクレーム(自動回収)と判明(PTD-124参照)。対応はPTD-124に一本化。"
     },
     {
       "repo": "progress-tracker-dashboard",
@@ -5784,7 +5792,7 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "ServiceNow PDI側のOAuth認証失敗(2026-10-25〜継続中、PTD-058参照)についてユーザーに相談・対応を依頼。復旧後、次回Routine実行時に新着キュレーション+ブログ記事作成を再開する。初回実行の完了可否はユーザー確認待ち(ルール30)。",
+      "nextAction": "PTD-124側でのデータ収集(Scheduled Job)の本格稼働を待つ。research-items.jsonに実質的な新着記事が入り次第、キュレーション・ブログ記事作成を再開する。",
       "note": "ユーザー提案「この分析って別ルームでやったほうがいい気がするけどどうかな？今後ブログに乗せる記事は、別にしたほうが埋もれないかな」への対応(2026-10-31)。あわせて「servicenowの収集が終わったら気になる記事を記事用にまとめて保存してほしい」「記事を作成した際に、画像生成プロンプトもクリックでコピーできるようにしてほしい」「本文+画像生成プロンプト+SNS投稿文の3点をまとめて作成してほしい」という一連の指示を1つの日次ルームにまとめて反映した。",
       "detail": "CCRの`create_session`で新しいセッション(session_011sXeDkL7GLJJzVs7TBrjgz、source_url: progress-tracker-dashboard)を作成し、`create_trigger`で日次Routine(trig_011zBuNxpYB52P52yZwZaqsG、cron 45 0 * * * = JST 09:45、servicenow-sub-agentの収集ワークフローservicenow-export-research.yml(JST 09:30完了)の15分後)を自己バインドで設定した。日次の処理内容: ①servicenow-sub-agentのdata/research-items.jsonの未キュレーション項目(対象カテゴリ1,2,3,4,5,6,8,9、カテゴリ10除外)をResearchサブエージェント並列実行で選択的キュレーション(PTD-113と同じ基準・手順) ②新たにcurated:trueになった項目からAIが「特に注目すべき記事」を自動選定(件数の目安なし) ③選定項目ごとにdata/blog-articles.jsonへ記事本文(sections構成、用語解説含む)+画像生成プロンプト(imagePrompt、Geminiでの生成前提。抽象的・概念的表現で実在人物・企業ロゴ・キャラクターを避ける方針)+SNS投稿文案(snsPost.text、インスタ/X向け)の3点を同じタイミングでまとめて作成、の3段階。進捗記録(tasks.json/concept-log.json/credit-log.json)・mainへのマージもこのルーム自身が担当する。README.md「ルームマッピング」にも記録済み。",
       "output": "session_011sXeDkL7GLJJzVs7TBrjgz, trig_011zBuNxpYB52P52yZwZaqsG",
@@ -5804,6 +5812,14 @@
         {
           "date": "2026-11-04",
           "summary": "日次Routine2回目実行。research-items.jsonに新着なし(前回2026-11-02報告時と同じfetchedAt=2026-10-23のまま)、servicenow-export-research.ymlも本日時点でrun#68(2026-11-03実行分)まで失敗継続を確認(GitHub Actions実行履歴で確認)。前回報告した【相談11/03 12:07:38】(ServiceNow PDIのOAuth 401、PTD-058参照)はまだユーザーから回答・対応がなく未解決。新着0件のためステップ2〜4は実施せず。"
+        },
+        {
+          "date": "2026-11-05",
+          "summary": "日次Routine3回目実行。research-items.jsonに新着なし(変化なし)。manager-room側のmanager-room-log.json(2026-11-04分)を確認したところ、原因はServiceNow PDIのリクレーム(自動回収、90日超+10日間ログイン無し)と判明済みで、ユーザーと一緒に新PDIでの再構築作業が進行中(PTD-124、対応中・ユーザー確認待ちで中断中)と分かった。前回までこのルームから出していた相談(ServiceNow PDI確認依頼)はPTD-124の調査で実質的に解消済みのため、以後はPTD-124側の進捗を待つ形とし、このルームから重複した相談は出さない。新着0件のためステップ2〜4は実施せず。"
+        },
+        {
+          "date": "2026-11-06",
+          "summary": "日次Routine4回目実行。servicenow-export-research.ymlがrun#70(11-05)・run#71(11-06)と2回連続成功し、OAuth 401は解消したことを確認(PTD-124の接続修正によると見られる)。ただしresearch-items.jsonはitemCount=1でtitle/rawSummary等が全て空欄の1件のみで、キュレーション可能な新着記事はまだ無い(推測を避け、根拠のある内容がないため今回も見送り)。本格的なデータ収集(RSS/API取得)が稼働しているかはPTD-124(manager-room担当)の対応状況に依存するため、このルームからは編集せず気づいた点のみ記録。"
         }
       ]
     },

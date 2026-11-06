@@ -1,6 +1,6 @@
 {
   "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/time/repo/task/noteを1行ずつ自動追記する(timeはJST・HH:MM形式)。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。【2026-08-20(1)】1日にどれだけ作業したか見た目で分からないという指摘を受け、time列と日別/直近5時間の自動集計を追加。2026-08-19以前の6件は時刻を記録していなかったため、time欄は空(直近5時間の集計には含めない。日別集計には含める)。【2026-08-20(2)】mcp__Claude_Code_Remote__get_sessionが実測の累積トークン数(usage: inputTokens/outputTokens/cacheReadTokens/cacheWriteTokens/costUsd)と、5時間レート制限の正確なリセット時刻(rateLimitResetsAt)を返すことが判明したため、以後のエントリにこの2つを追加。前の行のusageとの差分でタスクごとの消費量を表示し、rateLimitResetsAtが変わった箇所には実測ベースで自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要になった。申告ベースのtype:\"boundary\"も引き続き手動追加は可能)。usage/rateLimitResetsAtが無い過去のエントリは、差分計算・自動仕切りの対象外として「—」表示になる。【2026-10-25】日次ログ処理のステップ9で、2026-07-26〜08-19(本格運用開始の2026-08-19より前)に完了した105件のタスク(PTD-001〜/KIZ-001〜/SPT/GEM/AIR/UST/KND/STU等)がこのファイルに一度も記録されていないことが判明した。この期間は実測usageデータ(get_sessionの累積トークン数)自体が存在せず、架空の数値を書くとルール5(根拠のない情報は回答に含めない)に反するため、遡及記録は行わない方針とした(ユーザー承認済み。測定できないものは記録しなくてよい、という方針)。",
-  "updatedAt": "2026-11-04T00:55:00+00:00",
+  "updatedAt": "2026-11-06T00:55:00+00:00",
   "entries": [
     {
       "date": "2026-08-19",
@@ -997,6 +997,30 @@
         "costUsd": 2189.28183964
       },
       "rateLimitResetsAt": "2026-11-05T04:20:00+09:00"
+    },
+    {
+      "date": "2026-11-05",
+      "time": "09:46",
+      "repo": "progress-tracker-dashboard / servicenow-sub-agent",
+      "task": "PTD-114: 日次Routine3回目実行、ServiceNow OAuth 401の原因がPDIリクレームと判明(manager-room調査、PTD-124参照)",
+      "note": "research-items.jsonに新着なし。manager-room-log.json(2026-11-04分)でOAuth 401の根本原因がServiceNow PDIリクレーム(自動回収)と判明し、新PDIでの再構築がPTD-124として進行中と確認。このルームから出していた相談はPTD-124に一本化し重複相談は停止。キュレーション・記事作成は実施せず。",
+      "usage": null,
+      "rateLimitResetsAt": null
+    },
+    {
+      "date": "2026-11-06",
+      "time": "09:45",
+      "repo": "progress-tracker-dashboard / servicenow-sub-agent",
+      "task": "PTD-114: 日次Routine4回目実行、ServiceNowエクスポート復旧を確認(ただしデータはまだ空)",
+      "note": "GitHub Actions実行履歴確認: servicenow-export-research.ymlがrun#70(2026-11-05)・run#71(2026-11-06)と2回連続成功し、OAuth 401は解消(PTD-124の接続修正が反映されたと推測)。ただしresearch-items.jsonの内容はitemCount=1・title/rawSummary等全て空欄の1件のみで、実質的に新着記事はまだ無い(新PDIのテーブルにテスト行が1件あるだけ)。本格的なデータ収集(RSS/API取得のScheduled Job)が稼働しているかはPTD-124側の対応待ちと見られるため、キュレーション・記事作成は見送り、PTD-114/PTD-058へ記録。PTD-124自体は manager-room担当のため編集せず、気づいた点のみ共有。",
+      "usage": {
+        "inputTokens": 58,
+        "outputTokens": 16301,
+        "cacheReadTokens": 5214114,
+        "cacheWriteTokens": 372069,
+        "costUsd": 2.69560208
+      },
+      "rateLimitResetsAt": "2026-11-06T14:40:00+09:00"
     }
   ]
 }
