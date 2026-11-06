@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-05T00:30:00+09:00",
+  "lastProcessedAt": "2026-11-07T00:30:00+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -401,6 +401,32 @@
       "unresolvedCarriedOver": [
         "PTD-124: servicenow-setup.ymlのdry_run再実行待ち。SERVICENOW_INSTANCE_URLの正しい値をユーザーへ再確認中(前回の返信が文字化けし未確認のまま)",
         "Anthropic Newsページのスクレイピング用正規表現がサイト構造変更で壊れている(SN再構築とは別件、未着手)",
+        "ルール19の既知の不具合リストへ、update_triggerの新しい制約を追記してよいか、ユーザー確認待ち(2026-11-03から継続)",
+        "AI LabトップページのAIらしいビジュアル強化・作成済みアプリ画像の追加の2点は未着手のまま",
+        "AI技術公開サイト(ai-lab)構想ルーム側で、セキュリティ・認証方法・使用ケース3項目を今埋めるか開発着手時まで保留するかの確認待ち(そのルーム自身で回答、manager-room側は踏み込まない)",
+        "CCRルーム一覧で判明した重複セッション(session_01Qg8AMd6VC7CvhzbQ93sjTt)・progress-tracker-dashboard起源の可能性があるセッション(session_01XXySCiFKeZdazYy97NxMim)等、削除対象の最終判断はユーザー待ち",
+        "repositioningAnalysisをnew-app-kickoffスキルの実施フローへ組み込むかどうか、ユーザー確認待ち",
+        "TheToolBus.AIの具体的な使い道(2026-11-01から継続、ユーザー回答待ち)",
+        "academy.openai.com・gitmind.com・viralspy.io等、未許可のままのサイトが複数残っている",
+        "PTD-113のissues: カテゴリ3・4のrawSummary欠落調査、カテゴリ9(Allwork.Space)継続可否の判断",
+        "kizashiのtokyo_odh_260アカウントについて、運営側へメンバー脱退を依頼するかどうかは未定",
+        "PTD-111〜124はいずれも「対応中」のままユーザーの完了確認待ち(ルール30)"
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "generatedAt": "2026-11-06T00:30:00+09:00",
+      "summary": "PTD-124(ServiceNow PDI再構築)の続き。前日の`servicenow-setup.yml`(dry_run=false)本実行が完了しているか確認したところ、\nREST Message自動作成(PTD-048)・YouTube APIキー設定(PTD-089)・Scheduled Jobスクリプト同期(PTD-049)の3ジョブ全てが成功し、\narXiv/Hacker News/Blog RSS19メソッド/Devpost/YouTube4メソッドが実データで作成されたことをジョブログで確認した(唯一の失敗は既知・無関係の\n「情報源URLの実地検証」=Anthropic Newsサイト構造変化)。\n\nユーザーから「その後動いてる？」と確認があり、再構築作業そのもの(セットアップ系)は成功している一方、問題の発生源だった\n日次本体ジョブ`servicenow-export-research.yml`自体は、再構築完了(11/4 16:26 UTC)後まだ1回も実行されていないことが判明した\n(直近の実行は再構築前の11/4 15:52 JSTで、従来通りOAuth 401で失敗)。次回の定時実行(翌日朝)を待つか、今すぐ手動実行するかを\nユーザーへ確認したところで一旦中断。\n\nCLAUDE.md定期確認Routine(JST 12:07発火)を実行。平日・祝日でないことを確認し、12時発火のため作業はスキップ(規定通り、報告不要)。",
+      "unresolvedCarriedOver": [
+        "PTD-124: servicenow-export-research.ymlが再構築後まだ実行されていない状態での確認待ち(11/6に解決: 2回連続成功を確認済み、下記11/6エントリ参照)"
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "generatedAt": "2026-11-07T00:30:00+09:00",
+      "summary": "0時発火のCLAUDE.md定期確認Routineの処理中にワーカープロセス再起動が発生し、一時中断。再開後、週次ルームログ要約Routine\n(session_01DTRNY4tA8x34WyJvQYF9D7)のcontext使用率が23.6%(70%未満)であることを確認し、対応不要と判断した。CLAUDE.md本文に\n変更・矛盾は見つからず「確認済み、問題なし」。\n\nユーザーから「servicenowの処理は動いている？」との確認があり、`servicenow-export-research.yml`の直近2回の定時実行\n(11/5 16:10 JST run#70、11/6 16:10 JST run#71)がいずれも成功していることを確認・報告した。OAuth 401の再発は無く、\nPTD-124のリクレーム対応・再構築は機能的に完了したと判断した。\n\n続けてユーザーから「AI最新情報が一切出てこないけど」との指摘があり調査した。servicenow-sub-agentリポジトリを本セッションへ\nclone・登録し、診断専用ワークフロー`servicenow-check-logs.yml`(読み取り専用、syslogテーブルからScheduled Job「AI Research\nFetcher」のgs.info/gs.errorログを取得)を初めて実行した。結果、Scheduled Job自体は11/5・11/6とも08:01(UTC)に正常実行され\n21情報源から毎回2600件超を処理しているものの、**ほぼ全件が「スキップ(重複/空)」扱いとなり挿入は11/5に1件・11/6は0件のみ**\nだったことが判明した。再構築直後で本来テーブルは空のはずであり、1日目から大半が「重複」として弾かれるのは理屈上おかしいため、\n各記事のURL抽出(`sourceUrl`)がほぼ全件で空になり挿入前の空チェックで弾かれている可能性が高いと報告した(ただし断定はできず、\n現在のログは集計値のみでどの情報源が原因かは不明)。原因特定のため`scheduled_job_ai_research_fetch.js`へ一時的な診断ログ\n(情報源別の件数・サンプル1件のtitle/sourceUrl)を追加する案を提示し、(a)翌日の定時実行を待つか(b)ユーザーがServiceNow側で\n「Execute Now」を今すぐクリックするか、どちらで進めるかを確認したところで会話が一旦止まっている。\n\nこのRoutine自身の日次チェックとして、tasks.json(完了済みでdetail空欄のタスクは無し)・credit-log.json・Task-WBS同期を確認した。\ncredit-log.jsonで、2026-11-02完了のPTD-120(テスト一覧JSON新設)・PTD-121(ルール23確認対象拡大)の2件が未記録だったことが判明し、\n遡及で追記した(以後に別の未記録は無し)。Task-WBS側「各アプリ作成」は、PTD側の全250タスクと突き合わせた結果、欠落・状態不一致は\n無かった(差分なし)。",
+      "unresolvedCarriedOver": [
+        "AI最新情報タブが空の件: Scheduled Job「AI Research Fetcher」が毎日実行はされているが挿入件数がほぼ0件(原因はsourceUrl抽出が全件空になっている可能性が高いが未確定)。診断ログ追加案について、(a)翌日定時実行を待つか(b)ユーザーが今すぐ「Execute Now」するか、ユーザーの回答待ち",
         "ルール19の既知の不具合リストへ、update_triggerの新しい制約を追記してよいか、ユーザー確認待ち(2026-11-03から継続)",
         "AI LabトップページのAIらしいビジュアル強化・作成済みアプリ画像の追加の2点は未着手のまま",
         "AI技術公開サイト(ai-lab)構想ルーム側で、セキュリティ・認証方法・使用ケース3項目を今埋めるか開発着手時まで保留するかの確認待ち(そのルーム自身で回答、manager-room側は踏み込まない)",
