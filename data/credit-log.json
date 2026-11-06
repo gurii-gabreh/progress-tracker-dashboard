@@ -999,6 +999,20 @@
       "rateLimitResetsAt": "2026-11-05T04:20:00+09:00"
     },
     {
+      "date": "2026-11-02",
+      "time": "10:05",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-120: テスト一覧(test-patterns.json)の新設",
+      "note": "2026-11-06の日次Routineで、credit-log.jsonに未記録のまま残っていたことが判明し遡及記録(実測usageデータは無いため記録しない、ルール5)。"
+    },
+    {
+      "date": "2026-11-02",
+      "time": "11:00",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-121: ルール23の確認対象を他アプリの実績・エラーログへ拡大",
+      "note": "2026-11-06の日次Routineで、credit-log.jsonに未記録のまま残っていたことが判明し遡及記録(実測usageデータは無いため記録しない、ルール5)。"
+    },
+    {
       "date": "2026-11-05",
       "time": "09:46",
       "repo": "progress-tracker-dashboard / servicenow-sub-agent",
