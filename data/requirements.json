@@ -1692,7 +1692,7 @@
         },
         {
           "title": "dashboard.htmlの並行編集によるマージコンフリクトが繰り返し発生した",
-          "content": "progress-tracker-dashboardのdashboard.htmlは複数のマネージャールームセッションから同時編集される頻度が高く、サイドバー領域(新しいタブ追加等)で複数回テキスト上の競合が発生した。",
+          "content": "progress-tracker-dashboardのdashboard.htmlは複数のマネージャールームセッションから同時編集される頻度が高く、サイドバー領域で複数回テキスト上の競合が発生した。具体例: (1) こちらが「🧪 テスト一覧」タブを追加する作業中に、別セッションが同じ開発資料サイドバーへ「🔤UI要素名称集」「🗂使用システム一覧」タブを追加しており競合。(2) こちらが「🐞 エラー一覧」ステージを追加する作業中に、別セッションが同じAPPDEV_STAGESマップへ番号無しの「🎨デザイン設計」ステージを追加しており競合。(3) data/tasks.jsonでタスクID(PTD-118/119)が重複(課題#6として別記)。",
           "createdAt": "2026-11-03",
           "status": "解決済み(運用上今後も発生し得る)",
           "resolution": "git fetch/mergeの都度、双方の追加内容(ボタン・パネル・map定義)を破棄せず組み合わせて解決する運用で対応している。恒久的な解決策(編集範囲の分割等)は未検討。"
@@ -1710,6 +1710,55 @@
           "createdAt": "2026-11-07",
           "status": "解決済み",
           "resolution": "API自動生成を見送り、(1)画像未設定時はCSSグラデーション+タイトルテキスト表示にフォールバック、(2)ユーザーがGeminiアプリへ手動でプロンプトを貼り付けて無料生成できるよう、draft.html(記事作成ツール)にプロンプトのコピー機能を実装する方針に変更した(concept-log.json CL-055参照)。"
+        },
+        {
+          "title": "GASの実際のGitHub書き込みが実装当初TODOのまま無効化されていた",
+          "content": "初期スキャフォールド(2026-11-02)時点では、gas/Code.gsのwriteGitHubJsonFile_呼び出しがコメントアウト/TODOのままで、コメント投稿・いいねはクライアント側の楽観的UI更新のみが動作し、実際にはGitHubへ何も保存されない状態だった。",
+          "createdAt": "2026-11-02",
+          "status": "解決済み",
+          "resolution": "GitHub Personal Access Token(Fine-grained、ai-lab限定・Contents: Read and write)の発行完了後の2026-11-03に、全action(addComment/toggleLike/editComment/deleteComment/changePassword/logError)でwriteGitHubJsonFile_の呼び出しを有効化し、書き込み失敗時はok:falseを返すisWriteSuccess_チェックも追加した。"
+        },
+        {
+          "title": "Google Fontsが実際には読み込まれておらず、OS標準フォントで代用表示されていた",
+          "content": "css/style.cssで--font-display(Space Grotesk)/--font-body(Inter)をフォント名として指定していたが、各HTMLに実際に読み込む<link>タグが無く、ブラウザのフォールバック(OS標準)フォントで表示されていた。",
+          "createdAt": "2026-11-03",
+          "status": "解決済み",
+          "resolution": "無料のGoogle Fontsサービスの<link>タグを全ページ(index/articles/article/portfolio/work)のheadへ追加して解決した。"
+        },
+        {
+          "title": "基本設計で確定したライト/ダーク切替仕様が、デザイン設計段階で全面ダーク固定へ覆り手戻りが発生した",
+          "content": "②基本設計(n=9)では「ライト/ダーク両対応(CSS変数+prefers-color-scheme/トグル)」として確定していたが、デザイン設計の相談で、トップページモックアップがダーク固定の配色のみで作られたことを受け、ユーザー指示によりサイト全体をダーク固定とする方針へ転換した。一度確定した仕様が後工程で覆り、CSSのライト用トークン設計が手戻りになった。",
+          "createdAt": "2026-11-02",
+          "status": "解決済み",
+          "resolution": "basicDesign(n=9)に方針転換の経緯を追記し、designSpec(n=6)にも同じ内容をクロスリファレンスとして記録した上で、ライト用トークンを廃止しダーク配色を:rootへ直接定義する実装に統一した(矛盾回避のため両箇所に記録、CLAUDE.mdの矛盾回避ルールに準拠)。"
+        },
+        {
+          "title": "GASの変更(新しいデプロイ)が反映されず、古いバージョンのまま動作確認してしまうことが複数回発生した",
+          "content": "Google Apps Scriptはエディタでコードを保存しただけではWebアプリ側に変更が反映されず、「新しいデプロイ」または「新バージョンとしての再デプロイ」を明示的に行わない限り古いコードのまま動作し続ける仕様(一般的な既知の制約)。これに気づかず、修正したはずのコードが反映されないまま動作確認を進めてしまうことが複数回(UTF-8修正時含む)発生した。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "ユーザーに都度「新しいデプロイ/新バージョンとして再デプロイしたか」を確認し、再デプロイ後のURLでテストし直す運用を徹底した。"
+        },
+        {
+          "title": "ai.google.devが実際にはaistudio.google.comへリダイレクトされており、ネットワーク許可を2段階に分けて追加する必要があった",
+          "content": "Gemini API公式の料金ページを確認しようとai.google.devをセッションのネットワーク許可リストに追加したが、実際には301リダイレクトでaistudio.google.comへ転送される仕様になっており、1回目の許可追加だけではページ内容を取得できなかった。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "リダイレクト先のaistudio.google.comも追加で許可し、公式の料金ページ(画像生成モデルは全てFree Tier「Not available」)を確認できた。"
+        },
+        {
+          "title": "GASの同時書き込み(複数ユーザーが同時にコメント・いいね)時の競合制御が未実装のまま残っている",
+          "content": "複数ユーザーが同時にコメント投稿・いいねを行った場合のGitHub Contents APIのsha競合(409)に対して、現状は自動リトライやロック機構を実装しておらず、isWriteSuccess_がfalseを返してエラー扱いになるのみ。gas/Code.gs冒頭に「TODO(未解決)」として明記されている。",
+          "createdAt": "2026-11-03",
+          "status": "未対応",
+          "resolution": ""
+        },
+        {
+          "title": "postToGas失敗時、楽観的UI更新のロールバックが未実装のまま残っている",
+          "content": "js/comments.jsのsubmitComment/toggleLikeは、GASへのPOST結果を待たずに先にDOM(見た目)を更新する楽観的UI更新方式を採っているが、postToGasがok:falseを返した場合でもDOMの見た目を元に戻す処理が実装されておらず、実際には保存に失敗していても画面上は成功したように見え続ける。detailedDesign(n=6)でTODOとして記載済み。",
+          "createdAt": "2026-11-03",
+          "status": "未対応",
+          "resolution": ""
         }
       ]
     }
