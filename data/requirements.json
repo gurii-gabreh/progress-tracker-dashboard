@@ -1646,7 +1646,72 @@
         ],
         "status": "完了",
         "note": "2026-11-03、release-kickoffスキルの手順に沿って全8項目を記入。新規アプリのため移行関連項目(n=3〜6)は対象外として明記した。これで①要件定義〜⑦リリース・移行の全フェーズが記録完了。"
-      }
+      },
+      "issueLog": [
+        {
+          "title": "GASのUTF-8文字コード不具合(日本語が「?」に変換される)",
+          "content": "doPostでのJSON解析(e.postData.contents直読み)、GitHub書き込み時のUtilities.base64Encode、読み込み時のgetDataAsStringの3箇所で文字コードが未指定だったため、コメント・エラーログの日本語が全て「?」に変換されて保存される不具合が発生した。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "3箇所全てにUTF-8を明示指定(doPost: Utilities.newBlob(e.postData.getBytes()).getDataAsString(\"UTF-8\")、Utilities.base64Encode(str, Utilities.Charset.UTF_8)、getDataAsString(\"UTF-8\"))して解決。詳細はconcept-log.json CL-053参照。"
+        },
+        {
+          "title": "GAS Web AppのPOSTレスポンスをcurlで取得できない(302リダイレクト絡みの誤動作)",
+          "content": "GAS Web AppへのPOSTは302+Location: script.googleusercontent.com...を返す仕様だが、curl -L/--post302/--post303/cookieジャーのいずれを使っても、Googleドライブブランドの誤った405エラーが返り、実際のレスポンスを確認できなかった。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "curl -D - -o /dev/null -X POST ... でLocationヘッダーのみ抽出し、そのURLへ別途GETを発行する2段階方式で確実にレスポンスを取得できることを確認した。"
+        },
+        {
+          "title": "GASが{ok:true}を返すのに、実際にはGitHubへ書き込まれていなかった",
+          "content": "GAS側は成功レスポンスを返していたが、GitHub側に実際のコミットが反映されていなかった。「新バージョンとして未デプロイ」「古いデプロイURLをテストしていた」という2つの誤った仮説を経て、実際にはユーザーが新しいデプロイ(新しいURL)を作成していたにもかかわらず、古いURLでテストし続けていたことが原因と判明した。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "最新のgas/Code.gsを反映した新しいデプロイのURLでテストし直し、GitHubへの実際の書き込みを確認した。"
+        },
+        {
+          "title": "PlaywrightがサンドボックスからPlaywright専用Chromiumを取得できない",
+          "content": "cdn.playwright.devがこのサンドボックス環境からアクセス制限されており、Playwrightの標準Chromiumバイナリをダウンロードできなかった。",
+          "createdAt": "2026-11-02",
+          "status": "解決済み",
+          "resolution": "playwright.config.jsでchromiumプロジェクトにchannel: \"chrome\"を指定し、システムにプリインストール済みのGoogle Chromeを使うよう変更して解決した。"
+        },
+        {
+          "title": "script.google.com / script.googleusercontent.comがネットワーク許可外でGAS実機テストができなかった",
+          "content": "GAS Web Appの実デプロイ後、このセッションのネットワーク許可リストに両ドメインが含まれておらず、実際のAPI呼び出しテストができなかった。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "ユーザーがクラウド環境のネットワーク許可設定に両ドメインを追加し、解決した。"
+        },
+        {
+          "title": "タスクID(PTD-118/119)が並行作業中のマネージャールームと重複した",
+          "content": "test-patterns.json機能用に起票したタスクID(PTD-118)が、ほぼ同時に進行していた別のマネージャールームセッションの作業と重複していた。",
+          "createdAt": "2026-11-03",
+          "status": "解決済み",
+          "resolution": "重複に気づいた時点でPTD-120へ採番し直し、両方のタスクを維持したままマージした。"
+        },
+        {
+          "title": "dashboard.htmlの並行編集によるマージコンフリクトが繰り返し発生した",
+          "content": "progress-tracker-dashboardのdashboard.htmlは複数のマネージャールームセッションから同時編集される頻度が高く、サイドバー領域(新しいタブ追加等)で複数回テキスト上の競合が発生した。",
+          "createdAt": "2026-11-03",
+          "status": "解決済み(運用上今後も発生し得る)",
+          "resolution": "git fetch/mergeの都度、双方の追加内容(ボタン・パネル・map定義)を破棄せず組み合わせて解決する運用で対応している。恒久的な解決策(編集範囲の分割等)は未検討。"
+        },
+        {
+          "title": "AI記事の実データ投入後、Playwrightの空状態テストが実データに依存していたため失敗した",
+          "content": "tests/pages.spec.jsの「記事0件時に空状態メッセージが表示される」テストが、data/ai-articles.jsonが実際に空であることに依存していたため、記事4件を実データとして追加した直後に失敗するようになった。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "page.routeで空配列を返すモックへ変更し、実データの状態に依存しないテストへ修正した(test-patterns.json TP-003/TP-006の教訓を適用)。"
+        },
+        {
+          "title": "Gemini APIの画像生成モデルに無料枠が存在せず、当初のアイキャッチ画像生成方針が使えなかった",
+          "content": "AI技術記事のアイキャッチ画像をGemini APIで自動生成する方針を検討したが、公式ページ(aistudio.google.com/docs/pricing)で確認したところ、画像生成系の全モデルでFree Tierが「Not available」であり、ルール9(永久無料)に抵触することが判明した。",
+          "createdAt": "2026-11-07",
+          "status": "解決済み",
+          "resolution": "API自動生成を見送り、(1)画像未設定時はCSSグラデーション+タイトルテキスト表示にフォールバック、(2)ユーザーがGeminiアプリへ手動でプロンプトを貼り付けて無料生成できるよう、draft.html(記事作成ツール)にプロンプトのコピー機能を実装する方針に変更した(concept-log.json CL-055参照)。"
+        }
+      ]
     }
   ],
   "concerns": {
@@ -2077,5 +2142,5 @@
       }
     ]
   },
-  "updatedAt": "2026-11-03"
+  "updatedAt": "2026-11-07"
 }
