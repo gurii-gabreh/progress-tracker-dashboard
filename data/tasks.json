@@ -5951,6 +5951,143 @@
           "date": "2026-11-07",
           "summary": "記事アイキャッチ画像の方針を確定(CSSグラデーション+タイトル表示、画像生成プロンプトのコピー機能)。Gemini API画像生成に無料枠が無いことを公式ページで確認した上での判断。"
         }
+      ],
+      "subtasks": [
+        {
+          "id": "AIL-002",
+          "repo": "ai-lab",
+          "task": "①要件定義の聞き取り・市場分析",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-02",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-003",
+          "repo": "ai-lab",
+          "task": "②基本設計",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-02",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-004",
+          "repo": "ai-lab",
+          "task": "③機能要件(通知機能・スパム対策)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-02",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-005",
+          "repo": "ai-lab",
+          "task": "④詳細設計(パスワード方式コメント編集削除・エラーログ)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-02",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-006",
+          "repo": "ai-lab",
+          "task": "デザイン設計(配色・フォント・ダーク固定)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-03",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-007",
+          "repo": "ai-lab",
+          "task": "⑤テスト(Playwright15件・test-patterns.json初登録)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-03",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-008",
+          "repo": "ai-lab",
+          "task": "⑥運用・保守",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-03",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-009",
+          "repo": "ai-lab",
+          "task": "⑦リリース・移行",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-03",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-010",
+          "repo": "ai-lab",
+          "task": "GAS実デプロイ・GitHub Token設定・UTF-8文字化けバグ修正",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-07",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-011",
+          "repo": "ai-lab",
+          "task": "GA4計測ID設定",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-07",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-012",
+          "repo": "ai-lab",
+          "task": "AI技術記事4件の実データ投入",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-07",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-013",
+          "repo": "ai-lab",
+          "task": "記事作成ツール(draft.html)のプレビュー機能実装",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-07",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-014",
+          "repo": "ai-lab",
+          "task": "記事アイキャッチ画像の方針確定(CSSグラデーション+Gemini手動プロンプト)",
+          "priority": "高",
+          "status": "完了",
+          "updated": "2026-11-07",
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+        },
+        {
+          "id": "AIL-015",
+          "repo": "ai-lab",
+          "task": "ポートフォリオ作品画像の実装(スクリーンショット+CSS吹き出し)",
+          "priority": "高",
+          "status": "未着手",
+          "updated": "-",
+          "note": "AIL-001のnextActionに記載されている残作業。"
+        },
+        {
+          "id": "AIL-016",
+          "repo": "ai-lab",
+          "task": "トップページヒーロー部の実装(Claude Designモックアップ反映)",
+          "priority": "高",
+          "status": "未着手",
+          "updated": "-",
+          "note": "AIL-001のnextActionに記載されている残作業。"
+        }
       ]
     },
     {
