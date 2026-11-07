@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-07T00:30:00+09:00",
+  "lastProcessedAt": "2026-11-08T00:35:19.237308+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -437,6 +437,17 @@
         "PTD-113のissues: カテゴリ3・4のrawSummary欠落調査、カテゴリ9(Allwork.Space)継続可否の判断",
         "kizashiのtokyo_odh_260アカウントについて、運営側へメンバー脱退を依頼するかどうかは未定",
         "PTD-111〜124はいずれも「対応中」のままユーザーの完了確認待ち(ルール30)"
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "generatedAt": "2026-11-08T00:35:19.237308+09:00",
+      "summary": "【ServiceNow PDI研究データ収集パイプラインの根本解決】前日からの続きで、AI最新情報がほぼ出てこない問題を深掘りした。診断の結果、PDIリクレーム後に再構築されたu_ai_research_itemテーブルにu_category以外の7フィールド(u_title/u_summary/u_source_url/u_source_name/u_published_at/u_fetched_at/u_dedup_key)が存在せず、GlideRecordが存在しないフィールドへの書き込み・検索を黙ってno-opするため、挿入は「成功」扱いでも中身が空、重複チェックも常にヒットしてしまっていたことが判明。ユーザーがServiceNow Studio側で7フィールドを追加し、再検証で解消を確認。あわせて、export_research_items.mjsのマージロジックを「ServiceNow側の最新取得で全置換」から「新規+既存(ServiceNowに無いものは保持)のユニオンマージ」に変更し、今後PDIがリクレームされても過去データが消えない設計にした。診断用に作った一時ワークフロー(check_table_schema.mjs等)は役目を終えて削除。再構築で一時消えていたresearch-items.jsonはgit履歴(6ef1546)から復元済み。\n\n【Felo/Grok経由のX調査パイプライン構築】Felo AI・Grok AIの無料枠でのX(旧Twitter)調査可否を調査(Felo: 無料枠でX Researchを含むAI検索が使い放題、公式APIなし。Grok: 無料で約15メッセージ/2時間のローリング制限、Heavy/Expertモードは有料、画像生成も2026年1月以降有料限定)。ユーザーがFelo/GrokのUIへ直接プロンプトを貼り付けて実行し、結果をこの会話へ貼り付けてもらう手動コピペ方式の調査ルーティンを確立。Felo経由6件・Grok経由7件、計13件をservicenow-sub-agentのdata/research-items.jsonへキュレーション済み項目として追加(コミット176d212・f6f59f7)。あわせてSpec Kit、Claude Code GitHub Actions、hooks、proto_ide、Generative UI(json-render)、Gemini Omni Flash、マルチエージェント運用のコスト・セキュリティパターン等、個別トピックについてユーザーからの多数の質問に順次回答した。\n\n【気になるキーワード・ブログ記事の作成】ユーザー指示「feloとgrokで私の質問した記事については気になるキーワード一覧に記載しておいてくれる？記事も作成しちゃって」を受け、該当9件をprogress-tracker-dashboardのdata/user-preferences.jsonのlikedItemsへ追加(2回に分けてコミット、designated branch経由でmainへマージ済み)。あわせてClaude Code GitHub Actionsについての結論をconcept-log.json CL-054として記録。9件それぞれについて、3つの並列Researchサブエージェントで本文+画像生成プロンプト+SNS投稿文案のブログ記事下書きを作成し、data/blog-articles.json(BLOG-005〜013)へ組み込み、対応するlikedItemsにarticleCreated/articleCreatedAtを付与(HTML実体参照の二重エスケープを発見・修正済み)。\n\n【タスク一覧・課題管理表の仕組みに関する一連のQ&A】「今のルーティング作業はどこ取得してどこに反映しているんだっけ」という質問を皮切りに、tasks.json/requirements.json(issueLog)/error-log.jsonそれぞれの一元管理・分散管理の違い、タスクがtasks.jsonへ書かれる仕組み(自動吸い出しではなく、作業したAI自身がその場の判断で書いている)について、ユーザーと順を追って整理した。この過程で「このセッション自身がやったServiceNow復旧・Felo/Grok調査・ブログ記事作成がtasks.jsonに1件も記録されていない」という実例の抜け漏れが発覚(後述のCLAUDE.md定期確認でも再確認)。また、ai-labのAIL-001タスクのstatusが「未着手」のままなのにcheckHistoryは①〜⑦全フェーズ完了・実装まで進んでいるという食い違いも発見し、ユーザーへ報告済み(修正はルール30によりユーザー確認待ち)。\n\n【開発資料タブへのガントチャートWBS機能の実装】ユーザー相談「今の開発資料にガントチャートのWBSを作成してほしい、今までやった処理も一件ずつのタスクに分けて表示してほしい、課題は課題管理表で確認にしてほしい」を受け、データ所有権の設計(案A: 各アプリのrequirements.jsonへ新規taskLog配列を作る／案B: Task-WBSリポジトリへ直接書く)を相談。最終的に「実装内容はtasks.json、課題は既存のissueLogのまま」「WBS表示先はPTD開発資料タブ内に新規作成」とユーザーが決定し、新しいデータ同期の仕組みは不要と判明(既存のtasks.jsonをそのまま読むだけで足りるため)。期間の表現方法(tasks.jsonにはstart/plannedEndが無いためcheckHistoryの日付から推定)・表示の区切り方(アプリ単位)もAskUserQuestionで確認の上、司令塔(このルーム)が直接実装。開発アプリ一覧の工程メニューに「🗓 WBS」を新設し、renderAppDevWbs()・CSSを実装、Playwrightでai-lab/usage-trackerの2アプリを動作確認した際、一部タスクのupdatedフィールドに入っていたプレースホルダー\"-\"を日付として誤認識するバグを発見・修正(日付形式バリデーションを追加)。commit f63a51c、designated branch経由でmainへマージ済み(a5a5b18)。\n\n【CLAUDE.md定期確認Routine(本日0時台、土曜のため0時・12時両方実行対象)】claude-core-rules.md本文に変更・矛盾は無く「確認済み、問題なし」。ただし上記の通り、本セッション自身の今日の作業がtasks.json/credit-log.jsonに未記録であることが分かり、ユーザーへ報告した(status=完了の設定にはルール30によりユーザー確認が必要なため、この場では書き込まず報告に留めた)。週次ルームログ要約Routineの常駐セッション(session_01DTRNY4tA8x34WyJvQYF9D7)はコンテキスト使用率25.3%で健全、対応不要と判断。\n\n【本Routine(日次マネージャールームログ)によるtasks.json/credit-log.json/Task-WBSの記録漏れチェック】data/tasks.json内で status=完了 かつ detail空欄のタスクは0件、credit-log.jsonの最終記録以降に完了していて未反映の既存タスクも0件で、いずれもクリーン。Task-WBSリポジトリの「各アプリ作成」ノードとPTD側の全250タスク(トップレベル+subtasks)を突き合わせたところ、追加・削除・ステータス不一致いずれも無く完全に一致しており、同期の必要なし。",
+      "unresolvedCarriedOver": [
+        "本セッション自身が今日行った作業(ServiceNow PDI復旧、Felo/Grok経由の調査13件キュレーション、ブログ記事9本作成、開発資料タブへのWBSガントチャート機能実装)をdata/tasks.json(新規タスクとしてdetail/checkHistory付きで)・data/credit-log.jsonへ記録してよいか、ユーザー確認待ち(ルール30によりstatus=完了への設定には事前確認が必要なため)。",
+        "ai-lab(AIL-001)のstatusが「未着手」のままだが、checkHistoryでは①〜⑦全フェーズ完了・実装まで進んでいるという食い違いが見つかっている。実態に合わせて修正してよいか、ユーザー確認待ち。",
+        "ai-labの実装ルームが課題管理表(issueLog)を標準ルールどおり実際に運用できているかの確認を、まだこちらから実施していない(提案のみ済み)。",
+        "開発資料タブのWBS機能について、ユーザーから最初に出ていた「全タスクを一覧表示 vs フィルターで絞り込む」という2つ目の論点は、最終的に「アプリ単位で表示」という回答で解決済みだが、実装後の見た目についてユーザー自身からの最終確認はまだ得られていない。"
       ]
     }
   ]
