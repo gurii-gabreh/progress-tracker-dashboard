@@ -1068,6 +1068,30 @@
       "repo": "ai-lab",
       "task": "AIL-001",
       "note": "記事アイキャッチ画像の方針確定(CSSグラデーション+タイトル、Gemini手動生成プロンプトのコピー機能)。"
+    },
+    {
+      "date": "2026-11-07",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-125: ServiceNow PDI研究データ収集パイプラインのフィールド欠落バグ修正・データ復旧",
+      "note": "過去分の遡及記録(本日のセッション内で実施済みの作業をCLAUDE.md定期確認Routineの指摘を受けて記録)。"
+    },
+    {
+      "date": "2026-11-07",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-126: Felo/Grok経由のX調査ルーティン構築・13件キュレーション",
+      "note": "過去分の遡及記録。"
+    },
+    {
+      "date": "2026-11-07",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-127: 気になるキーワード9件の登録+ブログ記事9本の作成",
+      "note": "過去分の遡及記録。"
+    },
+    {
+      "date": "2026-11-07",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-128: 開発資料タブへのガントチャートWBS機能の新設",
+      "note": "過去分の遡及記録。"
     }
   ]
 }
