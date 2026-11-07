@@ -212,7 +212,7 @@
           "id": "CL-049",
           "concept": "外部パイプラインが定期的にマージ再生成するJSONには、安定IDなど永続化したい独自フィールドを直接追加しない。別ファイルに分離してsysId等のキーでjoinする",
           "context": "2026-11-01、🤖AI最新情報タブに会話参照用の連番ID(No.列)を追加した際(PTD-113)。",
-          "note": "servicenow-sub-agentのdata/research-items.jsonは、GitHub Actions(export_research_items.mjs)がServiceNow側のテーブルから毎回全件取得してsysId単位でマージ再生成する。その際、スクリプトが明示的に引き継ぐと書かれているフィールド(curated/summaryJa/pointsJa/applicableTechJa)以外は`{...normalized, curated, summaryJa, pointsJa, applicableTechJa}`という形で再構築されるため、ここに無い独自フィールド(例: No.列用の連番ID)を直接追加しても次回の自動実行で消えてしまう。この種の『外部プロセスが所有・定期上書きするJSON』に対しては、安定させたい付加情報はそのJSONの中ではなく、Claude/ダッシュボード側が単独で所有する別ファイル(sysId等の共通キーで引けるマッピング)に分離して持たせ、表示時にjoinする設計にすることで、外部プロセスの仕様を一切変更せずに安全に拡張できる。",
+          "note": "servicenow-sub-agentのdata/research-items.jsonは、GitHub Actions(export_research_items.mjs)がServiceNow側のテーブルから毎回全件取得してsysId単位でマージ再生成する。その際、スクリプトが明示的に引き継ぐと書かれているフィールド(curated/summaryJa/pointsJa/applicableTechJa)以外は`{...normalized, curated, summaryJa, pointsJa, applicableTechJa}`という形で再構築されるため、ここに無い独自フィールド(例: No.列用の連番ID)を直接追加しても次回の自動実行で消えてしまう。この種の『外部プロセスが所有・定期上書きするJSON』に対しては、安定させたい付加情報はそのJSONの中ではなく、Claude/ダッシュボード側が単独で所有する別ファイル(sysId等の共通キーで引けるマッピング)に分離して持たせ、表示時にjoinする設計にすることで、外部プロセスの仕様を一切変更せずに安全に拡張できる。\n\n【2026-11-06追記】ServiceNow PDIが期限切れでリクレーム(自動回収)され新インスタンスで再構築された際(PTD-124)、research-items.json自体は(export_research_items.mjsの蓄積方式修正により)旧sysIdを保ったまま復旧できたため、この分離設計のおかげでai-trends-ids.jsonのC-xxxマッピング(184件)は一切壊れず、そのまま有効だった(全184件のsysIdが新データ内にも存在することを確認済み)。ただし、PDI復旧後に新たにcurated:trueになった項目(PTD-124分30件+日次Routine PTD-114分125件、計155件)はC-id未割当のままになっていたため、日次Routineの中で同じ採番ロジック(nextSeqからの連番追記)でまとめて後追い割当した(C-185〜C-339)。",
           "date": "2026-11-01"
         },
         {

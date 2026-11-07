@@ -5792,7 +5792,7 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "PTD-124側でのデータ収集(Scheduled Job)の本格稼働を待つ。research-items.jsonに実質的な新着記事が入り次第、キュレーション・ブログ記事作成を再開する。",
+      "nextAction": "ユーザーにBLOG-003・BLOG-004の内容確認を依頼し、画像生成プロンプトをもとにGemini等で画像を用意してもらう。次回Routineは継続的な新着(本来の日次差分)を対象に通常運転へ移行する想定。",
       "note": "ユーザー提案「この分析って別ルームでやったほうがいい気がするけどどうかな？今後ブログに乗せる記事は、別にしたほうが埋もれないかな」への対応(2026-10-31)。あわせて「servicenowの収集が終わったら気になる記事を記事用にまとめて保存してほしい」「記事を作成した際に、画像生成プロンプトもクリックでコピーできるようにしてほしい」「本文+画像生成プロンプト+SNS投稿文の3点をまとめて作成してほしい」という一連の指示を1つの日次ルームにまとめて反映した。",
       "detail": "CCRの`create_session`で新しいセッション(session_011sXeDkL7GLJJzVs7TBrjgz、source_url: progress-tracker-dashboard)を作成し、`create_trigger`で日次Routine(trig_011zBuNxpYB52P52yZwZaqsG、cron 45 0 * * * = JST 09:45、servicenow-sub-agentの収集ワークフローservicenow-export-research.yml(JST 09:30完了)の15分後)を自己バインドで設定した。日次の処理内容: ①servicenow-sub-agentのdata/research-items.jsonの未キュレーション項目(対象カテゴリ1,2,3,4,5,6,8,9、カテゴリ10除外)をResearchサブエージェント並列実行で選択的キュレーション(PTD-113と同じ基準・手順) ②新たにcurated:trueになった項目からAIが「特に注目すべき記事」を自動選定(件数の目安なし) ③選定項目ごとにdata/blog-articles.jsonへ記事本文(sections構成、用語解説含む)+画像生成プロンプト(imagePrompt、Geminiでの生成前提。抽象的・概念的表現で実在人物・企業ロゴ・キャラクターを避ける方針)+SNS投稿文案(snsPost.text、インスタ/X向け)の3点を同じタイミングでまとめて作成、の3段階。進捗記録(tasks.json/concept-log.json/credit-log.json)・mainへのマージもこのルーム自身が担当する。README.md「ルームマッピング」にも記録済み。",
       "output": "session_011sXeDkL7GLJJzVs7TBrjgz, trig_011zBuNxpYB52P52yZwZaqsG",
@@ -5820,6 +5820,10 @@
         {
           "date": "2026-11-06",
           "summary": "日次Routine4回目実行。servicenow-export-research.ymlがrun#70(11-05)・run#71(11-06)と2回連続成功し、OAuth 401は解消したことを確認(PTD-124の接続修正によると見られる)。ただしresearch-items.jsonはitemCount=1でtitle/rawSummary等が全て空欄の1件のみで、キュレーション可能な新着記事はまだ無い(推測を避け、根拠のある内容がないため今回も見送り)。本格的なデータ収集(RSS/API取得)が稼働しているかはPTD-124(manager-room担当)の対応状況に依存するため、このルームからは編集せず気づいた点のみ記録。"
+        },
+        {
+          "date": "2026-11-06",
+          "summary": "日次Routine5回目実行。PTD-124のServiceNow PDI再構築が完了し、新PDIから初めて新着データ(fetchedAt 2026-11-06、カテゴリ1-9、2599件)が収集されたことを確認。Researchサブエージェント10体を並列実行(各約260件)し、選択的キュレーション基準で125件(約4.8%)を選定、sysId単位で欠落・重複なしを確認した上でservicenow-sub-agentのresearch-items.jsonへ反映・直接main commit(curated 214→339)。あわせて、PDI再構築に伴いai-trends-ids.jsonのC-xxxマッピングに生じていた未割当分(PTD-124分30件+今回125件、計155件)を同じ採番ロジックで後追い割当(C-185〜C-339)。新たにcurated:trueになった項目から2件(①OpenAIのAIエージェントがセキュリティテスト中にサンドボックスを脱出しHugging Faceへ侵入した事案、②AIの『思考の連鎖』を罰すると不正が隠れるだけという研究結果)を特に注目すべき記事として選定し、各Web検索で裏付けを取った上で本文+画像生成プロンプト+SNS投稿文をBLOG-003・BLOG-004としてblog-articles.jsonへ追加(status:draft)。"
         }
       ]
     },
