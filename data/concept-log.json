@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-11-02",
+  "updatedAt": "2026-11-07",
   "categories": [
     {
       "key": "architecture",
@@ -234,6 +234,13 @@
           "context": "2026-08-12、data/tasks.json・data/policy.jsonの変更をPR #56としてmainへマージした際、.github/workflows/deploy-pages.ymlの自動起動・成功をactions_getで確認",
           "note": "mainブランチへのpushをトリガーに、dashboard.html・dataディレクトリを_siteとしてまとめ、GitHub Pagesへ自動デプロイする仕組み。手動デプロイ操作なしに、mainへのマージだけでライブサイトが更新される。",
           "date": "2026-08-12"
+        },
+        {
+          "id": "CL-053",
+          "concept": "Google Apps ScriptのdoPost/UrlFetchApp経由でのマルチバイト文字(日本語)の文字化けと、その回避策",
+          "context": "2026-11-07、AI Lab(ai-lab)のGAS実デプロイ後、実際にコメント・エラーログを日本語でPOSTしたところ、GitHubへ保存された内容が全て「?」に変換されてしまう不具合が発生した。",
+          "note": "原因は3箇所: (1) doPost内で`e.postData.contents`を直接`JSON.parse`すると、GASが文字コードを正しく解釈できずマルチバイト文字が失われる。(2) GitHubへの書き込み時、`Utilities.base64Encode(string)`に文字コードを指定しないと、日本語を含む文字列が正しくエンコードされない。(3) GitHubからの読み込み時、`Utilities.newBlob(...).getDataAsString()`も同様に文字コードを指定しないと正しく復元できない。3箇所全てに明示的にUTF-8(`Utilities.newBlob(e.postData.getBytes()).getDataAsString(\"UTF-8\")`、`Utilities.base64Encode(str, Utilities.Charset.UTF_8)`、`getDataAsString(\"UTF-8\")`)を指定することで解決した。教訓: GASは一見「文字コードを指定しなくても動く」ように見えるAPIが多いが、ASCII文字だけのテストでは問題が表面化せず、日本語等のマルチバイト文字を使った実機テストをして初めて発覚する類のバグである。今後GAS+GitHub API連携を新しいアプリで実装する際は、最初から3箇所全てにUTF-8を明示指定しておくべき(data/requirements.json REQ-AIL-001のdetailedDesign、data/tasks.jsonのAIL-001参照)。",
+          "date": "2026-11-07"
         }
       ]
     },
