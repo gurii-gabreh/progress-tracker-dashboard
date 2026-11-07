@@ -5885,7 +5885,7 @@
       "task": "AI Lab(AI技術公開サイト)新規構築",
       "title": "AI Lab 新規構築",
       "priority": "高",
-      "status": "未着手",
+      "status": "対応中",
       "updated": "2026-11-02",
       "category": "feature",
       "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。 2026-11-02、④詳細設計完了(実装済みコード根拠+パスワード方式コメント編集削除・エラーログ機能の追加設計)。 2026-11-03、デザイン設計完了(全8項目)。トップページモックアップ(Claude Design)の内容を反映、ダーク固定方針へ転換。 2026-11-03、⑤テスト完了(全9項目)。test-patterns.jsonへ初めてのパターン6件(TP-001〜006)を登録した。 2026-11-03、⑥運用・保守完了(全8項目)。 2026-11-03、⑦リリース・移行完了(全8項目)。これで①〜⑦の全フェーズの聞き取り・記録が完了した。 2026-11-07、GAS実デプロイ・GitHub Token設定・GitHub書き込みの実機動作確認が完了。途中、GASのUTF-8文字コード不具合(doPostのe.postData.contents直読み、base64Encode/getDataAsStringの文字コード未指定)を発見・修正した(concept-log.json CL-053参照)。 2026-11-07、GA4計測ID(G-MYKH40KRW1)を全ページへ設定完了。 2026-11-07、servicenow-sub-agentのresearch-items.json(キュレーション済み339件)からスコア上位かつ「実装者視点」に合う4件(MCP/RAG/エージェントの違い、NVIDIA AVOの永続メモリ+スーパーバイザー設計、UberのMCP Gateway事例、OpenClaw 2.0)を選定し、data/ai-articles.jsonへ実記事として追加した。記事投入に伴いtests/pages.spec.jsの空状態テストが実データに依存していた問題が判明し、page.routeでのモック方式に修正(test-patterns.json TP-003/TP-006の教訓を適用)。 2026-11-07、記事プレビュー機能を実装。ユーザー指示「プレビュー押したら、ブログに乗せる記事を出すように変えて」を受け、draft.html(開発用記事作成ツール、ナビ非掲載)でタイトル・概要・本文・参照元URLを入力し、プレビューボタンでlocalStorage経由article.htmlへ渡して本番と完全同一のテンプレート・CSSで表示する方式に実装(保存は別途)。SNS投稿文(X/インスタ)は「下書き」バッジ付きの簡易プレビューを別セクションに用意。Playwrightテスト3件追加、全18件パス。test-patterns.jsonへTP-007として登録。 2026-11-07、記事アイキャッチ画像の方針を確定。Gemini APIの画像生成に無料枠が無いことを公式ページで確認し(concept-log.json CL-055)、ユーザー判断によりAPI課金は行わず、「CSSグラデーション+タイトルテキスト表示(imageUrl未設定時のフォールバック)」を基本とし、画像が欲しい場合はユーザー自身がGeminiアプリへ手動でプロンプトを貼り付けて無料生成する運用とした。draft.html(記事作成ツール)に画像生成プロンプトの入力・コピー機能を実装し、下書きプレビュー画面(article.html?draftPreview=1)側にも同じプロンプトとコピーボタンを表示するようにした。",
@@ -6169,6 +6169,78 @@
         {
           "date": "2026-11-04",
           "summary": "障害発覚・原因調査(PDIリクレーム)・再構築手順の案内・OAuth/システムプロパティ設定のガイドまで完了。dry_run実行はSERVICENOW_INSTANCE_URLの疑いで失敗、ユーザー確認待ちで中断中。"
+        }
+      ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-125",
+      "task": "ServiceNow PDI研究データ収集パイプラインのフィールド欠落バグ修正・データ復旧",
+      "priority": "高",
+      "status": "完了",
+      "updated": "2026-11-07",
+      "nextAction": "",
+      "note": "ユーザー指摘「AI最新情報が一切出てこないけど」への対応。前日(2026-11-06)の調査の続き。",
+      "detail": "PDIリクレーム後に再構築されたu_ai_research_itemテーブルに、u_category以外の7フィールド(u_title/u_summary/u_source_url/u_source_name/u_published_at/u_fetched_at/u_dedup_key)が存在せず、GlideRecordが存在しないフィールドへの書き込み・検索を黙ってno-opするため、挿入は「成功」扱いでも中身が空、重複チェックも常にヒットしてしまっていたことが根本原因と判明。診断専用の一時ワークフロー(check_table_schema.mjs等)で原因を特定し、ユーザーがServiceNow Studio側で7フィールドを追加、再検証で解消を確認(ポスト修正で2657件の正常挿入を確認)。あわせてexport_research_items.mjsのマージロジックを「ServiceNow最新取得で全置換」から「新規+既存(ServiceNowに無いものは保持)のユニオンマージ」に変更し、今後PDIがリクレームされても過去データが消えない設計にした。再構築で一時消えていたresearch-items.jsonはgit履歴(6ef1546)から復元。診断用ワークフローは役目を終えて削除。scheduled_job_ai_research_fetch.jsのヘッダーコメントに今回のインシデントと修正内容を記録(rule24)。",
+      "output": "servicenow-sub-agent: export_research_items.mjs(ユニオンマージ化)、scheduled_job_ai_research_fetch.js(インシデント記録コメント追加)、ServiceNow Studio側のテーブルフィールド追加(7件)",
+      "checkHistory": [
+        {
+          "date": "2026-11-07",
+          "summary": "テーブルのフィールド欠落バグを特定・ユーザーに修正依頼、export_research_items.mjsをユニオンマージ化、復旧後2657件の正常挿入を確認して解決済みとした。"
+        }
+      ]
+    },
+    {
+      "repo": "servicenow-sub-agent",
+      "id": "PTD-126",
+      "task": "Felo/Grok経由のX(旧Twitter)調査ルーティン構築・13件キュレーション",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-07",
+      "nextAction": "継続的に、ユーザーがFelo/GrokのUIへプロンプトを貼り付けて調査→結果を貼り付け→キュレーションという同じ流れを繰り返す運用。",
+      "note": "ユーザー提案「気になるキーワードやよく技術広告で言われているキーワードも発掘できないか」「Xの中から調査するのが良さそう」への対応。",
+      "detail": "Felo AI(無料枠でX Researchを含むAI検索が使い放題、公式APIなし)・Grok AI(無料で約15メッセージ/2時間のローリング制限、Heavy/Expertは有料)の無料枠での利用可否を調査した上で、ユーザーがFelo/GrokのUIへ直接プロンプトを貼り付けて実行し、結果をこの会話へ貼り付けてもらう手動コピペ方式の調査ルーティンを確立した。Felo経由6件・Grok経由7件、計13件をdata/research-items.jsonへキュレーション済み項目(sourceNameに取得元ツールを明記、日本語のsummaryJa/pointsJa/applicableTechJa付き)として追加した(コミット176d212・f6f59f7)。",
+      "output": "servicenow-sub-agent/data/research-items.json(+13件、コミット176d212・f6f59f7)",
+      "checkHistory": [
+        {
+          "date": "2026-11-07",
+          "summary": "Felo経由6件・Grok経由7件、計13件をresearch-items.jsonへキュレーション。手動コピペ方式の継続ルーティンとして確立。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-127",
+      "task": "気になるキーワード9件の登録+ブログ記事9本の作成",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-07",
+      "nextAction": "",
+      "note": "ユーザー指示「feloとgrokで私の質問した記事については気になるキーワード一覧に記載しておいてくれる？記事も作成しちゃって」への対応。",
+      "detail": "会話内でユーザーが実際に深掘りした9件(Spec Kit/Claude Code業務活用/Claude Code GitHub Actions/Xアルゴリズム刷新/マルチエージェント運用/デザイナー向けIDE/Generative UI/Gemini Omni Flash/コスト・セキュリティパターン)を、data/user-preferences.jsonのlikedItemsへ追加(2回に分けてコミット、designated branch経由でmainへマージ済み)。あわせてClaude Code GitHub Actionsについての結論をconcept-log.json CL-054として記録。9件それぞれについて、3つの並列Researchサブエージェントで本文+画像生成プロンプト+SNS投稿文案のブログ記事下書きを作成し、data/blog-articles.json(BLOG-005〜013)へ組み込み、対応するlikedItemsにarticleCreated/articleCreatedAtを付与した(途中、サブエージェント出力のHTML実体参照の二重エスケープ&lt;/&gt;を発見・修正)。",
+      "output": "progress-tracker-dashboard/data/user-preferences.json(+9件)、data/blog-articles.json(BLOG-005〜013)、data/concept-log.json(CL-054)",
+      "checkHistory": [
+        {
+          "date": "2026-11-07",
+          "summary": "likedItems9件登録、concept-log CL-054記録、ブログ記事9本(BLOG-005〜013)作成・組み込み完了。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-128",
+      "task": "開発資料タブへのガントチャートWBS機能の新設",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-07",
+      "nextAction": "",
+      "note": "ユーザー相談「今の開発資料にガントチャートのWBSを作成してほしい、今までやった処理も一件ずつのタスクに分けて表示してほしい、課題は課題管理表で確認にしてほしい」への対応。",
+      "detail": "データ所有権の設計(案A: 各アプリのrequirements.jsonへ新規taskLog配列を作る／案B: Task-WBSリポジトリへ直接書く)をユーザーと相談した結果、「実装内容はtasks.json、課題は既存のissueLogのまま」「WBS表示先はPTD開発資料タブ内に新規作成」と決定し、新しいデータ同期の仕組みは不要と判明(既存のtasks.jsonをそのまま読むだけで足りるため)。期間はtasks.jsonにstart/plannedEndが無いためcheckHistoryの日付から推定する方式、表示はアプリ単位で区切る方式をAskUserQuestionで確認した上で、司令塔(このルーム)が直接実装(単一ファイルへの一連の実装のためサブエージェント化せず)。開発アプリ一覧の工程メニューに「🗓 WBS」を新設し、renderAppDevWbs()・CSSを実装。段階別フロー図と同じく専用データファイルは持たずtasks.jsonから毎回生成する方針(rule23)。Playwrightでai-lab/usage-trackerの2アプリを動作確認した際、一部タスクのupdatedフィールドに入っていたプレースホルダー文字列\"-\"を日付として誤認識するバグを発見・修正(YYYY-MM-DD形式のバリデーションを追加)。",
+      "output": "progress-tracker-dashboard/dashboard.html(renderAppDevWbs()・WBS用CSS追加、コミットf63a51c)",
+      "checkHistory": [
+        {
+          "date": "2026-11-07",
+          "summary": "WBS機能の設計をユーザーと確認の上、実装・Playwright動作確認・バグ修正まで完了、designated branch経由でmainへマージ済み(a5a5b18)。"
         }
       ]
     }
