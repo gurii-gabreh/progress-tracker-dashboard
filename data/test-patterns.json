@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "description": "各管理対象リポジトリでPlaywrightテストを作成する際に蓄積する、使い回せるテスト観点・パターンの一覧(2026-11-02追加、AI Lab(ai-lab)の②基本設計相談時のユーザー指示)。新しいアプリでテストを書く際は、まずここに近いパターンが無いか確認し、無ければ新規パターンとして追記する(test-kickoffスキル参照)。progress-tracker-dashboardのdashboard.html「📄開発資料→🧪テスト一覧」から、どのアプリからでも閲覧できる。",
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-07",
   "patterns": [
     {
       "id": "TP-001",
@@ -86,6 +86,20 @@
         }
       ],
       "addedAt": "2026-11-03"
+    },
+    {
+      "id": "TP-007",
+      "title": "別タブ/別ウィンドウへの受け渡し確認(localStorage経由のプレビュー等)",
+      "category": "UI操作",
+      "description": "フォームの入力内容を保存せずに別タブ(window.open)へ渡し、本番と同じテンプレートで表示するようなプレビュー機能で、入力→別タブ表示→内容一致、を検証する。",
+      "suggestedApproach": "Playwrightの context.waitForEvent('page') でボタンclick後に開く新しいタブを捕捉し、そのページのロケータで入力内容が反映されていることを確認する。",
+      "usedInApps": [
+        {
+          "repo": "ai-lab",
+          "addedAt": "2026-11-07"
+        }
+      ],
+      "addedAt": "2026-11-07"
     }
   ]
 }

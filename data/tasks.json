@@ -5888,7 +5888,7 @@
       "status": "未着手",
       "updated": "2026-11-02",
       "category": "feature",
-      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。 2026-11-02、④詳細設計完了(実装済みコード根拠+パスワード方式コメント編集削除・エラーログ機能の追加設計)。 2026-11-03、デザイン設計完了(全8項目)。トップページモックアップ(Claude Design)の内容を反映、ダーク固定方針へ転換。 2026-11-03、⑤テスト完了(全9項目)。test-patterns.jsonへ初めてのパターン6件(TP-001〜006)を登録した。 2026-11-03、⑥運用・保守完了(全8項目)。 2026-11-03、⑦リリース・移行完了(全8項目)。これで①〜⑦の全フェーズの聞き取り・記録が完了した。 2026-11-07、GAS実デプロイ・GitHub Token設定・GitHub書き込みの実機動作確認が完了。途中、GASのUTF-8文字コード不具合(doPostのe.postData.contents直読み、base64Encode/getDataAsStringの文字コード未指定)を発見・修正した(concept-log.json CL-053参照)。 2026-11-07、GA4計測ID(G-MYKH40KRW1)を全ページへ設定完了。 2026-11-07、servicenow-sub-agentのresearch-items.json(キュレーション済み339件)からスコア上位かつ「実装者視点」に合う4件(MCP/RAG/エージェントの違い、NVIDIA AVOの永続メモリ+スーパーバイザー設計、UberのMCP Gateway事例、OpenClaw 2.0)を選定し、data/ai-articles.jsonへ実記事として追加した。記事投入に伴いtests/pages.spec.jsの空状態テストが実データに依存していた問題が判明し、page.routeでのモック方式に修正(test-patterns.json TP-003/TP-006の教訓を適用)。",
+      "note": "2026-11-02、progress-tracker-dashboardの「🆕 新規相談」フロー(new-app-kickoffスキル)経由の構想ルームで、ユーザーと要件定義(interviewChecklist全17項目、11〜17は未定のまま起票)・市場分析7ステップを実施し、data/requirements.json(REQ-AIL-001)へ記録済み。実装はまだ着手していない。 2026-11-02、②基本設計(全12項目)完了。requirements.json(REQ-AIL-001.basicDesign)へ記録済み。 2026-11-02、③機能要件完了(通知機能の有無を確定、要件定義n=11/12/17も合わせて確定)。requirements.jsonへ記録済み。 2026-11-02、④詳細設計完了(実装済みコード根拠+パスワード方式コメント編集削除・エラーログ機能の追加設計)。 2026-11-03、デザイン設計完了(全8項目)。トップページモックアップ(Claude Design)の内容を反映、ダーク固定方針へ転換。 2026-11-03、⑤テスト完了(全9項目)。test-patterns.jsonへ初めてのパターン6件(TP-001〜006)を登録した。 2026-11-03、⑥運用・保守完了(全8項目)。 2026-11-03、⑦リリース・移行完了(全8項目)。これで①〜⑦の全フェーズの聞き取り・記録が完了した。 2026-11-07、GAS実デプロイ・GitHub Token設定・GitHub書き込みの実機動作確認が完了。途中、GASのUTF-8文字コード不具合(doPostのe.postData.contents直読み、base64Encode/getDataAsStringの文字コード未指定)を発見・修正した(concept-log.json CL-053参照)。 2026-11-07、GA4計測ID(G-MYKH40KRW1)を全ページへ設定完了。 2026-11-07、servicenow-sub-agentのresearch-items.json(キュレーション済み339件)からスコア上位かつ「実装者視点」に合う4件(MCP/RAG/エージェントの違い、NVIDIA AVOの永続メモリ+スーパーバイザー設計、UberのMCP Gateway事例、OpenClaw 2.0)を選定し、data/ai-articles.jsonへ実記事として追加した。記事投入に伴いtests/pages.spec.jsの空状態テストが実データに依存していた問題が判明し、page.routeでのモック方式に修正(test-patterns.json TP-003/TP-006の教訓を適用)。 2026-11-07、記事プレビュー機能を実装。ユーザー指示「プレビュー押したら、ブログに乗せる記事を出すように変えて」を受け、draft.html(開発用記事作成ツール、ナビ非掲載)でタイトル・概要・本文・参照元URLを入力し、プレビューボタンでlocalStorage経由article.htmlへ渡して本番と完全同一のテンプレート・CSSで表示する方式に実装(保存は別途)。SNS投稿文(X/インスタ)は「下書き」バッジ付きの簡易プレビューを別セクションに用意。Playwrightテスト3件追加、全18件パス。test-patterns.jsonへTP-007として登録。",
       "content": [
         "目的: 自分が作成したAI作品の紹介、最新AI技術の紹介。将来的に広告収入・制作手順の販売・個別の有料Lessonで収益化を目指す。",
         "MVP機能: ①プロフィール・サイト紹介 ②AI最新情報の記事一覧(servicenow-sub-agentのresearch-items.jsonを土台にClaudeが実装視点で要約・書き直し) ③作品紹介ページ ④コメント機能 ⑤いいねボタン ⑥X・Instagram拡散用SNS記事作成。",
@@ -5897,7 +5897,7 @@
       ],
       "issues": [],
       "output": "",
-      "nextAction": "記事ごとのアイキャッチ画像(Gemini生成案を検討中、無料枠の確証が取れておらず要相談)、著者プレビュー機能(記事プレビュー=実際のブログ表示そのものを出す方式へ変更、SNS投稿文は下書きプレビュー)の設計・実装、作品画像(スクリーンショット+CSS吹き出し)の用意、トップページヒーロー部の実装を進める。",
+      "nextAction": "記事ごとのアイキャッチ画像(Gemini生成の無料枠に懸念があり要相談)、作品画像(スクリーンショット+CSS吹き出し)の用意、トップページヒーロー部の実装を進める。",
       "checkHistory": [
         {
           "date": "2026-11-02",
@@ -5942,6 +5942,10 @@
         {
           "date": "2026-11-07",
           "summary": "AI技術記事を4件、servicenow-sub-agentの研究データから実装者視点でピックアップして作成・公開した(data/ai-articles.json)。"
+        },
+        {
+          "date": "2026-11-07",
+          "summary": "記事作成ツール(draft.html)にプレビュー機能を実装。公開時と完全同一のテンプレートで下書きを確認できるようにし、SNS投稿文の下書きプレビューも追加した。"
         }
       ]
     },

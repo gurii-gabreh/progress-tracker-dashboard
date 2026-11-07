@@ -1056,6 +1056,12 @@
       "repo": "ai-lab",
       "task": "AIL-001",
       "note": "AI技術記事4件を実データとしてdata/ai-articles.jsonへ追加。servicenow-sub-agentのresearch-items.json(キュレーション済み339件)から選定。"
+    },
+    {
+      "date": "2026-11-07",
+      "repo": "ai-lab",
+      "task": "AIL-001",
+      "note": "記事プレビュー機能(draft.html)を実装。本番article.htmlと同一テンプレートでの下書き表示、SNS投稿文の下書きプレビューを追加。"
     }
   ]
 }
