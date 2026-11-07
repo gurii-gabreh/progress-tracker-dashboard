@@ -100,6 +100,20 @@
         }
       ],
       "addedAt": "2026-11-07"
+    },
+    {
+      "id": "TP-008",
+      "title": "クリップボードコピー機能の動作確認",
+      "category": "UI操作",
+      "description": "「コピー」ボタン押下でテキストが実際にクリップボードへコピーされ、ボタンの表示が「コピーしました」等に変化することを確認する。",
+      "suggestedApproach": "context.grantPermissions(['clipboard-read','clipboard-write'])で権限を付与した上で、ボタンclick後にpage.evaluate(() => navigator.clipboard.readText())で実際の中身を検証する。ボタンのテキスト変化(一定時間後に元に戻る)もtoHaveTextで確認する。",
+      "usedInApps": [
+        {
+          "repo": "ai-lab",
+          "addedAt": "2026-11-07"
+        }
+      ],
+      "addedAt": "2026-11-07"
     }
   ]
 }
