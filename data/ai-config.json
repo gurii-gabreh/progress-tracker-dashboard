@@ -14,7 +14,8 @@
         "【注意】CCR系ツール(get_session/create_trigger等)が理由不明の「承認待ち」で即座にブロックされる場合、.claude/settings.jsonの許可リストのツール名が古い形式(mcp__Claude_Code_Remote__*)のままで、実際の内部ID形式(mcp__<英数字ハイフンID>__*、例: mcp__bf7c680d-...__get_session)と一致していない可能性がある(2026-08-30、PTD-045で判明・修正)。ただしこの内部IDが環境をまたいで固定かは未確認で、別の環境・セッションで再びIDがずれて同じ現象が再発する可能性は否定できない(ここは仮説・未検証)。",
         "【2026-09-06追記・方針転換】CCR worker-room方式は、承認待ちでの停止・休止セッション再起動の手間・複数ルーム同時稼働時の調整不足(ルールの重複追加等)が繰り返し発生しており、現状のままでは信頼して任せ続けられないと判断。段階的に廃止し、別の仕組み(このセッション内のサブエージェント、またはCCX-001のCodex連携)へ移行する方針(ユーザー指摘)。移行完了までの当面の緩和策として、PTD-045で判明した許可リストの修正を他の管理対象リポジトリへも展開する対応を進める。",
         "【2026-10-03追記】Codex(`codex exec`)への委任は、現時点ではこのマネージャールームのコンテナ内でClaudeが必要と判断した都度手動実行する運用(自動振り分けではない)。独立した視点でのWeb調査・レビュー・並行処理で時短になるタスクは委任を検討してよいが、リポジトリ群の経緯理解が前提の実装はClaude側(このルーム/サブエージェント)が担当する。Codex CLIのログイン状態はセッション(コンテナ)限定で恒久化は未着手(CCX-001参照)。",
-        "Codexへの委任の具体例(2026-10-04、mirai-journalのジャーナル分析機能で採用): ユーザーがGemini面談のトランスクリプトをClaudeへ貼り付け→Claudeがcodex execで分析(独立した視点でのレビュー・分析タスク)を委任→Claudeが結果をレビュー→問題なければClaudeが対象リポジトリのJSONへ直接commit、という役割分担。「独立した視点が有効な分析・レビュー作業はCodexに振り、リポジトリの文脈理解やJSON書き込みなど経緯の正確性が必要な最終判断はClaude側が担当する」という、ルール18/CCX-001の委任基準の具体的な適用例。"
+        "Codexへの委任の具体例(2026-10-04、mirai-journalのジャーナル分析機能で採用): ユーザーがGemini面談のトランスクリプトをClaudeへ貼り付け→Claudeがcodex execで分析(独立した視点でのレビュー・分析タスク)を委任→Claudeが結果をレビュー→問題なければClaudeが対象リポジトリのJSONへ直接commit、という役割分担。「独立した視点が有効な分析・レビュー作業はCodexに振り、リポジトリの文脈理解やJSON書き込みなど経緯の正確性が必要な最終判断はClaude側が担当する」という、ルール18/CCX-001の委任基準の具体的な適用例。",
+        "【2026-11-07追記・実装着手前のタスク分解を可視化】ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」への対応。GitHub製Spec Kit(仕様駆動開発フレームワーク)の`/plan`→`/tasks`の考え方を借り、④詳細設計が固まり実装に着手する前に具体的なタスク分解を行い、TaskCreateツールで明示的にタスク化してからTaskUpdateで進捗(in_progress/completed)を更新する運用に変更した(subagent-role-orchestrationスキル参照)。"
       ]
     },
     "consultationFormat": {
@@ -190,7 +191,7 @@
         {
           "name": "subagent-role-orchestration",
           "repo": "gurii-gabreh/progress-tracker-dashboard",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記)。Research/実装/テストはそれぞれ`.claude/agents/research.md`・`implementer.md`・`tester.md`(ツールをRead/Glob/Grep/WebFetch/WebSearch/Bash等に限定した役割定義ファイル)としてsubagent_type指定で起動できる(2026-10-30追記)。ただしこれは役割の型(ツール制限)を定義するだけで、どのタスクを並列化するかの判断は引き続き司令塔が行う(自動並列化機能ではない)。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記)。Research/実装/テストはそれぞれ`.claude/agents/research.md`・`implementer.md`・`tester.md`(ツールをRead/Glob/Grep/WebFetch/WebSearch/Bash等に限定した役割定義ファイル)としてsubagent_type指定で起動できる(2026-10-30追記)。ただしこれは役割の型(ツール制限)を定義するだけで、どのタスクを並列化するかの判断は引き続き司令塔が行う(自動並列化機能ではない)。実装着手前には、GitHub製Spec Kitの`/plan`→`/tasks`の考え方を借りてタスク分解を行い、TaskCreate/TaskUpdateで進捗を可視化する(2026-11-07追記、ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」)。",
           "triggerType": "ai"
         },
         {
@@ -834,7 +835,7 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "path": ".claude/skills/subagent-role-orchestration/SKILL.md",
           "createdAt": "2026-10-26",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記、orchestration.workerRoomDeprecation.codexDelegation.doubleCheckRequirement参照)。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記、orchestration.workerRoomDeprecation.codexDelegation.doubleCheckRequirement参照)。実装着手前には、GitHub製Spec Kitの/plan→/tasksの考え方を借りてタスク分解を行い、TaskCreate/TaskUpdateで進捗を可視化する(2026-11-07追記、ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」)。",
           "triggerType": "ai"
         }
       ],
