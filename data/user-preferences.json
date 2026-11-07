@@ -75,6 +75,70 @@
       "summary": "PR/Issueに@claudeとメンションするとGitHub Actions上でClaudeが自律的にコードレビュー・実装・ドキュメント更新を行う仕組み。トピックとして面白いが、個人運用で既にAIへ直接指示できる環境では明確な利点は薄い(詳細はconcept-log.json CL-054参照)。",
       "url": "",
       "addedAt": "2026-11-07T10:20:51.609132+00:00"
+    },
+    {
+      "id": "x-research-2026-11-07-01",
+      "sourceType": "ai-trend",
+      "title": "Claude Code GitHub Actions + Spec Kitによる仕様駆動開発の実践報告",
+      "summary": "GitHubのSpec Kit(specify→clarify→plan→tasks→implement)とClaude Code GitHub Actionsを組み合わせ、ブラウザのコメント操作だけでアプリを完成させた実践報告。本プロジェクトの①要件定義〜⑦リリースのフェーズ分けと発想が近い。",
+      "url": "",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-2026-11-07-02",
+      "sourceType": "ai-trend",
+      "title": "Claude Codeの業務活用40のコマンド・ワークフロー・Tips(デジライズCEO)",
+      "summary": "Claude Codeを非エンジニアの業務インフラ(ファイル整理・メール/チャット連携・議事録作成・リサーチ自動化)として使う40の活用法。173いいね・1.7Kリポストの反響。",
+      "url": "",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-2026-11-07-05",
+      "sourceType": "ai-trend",
+      "title": "X(旧Twitter)のアルゴリズムがGrok AI主導で刷新",
+      "summary": "XのタイムラインアルゴリズムがGrok AIで全面刷新された話題。Grok AI自体は無料プランでも回数制限付きで利用可能(2時間程度のローリングウィンドウで回復)。",
+      "url": "",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-grok-2026-11-07-01",
+      "sourceType": "ai-trend",
+      "title": "Claude Code中心のSkills/hooks/subagents/MCPを組み合わせたマルチエージェント運用の普及",
+      "summary": "Agent Skillsのオープン仕様化、hooks(PreToolUse等)、MCP、Git worktreeを組み合わせた個人によるマルチエージェント運用の広がり。本プロジェクトのsubagent-role-orchestrationと同じ方向性。",
+      "url": "https://x.com/thedelost/status/2114016386896773177",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-grok-2026-11-07-02",
+      "sourceType": "ai-trend",
+      "title": "デザイナーのコーディングエージェント移行とデザイナー向け専用IDE(proto_ide)の登場",
+      "summary": "デザイナーの3/4がデザインツールではなくコーディングエージェントを使っているという調査を受けた、デザイナー向け専用IDEの発表。",
+      "url": "https://x.com/maayanalbert/status/2118872746415509578",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-grok-2026-11-07-04",
+      "sourceType": "ai-trend",
+      "title": "LLM出力を直接UIに変換する「Generative UI」の本格登場(Vercel AI SDK/json-render)",
+      "summary": "あらかじめ用意したUI部品だけをAIがJSONで組み立てて描画する「Generative UI」。Vercelがjson-renderをOSS公開。",
+      "url": "https://x.com/rauchg/status/2118856239719608353",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-grok-2026-11-07-05",
+      "sourceType": "ai-trend",
+      "title": "Gemini Omni 1.2 Flash(動画生成、コスト30%減)のリリース反応",
+      "summary": "会話形式で段階的に調整できるGoogleの動画生成・編集AI。無料枠は無く、API/アプリとも有料プランが必要。",
+      "url": "https://x.com/Google/status/2118390406316728555",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
+    },
+    {
+      "id": "x-research-grok-2026-11-07-06",
+      "sourceType": "ai-trend",
+      "title": "マルチエージェント運用のコスト管理・セキュリティの実践パターン(役割分担・サンドボックス化)",
+      "summary": "トークンの75%が「古い会話の再読」に消費されていた事例と役割分担によるコスト削減、デスクトップ実行のセキュリティリスクとサンドボックス化への移行予測。本プロジェクトの既存方針を裏付ける外部実例。",
+      "url": "https://x.com/m4lkxx/status/2115775972536434946",
+      "addedAt": "2026-11-07T10:47:26.805893+00:00"
     }
   ],
   "analysis": {
