@@ -6580,7 +6580,7 @@
       const noDateNote = r.range ? "" : `<span class="wbs-gantt-nodata">(日付情報なし)</span>`;
 
       rowsHtml += `
-        <div class="wbs-cal-cell wbs-cal-label${r.depth ? " wbs-cal-label--sub" : ""}" style="grid-column:1; grid-row:${domRow};" title="${escapeHtmlForDevDocs(t.task || "")}"${parentAttr}>
+        <div class="wbs-cal-cell wbs-cal-label${r.depth ? " wbs-cal-label--sub" : ""}" style="grid-column:1; grid-row:${domRow};" title="${escapeHtmlForDevDocs(t.task || "")}"${parentAttr} data-wbs-row-index="${idx}">
           ${toggleHtml}
           <span class="wbs-gantt-id">${escapeHtmlForDevDocs(t.id || "")}</span>
           <span class="wbs-gantt-text">${escapeHtmlForDevDocs(t.task || "")}</span>
@@ -6611,13 +6611,13 @@
         </div>
       </div>`;
 
-    wireWbsToggles(box);
+    wireWbsToggles(box, rows);
   }
 
-  function wireWbsToggles(box) {
+  function wireWbsToggles(box, rows) {
     box.querySelectorAll("[data-wbs-toggle]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        e.stopPropagation(); // ラベル全体のクリック(課題管理表への遷移)を誘発しないようにする
+        e.stopPropagation(); // ラベル全体のクリック(詳細モーダル表示)を誘発しないようにする
         const id = btn.dataset.wbsToggle;
         const collapsed = btn.textContent === "▸";
         btn.textContent = collapsed ? "▾" : "▸";
@@ -6626,12 +6626,49 @@
         });
       });
     });
-    // 2026-11-08追加(ユーザー指示「左のタスク名をクリックしたら課題管理表に飛ぶ」)。
-    // 課題はタスク単位ではなくアプリ単位でissueLogに記録されているため、個別タスクでの絞り込みは
-    // 行わず、同じアプリの📝課題管理表タブへ切り替えるだけに留める。
+    // 2026-11-08変更(ユーザー指示「WBSのタスク名をクリックした際に課題管理表に飛ぶのではなく、
+    // 課題管理表と同じく小ウィンドウを開く仕様にかえて」)。当初は📝課題管理表タブへ切り替える
+    // 仕様だったが、タブ遷移ではなく詳細モーダル表示に変更した。
     box.querySelectorAll(".wbs-cal-label").forEach((label) => {
-      label.addEventListener("click", () => showAppDevStage("issueLog"));
+      label.addEventListener("click", () => {
+        const row = rows[Number(label.dataset.wbsRowIndex)];
+        if (row) showWbsTaskDetailModal(row.task);
+      });
     });
+  }
+
+  // 課題管理表のshowIssueLogDetailModalと同じmodal-overlay/modal-box/modal-header/modal-body
+  // パターンを再利用する(rule23)。タスクの経緯(checkHistory)・最終方針は、開発資料タブの
+  // 他の箇所(devDocsBulletsFromCheckHistory/devDocsConclusionText)と同じ表示ロジックを使う。
+  function showWbsTaskDetailModal(task) {
+    const root = document.getElementById("modal-root");
+    if (!root || !task) return;
+    const bullets = devDocsBulletsFromCheckHistory(task);
+    const bulletsHtml = bullets.length
+      ? `<ul class="bullets">${bullets.map((b) => `<li>${escapeHtmlForDevDocs(b)}</li>`).join("")}</ul>`
+      : `<p class="empty">経緯の記録はまだありません。</p>`;
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>${escapeHtmlForDevDocs(task.task || "")}</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <p><b>ID:</b> ${escapeHtmlForDevDocs(task.id || "")}</p>
+            <p><b>ステータス:</b> ${escapeHtmlForDevDocs(task.status || "")}</p>
+            <p><b>優先度:</b> ${escapeHtmlForDevDocs(task.priority || "")}</p>
+            <p><b>最終更新日:</b> ${escapeHtmlForDevDocs(task.updated || "")}</p>
+            <p><b>経緯:</b></p>
+            ${bulletsHtml}
+            <p><b>最終方針:</b><br>${escapeHtmlForDevDocs(devDocsConclusionText(task))}</p>
+            ${task.note ? `<p><b>備考:</b><br>${escapeHtmlForDevDocs(task.note)}</p>` : ""}
+          </div>
+        </div>
+      </div>`;
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => { if (e.target.id === "modal-overlay") closeModal(); });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
   }
 
   function devDocsBulletsFromCheckHistory(task) {
