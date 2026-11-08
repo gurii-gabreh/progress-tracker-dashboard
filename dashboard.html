@@ -458,6 +458,13 @@
   .wbs-cal-wrap { overflow: auto; max-height: 65vh; border: 1px solid var(--border); border-radius: 8px; }
   .wbs-cal-grid { --wbs-label-w: 230px; --wbs-day-w: 22px; --wbs-head-row-h: 20px; display: grid; position: relative; }
   .wbs-cal-cell { min-width: 0; }
+  /* 2026-11-08追加(ユーザー指示「WBSのタイトル欄の左右の幅は、ドラッグで調整できるように」)。
+     ラベル列(--wbs-label-w)の右端にドラッグ用のハンドルを重ねる。ハンドル自体は
+     position:sticky; left:0で常にラベル列の右端に追従させ(.wbs-cal-label/.wbs-cal-corner
+     と同じ仕組み)、横スクロール中もハンドルの位置がずれないようにしている。 */
+  .wbs-cal-resize-track { grid-column: 1; grid-row: 1 / -1; position: sticky; left: 0; width: var(--wbs-label-w); z-index: 5; pointer-events: none; }
+  .wbs-cal-resize-handle { position: absolute; top: 0; bottom: 0; right: -3px; width: 6px; cursor: col-resize; pointer-events: auto; }
+  .wbs-cal-resize-handle:hover, .wbs-cal-resize-handle.is-dragging { background: var(--accent); opacity: 0.5; }
   .wbs-cal-head {
     font-size: 9.5px; text-align: center; color: var(--text-muted); background: var(--surface);
     height: var(--wbs-head-row-h); line-height: var(--wbs-head-row-h);
@@ -6511,7 +6518,11 @@
     const days = wbsDateRangeList(minDate, maxDate);
     const dayIndex = new Map(days.map((d, i) => [d, i]));
     const totalRows = 3 + rows.length;
-    const gridStyle = `grid-template-columns: var(--wbs-label-w) repeat(${days.length}, var(--wbs-day-w)); grid-template-rows: repeat(${totalRows}, auto);`;
+    // 前回ドラッグで調整した幅をlocalStorageから復元する(2026-11-08追加)。
+    let savedLabelWidth = null;
+    try { savedLabelWidth = localStorage.getItem("wbsLabelWidthPx"); } catch (err) { /* noop */ }
+    const labelWidthOverride = savedLabelWidth ? ` --wbs-label-w: ${savedLabelWidth}px;` : "";
+    const gridStyle = `grid-template-columns: var(--wbs-label-w) repeat(${days.length}, var(--wbs-day-w)); grid-template-rows: repeat(${totalRows}, auto);${labelWidthOverride}`;
 
     // 月ごとに交互のa/bを割り当てる(2026-11-08追加)。月行自身と、その月に属する日付行・曜日行の
     // ヘッダーセルへ同じa/bクラスを与えることで「月の行と、それに関わる日付欄を同じ色で塗り潰す」
@@ -6608,10 +6619,49 @@
           ${headHtmlRows}
           ${cornerHtmlRows}
           ${rowsHtml}
+          <div class="wbs-cal-resize-track"><div class="wbs-cal-resize-handle" id="wbs-cal-resize-handle" title="ドラッグして幅を調整"></div></div>
         </div>
       </div>`;
 
     wireWbsToggles(box, rows);
+    wireWbsResize(box);
+  }
+
+  // 2026-11-08追加(ユーザー指示「WBSのタイトル欄の左右の幅は、ドラッグで調整できるように」)。
+  // ハンドルのドラッグ量ぶん--wbs-label-wを書き換える。幅はlocalStorageへ保存し、次回表示時
+  // (renderAppDevWbsの再読み込み時)にも復元する。
+  function wireWbsResize(box) {
+    const grid = box.querySelector(".wbs-cal-grid");
+    const handle = box.querySelector("#wbs-cal-resize-handle");
+    if (!grid || !handle) return;
+    const MIN_W = 120;
+    const MAX_W = 480;
+    let startX = 0;
+    let startWidth = 0;
+
+    function onMove(e) {
+      const newWidth = Math.min(MAX_W, Math.max(MIN_W, startWidth + (e.clientX - startX)));
+      grid.style.setProperty("--wbs-label-w", `${newWidth}px`);
+    }
+    function onUp() {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+      handle.classList.remove("is-dragging");
+      document.body.style.userSelect = "";
+      const finalWidth = parseInt(getComputedStyle(grid).getPropertyValue("--wbs-label-w"), 10);
+      if (finalWidth) {
+        try { localStorage.setItem("wbsLabelWidthPx", String(finalWidth)); } catch (err) { /* noop */ }
+      }
+    }
+    handle.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      startX = e.clientX;
+      startWidth = parseInt(getComputedStyle(grid).getPropertyValue("--wbs-label-w"), 10) || 230;
+      handle.classList.add("is-dragging");
+      document.body.style.userSelect = "none";
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    });
   }
 
   function wireWbsToggles(box, rows) {
