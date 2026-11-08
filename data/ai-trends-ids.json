@@ -1,7 +1,7 @@
 {
   "schema": "ai-trends sequential ID mapping v1",
   "description": "servicenow-sub-agentのdata/research-items.jsonはGitHub Actions(export_research_items.mjs)が毎回sysId単位でマージ再生成するため、research-items.json自身にNo.列を直接持たせると次回の自動実行で消えてしまう(curated/summaryJa/pointsJa/applicableTechJa以外のフィールドは引き継がれない仕様のため)。そのため、会話で参照するための連番ID(data/hackathon-research.jsonのA-、data/contest-research.jsonのB-に続く3番目のID体系としてC-を使用)は、このprogress-tracker-dashboard側のファイルに永続化する。新しくcurated:trueになった項目が見つかるたびにnextSeqから採番してmappingへ追記し、既存の割り当ては変更しない(append-only)。",
-  "nextSeq": 340,
+  "nextSeq": 353,
   "mapping": {
     "71c8b78e93838750043532edfaba10dd": "C-001",
     "f5c8b78e93838750043532edfaba10dc": "C-002",
@@ -341,6 +341,19 @@
     "cdc47243c3589710cfcfbd43e4013198": "C-336",
     "d5c47243c3589710cfcfbd43e40131b9": "C-337",
     "38c47243c3589710cfcfbd43e401310b": "C-338",
-    "fcc47243c3589710cfcfbd43e4013109": "C-339"
+    "fcc47243c3589710cfcfbd43e4013109": "C-339",
+    "x-research-grok-2026-11-07-01": "C-340",
+    "x-research-grok-2026-11-07-02": "C-341",
+    "x-research-grok-2026-11-07-03": "C-342",
+    "x-research-grok-2026-11-07-04": "C-343",
+    "x-research-grok-2026-11-07-05": "C-344",
+    "x-research-grok-2026-11-07-06": "C-345",
+    "x-research-grok-2026-11-07-07": "C-346",
+    "x-research-2026-11-07-01": "C-347",
+    "x-research-2026-11-07-02": "C-348",
+    "x-research-2026-11-07-03": "C-349",
+    "x-research-2026-11-07-04": "C-350",
+    "x-research-2026-11-07-05": "C-351",
+    "x-research-2026-11-07-06": "C-352"
   }
 }
