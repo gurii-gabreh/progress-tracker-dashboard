@@ -618,7 +618,61 @@
       "snsPost": {
         "text": "動画生成AIに「もう少しカメラ引いて」って話しかけるだけで直せる時代🎬✨ でも無料では使えないので要注意⚠️ 詳しくはブログで📝"
       }
+    },
+    {
+      "id": "BLOG-014",
+      "sourceItemId": "x-research-grok-2026-11-07-07",
+      "sourceTitle": "Anthropic's RSI Scorecard / Anthropic says Claude now writes over 80% of its code",
+      "sourceUrl": "https://shellypalmer.com/2026/09/anthropics-rsi-scorecard/",
+      "title": "「AIが自分自身の開発を加速させている」は本当か？ Anthropicが公開したデータを見る",
+      "status": "draft",
+      "createdAt": "2026-11-07",
+      "publishedAt": null,
+      "wordpressUrl": null,
+      "sections": [
+        {
+          "type": "html",
+          "note": "導入〜公開されている数字",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<p>「AIが、AI自身の開発を加速させている」――SNS上で話題になっていたこの話、実際にAnthropic自身が公開しているデータを確認してみると、かなり具体的な数字が出てきました。</p>\n\n<h2>Anthropicが公表している数字</h2>\n<p>Anthropicの報告によると、2026年第2四半期(Q2)の開発者は、コーディング用AIエージェントが無かった頃と比べて約8倍のコード量を生み出しているとされています。また、2026年5月時点で、Anthropicのシステムにマージされているコードの80%以上がClaudeによって書かれたものだと説明されています。</p>\n<p>さらに、「AIの力でAI自身の学習(トレーニング)コードを速くする」という社内テストでは、2025年5月のClaude Opus 4が約3倍の高速化だったのに対し、2026年4月の「Mythos Preview」というモデルでは約52倍まで高速化が進んだと報告されています。</p>\n\n</div>"
+        },
+        {
+          "type": "image-placeholder",
+          "note": "AIが自分自身を改良していくイメージ画像",
+          "imagePrompt": "螺旋状に重なるギアやネットワーク状のノードが、内側から外側へ向かって自己増殖的に広がっていく様子を描いた、抽象的でミニマルなデジタルアート。中心の光が少しずつ強く・速くなっていく進行感を表現する。配色は紫と青を基調にした落ち着いたトーン。実在の企業ロゴ・キャラクター・人物は描かない。背景はシンプルなグラデーション。"
+        },
+        {
+          "type": "html",
+          "note": "再帰的自己改善の現状〜慎重な見方",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>「AIの研究開発をAI自身が担う割合」も増えている</h2>\n<p>Anthropicが後日公表した別の集計(RSIスコアカード)によると、2026年2月時点でClaudeが主導していたAnthropic社内のAI研究開発(R&D)業務の割合は1%未満でしたが、8月時点では26%まで増えているとされています。また、AIが安定して続けられる作業の長さ(タスクの長さ)は、おおよそ4ヶ月ごとに2倍になっているとも報告されています。</p>\n\n<h2>では「再帰的自己改善」はもう起きている？</h2>\n<p>ここで気になるのが、「AIがAI自身を改良し続け、その改良がさらに次の改良を加速させる」という、いわゆる再帰的自己改善(RSI)がもう始まっているのか、という点です。これについてAnthropicは「まだ到達していない」と明言しています。現時点では、目標を決めるのも、結果を評価するのも、どの研究方向に進むかを判断するのも、依然として人間が担っているという立場です。</p>\n<p>ただし、2026年11月2日付でAnthropicが米証券取引委員会(SEC)に提出した書類では、将来のモデルが「進歩が劇的に加速する」社内の基準(しきい値)に達する可能性があると警告しており、現時点のどのモデルもその基準を超えたとは認定していない、とされています。</p>\n\n<h2>数字を読むときの注意点</h2>\n<p>一方で、この報告には批判的な指摘もあります。コード量やR&D主導割合が増えた背景には、AIによる「自己改善の効果」だけでなく、単純な計算資源(コンピュート)の増加やデータ量の増加、人間の研究者自身の工夫といった要因も混ざっているはずですが、報告ではそれぞれの影響がどの程度なのかを分解して示していない、という指摘です。「AIが加速している」という見出しだけを鵜呑みにせず、どの数字が何を測っているのかを確認する姿勢が大切だと言えそうです。</p>\n\n</div>"
+        },
+        {
+          "type": "html",
+          "note": "用語解説",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<hr>\n<h3>用語解説</h3>\n<ul>\n<li><strong>再帰的自己改善(RSI, Recursive Self-Improvement)</strong>: AIが自分自身を改良し、その改良によってさらに次の改良がしやすくなる、という循環が続いていく状態のこと。AI安全性の議論でよく取り上げられる概念。</li>\n<li><strong>コーディングエージェント</strong>: 人間に代わって実際にコードを書いたり実行したりするAIのこと(本プロジェクトで使っているClaude Code等もこの一種)。</li>\n<li><strong>SEC(米証券取引委員会)への提出書類</strong>: 米国の上場企業・大企業が、投資家向けに自社の事業リスクなどを開示するために提出する公的な文書。</li>\n<li><strong>コンピュート</strong>: AIの学習・実行に使われる計算資源(GPU等のハードウェアリソース)のこと。</li>\n</ul>\n</div>"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Anthropic says Claude now writes over 90% of its code and wants the world to have an AI pause button (The Decoder)",
+          "url": "https://the-decoder.com/anthropic-says-claude-now-writes-over-90-of-its-code-and-wants-the-world-to-have-an-ai-pause-button/"
+        },
+        {
+          "title": "Anthropic's RSI Scorecard (Shelly Palmer)",
+          "url": "https://shellypalmer.com/2026/09/anthropics-rsi-scorecard/"
+        },
+        {
+          "title": "Anthropic warns AI self-improvement could end in lost human control (Tom's Hardware)",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropic-warns-ai-self-improvement-could-end-in-lost-human-control"
+        },
+        {
+          "title": "Anthropic Reports AI Now Authors Over 80% of Its Production Code (aiweekly)",
+          "url": "https://aiweekly.co/alerts/anthropic-reports-ai-now-authors-over-80-of-its-production-code"
+        }
+      ],
+      "snsPost": {
+        "text": "「AIがAI自身の開発を加速させている」ってSNSで話題になってたけど、実際どうなの？🤖\n\nAnthropicが公開したデータを調べてみると、コード生成量8倍・社内R&D主導26%・学習速度52倍高速化…具体的な数字と、『まだ再帰的自己改善には到達していない』という本人たちの言い分まで整理しました📊\n\n詳しくはブログで📝"
+      }
     }
   ],
-  "updatedAt": "2026-11-07T11:01:15.390362+00:00"
+  "updatedAt": "2026-11-08T00:48:48+00:00"
 }
