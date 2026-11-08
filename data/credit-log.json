@@ -1143,6 +1143,12 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-126: Felo/Grok経由のX調査ルーティン、Grok経由4件追加キュレーション",
       "note": "ハーネス設計・マルチエージェント階層組織(Chief/Lead体制)・大規模クリエイティブ制作(131エージェント短編フィルム)・DeepSeek高速モデルの4件をresearch-items.jsonへ追加(コミット84c8750)。根拠薄弱な別の調査結果は不採用。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-129: 開発アプリ一覧タブへ「🔖 レビュー待ち」機能を新設",
+      "note": "worktree実装完了〜司令塔レビュー・マージ前の状態を可視化するdata/review-queue.json+dashboard.htmlタブを実装(コミット7733fa6)。常時稼働Lead不採用(CL-057)と対になる採用判断。"
     }
   ]
 }

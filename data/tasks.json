@@ -6401,6 +6401,24 @@
           "summary": "WBS機能の設計をユーザーと確認の上、実装・Playwright動作確認・バグ修正まで完了、designated branch経由でmainへマージ済み(a5a5b18)。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-129",
+      "task": "開発アプリ一覧タブへ「🔖 レビュー待ち」機能を新設(worktree実装の未レビュー項目の可視化)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-08",
+      "nextAction": "",
+      "note": "X(Grok経由)の調査(マルチエージェント階層組織化、Chief of Staff+レビュー専用キュー)をきっかけに、ユーザーと比較検討した結果、「常時稼働のLead」は不採用(CL-057)、「レビュー専用キュー」は採用、と方針を決めた際の相談への対応。",
+      "detail": "AskUserQuestionで(1)表示場所=既存の開発アプリ一覧タブ内、(2)対応デバイス=両対応で最初から作る、(3)機能範囲=一覧表示のみ(閲覧専用)、の3点をユーザーに確認した上で実装。司令塔(このルーム)が直接実装(同一dashboard.htmlへの逐次編集のためサブエージェント化せず)。データはdata/review-queue.jsonを新設(worktree実装完了時に司令塔が1件追加、レビュー・マージ後に削除する運用、subagent-role-orchestrationスキルへ手順を追記)。dashboard.html側は既存のWBS/エラー一覧タブと同じAPPDEV_STAGESマップ方式・.research-table流用で実装し、選択中アプリでフィルタする(既存パターンの再利用、rule23)。Playwrightでダミーデータを一時投入し、PC幅(1400px)・モバイル幅(390px、ハンバーガーメニュー経由)の両方で表示・エラー無しを確認した上でダミーデータを削除した(空状態の表示は通常のコード分岐のため同時に確認済み)。",
+      "output": "progress-tracker-dashboard/dashboard.html・data/review-queue.json・.claude/skills/subagent-role-orchestration/SKILL.md(コミット7733fa6)",
+      "checkHistory": [
+        {
+          "date": "2026-11-08",
+          "summary": "設計確認(AskUserQuestion)・実装・Playwright動作確認まで完了、designated branch経由でmainへマージ予定。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"
