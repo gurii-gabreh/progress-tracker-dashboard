@@ -446,10 +446,23 @@
      土日・当日の列背景は行ごとに敷くとDOM要素数が増えるため、1列につき1枚だけgrid-row:1/-1で
      全行分をまとめて敷く。ラベル列はposition:stickyで横スクロール中も常に見えるようにする。 */
   .wbs-note { font-size: 12px; line-height: 1.6; color: var(--text-muted); margin: 4px 0 14px; }
-  .wbs-cal-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
-  .wbs-cal-grid { --wbs-label-w: 230px; --wbs-day-w: 22px; display: grid; position: relative; }
+  /* 2026-11-08追加(ユーザー指示「一番上の日付列は固定で」「月列を一行追加して日付列の上に」)。
+     横スクロール(日数が多い)に加えて縦方向にも.wbs-cal-wrap自体をスクロールコンテナ化し、
+     月/日/曜日の3つのヘッダー行をposition:stickyで重ねて固定する。ラベル列(左端)は従来通り
+     left:0でstickyなため、左上の角セル(.wbs-cal-corner)だけtop/left両方をstickyにして
+     重なりが崩れないようにしている。 */
+  .wbs-cal-wrap { overflow: auto; max-height: 65vh; border: 1px solid var(--border); border-radius: 8px; }
+  .wbs-cal-grid { --wbs-label-w: 230px; --wbs-day-w: 22px; --wbs-head-row-h: 20px; display: grid; position: relative; }
   .wbs-cal-cell { min-width: 0; }
-  .wbs-cal-head { font-size: 9.5px; text-align: center; line-height: 1.8; color: var(--text-muted); background: var(--surface); }
+  .wbs-cal-head {
+    font-size: 9.5px; text-align: center; color: var(--text-muted); background: var(--surface);
+    height: var(--wbs-head-row-h); line-height: var(--wbs-head-row-h);
+    position: sticky; z-index: 3;
+  }
+  .wbs-cal-head--month { top: 0; font-weight: 700; font-size: 10px; border-bottom: 1px solid var(--border); }
+  .wbs-cal-head--day { top: var(--wbs-head-row-h); }
+  .wbs-cal-head--weekday { top: calc(var(--wbs-head-row-h) * 2); border-bottom: 1px solid var(--border); }
+  .wbs-cal-corner { left: 0; z-index: 4; }
   .wbs-cal-colbg { z-index: 0; }
   .wbs-cal-colbg.wbs-cal-sun { background: rgba(229, 72, 77, 0.08); }
   .wbs-cal-colbg.wbs-cal-sat { background: rgba(37, 99, 235, 0.08); }
@@ -6442,7 +6455,7 @@
     const maxDate = allDates.reduce((a, b) => (a > b ? a : b));
     const days = wbsDateRangeList(minDate, maxDate);
     const dayIndex = new Map(days.map((d, i) => [d, i]));
-    const totalRows = 2 + rows.length;
+    const totalRows = 3 + rows.length;
     const gridStyle = `grid-template-columns: var(--wbs-label-w) repeat(${days.length}, var(--wbs-day-w)); grid-template-rows: repeat(${totalRows}, auto);`;
 
     // 土日・当日の列背景は、行ごとに繰り返し出すのではなく1列1枚だけ全行分(grid-row:1/-1)で敷く
@@ -6455,18 +6468,36 @@
       colBgHtml += `<div class="wbs-cal-colbg${cls}${todayCls}" style="grid-column:${i + 2}; grid-row:1 / -1;"></div>`;
     });
 
+    // 月行(2026-11-08追加): 同じ年月が続く日数ぶん1セルをまたがせて表示する(「2026年11月」等)。
+    let monthHtmlRow = "";
+    for (let i = 0; i < days.length; ) {
+      const monthKey = days[i].slice(0, 7);
+      let j = i;
+      while (j < days.length && days[j].slice(0, 7) === monthKey) j++;
+      const [y, m] = monthKey.split("-");
+      const label = `${y}年${parseInt(m, 10)}月`;
+      monthHtmlRow += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--month" style="grid-column:${i + 2} / ${j + 2}; grid-row:1;">${escapeHtmlForDevDocs(label)}</div>`;
+      i = j;
+    }
+
     let headHtmlRows = "";
     days.forEach((d, i) => {
       const dt = new Date(d + "T00:00:00");
       const numLabel = dt.getDate() === 1 ? `${dt.getMonth() + 1}/${dt.getDate()}` : `${dt.getDate()}`;
-      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head" style="grid-column:${i + 2}; grid-row:1;">${escapeHtmlForDevDocs(numLabel)}</div>`;
-      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head" style="grid-column:${i + 2}; grid-row:2;">${WBS_WEEKDAY_JA[dt.getDay()]}</div>`;
+      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--day" style="grid-column:${i + 2}; grid-row:2;">${escapeHtmlForDevDocs(numLabel)}</div>`;
+      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--weekday" style="grid-column:${i + 2}; grid-row:3;">${WBS_WEEKDAY_JA[dt.getDay()]}</div>`;
     });
+    // ラベル列(左端)の左上角セル。月/日/曜日の各ヘッダー行のtopオフセットを引き継ぎつつ、
+    // left:0も合わせてstickyにすることで、縦横どちらにスクロールしても角が追従する。
+    const cornerHtmlRows = `
+      <div class="wbs-cal-cell wbs-cal-head wbs-cal-head--month wbs-cal-corner" style="grid-column:1; grid-row:1;"></div>
+      <div class="wbs-cal-cell wbs-cal-head wbs-cal-head--day wbs-cal-corner" style="grid-column:1; grid-row:2;"></div>
+      <div class="wbs-cal-cell wbs-cal-head wbs-cal-head--weekday wbs-cal-corner" style="grid-column:1; grid-row:3;"></div>`;
 
     let rowsHtml = "";
     rows.forEach((r, idx) => {
       const t = r.task;
-      const domRow = idx + 3;
+      const domRow = idx + 4;
       const statusClass = wbsStatusClass(t.status);
       const hasChildren = r.depth === 0 && (t.subtasks || []).length > 0;
       const toggleHtml = hasChildren
@@ -6500,7 +6531,9 @@
       <div class="wbs-cal-wrap">
         <div class="wbs-cal-grid" style="${gridStyle}">
           ${colBgHtml}
+          ${monthHtmlRow}
           ${headHtmlRows}
+          ${cornerHtmlRows}
           ${rowsHtml}
         </div>
       </div>`;
