@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-11-02",
+  "updatedAt": "2026-11-08",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -837,7 +837,7 @@
           "repo": "gurii-gabreh/progress-tracker-dashboard",
           "path": ".claude/skills/subagent-role-orchestration/SKILL.md",
           "createdAt": "2026-10-26",
-          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記、orchestration.workerRoomDeprecation.codexDelegation.doubleCheckRequirement参照)。実装着手前には、GitHub製Spec Kitの/plan→/tasksの考え方を借りてタスク分解を行い、TaskCreate/TaskUpdateで進捗を可視化する(2026-11-07追記、ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」)。",
+          "summary": "複数の独立したタスク(複数アプリの調査・実装等)をサブエージェント化する際、司令塔(このルーム)・Research・実装・テストの役割に分ける運用パターン。判断・指示は全て司令塔が出し、Researchは調査結果を司令塔へ返すのみ(書き込みなし)、実装はisolation:worktreeで並列化し問題は司令塔へエスカレーション、テストは独立検証可能な範囲のみ並列化する。claude-core-rules.mdルール18の2026-10-26追記を具体化したもの。重要な判断・結果(社内向け資料の事実主張・Research結果の採否・実装の正しさ等)に限り、Codexなど別AIによるダブルチェックも挟む(2026-10-27追記、orchestration.workerRoomDeprecation.codexDelegation.doubleCheckRequirement参照)。実装着手前には、GitHub製Spec Kitの/plan→/tasksの考え方を借りてタスク分解を行い、TaskCreate/TaskUpdateで進捗を可視化する(2026-11-07追記、ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」)。 【2026-11-08追記】X(Grok経由)の調査で紹介されたChief of Staff+常時稼働Leadという階層構成を検討したが、「Leadを常時稼働させる」部分は不採用とした(常時稼働=休止しない作業ルームであり、ルール18の2026-09-06方針転換でworker-room方式を廃止した理由=承認待ち停止・休止セッション再起動の手間と同じコストが再発するため)。司令塔・Research・実装・テストの役割分担自体は変更無し。詳細はdata/concept-log.jsonのCL-057、スキル本体の「検討したが採用しなかった案」セクション参照。",
           "triggerType": "ai"
         }
       ],
