@@ -5964,7 +5964,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-02",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "①要件定義の聞き取り(全17項目)・市場分析7ステップを完了し、requirements.json(REQ-AIL-001)へ記録。実装はまだ着手していない。"
         },
         {
           "id": "AIL-003",
@@ -5973,7 +5974,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-02",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "②基本設計(全12項目)を完了。GitHub Pages+GAS Webアプリ+GA4+Playwright Testの構成、comments/likesは記事・作品ごとにJSON分割、Claude Code Remote側Routineによるpush通知等を確定。requirements.jsonへ記録済み。"
         },
         {
           "id": "AIL-004",
@@ -5982,7 +5984,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-02",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "③機能要件(通知機能の有無)を完了。スパム対策2段構え(GAS簡易NGワードフィルタ+日次Routineでの怪しいコメント報告・削除確認)を確定し、n=11/12/17も合わせて記入した。"
         },
         {
           "id": "AIL-005",
@@ -5991,7 +5994,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-02",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "④詳細設計(全8項目)完了。実装済みコード根拠に加え、相談で確定したパスワード方式コメント編集・削除とエラーログ機能(ai-lab側error-log.json+progress-tracker-dashboard側エラー一覧ビューアー)を設計に反映した。"
         },
         {
           "id": "AIL-006",
@@ -6000,7 +6004,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-03",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "デザイン設計(全8項目)完了。Claude Designで作成したトップページモックアップの配色・フォントを反映し、ブレークポイント640pxへの統一、サイト全体ダーク固定(ライトモード廃止)、スペーシングトークン化、フォーカス表示追加を決定した。"
         },
         {
           "id": "AIL-007",
@@ -6009,7 +6014,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-03",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "⑤テスト(全9項目)完了。実装済みPlaywrightテスト15件を根拠に記入。test-patterns.jsonへ6件のテストパターン(TP-001〜006)を新規登録した(このJSONの初めての実データ)。"
         },
         {
           "id": "AIL-008",
@@ -6018,7 +6024,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-03",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "⑥運用・保守(全8項目)完了。GA4・error-log.json・日次Routine・GitHub自体のバージョン管理を運用基盤とする方針を確定。"
         },
         {
           "id": "AIL-009",
@@ -6027,7 +6034,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-03",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "⑦リリース・移行(全8項目)完了。新規アプリのため移行関連項目は対象外と明記。①〜⑦の全フェーズが完了した。"
         },
         {
           "id": "AIL-010",
@@ -6036,7 +6044,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-07",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "GAS実デプロイ・GitHub Token(Fine-grained)設定完了。実際にコメント・いいね・エラーログがGitHubへ保存されることを確認した。途中、GASの文字コード不具合(日本語が?に変換される)を発見し、doPost/writeGitHubJsonFile_/readGitHubJsonFile_の3箇所でUTF-8を明示指定して解決した。"
         },
         {
           "id": "AIL-011",
@@ -6045,7 +6054,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-07",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "GA4計測IDを実IDに設定完了。"
         },
         {
           "id": "AIL-012",
@@ -6054,7 +6064,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-07",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "AI技術記事を4件、servicenow-sub-agentの研究データから実装者視点でピックアップして作成・公開した(data/ai-articles.json)。"
         },
         {
           "id": "AIL-013",
@@ -6063,7 +6074,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-07",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "記事作成ツール(draft.html)にプレビュー機能を実装。公開時と完全同一のテンプレートで下書きを確認できるようにし、SNS投稿文の下書きプレビューも追加した。"
         },
         {
           "id": "AIL-014",
@@ -6072,7 +6084,8 @@
           "priority": "高",
           "status": "完了",
           "updated": "2026-11-07",
-          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。"
+          "note": "AIL-001のcheckHistory(対応経緯)から、WBSガントチャートで個別表示できるようsubtask化したもの(2026-11-07、ユーザー指示)。詳細はAIL-001のcheckHistory/noteを参照。",
+          "detail": "記事アイキャッチ画像の方針を確定(CSSグラデーション+タイトル表示、画像生成プロンプトのコピー機能)。Gemini API画像生成に無料枠が無いことを公式ページで確認した上での判断。"
         },
         {
           "id": "AIL-015",

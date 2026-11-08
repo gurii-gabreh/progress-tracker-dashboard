@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-08T00:35:19.237308+09:00",
+  "lastProcessedAt": "2026-11-09T00:14:22.262607+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -448,6 +448,16 @@
         "ai-lab(AIL-001)のstatusが「未着手」のままだが、checkHistoryでは①〜⑦全フェーズ完了・実装まで進んでいるという食い違いが見つかっている。実態に合わせて修正してよいか、ユーザー確認待ち。",
         "ai-labの実装ルームが課題管理表(issueLog)を標準ルールどおり実際に運用できているかの確認を、まだこちらから実施していない(提案のみ済み)。",
         "開発資料タブのWBS機能について、ユーザーから最初に出ていた「全タスクを一覧表示 vs フィルターで絞り込む」という2つ目の論点は、最終的に「アプリ単位で表示」という回答で解決済みだが、実装後の見た目についてユーザー自身からの最終確認はまだ得られていない。"
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "generatedAt": "2026-11-09T00:14:22.262607+09:00",
+      "summary": "【CLAUDE.md定期確認(0時・12時)】0時の発火時、前日分の記録漏れ(本セッション自身が行ったServiceNow PDI復旧・Felo/Grok調査・ブログ記事・WBS機能実装がtasks.json/credit-log.jsonに未記録)を見落としとして報告し、ユーザーの「進めて」を受けてPTD-125〜128として遡及記録、あわせてai-lab(AIL-001)のstatusを「未着手」から「対応中」へ修正(checkHistoryとの食い違いを解消、完了への変更ではないためルール30の確認対象外)、ai-labの課題管理表(issueLog)が実際に運用されているか確認し健全と判明した。12時の発火時はCLAUDE.md本文に変更なし、週次ルームログ要約Routineも健全で、いずれも特記事項なし。\n\n【WBS機能の全面再設計】前回実装したWBSガントチャート(タスク一覧に対するシンプルな%位置バー表示)について、ユーザーから実際のガントチャートツールのスクリーンショットを示され「wbsは違う、添付図のようにしろ」と指摘を受けた。依存関係矢印・正確な進捗%は今のtasks.jsonには該当データが無いため、AskUserQuestionで方針を確認のうえ今回は対象外とし、日付ごとのカレンダー列(CSS Grid、土日・当日の色分け)・親子タスクの折りたたみツリー・statusからの概算進捗バー(完了=塗りつぶし、それ以外=ハッチング)を持つ形へ全面的に作り直した。ai-lab・usage-tracker・kizashi(47タスク×113日)の3アプリでPlaywright動作確認し、commit・push・mainへのマージまで完了した。\n\n【ブログ公開・AdSense収益化の相談、ai-labのホスティング移行】「外部にブログ公開したらURLにgithubが付いても収益化に影響しないか」という質問から、AdSense審査には独自ドメインが必要と判明し、ai-lab.naruya0724.comをGitHub Pagesへのカスタムドメインとして設定した。その後、DNSのCNAMEレコードが公開情報であるためGitHubアカウント名(gurii-gabreh)が特定可能であり、特定されると同アカウントの他の公開リポジトリ(progress-tracker-dashboard含む。内部向けの会話ログ・事業計画等を保持)まで誰でも辿れてしまうという重大なリスクが発覚した。対策として「公開用の別アカウントを作る」案はGitHubの利用規約(個人の無料アカウントは1つまで、例外は自動化用マシンアカウントのみ)に抵触する可能性が高いため却下し、「ai-labの公開ホスティングをGitHub PagesからXサーバー(専用サブドメイン+専用FTPアカウントへのFTPS自動デプロイ、GitHub Actions経由)へ切り替える」方針を採用した。Xサーバー側でのサブドメイン作成・専用FTPアカウント作成(権限を限定し、GitHub Secrets漏洩時の被害範囲を抑える設計)をユーザーと一緒に手順確認しながら進め、deploy.ymlをFTPS転送へ書き換え(SamKirkland/FTP-Deploy-Actionのタグ指定ミスを実行ログから発見・修正)、実際にXサーバーへのデプロイ成功・サイト表示確認まで完了した。不要になった旧CNAMEレコードの削除・GitHub Pages側のカスタムドメイン設定解除も完了。経緯と対応は、ai-labのREADME.md、progress-tracker-dashboardのconcept-log.json(CL-056)・ai-config.json(AI基本設定)・requirements.json(ai-labのbasicDesign.note)・課題管理表(issueLog)の計5箇所に記録した。なお、progress-tracker-dashboard自体の非公開化は「GitHub接続は既に遮断済みなので今回は見送り、現状維持でよい」というユーザー判断で保留とした。\n\n【Codexでの開発聞き取りの相談】claude-voice-bridgeの音声入力(Web Speech API、interimResults:false等の設定)の精度・反応速度への不満から、「聞き取りをCodex側でもできるのでは」という相談を受けた。Codex CLIの/voice機能はローカルマシンの音声入出力が必要でこのクラウドセッションでは使えないと判明したが、議論の末、CLI不要でWeb版のCodex/ChatGPTで聞き取りを行い、その結果をこのチャットに貼り付けてもらえば、既存のFelo/Grok調査と同じ「外部ツールで実施→結果を貼り付け→Claudeが構造化して記録」というパターンで対応できると確認した。今まで通りの直接聞き取りと、Codex経由の聞き取りの両方を状況に応じて使い分けてよいことで合意した。\n\n【PHPの影響についての質問】ai-labの公開サイトがPHPの影響を受けるかという質問に、ai-labはビルドステップ無しの純粋な静的HTML/CSS/JSサイトでPHPコードを一切含まず、同じXサーバーアカウント上でWordPress(PHP製)を動かしていても、サブドメインごとに配信が分かれているため影響を受けないと回答した。\n\n【servicenow-sub-agentへcategory 11(開発の失敗談・よくあるエラー)を新設】「要件定義・実装・テストを含めて、開発時の失敗談やよくあるエラーをネット上から収集しておいたほうが良いのでは、良いサイトがあればservicenowで情報収集したい」という相談を受け、既存の10観点の構成(README「対象の10観点」)を確認したうえで、Qiita(タグ: ポエム/アンチパターン)・Zenn(トピック: postmortem)・dev.to(タグ: postmortem/debugging)の計5情報源を新しい観点(category 11)として提案し、ユーザー承認後、このセッションのネットワーク制限で直接検証できないため既存のverify_source_urls.mjs(GitHub Actions経由)で実地検証、setup_rest_messages.mjs・scheduled_job_ai_research_fetch.js・README.mdを更新し、GitHub Actionsのworkflow_dispatchを実際にdry_run=falseで実行してServiceNow側(REST Message作成・Scheduled Jobスクリプト同期)への反映まで完了した。残るのはServiceNow Studio側でのu_category Choiceリストへの\"11\"追加(ユーザーの手動作業)のみ。あわせて、この検証の過程で今回の変更とは無関係の既存情報源「Anthropic News」(生HTML解析)がサイト側のHTML構造変更により取得失敗していることを発見し、対応要否をユーザーに確認中。",
+      "unresolvedCarriedOver": [
+        "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
+        "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。"
       ]
     }
   ]
