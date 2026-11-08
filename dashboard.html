@@ -463,7 +463,19 @@
   .wbs-cal-head--day { top: var(--wbs-head-row-h); }
   .wbs-cal-head--weekday { top: calc(var(--wbs-head-row-h) * 2); border-bottom: 1px solid var(--border); }
   .wbs-cal-corner { left: 0; z-index: 4; }
-  .wbs-cal-colbg { z-index: 0; }
+  /* 2026-11-08追加(ユーザー指示「月の行と、それに関わる日付欄は同じ色で塗り潰して」「日付毎に
+     線で囲って、分かれ目が分かりづらい」)。月行(ラベルセル)とその月に属する日付行・曜日行の
+     ヘッダーセルを、月ごとに2色を交互に塗って境目を分かりやすくする(.wbs-cal-head本体の
+     background:var(--surface)より詳細度を上げて上書きする必要があるため.wbs-cal-headとの
+     複合セレクタにしている)。 */
+  .wbs-cal-head.wbs-cal-head--month-a,
+  .wbs-cal-head.wbs-cal-head--month-b { border-right: 1px solid var(--border); }
+  .wbs-cal-head.wbs-cal-head--month-a { background: var(--surface); }
+  .wbs-cal-head.wbs-cal-head--month-b { background: var(--surface-2); }
+  /* 日付ごとの縦の区切り線。以前は土日・当日のみ背景色付きのdivを生成していたが、平日も含め
+     全日付に1枚ずつdivを敷き、border-rightで区切り線を出すようにした(全行を貫通させるため
+     grid-row:1/-1のまま)。 */
+  .wbs-cal-colbg { z-index: 0; border-right: 1px solid var(--border); }
   .wbs-cal-colbg.wbs-cal-sun { background: rgba(229, 72, 77, 0.08); }
   .wbs-cal-colbg.wbs-cal-sat { background: rgba(37, 99, 235, 0.08); }
   .wbs-cal-colbg.wbs-cal-today { background: rgba(255, 196, 0, 0.16); }
@@ -6458,13 +6470,29 @@
     const totalRows = 3 + rows.length;
     const gridStyle = `grid-template-columns: var(--wbs-label-w) repeat(${days.length}, var(--wbs-day-w)); grid-template-rows: repeat(${totalRows}, auto);`;
 
-    // 土日・当日の列背景は、行ごとに繰り返し出すのではなく1列1枚だけ全行分(grid-row:1/-1)で敷く
+    // 月ごとに交互のa/bを割り当てる(2026-11-08追加)。月行自身と、その月に属する日付行・曜日行の
+    // ヘッダーセルへ同じa/bクラスを与えることで「月の行と、それに関わる日付欄を同じ色で塗り潰す」
+    // (ユーザー指示)。先に日付→月インデックスの対応表を作ってから、月行・日付行・曜日行の
+    // 3箇所で使い回す。
+    const dayMonthParity = new Map();
+    {
+      let monthSeq = 0;
+      let prevKey = null;
+      days.forEach((d) => {
+        const key = d.slice(0, 7);
+        if (key !== prevKey) { monthSeq++; prevKey = key; }
+        dayMonthParity.set(d, monthSeq % 2 === 0 ? "a" : "b");
+      });
+    }
+
+    // 日付ごとの縦の区切り線+土日・当日の背景色。1列1枚だけ全行分(grid-row:1/-1)で敷く
     // (DOM要素数を抑えるため。日数×行数ぶんのセルを毎回作ると大きいアプリで重くなる)。
+    // 2026-11-08変更: 以前は土日・当日のみdivを生成していたが、全日付に区切り線(border-right)を
+    // 出すため、平日も含め全日付ぶん生成するよう変更した(ユーザー指摘「分かれ目が分かりづらい」)。
     let colBgHtml = "";
     days.forEach((d, i) => {
       const cls = wbsWeekdayClass(d);
       const todayCls = d === todayStr ? " wbs-cal-today" : "";
-      if (!cls && !todayCls) return;
       colBgHtml += `<div class="wbs-cal-colbg${cls}${todayCls}" style="grid-column:${i + 2}; grid-row:1 / -1;"></div>`;
     });
 
@@ -6476,7 +6504,8 @@
       while (j < days.length && days[j].slice(0, 7) === monthKey) j++;
       const [y, m] = monthKey.split("-");
       const label = `${y}年${parseInt(m, 10)}月`;
-      monthHtmlRow += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--month" style="grid-column:${i + 2} / ${j + 2}; grid-row:1;">${escapeHtmlForDevDocs(label)}</div>`;
+      const parity = dayMonthParity.get(days[i]);
+      monthHtmlRow += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--month wbs-cal-head--month-${parity}" style="grid-column:${i + 2} / ${j + 2}; grid-row:1;">${escapeHtmlForDevDocs(label)}</div>`;
       i = j;
     }
 
@@ -6484,8 +6513,9 @@
     days.forEach((d, i) => {
       const dt = new Date(d + "T00:00:00");
       const numLabel = dt.getDate() === 1 ? `${dt.getMonth() + 1}/${dt.getDate()}` : `${dt.getDate()}`;
-      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--day" style="grid-column:${i + 2}; grid-row:2;">${escapeHtmlForDevDocs(numLabel)}</div>`;
-      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--weekday" style="grid-column:${i + 2}; grid-row:3;">${WBS_WEEKDAY_JA[dt.getDay()]}</div>`;
+      const parity = dayMonthParity.get(d);
+      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--day wbs-cal-head--month-${parity}" style="grid-column:${i + 2}; grid-row:2;">${escapeHtmlForDevDocs(numLabel)}</div>`;
+      headHtmlRows += `<div class="wbs-cal-cell wbs-cal-head wbs-cal-head--weekday wbs-cal-head--month-${parity}" style="grid-column:${i + 2}; grid-row:3;">${WBS_WEEKDAY_JA[dt.getDay()]}</div>`;
     });
     // ラベル列(左端)の左上角セル。月/日/曜日の各ヘッダー行のtopオフセットを引き継ぎつつ、
     // left:0も合わせてstickyにすることで、縦横どちらにスクロールしても角が追従する。
