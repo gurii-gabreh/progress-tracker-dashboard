@@ -1137,6 +1137,12 @@
       "repo": "ai-lab",
       "task": "AIL-014: 記事アイキャッチ画像の方針確定(CSSグラデーション+Gemini手動プロンプト)",
       "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-126: Felo/Grok経由のX調査ルーティン、Grok経由4件追加キュレーション",
+      "note": "ハーネス設計・マルチエージェント階層組織(Chief/Lead体制)・大規模クリエイティブ制作(131エージェント短編フィルム)・DeepSeek高速モデルの4件をresearch-items.jsonへ追加(コミット84c8750)。根拠薄弱な別の調査結果は不採用。"
     }
   ]
 }
