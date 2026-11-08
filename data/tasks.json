@@ -6347,18 +6347,22 @@
     {
       "repo": "servicenow-sub-agent",
       "id": "PTD-126",
-      "task": "Felo/Grok経由のX(旧Twitter)調査ルーティン構築・13件キュレーション",
+      "task": "Felo/Grok経由のX(旧Twitter)調査ルーティン構築・17件キュレーション",
       "priority": "中",
       "status": "完了",
-      "updated": "2026-11-07",
+      "updated": "2026-11-08",
       "nextAction": "継続的に、ユーザーがFelo/GrokのUIへプロンプトを貼り付けて調査→結果を貼り付け→キュレーションという同じ流れを繰り返す運用。",
       "note": "ユーザー提案「気になるキーワードやよく技術広告で言われているキーワードも発掘できないか」「Xの中から調査するのが良さそう」への対応。",
-      "detail": "Felo AI(無料枠でX Researchを含むAI検索が使い放題、公式APIなし)・Grok AI(無料で約15メッセージ/2時間のローリング制限、Heavy/Expertは有料)の無料枠での利用可否を調査した上で、ユーザーがFelo/GrokのUIへ直接プロンプトを貼り付けて実行し、結果をこの会話へ貼り付けてもらう手動コピペ方式の調査ルーティンを確立した。Felo経由6件・Grok経由7件、計13件をdata/research-items.jsonへキュレーション済み項目(sourceNameに取得元ツールを明記、日本語のsummaryJa/pointsJa/applicableTechJa付き)として追加した(コミット176d212・f6f59f7)。",
-      "output": "servicenow-sub-agent/data/research-items.json(+13件、コミット176d212・f6f59f7)",
+      "detail": "Felo AI(無料枠でX Researchを含むAI検索が使い放題、公式APIなし)・Grok AI(無料で約15メッセージ/2時間のローリング制限、Heavy/Expertは有料)の無料枠での利用可否を調査した上で、ユーザーがFelo/GrokのUIへ直接プロンプトを貼り付けて実行し、結果をこの会話へ貼り付けてもらう手動コピペ方式の調査ルーティンを確立した。Felo経由6件・Grok経由7件、計13件をdata/research-items.jsonへキュレーション済み項目(sourceNameに取得元ツールを明記、日本語のsummaryJa/pointsJa/applicableTechJa付き)として追加した(コミット176d212・f6f59f7)。 2026-11-08、Grok経由でさらに4件(ハーネス設計・マルチエージェント階層組織・大規模クリエイティブ制作・DeepSeek高速モデル)を追加キュレーションし、計17件となった(コミット84c8750)。なお同日に一旦貼り付けられた別の調査結果は、具体的なX投稿URL・エンゲージメント数値を伴わない一般的なトレンド要約であり、キュレーション基準(実在するX投稿に基づく根拠が必要)を満たさないため、既存の自動収集データとの重複確認の上で不採用とした。",
+      "output": "servicenow-sub-agent/data/research-items.json(+17件、コミット176d212・f6f59f7・84c8750)",
       "checkHistory": [
         {
           "date": "2026-11-07",
           "summary": "Felo経由6件・Grok経由7件、計13件をresearch-items.jsonへキュレーション。手動コピペ方式の継続ルーティンとして確立。"
+        },
+        {
+          "date": "2026-11-08",
+          "summary": "Grok経由で4件追加キュレーション(ハーネス設計・マルチエージェント階層組織・クリエイティブ制作・DeepSeek高速モデル)。根拠薄弱な別の調査結果は基準に基づき不採用とした。"
         }
       ]
     },
