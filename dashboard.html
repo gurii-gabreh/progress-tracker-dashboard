@@ -1513,6 +1513,11 @@
                    実行時エラーの記録(例: ai-lab/data/error-log.json)を、progress-tracker-dashboard側が
                    クロスリポジトリで読み取り表示する(書き込み・集約はしない、詳細はtasks.jsonのAIL-001参照)。 -->
               <button type="button" class="manager-subview-btn" id="appdev-stage-btn-errorlog" data-stage="errorLog">🐞 エラー一覧</button>
+              <!-- 2026-11-08追加、ユーザー相談(X上の調査で見た「レビュー専用キュー」の仕組み)を踏まえ、
+                   worktree実装が完了してから司令塔がmainへ取り込むまでの「レビュー待ち」を可視化する
+                   ために新設。閲覧専用(一覧表示のみ)、両対応(PC/iPhone)で最初から実装(ユーザー確認済み)。
+                   データはdata/review-queue.jsonを正本とし、自動でレビュー・マージを行う仕組みではない。 -->
+              <button type="button" class="manager-subview-btn" id="appdev-stage-btn-reviewqueue" data-stage="reviewQueue">🔖 レビュー待ち</button>
             </div>
             <div class="appdev-stage-content">
               <div id="devdocs-requirements"></div>
@@ -1527,6 +1532,7 @@
               <div id="appdev-issuelog" style="display:none;"></div>
               <div id="appdev-wbs" style="display:none;"></div>
               <div id="appdev-errorlog" style="display:none;"></div>
+              <div id="appdev-reviewqueue" style="display:none;"></div>
             </div>
           </div>
         </div>
@@ -4138,6 +4144,27 @@
   //   段階別フロー図サンプル https://claude.ai/artifact/Sqq4RnQUGazd27Kut2AZca のレイアウトを踏襲)。
   //   完了以外のステータスを持つ最新のタスクを「現在地」として強調する。
   const REQUIREMENTS = { requirements: [], concerns: { items: [] }, interviewChecklist: { items: [] }, basicDesignChecklist: { items: [] }, functionalRequirementsChecklist: { items: [] }, detailedDesignChecklist: { items: [] }, designSpecChecklist: { items: [] }, testChecklist: { items: [] }, opsChecklist: { items: [] }, releaseChecklist: { items: [] }, marketAnalysisFramework: { description: "", steps: [] } };
+
+  // 📂開発アプリ一覧→🔖レビュー待ち(2026-11-08追加)。data/review-queue.jsonを唯一の正本とし、
+  // worktree実装が完了してからmainへマージされるまでの「レビュー待ち」状態を閲覧専用で可視化する
+  // (常時稼働のLeadエージェントで自動化する案はCL-057で不採用と決定済み、あくまで一覧表示のみ)。
+  const REVIEW_QUEUE = []; // data/review-queue.jsonからfetchして起動時に流し込む(loadReviewQueueData参照)。
+  function loadReviewQueueData() {
+    return fetch("data/review-queue.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`data/review-queue.json の取得に失敗しました(HTTP ${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        REVIEW_QUEUE.length = 0;
+        REVIEW_QUEUE.push(...(data.items || []));
+      })
+      .catch((err) => {
+        console.error(err);
+        const box = document.getElementById("appdev-reviewqueue");
+        if (box) box.innerHTML = `<div class="empty">レビュー待ち一覧を読み込めませんでした(${err.message})</div>`;
+      });
+  }
   let devDocsCurrentRepo = ""; // 要件定義/段階別フロー図の2タブで選択中アプリを共有する(タブを切り替えても選択が保たれるように)
 
   function loadRequirementsData() {
@@ -4764,6 +4791,43 @@
                 <td>${escapeHtmlForDevDocs(it.resolution || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.status || "未対応")}</td>
                 <td>${escapeHtmlForDevDocs(it.createdAt || "")}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  // 📂開発アプリ一覧→🔖レビュー待ち(2026-11-08追加)。data/review-queue.jsonから、選択中アプリ分の
+  // 「worktree実装は完了したが、司令塔がまだレビュー・main取り込みを完了していない」項目を一覧表示する。
+  // 閲覧専用(一覧表示のみ、ユーザー確認済み)。実際のレビュー・マージ操作は従来通り司令塔がBash/gitで行う。
+  function renderAppDevReviewQueue() {
+    const box = document.getElementById("appdev-reviewqueue");
+    if (!box) return;
+    const repo = devDocsSelectedRepo();
+    const items = REVIEW_QUEUE.filter((it) => it.repo === repo)
+      .sort((a, b) => String(b.addedAt || "").localeCompare(String(a.addedAt || "")));
+    const headHtml = `
+      <div class="devdocs-head">
+        <h3>${escapeHtmlForDevDocs(repo)}</h3>
+        <span class="devdocs-tag">レビュー待ち: ${items.length}件</span>
+      </div>
+      <p class="wbs-note">worktree実装が完了し、司令塔(マネージャールーム)がまだmainへ取り込んでいない項目の一覧です(閲覧専用)。常時稼働のLeadエージェントで自動レビューする仕組みではありません(data/concept-log.jsonのCL-057参照)。</p>`;
+    if (!items.length) {
+      box.innerHTML = `${headHtml}<div class="empty">このアプリのレビュー待ち項目は現在ありません。</div>`;
+      return;
+    }
+    box.innerHTML = `
+      ${headHtml}
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead><tr><th>タイトル</th><th>概要</th><th>ブランチ</th><th>追加日</th></tr></thead>
+          <tbody>
+            ${items.map((it) => `
+              <tr>
+                <td>${escapeHtmlForDevDocs(it.title || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.summary || "")}</td>
+                <td><span class="devdocs-tag">${escapeHtmlForDevDocs(it.branch || "")}</span></td>
+                <td>${escapeHtmlForDevDocs(it.addedAt || "")}</td>
               </tr>`).join("")}
           </tbody>
         </table>
@@ -5479,6 +5543,7 @@
     issueLog: { panel: "appdev-issuelog", btn: "appdev-stage-btn-issuelog", render: () => renderAppDevIssueLog() },
     wbs: { panel: "appdev-wbs", btn: "appdev-stage-btn-wbs", render: () => renderAppDevWbs() },
     errorLog: { panel: "appdev-errorlog", btn: "appdev-stage-btn-errorlog", render: () => renderAppDevErrorLog() },
+    reviewQueue: { panel: "appdev-reviewqueue", btn: "appdev-stage-btn-reviewqueue", render: () => renderAppDevReviewQueue() },
   };
   function showAppDevStage(stage) {
     Object.entries(APPDEV_STAGES).forEach(([key, cfg]) => {
@@ -6990,6 +7055,7 @@
     });
   })();
   loadRequirementsData();
+  loadReviewQueueData();
   loadTestPatterns();
   // 🔍調査資料タブの一覧5本は、保存/閲覧済み状態をdata/user-preferences.jsonから読み込んで
   // localStorageへマージした後に実行する(2026-10-24変更、理由は上部のコメント参照)。
