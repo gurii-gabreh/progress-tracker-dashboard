@@ -1759,6 +1759,13 @@
           "createdAt": "2026-11-03",
           "status": "未対応",
           "resolution": ""
+        },
+        {
+          "title": "独自ドメイン設定で、DNS経由でGitHubアカウントが特定されるリスク",
+          "content": "AdSense収益化のため独自ドメイン(ai-lab.naruya0724.com)をGitHub PagesへCNAME設定したところ、DNSが公開情報であるためGitHubアカウント名(gurii-gabreh)が特定可能と判明。特定されると、同アカウントの他の公開リポジトリ(progress-tracker-dashboard等、内部向けの会話ログ・事業計画を保持)まで誰でも辿れてしまう状態だった。",
+          "createdAt": "2026-11-08",
+          "status": "解決済み",
+          "resolution": "公開ホスティングをGitHub PagesからXサーバー(ai-lab専用サブドメイン+専用FTPアカウントへのFTPS自動デプロイ)へ切り替え、DNSのCNAMEレコードとGitHub Pagesのカスタムドメイン設定を削除した。開発(git管理)自体はGitHub上で継続。詳細経緯はconcept-log.json CL-056・basicDesign.note参照。progress-tracker-dashboard自体の非公開化は見送り、現状維持とする方針(ユーザー判断、2026-11-08)。"
         }
       ]
     }
