@@ -377,6 +377,10 @@
      アイコンで見出しを付けた(文字ラベルだと28px幅の列には入らないため)。 */
   .research-table th.rt-check-head { width: 28px; text-align: center; padding: 7px 4px; font-size: 13px; }
   .research-table td a { color: var(--accent); }
+  /* 2026-11-08追加、課題管理表の行クリックで詳細モーダルを開く機能用(ユーザー指示)。
+     research-tableの他の用途(テスト一覧等、クリック動作を持たない表)には影響させないよう
+     .issuelog-rowにだけcursor:pointerを付ける。 */
+  .research-table tr.issuelog-row { cursor: pointer; }
   .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .research-copy-bar .count { font-size: 11.5px; color: var(--text-muted); }
   /* 2026-10-24追加、ユーザー指示: ①一番左に「閲覧済み」チェック欄を追加(保存チェックの左)
@@ -484,7 +488,9 @@
     display: flex; align-items: center; gap: 4px; padding: 3px 8px;
     font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+    cursor: pointer; /* 2026-11-08追加、ユーザー指示「タスク名をクリックしたら課題管理表に飛ぶ」 */
   }
+  .wbs-cal-label:hover { background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
   .wbs-cal-label--sub { padding-left: 24px; font-size: 11px; opacity: 0.9; }
   .wbs-cal-toggle { border: none; background: none; cursor: pointer; font-size: 10px; color: var(--text-muted); padding: 0 2px; line-height: 1; }
   .wbs-cal-toggle-spacer { display: inline-block; width: 12px; }
@@ -493,7 +499,10 @@
   .wbs-gantt-nodata { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
   .wbs-cal-bar { align-self: center; height: 13px; margin: 0 1px; border-radius: 4px; z-index: 1; }
   .wbs-cal-bar.done.wbs-cal-bar--filled { background: var(--status-done-fg); }
-  .wbs-cal-bar.doing.wbs-cal-bar--hatched { border: 1.5px solid var(--status-doing-fg); background: repeating-linear-gradient(45deg, transparent 0 4px, color-mix(in srgb, var(--status-doing-fg) 30%, transparent) 4px 8px); }
+  /* 2026-11-08変更(ユーザー指示「対応中のものは帯を赤色に変えて」)。--status-doing-fg自体を
+     変えると課題一覧・タスク一覧等の「対応中」バッジの色も全て変わってしまうため、WBSの
+     進捗バーだけ専用の赤色で上書きする(他画面への影響を避ける、rule31)。 */
+  .wbs-cal-bar.doing.wbs-cal-bar--hatched { border: 1.5px solid #e5484d; background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(229, 72, 77, 0.3) 4px 8px); }
   .wbs-cal-bar.todo.wbs-cal-bar--hatched { border: 1.5px solid var(--status-todo-fg); background: repeating-linear-gradient(45deg, transparent 0 4px, color-mix(in srgb, var(--status-todo-fg) 30%, transparent) 4px 8px); }
   .wbs-cal-bar.skip.wbs-cal-bar--hatched { border: 1.5px solid var(--status-skip-fg); background: repeating-linear-gradient(45deg, transparent 0 4px, color-mix(in srgb, var(--status-skip-fg) 30%, transparent) 4px 8px); }
   @media (max-width: 640px) {
@@ -6363,8 +6372,8 @@
         <table class="research-table">
           <thead><tr><th>タイトル</th><th>内容</th><th>作成日</th><th>ステータス</th><th>対応内容</th></tr></thead>
           <tbody>
-            ${issues.map((it) => `
-              <tr>
+            ${issues.map((it, idx) => `
+              <tr class="issuelog-row" data-issuelog-index="${idx}" tabindex="0">
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.content || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.createdAt || "")}</td>
@@ -6374,6 +6383,40 @@
           </tbody>
         </table>
       </div>`;
+
+    // 2026-11-08追加(ユーザー指示「課題管理表の列の何処かをクリックしたら個別のウィンドウが
+    // 開くようにしてほしい」)。行のどこをクリックしても、その課題の全項目をモーダルで表示する。
+    box.querySelectorAll(".issuelog-row").forEach((tr) => {
+      tr.addEventListener("click", () => showIssueLogDetailModal(issues[Number(tr.dataset.issuelogIndex)]));
+      tr.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") showIssueLogDetailModal(issues[Number(tr.dataset.issuelogIndex)]);
+      });
+    });
+  }
+
+  // 既存のmodal-overlay/modal-box/modal-header/modal-bodyパターンをそのまま再利用する(rule23、
+  // showArticlePreviewModal等と同じ構造)。
+  function showIssueLogDetailModal(issue) {
+    const root = document.getElementById("modal-root");
+    if (!root || !issue) return;
+    root.innerHTML = `
+      <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>${escapeHtmlForDevDocs(issue.title || "")}</h2>
+            <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+          </div>
+          <div class="modal-body">
+            <p><b>作成日:</b> ${escapeHtmlForDevDocs(issue.createdAt || "")}</p>
+            <p><b>ステータス:</b> ${escapeHtmlForDevDocs(issue.status || "未対応")}</p>
+            <p><b>内容:</b><br>${escapeHtmlForDevDocs(issue.content || "")}</p>
+            <p><b>対応内容:</b><br>${escapeHtmlForDevDocs(issue.resolution || "(未記入)")}</p>
+          </div>
+        </div>
+      </div>`;
+    const closeModal = () => { root.innerHTML = ""; };
+    document.getElementById("modal-overlay").addEventListener("click", (e) => { if (e.target.id === "modal-overlay") closeModal(); });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
   }
 
   // 📂開発アプリ一覧→🗓WBS(2026-11-07追加、同日にカレンダー形式のガントチャートへ再設計)。
@@ -6573,7 +6616,8 @@
 
   function wireWbsToggles(box) {
     box.querySelectorAll("[data-wbs-toggle]").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation(); // ラベル全体のクリック(課題管理表への遷移)を誘発しないようにする
         const id = btn.dataset.wbsToggle;
         const collapsed = btn.textContent === "▸";
         btn.textContent = collapsed ? "▾" : "▸";
@@ -6581,6 +6625,12 @@
           el.style.display = collapsed ? "" : "none";
         });
       });
+    });
+    // 2026-11-08追加(ユーザー指示「左のタスク名をクリックしたら課題管理表に飛ぶ」)。
+    // 課題はタスク単位ではなくアプリ単位でissueLogに記録されているため、個別タスクでの絞り込みは
+    // 行わず、同じアプリの📝課題管理表タブへ切り替えるだけに留める。
+    box.querySelectorAll(".wbs-cal-label").forEach((label) => {
+      label.addEventListener("click", () => showAppDevStage("issueLog"));
     });
   }
 
