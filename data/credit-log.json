@@ -1107,6 +1107,36 @@
         "costUsd": 13.34459196
       },
       "rateLimitResetsAt": "2026-11-09T00:00:00+09:00"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "ai-lab",
+      "task": "AIL-010: GAS実デプロイ・GitHub Token設定・UTF-8文字化けバグ修正",
+      "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録(AIL-001からsubtask分解された項目)。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "ai-lab",
+      "task": "AIL-011: GA4計測ID設定",
+      "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "ai-lab",
+      "task": "AIL-012: AI技術記事4件の実データ投入",
+      "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "ai-lab",
+      "task": "AIL-013: 記事作成ツール(draft.html)のプレビュー機能実装",
+      "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録。"
+    },
+    {
+      "date": "2026-11-08",
+      "repo": "ai-lab",
+      "task": "AIL-014: 記事アイキャッチ画像の方針確定(CSSグラデーション+Gemini手動プロンプト)",
+      "note": "日次ログRoutineによる記録漏れチェックで検出・遡及記録。"
     }
   ]
 }
