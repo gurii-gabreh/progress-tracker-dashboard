@@ -1,6 +1,6 @@
 {
   "description": "Claude Codeの5時間の利用上限までにどれだけのタスクをこなせたかを記録する表(usage-tracker/data/tasks.json UST-001〜006参照の本格的な可視化サイトができるまでの暫定置き場)。タスクを完了するたびにdate/time/repo/task/noteを1行ずつ自動追記する(timeはJST・HH:MM形式)。【2026-08-19】当初「他AIツールの料金情報」を誤って記録していたため全件削除し、本来の用途で再開した。【2026-08-20(1)】1日にどれだけ作業したか見た目で分からないという指摘を受け、time列と日別/直近5時間の自動集計を追加。2026-08-19以前の6件は時刻を記録していなかったため、time欄は空(直近5時間の集計には含めない。日別集計には含める)。【2026-08-20(2)】mcp__Claude_Code_Remote__get_sessionが実測の累積トークン数(usage: inputTokens/outputTokens/cacheReadTokens/cacheWriteTokens/costUsd)と、5時間レート制限の正確なリセット時刻(rateLimitResetsAt)を返すことが判明したため、以後のエントリにこの2つを追加。前の行のusageとの差分でタスクごとの消費量を表示し、rateLimitResetsAtが変わった箇所には実測ベースで自動的に5時間区切りの仕切り行を挿入する(ユーザー申告不要になった。申告ベースのtype:\"boundary\"も引き続き手動追加は可能)。usage/rateLimitResetsAtが無い過去のエントリは、差分計算・自動仕切りの対象外として「—」表示になる。【2026-10-25】日次ログ処理のステップ9で、2026-07-26〜08-19(本格運用開始の2026-08-19より前)に完了した105件のタスク(PTD-001〜/KIZ-001〜/SPT/GEM/AIR/UST/KND/STU等)がこのファイルに一度も記録されていないことが判明した。この期間は実測usageデータ(get_sessionの累積トークン数)自体が存在せず、架空の数値を書くとルール5(根拠のない情報は回答に含めない)に反するため、遡及記録は行わない方針とした(ユーザー承認済み。測定できないものは記録しなくてよい、という方針)。",
-  "updatedAt": "2026-11-08T03:18:00+00:00",
+  "updatedAt": "2026-11-09T15:20:24+00:00",
   "entries": [
     {
       "date": "2026-08-19",
@@ -1149,6 +1149,21 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-129: 開発アプリ一覧タブへ「🔖 レビュー待ち」機能を新設",
       "note": "worktree実装完了〜司令塔レビュー・マージ前の状態を可視化するdata/review-queue.json+dashboard.htmlタブを実装(コミット7733fa6)。常時稼働Lead不採用(CL-057)と対になる採用判断。"
+    },
+    {
+      "date": "2026-11-08",
+      "time": "09:51",
+      "repo": "progress-tracker-dashboard / servicenow-sub-agent",
+      "task": "PTD-114: 日次Routine7回目、ServiceNow本来の新着63件から8件キュレーション+BLOG-015作成",
+      "note": "サイズが小さい(63件)ためサブエージェント化せず司令塔が直接レビュー。8件をWeb検索で裏付けの上curated化(356→364)。DeepMindのRSA-1024弱点発見を特に注目すべき記事として選定しBLOG-015を作成。ai-trends-ids.jsonのC-id未割当12件を後追い割当(C-353〜364)。前日の相談(X/Grok/Felo経由新着との役割分担)はmanager-room-log.json確認により、ユーザー手動実行+マネージャールーム構造化という既存パターンと判明し解消。",
+      "usage": {
+        "inputTokens": 3780,
+        "outputTokens": 221569,
+        "cacheReadTokens": 28302062,
+        "cacheWriteTokens": 2335833,
+        "costUsd": 16.06415756
+      },
+      "rateLimitResetsAt": "2026-11-09T14:40:00+09:00"
     }
   ]
 }
