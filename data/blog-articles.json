@@ -672,7 +672,57 @@
       "snsPost": {
         "text": "「AIがAI自身の開発を加速させている」ってSNSで話題になってたけど、実際どうなの？🤖\n\nAnthropicが公開したデータを調べてみると、コード生成量8倍・社内R&D主導26%・学習速度52倍高速化…具体的な数字と、『まだ再帰的自己改善には到達していない』という本人たちの言い分まで整理しました📊\n\n詳しくはブログで📝"
       }
+    },
+    {
+      "id": "BLOG-015",
+      "sourceItemId": "b279ce53c3101b10cfcfbd43e4013191",
+      "sourceTitle": "Google DeepMind announces AI-assisted research into two weaknesses in legacy 1024-bit RSA",
+      "sourceUrl": "https://www.anthropic.com/news/discovering-cryptographic-weaknesses",
+      "title": "AIが「古い暗号」の弱点を見つけた話――1024ビットRSAで分かったこと",
+      "status": "draft",
+      "createdAt": "2026-11-08",
+      "publishedAt": null,
+      "wordpressUrl": null,
+      "sections": [
+        {
+          "type": "html",
+          "note": "導入〜発表の概要",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<p>2026年11月6日、Google DeepMindが「AIエージェントを使った研究によって、古い世代のRSA暗号(1024ビット)に新たな弱点を2つ見つけた」と発表しました。「AIが暗号を破った」というとドキッとする見出しですが、実際に何が分かったのか、どこまでが本当に心配すべきことなのかを整理してみます。</p>\n\n<h2>見つかった2つの弱点</h2>\n<p>1つ目は、署名の処理(パディング)に関する欠陥です。ある条件下では理論上約1600倍、実際のCPU処理時間では約3.5倍の高速化につながる手法が見つかりました。2つ目は、同じ長さの鍵を複数まとめて素因数分解する新しいアルゴリズムで、鍵1つあたりの平均コストを約30倍減らせるという内容です。</p>\n\n</div>"
+        },
+        {
+          "type": "image-placeholder",
+          "note": "古い鍵の弱点をAIが見つけるイメージ画像",
+          "imagePrompt": "古びた大きな金属の鍵(錠前)を、小さな幾何学的なロボットの群れが拡大鏡とデジタルな光の線で調べている様子を描いた、フラットなベクター風イラスト。鍵の表面にわずかな亀裂や光る点(弱点を示す)が見える。配色は深い青とゴールドのコントラスト。実在の企業ロゴ・キャラクター・人物は描かない。背景はシンプルなグラデーション。"
+        },
+        {
+          "type": "html",
+          "note": "どこまで心配すべきか〜まとめ",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<h2>「今使っている暗号が危険」という話ではない</h2>\n<p>ここで重要なのは、今回の対象が1024ビットという「もう何年も前から推奨されていない古い世代」の鍵長であることです。現在広く使われている2048ビット以上のRSAは、この手法の影響を受けないとされています。DeepMind自身も、「現行システムへの実用的な攻撃」としてではなく、「暗号の標準は常に新しい手法でストレステストされ続けるべきだ」ということを示す事例として位置づけています。</p>\n\n<h2>個人開発者にとっての意味</h2>\n<p>この話が示しているのは、AIが研究のスピードを上げることで、今まで「十分安全」とされていた前提が、これからはより速いペースで見直されていく可能性がある、ということです。自分でアプリを作る際に暗号処理を自前で実装することはあまりないと思いますが、「鍵長が長いから安全」という単純な理解だけでなく、標準的な実装(OpenSSL等の広く検証されたライブラリ)を使い、鍵長の推奨基準が更新されたら追従する、という基本姿勢の大切さを改めて示す出来事だと言えそうです。</p>\n\n</div>"
+        },
+        {
+          "type": "html",
+          "note": "用語解説",
+          "content": "<div style=\"font-size:16px; line-height:1.8; color:#333;\">\n\n<hr>\n<h3>用語解説</h3>\n<ul>\n<li><strong>RSA暗号</strong>: 公開鍵暗号方式の代表的な方式の一つ。大きな数の素因数分解の難しさを安全性の根拠にしている。</li>\n<li><strong>1024ビット/2048ビット(鍵長)</strong>: 暗号の鍵の長さを表す数値。長いほど解読に必要な計算量が増え、安全性が高くなる。1024ビットは現在では短すぎるとされ、2048ビット以上が推奨されている。</li>\n<li><strong>素因数分解</strong>: ある数を、それ以上分解できない「素数」の掛け算の形に分解すること。RSA暗号の安全性の根拠になっている計算の難しさ。</li>\n<li><strong>パディング</strong>: 暗号や署名の処理で、データの形式を整えるために付け加える決まった手順のこと。この手順に欠陥があると、意図しない弱点になることがある。</li>\n</ul>\n</div>"
+        }
+      ],
+      "sources": [
+        {
+          "title": "DeepMind AI Agents Find 2 Weaknesses in Legacy 1024-Bit RSA (FourWeekMBA)",
+          "url": "https://fourweekmba.com/ai-deepmind-ai-agents-find-2-weaknesses-in-legacy-1024-bit-rsa/"
+        },
+        {
+          "title": "Google DeepMind Says It Has Used AI Agents to Break Legacy RSA-1024 Encryption Faster Than Anyone Thought Possible (OfficeChai)",
+          "url": "https://officechai.com/ai/google-deepmind-says-it-has-used-ai-agents-to-break-legacy-rsa-1024-encryption-faster-than-anyone-thought-possible/"
+        },
+        {
+          "title": "AI Finds New Weaknesses in Cryptographic Algorithms, Anthropic Says (The Quantum Insider)",
+          "url": "https://thequantuminsider.com/2026/07/29/ai-finds-new-weaknesses-in-cryptographic-algorithms-anthropic-says/"
+        }
+      ],
+      "snsPost": {
+        "text": "「AIが暗号を破った」というニュース、実際どこまで本当？🔐🤖\n\nGoogle DeepMindが発表した、AIエージェントによるRSA-1024の弱点発見。『今の暗号が危険』という話ではなく、実はもっと大事な教訓がありました。\n\n詳しくはブログで📝"
+      }
     }
   ],
-  "updatedAt": "2026-11-08T00:48:48+00:00"
+  "updatedAt": "2026-11-09T00:51:08+00:00"
 }

@@ -5792,7 +5792,7 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "BLOG-003〜014の内容確認・画像生成をユーザーに依頼。X/Grok/Felo経由の新データソースが別ルームから追加された経緯を確認し、今後の役割分担(重複作業の防止)を整理する必要がある。",
+      "nextAction": "BLOG-003〜015の内容確認・画像生成をユーザーに依頼。次回以降は通常運転(新着があれば都度curation+必要に応じブログ化)を継続する。",
       "note": "ユーザー提案「この分析って別ルームでやったほうがいい気がするけどどうかな？今後ブログに乗せる記事は、別にしたほうが埋もれないかな」への対応(2026-10-31)。あわせて「servicenowの収集が終わったら気になる記事を記事用にまとめて保存してほしい」「記事を作成した際に、画像生成プロンプトもクリックでコピーできるようにしてほしい」「本文+画像生成プロンプト+SNS投稿文の3点をまとめて作成してほしい」という一連の指示を1つの日次ルームにまとめて反映した。",
       "detail": "CCRの`create_session`で新しいセッション(session_011sXeDkL7GLJJzVs7TBrjgz、source_url: progress-tracker-dashboard)を作成し、`create_trigger`で日次Routine(trig_011zBuNxpYB52P52yZwZaqsG、cron 45 0 * * * = JST 09:45、servicenow-sub-agentの収集ワークフローservicenow-export-research.yml(JST 09:30完了)の15分後)を自己バインドで設定した。日次の処理内容: ①servicenow-sub-agentのdata/research-items.jsonの未キュレーション項目(対象カテゴリ1,2,3,4,5,6,8,9、カテゴリ10除外)をResearchサブエージェント並列実行で選択的キュレーション(PTD-113と同じ基準・手順) ②新たにcurated:trueになった項目からAIが「特に注目すべき記事」を自動選定(件数の目安なし) ③選定項目ごとにdata/blog-articles.jsonへ記事本文(sections構成、用語解説含む)+画像生成プロンプト(imagePrompt、Geminiでの生成前提。抽象的・概念的表現で実在人物・企業ロゴ・キャラクターを避ける方針)+SNS投稿文案(snsPost.text、インスタ/X向け)の3点を同じタイミングでまとめて作成、の3段階。進捗記録(tasks.json/concept-log.json/credit-log.json)・mainへのマージもこのルーム自身が担当する。README.md「ルームマッピング」にも記録済み。",
       "output": "session_011sXeDkL7GLJJzVs7TBrjgz, trig_011zBuNxpYB52P52yZwZaqsG",
@@ -5828,6 +5828,10 @@
         {
           "date": "2026-11-07",
           "summary": "日次Routine6回目実行。research-items.jsonへ新たにX(Grok経由・Felo X Research経由)ソースの新着13件が追加されていたが、いずれも別セッション(推定: ai-lab系または別の調査ルーム)によって既にcurated:true・ブログ記事化(BLOG-005〜013の9本)まで完了済みと判明。重複作業を避けるため、まだどの記事にも使われていなかった1件(x-research-grok-2026-11-07-07『AIがAI自身の開発を加速させている(自己改善速度)への危機感』)のみを対象にした。元のX投稿の具体的な数字(社内開発速度2倍・8割がAI貢献)はSNS経由の未検証情報だったため、Web検索でAnthropic公式発表・複数の独立報道(The Decoder/Tom's Hardware/Shelly Palmer RSIスコアカード/aiweekly)を確認し、実際に裏付けられる数値(Q2コード生成量8倍、Claude主導コードマージ80%超、学習高速化3→52倍、AI主導R&D比率1%→26%、再帰的自己改善には未到達との公式見解)に基づいてBLOG-014を作成(先に他セッションがBLOG-005を使用していたためID重複を回避)。あわせて、この13件のC-id未割当(ai-trends-ids.json)もまとめて後追い割当(C-340〜C-352)。"
+        },
+        {
+          "date": "2026-11-08",
+          "summary": "日次Routine7回目実行。ServiceNow本来のパイプラインから11/7分の新着71件(カテゴリ10除くと63件)を確認し、サイズが小さかったためサブエージェント化せず司令塔(このルーム)が直接レビュー(大半がYouTube雑多動画・労働経済ニュース・空rawSummaryで根拠不足のため選定対象外)。8件をWeb検索で裏付けの上curated:true化しmain直接commit(curated 356→364)。前日の【相談】(X/Grok/Felo経由の新着との役割分担)について、manager-room-log.json(2026-11-08分)を確認したところ、X/Grok/Felo経由の調査はこのルーム以外の自動化された別パイプラインではなく、ユーザーが手動でFelo X Research/Grokを実行し、その結果を貼り付けられたマネージャールーム側が構造化・記録している(『外部ツールで実施→結果を貼り付け→Claudeが構造化』という既存パターン)ことが判明し、重複作業の懸念はおおむね解消。特に注目すべき記事として、DeepMindのRSA-1024暗号弱点発見(AIエージェントによる研究)を選定し、Web検索で裏付け済みの内容でBLOG-015を作成。あわせてai-trends-ids.jsonのC-id未割当12件(今回8件+11/8分のX-research4件)を後追い割当(C-353〜364)。"
         }
       ]
     },
