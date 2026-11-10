@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-11-08",
+  "updatedAt": "2026-11-10",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -16,7 +16,8 @@
         "【2026-10-03追記】Codex(`codex exec`)への委任は、現時点ではこのマネージャールームのコンテナ内でClaudeが必要と判断した都度手動実行する運用(自動振り分けではない)。独立した視点でのWeb調査・レビュー・並行処理で時短になるタスクは委任を検討してよいが、リポジトリ群の経緯理解が前提の実装はClaude側(このルーム/サブエージェント)が担当する。Codex CLIのログイン状態はセッション(コンテナ)限定で恒久化は未着手(CCX-001参照)。",
         "Codexへの委任の具体例(2026-10-04、mirai-journalのジャーナル分析機能で採用): ユーザーがGemini面談のトランスクリプトをClaudeへ貼り付け→Claudeがcodex execで分析(独立した視点でのレビュー・分析タスク)を委任→Claudeが結果をレビュー→問題なければClaudeが対象リポジトリのJSONへ直接commit、という役割分担。「独立した視点が有効な分析・レビュー作業はCodexに振り、リポジトリの文脈理解やJSON書き込みなど経緯の正確性が必要な最終判断はClaude側が担当する」という、ルール18/CCX-001の委任基準の具体的な適用例。",
         "【2026-11-07追記・実装着手前のタスク分解を可視化】ユーザー指摘「今、何をやってもらっているかが明確になっていなく、最終の成果物しかみていないから」への対応。GitHub製Spec Kit(仕様駆動開発フレームワーク)の`/plan`→`/tasks`の考え方を借り、④詳細設計が固まり実装に着手する前に具体的なタスク分解を行い、TaskCreateツールで明示的にタスク化してからTaskUpdateで進捗(in_progress/completed)を更新する運用に変更した(subagent-role-orchestrationスキル参照)。"
-      ]
+      ],
+      "managerRoomRotationNote": "マネージャールームは2026-11-10から、コスト抑制のため週1回を目安に新セッションへ作り直す運用になりました(詳細はCL-059参照)。"
     },
     "consultationFormat": {
       "title": "🗣 相談の出し方・確認のタイミング",
@@ -586,6 +587,18 @@
               "rationale": "分析(独立した視点が有効な作業)はCodexに、リポジトリへの書き込み(経緯の正確性が必要)はClaudeに、という役割分担。ChatGPTへの手動コピペ・新規GASデプロイの手間(設定画面が必要で面倒、とユーザー指摘)を避けつつ実現する。"
             }
           ]
+        }
+      },
+      "managerRoomRotation": {
+        "decidedAt": "2026-11-10",
+        "reason": "マネージャールーム自身(長時間休止しない対話セッション)が3ヶ月以上生き続け、累計コストの約73%がcache_read由来(過去のコンテキストの再処理)になっていたと判明したため(data/concept-log.jsonのCL-059参照)。",
+        "policy": "マネージャールームは、作成からおおよそ1週間を目安に新セッションへ作り直す(カレンダーベース、固定間隔)。週次ルームログ要約Routine(claude-voice-bridge担当)が採用している『コンテキスト使用率70%超えで切り替える』閾値ベースの方式とは異なり、マネージャールームは日次Routineを2本(マネージャールーム日次ログ・CLAUDE.md定期確認)抱えて毎日必ず動く性質上、閾値を待たず予防的に短い間隔でリセットする方式を選んだ。",
+        "procedure": "1. create_sessionで新しいマネージャールームを作成(source_url: progress-tracker-dashboard、permission_mode: acceptEdits)。引継ぎ用プロンプトで『data/manager-room-log.jsonを必ず読むこと』を明記する(CLAUDE.mdルール28の想定用途そのもの)。2. 『マネージャールーム日次ログ』『CLAUDE.md定期確認』の2つのRoutineを、delete_trigger→create_triggerで新セッションのpersistent_session_idへ付け替える(update_triggerはpersistent_session_idの変更に対応していないため)。3. 旧セッションはユーザーがこの後も直接会話する可能性があるため、自動ではarchive_sessionしない。ユーザーが『もう使わない』と判断したタイミングで片付ける。4. 他の管理対象リポジトリは新セッションへ最初から全部接続せず、必要になった時点でadd_repoする遅延接続方針とする(ただしgurii-gabreh/task-wbsは日次ログRoutineで毎回必要なため早期にadd_repoする)。",
+        "firstRotation": {
+          "date": "2026-11-10",
+          "oldSession": "session_019rBhvzqA7o5g8MjBA6dyCg",
+          "newSession": "session_011sXeDjZZ88m9HVDEfBSR6i",
+          "note": "日次ログRoutineの付け替えは完了。CLAUDE.md定期確認Routineの付け替えはユーザーにより1度拒否され、意図的かどうか確認中(data/tasks.jsonのPTD-131参照)。"
         }
       }
     },
