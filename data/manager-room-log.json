@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-11T00:19:16.098720+09:00",
+  "lastProcessedAt": "2026-11-11T01:24:26.017096+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -479,6 +479,18 @@
         "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
         "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。",
         "PTD-131: 「CLAUDE.md定期確認」トリガーの新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)への付け替えが1度拒否された。意図的な拒否か誤操作かをユーザーへ確認中(回答待ち)。回答が得られ次第、再試行するか別の進め方にするかを決める。"
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "generatedAt": "2026-11-11T01:24:26.017096+09:00",
+      "summary": "【新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)分】同日付の直前のentryは旧マネージャールーム(session_019rBhvzqA7o5g8MjBA6dyCg)自身の会話の記録。本entryは、週次ローテーションで新設されたこのルーム側の2026-11-10(JST)の記録であり、内容は重複しない。\n\n【新ルームの初回起動・引継ぎ確認】引継ぎプロンプトに従い、data/manager-room-log.json(当時entries39件、lastProcessedAt 2026-11-10T00:20:52+09:00)の直近entryとunresolvedCarriedOver(3件: servicenow-sub-agentのu_category \"11\"追加、Anthropic News取得失敗の対応可否、progress-tracker-dashboard非公開化の見送り)を確認し、ユーザーへ報告した。working treeはmainでクリーン。Task-WBSは日次ログRoutine発火時まで接続を遅延する方針とした。\n\n【「ルーティンはこれでかなり軽くなったか」の相談】ユーザーの質問に対し、get_sessionで新ルームの実測値(コンテキスト使用量113,632/1,000,000トークン=約11.4%、累計コスト約$0.65、cache_read 767,360・cache_write 113,630・output 4,036トークン)を提示した。起動直後で絶対量が小さいのは事実だが、旧ルームの「cache_read由来約73%」は3ヶ月分蓄積後の数字でありタイミングが異なるため単純比較はできず、ローテーションの効果は1週間後の引継ぎ直前の数値と旧ルーム最終盤の数値を比べて判断する、と回答した(ユーザーからの追加の返答は無し)。\n\n【本Routine(マネージャールーム日次ログ、新ルーム初回実行)の処理】(1)data/tasks.json(全270件)のdetailチェックで、AIL-011(GA4計測ID設定)のdetailが「GA4計測IDを実IDに設定完了。」の1文のみと極端に短かったため、AIL-001のcheckHistory/noteの事実(②基本設計でGA4採用、⑥運用・保守で運用基盤化、2026-11-07に実ID G-MYKH40KRW1を全ページへ設定)から書き起こして補完した。(2)credit-log.jsonは最終記録日2026-11-08以降の完了タスク(PTD-126・PTD-129・PTD-130・PTD-131)が全て記録済みで追記なし。(3)gurii-gabreh/task-wbsをadd_repo(push)で接続し突き合わせた結果、全270件が反映済み・status差分なしで変更なし(PTD-130/131は旧ルームのRoutineがコミットba3fb78で反映済み)。\n\n【重要な発見: トリガーの付け替えが未完了・日次ログRoutineが二重稼働】list_triggersで実際の状態を確認したところ、(a)旧ルーム側の日次ログトリガーtrig_01KWsnPeW7QcgTBKjUZYnDZVは引継ぎプロンプトの「旧セッション側で削除済み」という記載に反して有効なまま残っており、本日も旧ルームで15:16 UTCに発火していた(新ルーム側trig_013ikFJFo9uJtnc4PqHjSPb5は15:06 UTCに発火)。同一ファイルへ2つのRoutineが毎日書き込む状態で、ローテーションの目的(コスト削減)に反する。(b)CLAUDE.md定期確認trig_0134aaUtfW6p6HGFZ7HzaDMNも旧ルーム紐付けのまま(旧entryのPTD-131未解決事項と一致)。トリガーの削除・付け替えはユーザー確認が必要なため(ルール21)、本Routineでは変更せず報告に留めた。",
+      "unresolvedCarriedOver": [
+        "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
+        "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。",
+        "PTD-131: 「CLAUDE.md定期確認」トリガーの新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)への付け替えが1度拒否された。意図的な拒否か誤操作かをユーザーへ確認中(回答待ち)。回答が得られ次第、再試行するか別の進め方にするかを決める。",
+        "日次ログRoutineの二重稼働: 旧ルーム側trig_01KWsnPeW7QcgTBKjUZYnDZVが削除されず有効なまま(新ルーム側trig_013ikFJFo9uJtnc4PqHjSPb5と並行して毎日発火)。旧トリガーを削除(または無効化)するかユーザーの判断待ち。"
       ]
     }
   ]
