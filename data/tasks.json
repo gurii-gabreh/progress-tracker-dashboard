@@ -6423,6 +6423,42 @@
           "summary": "設計確認(AskUserQuestion)・実装・Playwright動作確認まで完了、designated branch経由でmainへマージ予定。"
         }
       ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-130",
+      "task": "「AI最新情報キュレーション+ブログ記事作成」日次ルーティンの自動実行を無効化(必要時手動実行へ変更)",
+      "priority": "中",
+      "status": "完了",
+      "updated": "2026-11-10",
+      "nextAction": "",
+      "note": "ユーザー相談「ちょっとクレジットが多くかかっているな、今のルーティンって何があるんだっけ?」への対応として5つの有効なScheduled Triggerを一覧化・コスト評価した結果、ユーザーが「1(AI最新情報キュレーション+ブログ記事作成)は、必要に応じてやる感じにしようか」と判断。",
+      "detail": "trig_011zBuNxpYB52P52yZwZaqsG(JST毎日0:45発火)をupdate_triggerでenabled:falseに変更した。トリガー本体・プロンプト内容は削除せず保持しているため、必要なタイミングでfire_triggerにより手動実行できる。",
+      "output": "trig_011zBuNxpYB52P52yZwZaqsG(enabled: false)",
+      "checkHistory": [
+        {
+          "date": "2026-11-10",
+          "summary": "update_triggerでenabled:falseに変更、完了。"
+        }
+      ]
+    },
+    {
+      "repo": "progress-tracker-dashboard",
+      "id": "PTD-131",
+      "task": "マネージャールームの週次ローテーション運用を開始(新ルーム作成・Routine付け替え)",
+      "priority": "中",
+      "status": "対応中",
+      "updated": "2026-11-10",
+      "nextAction": "「CLAUDE.md定期確認」トリガー(trig_0134aaUtfW6p6HGFZ7HzaDMN)の新ルームへの付け替えが1度拒否されたため、拒否が意図的なものか確認中。ユーザー回答待ち。",
+      "note": "クレジット使用量の相談から、このマネージャールーム自身(session_019rBhvzqA7o5g8MjBA6dyCg、2026-08-08作成、累計コスト約$2,315、うちcache_read由来が約73%)が3ヶ月以上休止せず肥大化し続けていることが判明。ユーザー「それなら、早速新規ルーム作成しようか、引継ぎ用のプロンプトを作成して」への対応。",
+      "detail": "新セッション session_011sXeDjZZ88m9HVDEfBSR6i をcreate_sessionで作成(source_url: progress-tracker-dashboard、permission_mode: acceptEdits、tags: manager-room-weekly-rotation)。引継ぎ用プロンプトには(1)週次ローテーション方針の経緯、(2)data/manager-room-log.jsonを必ず読むこと、(3)担当するRoutine一覧、(4)他リポジトリは遅延add_repo方針(ただしtask-wbsは早期add_repo推奨)、(5)designated branch運用の継続、(6)次回の週次ローテーション実施基準、を明記した。\n\nRoutineの付け替え: 「マネージャールーム日次ログ(全履歴)」はtrig_013ikFJFo9uJtnc4PqHjSPb5として新セッションへ作成完了(同じcron・同じプロンプト内容を踏襲)。一方「CLAUDE.md定期確認」の同様の新規作成(trig_0134aaUtfW6p6HGFZ7HzaDMNの付け替え)はユーザーにより拒否された(理由未確認、意図的か誤操作か確認中)。このため現時点では、日次ログRoutineのみ新ルームへ移行済みで、CLAUDE.md定期確認Routineは旧ルーム(このセッション)に残ったまま。",
+      "output": "session_011sXeDjZZ88m9HVDEfBSR6i, trig_013ikFJFo9uJtnc4PqHjSPb5",
+      "checkHistory": [
+        {
+          "date": "2026-11-10",
+          "summary": "新セッション作成・引継ぎプロンプト作成・日次ログRoutineの付け替え完了。CLAUDE.md定期確認Routineの付け替えはユーザーにより拒否され保留中。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"

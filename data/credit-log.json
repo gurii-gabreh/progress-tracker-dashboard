@@ -1164,6 +1164,18 @@
         "costUsd": 16.06415756
       },
       "rateLimitResetsAt": "2026-11-09T14:40:00+09:00"
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-130: AI最新情報ルーティンの日次自動実行を無効化",
+      "note": "trig_011zBuNxpYB52P52yZwZaqsGをenabled:falseへ変更、必要時手動実行(fire_trigger)方式へ。"
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-131: マネージャールーム週次ローテーション開始、新ルーム作成",
+      "note": "session_011sXeDjZZ88m9HVDEfBSR6iを作成、日次ログRoutine(trig_013ikFJFo9uJtnc4PqHjSPb5)を付け替え。CLAUDE.md定期確認Routineの付け替えは保留中。"
     }
   ]
 }

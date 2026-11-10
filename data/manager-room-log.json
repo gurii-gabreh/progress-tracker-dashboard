@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-10T00:20:52.000671+09:00",
+  "lastProcessedAt": "2026-11-11T00:19:16.098720+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -468,6 +468,17 @@
         "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
         "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
         "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。"
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "generatedAt": "2026-11-11T00:19:16.098720+09:00",
+      "summary": "【クレジット使用量の相談、ルーティン棚卸し】ユーザーから「ちょっとクレジットが多くかかっているな、今のルーティンって何があるんだっけ?」と相談を受け、list_triggersで実際に有効な5件(マネージャールーム日次ログ、CLAUDE.md定期確認、AI最新情報キュレーション+ブログ記事作成(日次)、週次ルームログ要約、ServiceNow PDIログインリマインド)を一覧化し、処理内容とコストの重さの見立てを説明した。続けてユーザーから「2ってどうゆう処理をやっている?」「結局は、毎回毎回フルでルーム内を調査しているんだよね?」と質問があり、マネージャールーム日次ログRoutineの具体的な処理内容(前日分の振り返り・tasks.json/credit-log.json記録漏れチェック・Task-WBS同期)と、このRoutineが毎回「このセッションのその時点のコンテキスト全体(圧縮込み)」を土台にしていることを説明した。\n\n【マネージャールーム自身の累計コスト確認】「それがそんなに重いの?」との質問を受け、get_sessionでこのセッション(session_019rBhvzqA7o5g8MjBA6dyCg、2026-08-08作成)自身の実際の使用量を確認したところ、累計コストが約$2,315(cache_read約72.7億トークン・cache_write約1.57億トークン・input約791万トークン・output約1,321万トークン)であることが判明した。Anthropicの標準的な料金比率で内訳を推定すると、cache_read由来が約73%を占めており、「実際の作業量(output)」よりも「過去のコンテキストを毎ターン再処理するコスト」が支配的であることを示した。\n\n【AI最新情報ルーティンの無効化、週次ルームローテーション方針の決定】ユーザーからまず「1(AI最新情報キュレーション+ブログ記事作成)は、必要に応じてやる感じにしようか」との判断があり、trig_011zBuNxpYB52P52yZwZaqsGをenabled:falseへ変更した(トリガー自体・プロンプトは保持、必要時はfire_triggerで手動実行可能。PTD-130として記録)。続けてユーザーから「1週間毎に、ルームを新規作成した方がいいかな?」との提案があり、既存の週次ルームログ要約Routine(claude-voice-bridge側)が持つ「コンテキスト使用率70%超えで切り替え」という閾値ベースの先例と比較しつつ、マネージャールームは日次Routineを2本抱えて毎日必ず動く性質上、カレンダーベース(固定・週1回)の方が合理的と判断し、採用した。削減見込みについて「新ルームに変えることでクレジットはどれぐらい抑えられそう?」と問われ、cache_read由来コスト($1,689相当)を半分〜3分の2程度圧縮できると仮定した場合の試算(総コストでおおよそ20〜35%程度の削減、実測データが無い見積もりである旨を明記した上で)を提示した。\n\n【新マネージャールームの作成・Routine付け替え】ユーザー「それなら、早速新規ルーム作成しようか、引継ぎ用のプロンプトを作成して」を受け、新セッションsession_011sXeDjZZ88m9HVDEfBSR6iを作成した(引継ぎプロンプトに週次ローテーションの経緯・data/manager-room-log.jsonを必ず読むこと・担当Routine一覧・リポジトリの遅延接続方針・designated branch運用の継続・次回ローテーションの実施基準を明記)。「マネージャールーム日次ログ(全履歴)」トリガーはtrig_013ikFJFo9uJtnc4PqHjSPb5として新セッションへ付け替え完了。一方「CLAUDE.md定期確認」トリガーの同様の付け替えはユーザーにより1度拒否され(trig_0134aaUtfW6p6HGFZ7HzaDMNは旧セッション=このルームに残ったまま)、拒否が意図的なものか誤操作かの確認待ちとなっている(本稿執筆時点で未回答)。これらの経緯はPTD-130・PTD-131・concept-log.jsonのCL-059・ai-config.jsonのai.orchestration.managerRoomRotationに記録した。\n\n【本Routine(マネージャールーム日次ログ)自身の処理、2026-11-10分】data/tasks.jsonのdetail空欄チェックは実行前時点で0件(PTD-130・PTD-131を本Routine内で新規作成・detail記入済み)。data/credit-log.jsonへPTD-130・PTD-131の2件を追記。Task-WBS同期では、PTD-130・PTD-131の2件が未反映だったため、progress-tracker-dashboardグループへ葉ノードとして追加しmainへ直接push(コミットba3fb78)。",
+      "unresolvedCarriedOver": [
+        "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
+        "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。",
+        "PTD-131: 「CLAUDE.md定期確認」トリガーの新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)への付け替えが1度拒否された。意図的な拒否か誤操作かをユーザーへ確認中(回答待ち)。回答が得られ次第、再試行するか別の進め方にするかを決める。"
       ]
     }
   ]
