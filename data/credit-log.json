@@ -1189,6 +1189,13 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-126: Felo/Grok経由のX調査ルーティン、Grok経由4件追加キュレーション",
       "note": "Boris Cherny氏の発言拡散・Cursorマルチプレイヤー・大規模OSS Harness・公開売上データの逆解析の4件をresearch-items.jsonへ追加(コミットf989dbf)。URLの無い2トピックは不採用。"
+    },
+    {
+      "date": "2026-11-13",
+      "time": "01:27",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-126: Felo経由の裏付け確認済み2件を追加",
+      "note": "robots.txt共通トークン・パーソル総研32.4%の2件をresearch-items.jsonへ追加(コミットff3a87b)。キュレーション基準を報道・公式URLまで拡張。"
     }
   ]
 }
