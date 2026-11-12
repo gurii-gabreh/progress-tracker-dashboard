@@ -6448,15 +6448,19 @@
       "task": "マネージャールームの週次ローテーション運用を開始(新ルーム作成・Routine付け替え)",
       "priority": "中",
       "status": "対応中",
-      "updated": "2026-11-10",
-      "nextAction": "「CLAUDE.md定期確認」トリガー(trig_0134aaUtfW6p6HGFZ7HzaDMN)の新ルームへの付け替えが1度拒否されたため、拒否が意図的なものか確認中。ユーザー回答待ち。",
+      "updated": "2026-11-12",
+      "nextAction": "「CLAUDE.md定期確認」トリガー(trig_0134aaUtfW6p6HGFZ7HzaDMN)の新ルームへの付け替えは、ユーザーの拒否が意図的なものか確認中のため保留のまま。日次ログRoutineの二重稼働は解消済み。",
       "note": "クレジット使用量の相談から、このマネージャールーム自身(session_019rBhvzqA7o5g8MjBA6dyCg、2026-08-08作成、累計コスト約$2,315、うちcache_read由来が約73%)が3ヶ月以上休止せず肥大化し続けていることが判明。ユーザー「それなら、早速新規ルーム作成しようか、引継ぎ用のプロンプトを作成して」への対応。",
-      "detail": "新セッション session_011sXeDjZZ88m9HVDEfBSR6i をcreate_sessionで作成(source_url: progress-tracker-dashboard、permission_mode: acceptEdits、tags: manager-room-weekly-rotation)。引継ぎ用プロンプトには(1)週次ローテーション方針の経緯、(2)data/manager-room-log.jsonを必ず読むこと、(3)担当するRoutine一覧、(4)他リポジトリは遅延add_repo方針(ただしtask-wbsは早期add_repo推奨)、(5)designated branch運用の継続、(6)次回の週次ローテーション実施基準、を明記した。\n\nRoutineの付け替え: 「マネージャールーム日次ログ(全履歴)」はtrig_013ikFJFo9uJtnc4PqHjSPb5として新セッションへ作成完了(同じcron・同じプロンプト内容を踏襲)。一方「CLAUDE.md定期確認」の同様の新規作成(trig_0134aaUtfW6p6HGFZ7HzaDMNの付け替え)はユーザーにより拒否された(理由未確認、意図的か誤操作か確認中)。このため現時点では、日次ログRoutineのみ新ルームへ移行済みで、CLAUDE.md定期確認Routineは旧ルーム(このセッション)に残ったまま。",
-      "output": "session_011sXeDjZZ88m9HVDEfBSR6i, trig_013ikFJFo9uJtnc4PqHjSPb5",
+      "detail": "新セッション session_011sXeDjZZ88m9HVDEfBSR6i をcreate_sessionで作成(source_url: progress-tracker-dashboard、permission_mode: acceptEdits、tags: manager-room-weekly-rotation)。引継ぎ用プロンプトには(1)週次ローテーション方針の経緯、(2)data/manager-room-log.jsonを必ず読むこと、(3)担当するRoutine一覧、(4)他リポジトリは遅延add_repo方針(ただしtask-wbsは早期add_repo推奨)、(5)designated branch運用の継続、(6)次回の週次ローテーション実施基準、を明記した。\n\nRoutineの付け替え: 「マネージャールーム日次ログ(全履歴)」はtrig_013ikFJFo9uJtnc4PqHjSPb5として新セッションへ作成完了(同じcron・同じプロンプト内容を踏襲)。一方「CLAUDE.md定期確認」の同様の新規作成(trig_0134aaUtfW6p6HGFZ7HzaDMNの付け替え)はユーザーにより拒否された(理由未確認、意図的か誤操作か確認中)。このため現時点では、日次ログRoutineのみ新ルームへ移行済みで、CLAUDE.md定期確認Routineは旧ルーム(このセッション)に残ったまま。\n\n【2026-11-12追記・二重稼働の発見と解消】CLAUDE.md定期確認トリガーの付け替え拒否により、旧トリガー(trig_01KWsnPeW7QcgTBKjUZYnDZV、旧ルーム=このセッション紐付け)を削除し忘れたまま新トリガー(trig_013ikFJFo9uJtnc4PqHjSPb5、新ルーム紐付け)を作成していたため、2026-11-10〜12の3日間、日次ログRoutineが新旧両方のルームで並行して発火していたことが判明した(新ルーム側は既にこの問題をmanager-room-log.jsonの11/11分entryで【相談】として提示済み)。実害(manager-room-log.jsonへの重複entry等)は発生していなかったため、旧トリガーtrig_01KWsnPeW7QcgTBKjUZYnDZVをdelete_triggerで削除し解消した。以後、日次ログRoutineは新ルーム(trig_013ikFJFo9uJtnc4PqHjSPb5)のみが担当する。",
+      "output": "session_011sXeDjZZ88m9HVDEfBSR6i, trig_013ikFJFo9uJtnc4PqHjSPb5(旧trig_01KWsnPeW7QcgTBKjUZYnDZVは2026-11-12削除)",
       "checkHistory": [
         {
           "date": "2026-11-10",
           "summary": "新セッション作成・引継ぎプロンプト作成・日次ログRoutineの付け替え完了。CLAUDE.md定期確認Routineの付け替えはユーザーにより拒否され保留中。"
+        },
+        {
+          "date": "2026-11-12",
+          "summary": "日次ログRoutineの二重稼働(新旧両ルームで並行発火)を発見、旧トリガーを削除して解消。CLAUDE.md定期確認の付け替えは引き続きユーザー回答待ち。"
         }
       ]
     }

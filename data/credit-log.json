@@ -1176,6 +1176,12 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-131: マネージャールーム週次ローテーション開始、新ルーム作成",
       "note": "session_011sXeDjZZ88m9HVDEfBSR6iを作成、日次ログRoutine(trig_013ikFJFo9uJtnc4PqHjSPb5)を付け替え。CLAUDE.md定期確認Routineの付け替えは保留中。"
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-131: 日次ログRoutineの二重稼働を解消",
+      "note": "新旧マネージャールーム双方に日次ログトリガーが紐付いていたことが判明、旧トリガー(trig_01KWsnPeW7QcgTBKjUZYnDZV)をdelete_triggerで削除。"
     }
   ]
 }
