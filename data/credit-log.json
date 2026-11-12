@@ -1202,6 +1202,13 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-131: CLAUDE.md定期確認トリガーを新ルームへ付け替え、週次ローテーション初回移行完了",
       "note": "ユーザー確認の上trig_01B8WDLsp3nkR7hYoSWiq9tVを新ルームへ作成、旧trig_0134aaUtfW6p6HGFZ7HzaDMNを削除。"
+    },
+    {
+      "date": "2026-11-13",
+      "time": "01:37",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-132: AI最新情報・社会課題タブへの未反映分の一括キュレーション",
+      "note": "research-items.json 24件キュレーション(364→388)、category6-issues.json 113件追加(680→793)、カテゴリ8〜11の定義追加。Researchサブエージェント4体並列。コミットdf85b9c・26f7448。"
     }
   ]
 }
