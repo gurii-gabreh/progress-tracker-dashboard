@@ -1196,6 +1196,12 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-126: Felo経由の裏付け確認済み2件を追加",
       "note": "robots.txt共通トークン・パーソル総研32.4%の2件をresearch-items.jsonへ追加(コミットff3a87b)。キュレーション基準を報道・公式URLまで拡張。"
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-131: CLAUDE.md定期確認トリガーを新ルームへ付け替え、週次ローテーション初回移行完了",
+      "note": "ユーザー確認の上trig_01B8WDLsp3nkR7hYoSWiq9tVを新ルームへ作成、旧trig_0134aaUtfW6p6HGFZ7HzaDMNを削除。"
     }
   ]
 }
