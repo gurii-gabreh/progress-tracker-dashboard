@@ -1182,6 +1182,13 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-131: 日次ログRoutineの二重稼働を解消",
       "note": "新旧マネージャールーム双方に日次ログトリガーが紐付いていたことが判明、旧トリガー(trig_01KWsnPeW7QcgTBKjUZYnDZV)をdelete_triggerで削除。"
+    },
+    {
+      "date": "2026-11-13",
+      "time": "01:25",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-126: Felo/Grok経由のX調査ルーティン、Grok経由4件追加キュレーション",
+      "note": "Boris Cherny氏の発言拡散・Cursorマルチプレイヤー・大規模OSS Harness・公開売上データの逆解析の4件をresearch-items.jsonへ追加(コミットf989dbf)。URLの無い2トピックは不採用。"
     }
   ]
 }
