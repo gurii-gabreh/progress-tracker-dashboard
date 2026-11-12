@@ -6463,6 +6463,30 @@
           "summary": "日次ログRoutineの二重稼働(新旧両ルームで並行発火)を発見、旧トリガーを削除して解消。CLAUDE.md定期確認の付け替えは引き続きユーザー回答待ち。"
         }
       ]
+    },
+    {
+      "id": "PTD-132",
+      "title": "AI最新情報・社会課題タブへの未反映分の一括キュレーション",
+      "task": "11/10の日次キュレーションRoutine無効化(PTD-130)以降、ダッシュボードの🤖AI最新情報・💡社会課題・ニーズに反映されていなかったservicenow-sub-agentの新着を一括で反映する",
+      "repo": "servicenow-sub-agent",
+      "category": "research",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザーへ完了扱いの確認(ルール30)。research-items.json内のsysId重複10組の扱いを相談。",
+      "note": "ユーザー質問「キュレーションが止まるということは、マネージャアプリに反映できていないってこと?」への回答で、dashboard.htmlのAI最新情報タブがcurated:trueのみを表示すること、PTD-130のRoutine無効化以降キュレーションが止まっていたことを確認。ユーザー指示「今あるキュレーションを全て反映して」を受け、AskUserQuestionで範囲を確認(AI最新情報=いつも通り厳選、社会課題タブ=新着も追加する)。",
+      "detail": "servicenow-sub-agentのresearch-items.jsonで11/9以降に収集された未要約(カテゴリ6以外)のうちスコア上位80件をResearchサブエージェント2体で並列に読み、24件を厳選してsummaryJa/pointsJa/applicableTechJaを付与した(curated 364→388)。カテゴリ6は10/31作成のcategory6-issues.jsonに未収録だった113件(11/6〜11/12収集分。当初想定の11/9以降52件に加え11/6〜11/8分61件も未反映だったため全件対象)を、Researchサブエージェント2体でsummaryPoints/issuePointsを抽出し追加した(680→793件)。書き込みは司令塔がPythonで行い、対象以外の既存項目が一切変わっていないことをインデックス単位で検証した(途中でresearch-items.jsonにsysId重複が10組あることが判明し、sysId単位の照合が誤判定したため検証方法を修正)。servicenow-sub-agentのmainへ直接push(コミットdf85b9c)し、raw.githubusercontent.com側で388件/793件を確認、dashboard.htmlをPlaywrightでPC幅1400px・モバイル幅390pxの両方で表示しエラーが無いことを確認した。",
+      "output": "servicenow-sub-agent: data/research-items.json(curated +24)、data/category6-issues.json(+113件)",
+      "updated": "2026-11-13",
+      "checkHistory": [
+        {
+          "date": "2026-11-13",
+          "summary": "24件キュレーション+カテゴリ6の113件追加、ダッシュボード表示確認まで実施。完了扱いはユーザー確認待ち。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"
