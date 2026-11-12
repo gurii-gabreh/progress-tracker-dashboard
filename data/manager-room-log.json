@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-12T00:05:40.850284+09:00",
+  "lastProcessedAt": "2026-11-13T00:04:51.967817+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -497,6 +497,19 @@
       "date": "2026-11-11",
       "generatedAt": "2026-11-12T00:05:40.850284+09:00",
       "summary": "【新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)分】旧マネージャールームが同日分を別entryで記録する可能性があるため、こちらは新ルーム側の会話のみを対象とする。\n\n【日次ログRoutine(11/10分)の結果報告と相談】日付が変わった直後(JST 01:24頃)に、前日分の日次ログRoutine処理(11/10分entry追記、AIL-011のdetail補完、Task-WBS差分なし、コミット0bb414d)の結果を報告した。あわせて、list_triggersで判明した「旧ルーム側の日次ログトリガーtrig_01KWsnPeW7QcgTBKjUZYnDZVが削除されず二重稼働している」「CLAUDE.md定期確認trig_0134aaUtfW6p6HGFZ7HzaDMNが旧ルーム紐付けのまま」の2点について、①旧トリガーを削除か無効化か、②CLAUDE.md定期確認を新ルームへ付け替えるか、を【相談11/11 01:24:39】として提示した(旧ルームでの会話が記録されなくなる懸念も添付)。本日中にユーザーからの回答は無く未解決。\n\n【英会話レッスンレポートの記録】ユーザーから「昨日のレッスンです、いつものとおりまとめてください」と、初級英会話・フレーズ練習＋フリートーク「Daily Feelings and My Day(体調と今日の出来事)」(講師Alex、約13分34秒)のレポートが貼り付けられた。manager-room-log.jsonの過去分(10/19・10/23・10/29・11/7)から、ESA-002の既存フロー(English-Speaking-Appのdata/lessons.jsonへ既存entrySchemaで追記、main直push、PTD側tasks.jsonへの個別記録はしない)を確認し、English-Speaking-Appをadd_repo(push)で接続して記録した。表現5件(I am thirsty./I need more water./I worked on an app today./My job was very hard today./I want to improve my English speaking skills.)、訂正5件(need to water→need more water、working day→a workday、My job very hard→was very hard、want more talking…→I want to talk with you more.、many food→many different kinds of food。レポート上は7件あったがentrySchemaの上限5件に合わせ、残り2件は表現・宿題側でカバー)、宿題(次回の復習ポイント4文)、レポート原文を収録。lessons.htmlをPlaywrightでPC幅1400px・モバイル幅390pxの両方で表示確認しエラー無し(コミット98be8c9)。レポート上の日付は11/11だったが、現在時刻(11/11 01:26 JST)と「昨日のレッスン」という発言の食い違いを確認したところ、ユーザーから「10にして」との指示があり、id/dateをlesson-2026-11-10-01/2026-11-10へ修正した(rawReportは原文のまま保持、コミット38d5a25)。\n\n【Felo経由のX上AIトレンド調査の評価】ユーザーからFelo AIで調べた「直近1〜2週間のX上のAI・開発関連トレンド」の結果が貼り付けられ「なにかひろえそうなものはある?」と相談があった。11/9に旧ルームで採用したキュレーション基準(実在するX投稿URLが必要)に照らすと、Felo自身が「X上の個別投稿は確認できなかった」と明記しており出典URLが1件も無いため、そのまま採用できるものはゼロと回答した。あわせて「Gemini 4 Carbon」「GPT-6.1 Terra」等のモデル名は確認できない、OpenAIの資金調達目標・Grok Imagine 1.0・32.4%等の数字は出典無しで一次確認が必要、と指摘した。拾う価値がありそうな候補として、(1)robots.txtでのAI学習拒否の一括指定、(2)非エンジニアによるClaude Code業務自動化、(3)生成AI活用率32.4%と活用事例19選、の3点を挙げた。\n\n【robots.txtの解説】ユーザーから「robots.txtってなに?」と質問があり、WebSearchでRFC 9309等を確認した上で、サイトのルートに置いてクローラーに取得しないよう「お願い」するファイルであること、GPTBot・ClaudeBot等の名前指定でAI学習拒否の意思表示に使われていること、RFC 9309が「アクセス許可の仕組みではない」と明記しており強制力は無いこと(守らないクローラーの例も報告されている)、ブログ(naruya0724.com)やGitHub Pagesアプリにも関係することを説明した。developers.google.comはネットワーク設定で開けなかった旨も報告した。\n\n【3点の一次情報確認(Researchサブエージェント3並列)】ユーザーの「確認して」を受け、独立した3調査をResearchサブエージェントで並列実行した。(1)robots.txt: 2026年10月30日(米国時間)にOpenAI・Google・Microsoft等が共通トークン`__usage_ai-training`(User-agent行に書いてDisallow: /)への対応を表明し、ITmediaが11/1に報道。IETF個人ドラフトdraft-kelley-aipref-training-preference-signal-00が元で正式標準ではなく、取得自体を止める仕組みではない。対応時期は報道により差(Bingは2027年2月1日〜等)、11/1時点で実際に従う企業は公式未確認との解説もあり、当面は名前指定の従来方式が確実。重要な結果のため司令塔自身も別途WebSearchで日付・内容・ドラフト名の一致を確認した(確信度 中〜高)。(2)非エンジニアのClaude Code業務自動化: 導入支援会社のブログ(Uravation・genai-ai.co.jp等)は多数あるが報道・Anthropic公式事例は無く、「面談報告書」の事例そのものも見つからず、元記事は特定できなかった(確信度 低、不採用推奨)。(3)32.4%: パーソル総合研究所「生成AIとはたらき方に関する実態調査」(調査2025年10月24〜28日、公表2026年2月3日)の数字として実在。ただしFeloの「2026年現在」は不正確で、「ChatGPT/Geminiが主流」「活用事例19選」は確認できなかった。いずれも一次ページ(ietf.org、各社公式、persol-group.co.jp等)はネットワーク制限で開けず、WebSearch要約ベースである旨を明記した。結果を踏まえ、記録するか・記録先をどうするか(①1と3を報道URLを出典としてservicenow-sub-agentのresearch-items.jsonへ記録し基準を「X投稿URLまたは信頼できる報道URL」に拡張する、②基準を変えず今回は記録しない)を【相談11/11 01:35:40】として提示した。本日中にユーザーからの回答は無く未解決。\n\n【本Routine(マネージャールーム日次ログ、11/11分)の処理】data/tasks.json(全272件)のdetailチェックで、KIZ-009(土砂キキクル詳細データの取得手段確認)のdetailが1文のみだったため、completedItems/checkHistoryの事実から補完した。credit-log.jsonは最終記録日2026-11-10以降の未反映の完了タスク無し。Task-WBS同期は全272件反映済み・status差分なしで変更なし。",
+      "unresolvedCarriedOver": [
+        "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
+        "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断により今回は見送り・現状維持。将来的に再検討する可能性あり。",
+        "PTD-131: 「CLAUDE.md定期確認」トリガーの新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)への付け替えが1度拒否された。意図的な拒否か誤操作かをユーザーへ確認中(回答待ち)。回答が得られ次第、再試行するか別の進め方にするかを決める。",
+        "日次ログRoutineの二重稼働: 旧ルーム側trig_01KWsnPeW7QcgTBKjUZYnDZVが削除されず有効なまま(新ルーム側trig_013ikFJFo9uJtnc4PqHjSPb5と並行して毎日発火)。旧トリガーを削除(または無効化)するかユーザーの判断待ち。",
+        "【相談11/11 01:35:40】Felo調査の確認結果(robots.txtの共通トークン`__usage_ai-training`・パーソル総研32.4%)をservicenow-sub-agentのresearch-items.jsonへ記録するか(キュレーション基準を報道URLまで広げるか)、ユーザーの回答待ち。robots.txtをブログ等へ導入するかは別途相談予定。"
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "generatedAt": "2026-11-13T00:04:51.967817+09:00",
+      "summary": "(この日は対象の会話なし)【新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)分】JST 00:05に前日(11/11)分の日次ログRoutineの結果を報告したのみで、ユーザーとの会話は無かった。本Routineの記録漏れチェック(tasks.json全272件のdetail、credit-log.json、Task-WBS同期)はいずれも差分なし。",
       "unresolvedCarriedOver": [
         "servicenow-sub-agentのu_ai_research_itemテーブル、u_category Choiceリストへの\"11\"(開発の失敗談・よくあるエラー)の追加。ServiceNow Studio側でのユーザーの手動作業が必要。",
         "servicenow-sub-agentの既存情報源「Anthropic News」が、サイト側のHTML構造変更により取得失敗していることが判明。対応するかどうか、ユーザーの回答待ち。",
