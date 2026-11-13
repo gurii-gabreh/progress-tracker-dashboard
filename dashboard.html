@@ -417,6 +417,17 @@
   .research-overview-collapse > summary::before { content: "▶ "; }
   .research-overview-collapse[open] > summary::before { content: "▼ "; }
   .research-overview-collapse .tab-page-overview { margin: 6px 0 0; }
+  /* 2026-11-14追加、ユーザー指示「フィルタは折り畳めるようにして、不要なところは折り畳めるようにしたい(スマホの画面は小さいため)」。
+     絞り込み欄(.relations-controls)と更新日・件数の情報行(.policy-meta)を、下のJS(setupAutoCollapse)が<details class="auto-collapse">で包む。
+     見た目は既存の「ℹ️ このページについて」(.research-overview-collapse)に揃える。 */
+  .auto-collapse { margin: 0 0 8px; }
+  .auto-collapse > summary { font-size: 12.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; padding: 2px 0; }
+  .auto-collapse > summary::-webkit-details-marker { display: none; }
+  .auto-collapse > summary::before { content: "▶ "; }
+  .auto-collapse[open] > summary::before { content: "▼ "; }
+  .auto-collapse > summary .auto-collapse-badge { margin-left: 6px; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: #fff; }
+  .auto-collapse > .relations-controls { margin-top: 6px; }
+  .auto-collapse > .policy-meta { margin-top: 4px; }
   .devdocs-concern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; margin-bottom: 8px; }
   .devdocs-concern-card.novel { border-color: var(--status-running-fg, #d97706); }
   .devdocs-concern-card .concern-id { font-size: 10px; color: var(--accent); }
@@ -7556,4 +7567,64 @@
       });
   }
   loadHealthChecksData();
+
+  // 2026-11-14追加、ユーザー指示「フィルタは折り畳めるようにして、不要なところは折り畳めるようにしたい(スマホの画面は小さいため)」。
+  // 絞り込み欄(.relations-controls、select/テキスト入力を含むもののみ)と更新日・件数の情報行(.policy-meta)を<details>で包む。
+  // 初期状態はスマホ(640px以下)は閉じる・PCは開く(ユーザー選択)。エラー一覧のように後から描画される欄もMutationObserverで拾う。
+  // 再描画で包み直しても、そのページを開いている間はユーザーが切り替えた開閉状態を保つ。
+  (function setupAutoCollapse() {
+    const isMobile = window.matchMedia("(max-width: 640px)");
+    const openState = new Map();
+    const isFiltering = (el) =>
+      [...el.querySelectorAll("select")].some((s) => s.options.length && s.options[0].value === "" && s.value !== "") ||
+      [...el.querySelectorAll('input[type="text"], input[type="search"]')].some((i) => i.value.trim() !== "") ||
+      el.querySelector(".manager-subview-btn.active") !== null;
+    const updateBadge = (details, el) => {
+      let badge = details.querySelector(":scope > summary .auto-collapse-badge");
+      const on = isFiltering(el);
+      if (on && !badge) {
+        badge = document.createElement("span");
+        badge.className = "auto-collapse-badge";
+        badge.textContent = "絞り込み中";
+        details.firstElementChild.appendChild(badge);
+      } else if (!on && badge) {
+        badge.remove();
+      }
+    };
+    const wrap = (el, label, kind) => {
+      const parent = el.parentNode;
+      if (!parent || (parent.classList && parent.classList.contains("auto-collapse"))) return;
+      if (kind === "filter" && !el.querySelector('select, input[type="text"], input[type="search"]')) return;
+      const firstId = el.id || (el.querySelector("[id]") || {}).id || "";
+      const key = `${kind}:${firstId}`;
+      const details = document.createElement("details");
+      details.className = "auto-collapse";
+      const summary = document.createElement("summary");
+      summary.textContent = label;
+      details.appendChild(summary);
+      parent.insertBefore(details, el);
+      details.appendChild(el);
+      details.open = openState.has(key) ? openState.get(key) : !isMobile.matches;
+      details.addEventListener("toggle", () => openState.set(key, details.open));
+      if (kind === "filter") {
+        const update = () => updateBadge(details, el);
+        el.addEventListener("change", update);
+        el.addEventListener("input", update);
+        el.addEventListener("click", () => setTimeout(update, 0));
+        update();
+      }
+    };
+    const scan = (root) => {
+      root.querySelectorAll(".relations-controls").forEach((el) => wrap(el, "🔎 絞り込み", "filter"));
+      root.querySelectorAll(".policy-meta").forEach((el) => wrap(el, "📊 更新日・件数", "meta"));
+    };
+    scan(document);
+    new MutationObserver((mutations) => {
+      mutations.forEach((m) => m.addedNodes.forEach((n) => {
+        if (n.nodeType !== 1) return;
+        if (n.matches(".relations-controls, .policy-meta")) scan(n.parentNode);
+        else if (n.querySelector(".relations-controls, .policy-meta")) scan(n);
+      }));
+    }).observe(document.body, { childList: true, subtree: true });
+  })();
 </script>
