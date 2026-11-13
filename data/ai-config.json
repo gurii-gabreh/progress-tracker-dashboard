@@ -499,7 +499,7 @@
     },
     "managerRoomDailyLog": {
       "title": "📅 マネージャールーム日次ログ",
-      "overview": "毎日JST 0:00に発火するRoutine(trig_01KWsnPeW7QcgTBKjUZYnDZV)が、前日分のこのルームでの会話全体(未解決・解決済み問わず)をdata/manager-room-log.jsonへ時系列で要約・追記する仕組み(2026-10-03追加、ユーザー指示)。新規セッション・他のルームへ引き継ぐ際はまずこのファイルを確認する。",
+      "overview": "毎日JST 0:00に発火するRoutine「マネージャールーム日次ログ(全履歴)」(現在のマネージャールームに紐付く。週次ローテーションで付け替わるためIDは固定で書かない、2026-11-14変更)が、前日分のこのルームでの会話全体(未解決・解決済み問わず)をdata/manager-room-log.jsonへ時系列で要約・追記する仕組み(2026-10-03追加、ユーザー指示)。新規セッション・他のルームへ引き継ぐ際はまずこのファイルを確認する。",
       "points": [
         "対象はこのマネージャールーム(CCRセッション)自身の会話。claude-voice-bridge経由のroom-log.json/weekly-digest.jsonとは別物",
         "要約に加えて、毎回3つの記録漏れチェックも行う: ①tasks.jsonで完了なのにdetail空欄のタスクが無いか、②credit-log.jsonの記録漏れが無いか、③Task-WBSの「各アプリ作成」ノードとPTD側の未完了タスクに差分が無いか",
@@ -1209,7 +1209,7 @@
         "date": "2026-10-03",
         "summary": "このルールがCLAUDE.mdやpolicy.jsonに明記されておらず、credit-log.json自身のdescriptionとdashboard.htmlの説明文にしか書かれていなかったため、2026-08-20〜10-03の約1ヶ月半、どのセッションもルールの存在に気づけず記録が完全に止まっていた。ユーザー指摘により発覚し、claude-core-rules.mdへルールを明記、tasks.jsonの完了日・repo・taskを元に遡及backfillした。"
       },
-      "preventionMechanism": "毎日JST 0:00のRoutine(trig_01KWsnPeW7QcgTBKjUZYnDZV、data/manager-room-log.json担当)が、credit-log.jsonの最終記録日以降に完了したタスクが未反映のまま残っていないかも毎回チェックする。"
+      "preventionMechanism": "毎日JST 0:00のRoutine「マネージャールーム日次ログ(全履歴)」(現在のマネージャールームに紐付く、data/manager-room-log.json担当)が、credit-log.jsonの最終記録日以降に完了したタスクが未反映のまま残っていないかも毎回チェックする。"
     },
     "messageFormatting": {
       "rule": "チャット本文内では、地の文(通常の回答・質問・相談)・実装したコード/設定値そのもの・作業中の進捗報告の3種類を視覚的に区別して書くこと。",
@@ -1224,7 +1224,7 @@
     },
     "managerRoomDailyLog": {
       "repo": "gurii-gabreh/progress-tracker-dashboard",
-      "triggerId": "trig_01KWsnPeW7QcgTBKjUZYnDZV",
+      "triggerId": "固定しない(2026-11-14変更)。週次ローテーションのたびに新しいマネージャールームへ付け替えられるため、現在のIDはlist_triggersでRoutine名「マネージャールーム日次ログ(全履歴)」を探して確認する。旧IDはtrig_01KWsnPeW7QcgTBKjUZYnDZV(旧ルーム、2026-11-13削除済み)。",
       "schedule": "毎日JST 0:00",
       "description": "前日分のmanager-room会話全体を要約し、data/manager-room-log.jsonのentries配列へ追記する。tasks.json detail空欄・credit-log記録漏れ・Task-WBS同期の3点も毎回チェックする。",
       "incident": {
