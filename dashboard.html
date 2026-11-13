@@ -157,6 +157,13 @@
   .manager-subview-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .manager-subview { display: none; flex: 1 1 auto; min-height: 0; flex-direction: column; }
   .manager-subview.active { display: flex; }
+  /* 2026-11-14追加、ユーザー指摘「スマホで見るとページがスマホ画面に対応していないものがある」。
+     サブタブが多いタブ(調査資料7個・開発資料9個)では、携帯幅でボタンが詰め込まれて1文字ずつ縦に折り返していた。
+     開発アプリ一覧の.appdev-stage-sidebarと同じく、1行の横スクロールにする(rule23)。 */
+  @media (max-width: 640px) {
+    .manager-subview-toggle { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+    .manager-subview-btn { flex: 0 0 auto; white-space: nowrap; }
+  }
 
   /* 🏠 一覧タブ(2026-08-13追加)。タブ数が増えてきたためのナビゲーションハブ。my-dashboardの
      「🏠一覧」カードグリッドと同じ考え方で、各タブへのショートカットカードを並べる。 */
@@ -381,7 +388,14 @@
      research-tableの他の用途(テスト一覧等、クリック動作を持たない表)には影響させないよう
      .issuelog-rowにだけcursor:pointerを付ける。 */
   .research-table tr.issuelog-row { cursor: pointer; }
-  .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .research-copy-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; padding: 8px 16px 0; }
+  /* 2026-11-14追加: 携帯幅で絞り込み欄のラベルが1文字ずつ縦に折り返し、長い選択肢を持つselectが画面外へはみ出していた。
+     ラベルを「見出し+入力欄」の縦並び・横幅いっぱいにする。 */
+  @media (max-width: 640px) {
+    .research-filter-bar { gap: 8px; }
+    .research-filter-bar label { flex: 1 1 100%; flex-direction: column; align-items: stretch; gap: 3px; min-width: 0; white-space: nowrap; }
+    .research-filter-bar select, .research-filter-bar input[type="text"] { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+  }
   .research-copy-bar .count { font-size: 11.5px; color: var(--text-muted); }
   /* 2026-10-24追加、ユーザー指示: ①一番左に「閲覧済み」チェック欄を追加(保存チェックの左)
      ②閲覧済みにチェックした行はグレーアウト、ただし「保存」チェックが入っている行は対象外
