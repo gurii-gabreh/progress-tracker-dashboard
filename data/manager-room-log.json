@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-13T00:04:51.967817+09:00",
+  "lastProcessedAt": "2026-11-14T01:31:26.663121+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -517,6 +517,23 @@
         "PTD-131: 「CLAUDE.md定期確認」トリガーの新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)への付け替えが1度拒否された。意図的な拒否か誤操作かをユーザーへ確認中(回答待ち)。回答が得られ次第、再試行するか別の進め方にするかを決める。",
         "日次ログRoutineの二重稼働: 旧ルーム側trig_01KWsnPeW7QcgTBKjUZYnDZVが削除されず有効なまま(新ルーム側trig_013ikFJFo9uJtnc4PqHjSPb5と並行して毎日発火)。旧トリガーを削除(または無効化)するかユーザーの判断待ち。",
         "【相談11/11 01:35:40】Felo調査の確認結果(robots.txtの共通トークン`__usage_ai-training`・パーソル総研32.4%)をservicenow-sub-agentのresearch-items.jsonへ記録するか(キュレーション基準を報道URLまで広げるか)、ユーザーの回答待ち。robots.txtをブログ等へ導入するかは別途相談予定。"
+      ]
+    },
+    {
+      "date": "2026-11-13",
+      "generatedAt": "2026-11-14T01:31:26.663121+09:00",
+      "summary": "【新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)分】\n\n【日次ログRoutine(11/12分)】JST 00:05に、前日分(会話なし)のentry追記と記録漏れチェック(差分なし)を報告した。\n\n【ServiceNow調査結果の確認(research-knowledge-lookup)】ユーザー「servicenowの調査結果で、なにか気にある点はある?」を受け、ルール26に従いservicenow-sub-agentのresearch-items.json(当時8,925件・要約済み364件)を実データで確認。(1)Google DeepMind公式ブログに「Gemini 4 Carbon」(10/29・11/11)が収集されており、11/11のFelo評価で「確認できない」とした件を実在と訂正(GPT-6.1 Terraは未確認のまま)。OpenAI公式のrobots.txt AI学習拒否シグナルの記事(10/30)も既に収集済みと判明。(2)11/9以降の新着378件が要約0件(キュレーション停止)、Anthropic News・Moz Blog・EPI・YouTube(AI流行)の新着停止、OpenAI Blogで古い記事の再取り込み、categoriesに8〜11の定義欠落を報告。(3)運用に関わる記事(Zennの証跡必須化、dev.toの「メモリファイルに書いたレビューが実際は行われていない」、InfoQのAgent Distraction、Martin Fowlerのdurable execution)を紹介。\n\n【キュレーション停止とダッシュボード反映】ユーザー「キュレーションが止まるということは、マネージャアプリに反映できていないってこと?」に対し、dashboard.htmlのAI最新情報タブがcurated:trueのみ表示する実装であること、停止の原因は11/10のPTD-130(日次キュレーションRoutineの無効化)であること、社会課題タブのcategory6-issues.jsonは10/31作成の一回限りであることを説明。ユーザー「今あるキュレーションを全て反映して」を受け、AskUserQuestionで範囲を確認(AI最新情報=いつも通り厳選、社会課題=新着も追加)。TaskCreateでタスク分解し、Researchサブエージェント4体を並列実行(AI最新情報2体・カテゴリ6の2体)。AI最新情報はスコア上位80件から24件を厳選してsummaryJa等を付与(364→388)、社会課題は10/31以降未収録だった113件(11/9以降の52件に加え11/6〜11/8の61件も未反映だったため全件)を追加(680→793)。書き込み時にresearch-items.jsonにsysId重複が10組あることが判明し、検証をインデックス単位に修正。servicenow-sub-agentコミットdf85b9c、raw.githubusercontent側とdashboard.html(Playwright、PC/モバイル幅)で表示確認。PTD-132として記録し、ユーザー承認後に完了へ更新(6245d79)。キュレーション頻度はユーザー「言ったらやるでいい」により依頼時のみ・Routineは無効のまま(PTD-130へ追記)。\n\n【YouTube APIでの調査内容の説明】4系統(AI最新技術=新着順、AI流行=直近30日の再生回数順、急上昇・日本、急上昇・世界=米国)と検索キーワードの経緯(PTD-090の「AI」単体削除、Jean-Claude除外)を説明。なお回答時刻マーカー【回答11/13 01:22:40】を時刻確認せずに付けた誤りがあり、後で訂正した。\n\n【Grok経由X調査4件の記録】ユーザー貼り付けのGrok調査結果から、X投稿URLを伴う4件(Boris Cherny氏の発言拡散・Cursorマルチプレイヤー・68サブエージェント規模のOSS Harness・公開売上データの逆解析)を、ユーザー「記録して」(日付11/13で確認)によりx-research-grok-2026-11-13-01〜04として追加(f989dbf)、PTD-126を21件へ更新。URLの無いA2UI 1.0等2トピックは不採用。ユーザーの質問に答え、Cursorのマルチプレイヤー機能(エージェント同士の直接問い合わせ)とルール18の司令塔経由方式の違い、Cursor自体の概要(Anysphere社のVS Codeベースのエディタ、Cloud Agents、料金)、このルーム(Claude Code on the web)との違いを説明し、今は乗り換え・併用の必要は無いと私見を述べた。\n\n【Felo調査2件の記録・基準拡張】【相談11/11 01:35:40】にユーザー「記録して」。robots.txtの共通トークン__usage_ai-training(ITmedia・OpenAI公式で裏付け)とパーソル総研の32.4%を、sourceName「X (Felo X Research経由・報道/公式で裏付け確認)」でx-research-felo-2026-11-11-01〜02として追加(ff3a87b)。キュレーション基準を「X投稿URL、または信頼できる報道・公式URL」に拡張し、PTD-126を23件へ更新(f683588)。\n\n【ルーティン付け替えの完了確認】ユーザーより「ルーティンをこのルームに引き継がせて、旧ルーム側のルーティンはストップさせた」と報告。list_triggersで、旧日次ログtrig_01KWsnPeW7QcgTBKjUZYnDZVと旧CLAUDE.md定期確認trig_0134aaUtfW6p6HGFZ7HzaDMNが削除され、新CLAUDE.md定期確認trig_01B8WDLsp3nkR7hYoSWiq9tVがこのルームに紐付いたことを確認。【相談11/11 01:24:39】とPTD-131の未解決事項が解決(日次ログの二重稼働解消)。\n\n【(a)停止中の情報源の調査・(b)カテゴリ定義追加】ユーザー「(a)(b)も進めて」。(b)export_research_items.mjsのCATEGORY_LABELSとresearch-items.jsonのcategoriesに8〜11を追加(26f7448)、ビューアとダッシュボードで表示確認。(a)Moz Blog(feedpress.me/mozblog)とEPI(epi.org/feed/)は登録URL自体が2020〜21年で更新停止した古いフィードで、過去に「収集」された記事も全て古い記事だったと判明。最新が取れるURL(moz.com/feeds/blog.rss、epi.org/blog/feed/)を確認したが、差し替えはServiceNow側の設定変更になるため相談中。YouTube(AI流行・再生回数順)は直近30日の上位10件がほぼ入れ替わらず重複除外で新規ゼロになる仕様上の挙動で、故障ではない。\n\n【everything-claude-codeの評価】ユーザーが関心を示した68サブエージェント規模のOSS Harnessを、affaan-m/everything-claude-code(MIT、2026-11-06時点でエージェント71・スキル314・コマンド98)と特定し、読み取り専用で取得(実行なし)。Researchサブエージェント4体(①エージェント運用・ループ ②ナレッジ・ガバナンス ③品質・セキュリティ・UI・発信 ④エージェント定義・フック・ルール・全体設計)で、こちらの既存資産・CLAUDE.mdと比較評価した。すぐ取り込める候補として、loop-design-check(Routineの終了条件・再試行上限・人への引き上げの点検表)、santa-method/council-multi-model(別AIダブルチェックの手順化)、living-docs-governance/rules-distill/.claude/rules分割(CLAUDE.md約41KBの軽量化)、skill-stocktake/config-gc(棚卸し)、フックによる機械的保証(ルール30の完了書き込み検知・終了時の記録漏れチェック・開始時の日次ログ読み込み)、browser-qa/accessibility(テスト観点の追加)、外部指示の防御文とpermissions.deny等を提示。重要な発見として、公式ドキュメントで「リポジトリのsettings.jsonで有効化したプラグインはクラウドセッションでは読み込まれない」ことを確認し(CL-060)、既存のplugin-rolloutスキルの前提が誤っていると判明した。\n\n【CLAUDE.md同期の長期停止の発覚】ユーザー指示「未完了や、相談中の項目は常に計画のタブに明記して、これ.mdファイルにも明記して」を受け、governance-config-syncスキルの手順でルール14の4を拡張し(新番号は作らず)、ai-config.jsonのweb/ai.consultationFormatにも反映(f81164a)。あわせて計画タブ(TaskCreate)へ全ての未完了・相談中項目を登録した。反映後のsync-claude-md.ymlが失敗し、調べたところ少なくとも10/17以降毎回、CROSS_REPO_PATが401 Bad credentialsで拒否され、progress-tracker-dashboard以外のリポジトリへCLAUDE.mdが同期されていなかった(servicenow-sub-agentのCLAUDE.mdがルール18までの旧版だったのもこれが原因)。PATの再発行とSecrets更新はユーザー作業として依頼中。\n\n【CLAUDE.md定期確認Routine】JST 12:05発火分は、11/13が金曜・祝日でない(内閣府・国立天文台で確認)ため規定どおりスキップした。\n\n【本Routine(11/13分)の処理】tasks.json(全273件)のdetail空欄なし、credit-log.jsonの記録漏れなし。Task-WBS同期でPTD-132の未登録とPTD-131のstatus食い違い(PTD側は完了、WBS側は対応中)を検出し修正。",
+      "unresolvedCarriedOver": [
+        "【相談11/13 01:39:41-1】Moz Blog・EPIのフィードURLを最新が取れるものへ差し替えるか(ServiceNow側の設定変更)。",
+        "【相談11/13 01:39:41-2】everything-claude-codeからどれを取り込むか(推奨はloop-design-checkと記録漏れチェックのフックから)。",
+        "【相談11/13 01:39:41-3】plugin-rolloutスキルを公式仕様(クラウドではプラグイン不可)に合わせて修正するか。",
+        "【ユーザー作業】CLAUDE.md同期用のCROSS_REPO_PAT(GitHub Secrets)の再発行。10/17以降、他リポジトリへ同期されていない。",
+        "research-items.jsonのsysId重複10組の扱い(相談待ち)。",
+        "robots.txt(__usage_ai-training等)をブログ・GitHub Pagesに導入するか(相談待ち)。",
+        "ECCの記述「Claude Code 2.1.233以降、新しいモデルではTaskCreate等が既定で外された」の公式での裏付け確認。",
+        "servicenow-sub-agentの情報源「Anthropic News」がサイトのHTML構造変更で取得失敗している件に対応するか(ユーザー回答待ち)。",
+        "servicenow-sub-agentのu_category Choiceリストへの\"11\"追加(ServiceNow Studioでのユーザー作業)。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断で見送り・現状維持(将来再検討の可能性)。"
       ]
     }
   ]
