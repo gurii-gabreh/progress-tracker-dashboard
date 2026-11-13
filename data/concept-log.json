@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-11-10",
+  "updatedAt": "2026-11-14",
   "categories": [
     {
       "key": "architecture",
@@ -235,6 +235,14 @@
           "context": "2026-11-09〜10、ユーザー相談「ちょっとクレジットが多くかかっているな」をきっかけに、マネージャールーム自身(session_019rBhvzqA7o5g8MjBA6dyCg、2026-08-08作成)の累計コスト(get_sessionのusageフィールド、約$2,315)を確認した際に整理した。",
           "note": "このマネージャールームの累計usageを、Anthropicの標準的な料金比率(cache_write≈1.25倍・cache_read≈0.1倍・output≈5倍、inputを基準とする換算)で内訳推定したところ、**cache_read由来が約73%**を占めていた(cache_write約20%、output約7%、input約1%)。output(実際に生成した作業量)の比率が小さいことから、コストの主因は「実際の仕事量」ではなく「過去のコンテキストをターンごとに再処理するcache_read」であると判断した。\n\nこのセッションはオートコンパクト機構(約784Kトークンで自動圧縮)を持つため技術的に破綻はしないが、圧縮されるまでの間はコンテキストが大きいまま維持され、1日2回のCLAUDE.md定期確認のような軽い処理でも毎回その大きなコンテキストを読み直すコストがかかり続ける。これに対し、週1回を目安に新セッションへ作り直す運用にすれば、コンテキストが大きい状態で推移する期間そのものを短縮でき、cache_read由来のコストを恒常的に抑えられると判断した(定量的な削減率はユーザーへの回答時点では実測データが無く見積もりに留まる、20〜35%程度を試算として提示済み)。\n\n新セッションへの引き継ぎは、もともとCLAUDE.mdルール28(「新規セッション・他のルームへ引き継ぐ際は、data/manager-room-log.jsonを必ず確認すること」)で想定されていた用途そのものであり、新しい仕組みを追加する必要は無かった。\n\n既存の類似パターンとして、週次ルームログ要約Routine(claude-voice-bridge担当)が「コンテキスト使用率70%超えたら新セッションへ切り替える」という閾値ベースの先例を既に持っていた。今回はそれと違い、カレンダーベース(1週間ごと、固定)の方式を採用した(ユーザー提案「1週間毎に、ルームを新規作成した方がいいかな?」)。両者の違いは「閾値到達まで待つ(反応的)」か「固定間隔で先回りする(予防的)」かであり、マネージャールームは日次Routineを2本抱えて毎日必ず動く性質上、閾値を待たず予防的に短い間隔でリセットする方が合理的と判断した。\n\n実装はprogress-tracker-dashboardのdata/tasks.json PTD-131参照。運用上の留意点はdata/ai-config.jsonのai.orchestration.managerRoomRotationにも記録。",
           "date": "2026-11-10"
+        },
+        {
+          "id": "CL-060",
+          "title": "クラウドセッションではリポジトリで有効化したプラグインは読み込まれない",
+          "concept": "Claude Code on the web(クラウドセッション)では、リポジトリの.claude/settings.jsonのenabledPlugins/extraKnownMarketplacesで有効化したプラグインはインストールされない。一方、リポジトリの.claude/skills・agents・commands・rules、settings.jsonのhooks・permissions、CLAUDE.mdはクローンの一部として読み込まれる。外部の構成集を取り込むときは、プラグインとして入れるのではなく、必要なものを選んで.claude/配下へ直接コピー・改変してcommitする必要がある。",
+          "context": "2026-11-13、everything-claude-code(affaan-m、MIT、Anthropicハッカソン優勝者の構成集)の取り込み可否をResearchサブエージェント4体で評価した際、1体が公式ドキュメントとの食い違いを指摘。司令塔がcode.claude.com/docs/en/cloud-environmentsの「What carries over from your setup」表を直接取得し、「Plugins and marketplaces declared in your repo's .claude/settings.json: No」と確認した(ルール18の重要判断のダブルチェック)。",
+          "note": "既存のplugin-rolloutスキル(全リポジトリの.claude/settings.jsonへenabledPluginsを配る仕組み)は「クラウドセッションが自動で読み込む」前提で作られており、この前提は公式仕様と矛盾する。スキルの修正はユーザー相談中(【相談11/13 01:39:41-3】)。.claude/rules/(path指定付きは対象ファイルを触った時だけ読み込み)はクラウドでも有効で、肥大化したCLAUDE.mdの分割先候補になる。",
+          "date": "2026-11-13"
         }
       ]
     },
