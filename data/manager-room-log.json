@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-14T01:31:26.663121+09:00",
+  "lastProcessedAt": "2026-11-15T01:29:17.671550+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -534,6 +534,27 @@
         "servicenow-sub-agentの情報源「Anthropic News」がサイトのHTML構造変更で取得失敗している件に対応するか(ユーザー回答待ち)。",
         "servicenow-sub-agentのu_category Choiceリストへの\"11\"追加(ServiceNow Studioでのユーザー作業)。",
         "progress-tracker-dashboard自体の非公開化は、ユーザー判断で見送り・現状維持(将来再検討の可能性)。"
+      ]
+    },
+    {
+      "date": "2026-11-14",
+      "generatedAt": "2026-11-15T01:29:17.671550+09:00",
+      "summary": "【新マネージャールーム(session_011sXeDjZZ88m9HVDEfBSR6i)分】\n\n【CLAUDE.md定期確認(00:03発火・土曜)】CLAUDE.mdの記述のうち、ルール28が旧ルームのsession_idと削除済みの旧日次ログトリガーIDを挙げたままである点と、「このリポジトリ固有の補足」がworker-room(session_012kTdgM1PApMPsJC8N4ew95)へのsend_message依頼を前提にしておりルール18の方針転換と食い違う点を報告。週次ルームログ要約Routineの常駐セッションは使用率25.3%で対応不要。ユーザー指示「これに変えて」により、ルール28を「現在のマネージャールームのRoutine」と書く形(IDを固定しない、現在の紐付け先はlist_triggersでRoutine名から確認)に書き換え、ai-config.jsonの同じ記述3箇所も揃えた(governance-config-syncの手順、コミット31fbcef)。固有補足のworker-room記述は相談中のまま。\n\n【日次ログ(11/13分)】01:2x頃に11/13分のentry・CL-060(クラウドではリポジトリで有効化したプラグインが読み込まれない)を記録し、Task-WBSのPTD-132追加・PTD-131の完了反映を行った(42b69a7・7179985)。\n\n【相談中の3件の説明】ユーザーの「これって具体的に何?」に対し、(1)Moz・EPIのフィードURL差し替え、(2)everything-claude-codeからの取り込み候補(推奨はloop-design-checkと記録漏れチェックのフック)、(3)plugin-rolloutの修正(クラウドではプラグインが効かない)を、経緯・現状・やりたいこと・懸念点の形で説明した。\n\n【Moz・EPIの評価】ユーザー「最新のに差し替えてほしいけど、差し替えれば良い情報は入手できる?」を受け、新URLの最新記事タイトルを実際に取得して確認。Moz(moz.com/feeds/blog.rss)はPrompt Tracking・AI検索のサーバーログ分析・NLWeb等、AI検索とSEOの実務記事が中心でブログ集客に有用。EPI(epi.org/blog/feed/)は米国の労働政策・財政の記事が中心で、AIと働き方に関わるのは1件のみと評価。①Mozのみ差し替えEPIは外す(推奨)/②両方差し替え/③EPIを日本の情報源へ置換、の相談中。\n\n【計画タブのスマホ表示】ユーザー「右のリストって携帯のアプリでも表示させることできる?」に対し、公式ドキュメント(Claude Code on mobile)に記載が無く分からないと回答。実機での確認を依頼し、見えない場合の代替案(①ダッシュボードに未解決欄、②open-items.json、③Artifact)を提示し相談中。\n\n【移動中にできる作業】ユーザー「明日片道2時間かけて出かける、この間にできる作業は?」に対し、スマホから返事だけで進む相談、返事があれば私が進められる作業(Moz差し替え・ECC取り込み・文書修正・調べもの・キュレーション)、PCが向いている作業(CROSS_REPO_PAT再発行・ServiceNowのChoice追加)に分けて整理した。\n\n【マネージャアプリのスマホ表示崩れ修正(PTD-133)】ユーザー指摘「スマホで見るとAI最新情報などのヘッダ部分のUIの配置がおかしい、全体的に修正しろ」。Playwright(iPhone 13)で全タブを調査し、(1)共通のサブタブ(.manager-subview-toggle)が詰め込まれて調査資料・開発資料でボタンが1文字ずつ縦に折り返す、(2)AI最新情報の絞り込み欄でラベルが縦折り返し・selectがはみ出す、を特定。640px以下でサブタブを横スクロール1行(既存の.appdev-stage-sidebarと同じ方式)、絞り込み欄を縦並び・幅100%にし、保存記事コピー欄に余白を付けた。iPhone/PC幅で縦潰れ0件・はみ出し0件・JSエラー0件を確認(2173649)。実機確認・完了確認待ち。\n\n【ホーム画面ショートカットの更新方法】ユーザー「アプリをショートカットで出しているけど、更新どうやればいいの?」に対し、Service Worker/manifestは無くデータは毎回cache:no-storeで最新取得、HTML本体はGitHub Pagesの仕様(Cache-Control: max-age=600)で最大10分古い版が残りうること、反映されない場合はアプリを完全に終了して開き直す、と説明。\n\n【絞り込み欄・情報行の折りたたみ(PTD-134)】ユーザー指示「AI最新情報欄のフィルタは折り畳めるようにして、他にも不要なところは折り畳めるようにしたい(スマホの画面は小さいため)」。AskUserQuestionで初期状態(スマホは閉じる・PCは開く)と対象(他の絞り込み欄すべて+更新日・件数の情報行)を確認。HTMLを個別に書き換えず、共通処理setupAutoCollapse()で.relations-controls(select/入力を含むもの)と.policy-metaを<details>で包み、後から描画される欄もMutationObserverで対象にした。絞り込み中は見出しに「絞り込み中」バッジ、再描画でも開閉状態を保持。iPhone/PC幅で17箇所の動作を確認(49ffba0)。実機確認・完了確認待ち。\n\n【昨日のServiceNow調査結果】ユーザー「昨日のServicenowの調査結果できになるものはある?」に対し、ルール26に従いresearch-items.jsonを確認。11/13に反映された分は収集日11/12の109件(未キュレーション)で、11/13収集分は翌日午後に反映される見込み(推測)と説明。気になる項目として、GitHubアカウント乗っ取りでCI秘密情報を盗むワークフロー注入(WebSearchでGhostAction・Gheist等の実在を確認、タイトルの6.1万リポジトリは未確認)、Martin Fowler「Tests as data」、dev.to「A 200 that lands nowhere」、AnthropicのLydia Hallie氏の講演、robots.txtの503事故(仮想の事後分析)等を紹介。\n\n【GitHubリポジトリの点検(中断)】ユーザー「これやって」で自リポジトリの点検に着手したが、リポジトリ一覧取得(list_repos)が承認待ちのまま止まり、ワーカー再起動で中断。未実施。\n\n【CLAUDE.md定期確認(12:04発火)】土曜のため作業対象だったが、get_sessionが承認待ちのまま止まりワーカー再起動で中断した(翌0:04の発火時にまとめて確認し、問題なし・使用率26.8%で対応不要と報告)。\n\n【本Routine(11/14分)の処理】tasks.json(全275件)のdetail空欄なし、credit-logの記録漏れなし。Task-WBSへPTD-133・PTD-134を対応中として追加(13fefdf)。",
+      "unresolvedCarriedOver": [
+        "【相談11/13 01:39:41-2】everything-claude-codeからどれを取り込むか(推奨はloop-design-checkと記録漏れチェックのフックから)。",
+        "【相談11/13 01:39:41-3】plugin-rolloutスキルを公式仕様(クラウドではプラグイン不可)に合わせて修正するか。",
+        "【ユーザー作業】CLAUDE.md同期用のCROSS_REPO_PAT(GitHub Secrets)の再発行。10/17以降、他リポジトリへ同期されていない。",
+        "research-items.jsonのsysId重複10組の扱い(相談待ち)。",
+        "robots.txt(__usage_ai-training等)をブログ・GitHub Pagesに導入するか(相談待ち)。",
+        "ECCの記述「Claude Code 2.1.233以降、新しいモデルではTaskCreate等が既定で外された」の公式での裏付け確認。",
+        "servicenow-sub-agentの情報源「Anthropic News」がサイトのHTML構造変更で取得失敗している件に対応するか(ユーザー回答待ち)。",
+        "servicenow-sub-agentのu_category Choiceリストへの\"11\"追加(ServiceNow Studioでのユーザー作業)。",
+        "progress-tracker-dashboard自体の非公開化は、ユーザー判断で見送り・現状維持(将来再検討の可能性)。",
+        "【相談11/14 02:02:49】PTD-133(スマホ表示修正)・PTD-134(折りたたみ)を実機確認後に完了にしてよいか。",
+        "【相談11/14 01:38:38】計画タブがスマホで見えるか、見えない場合の表示方法。",
+        "【相談11/14 01:33:50】Moz・EPIの扱い(①Mozのみ差し替えEPIは外す、が推奨)。",
+        "【相談11/14 09:22:50】GitHubリポジトリの点検はユーザーが実施を指示済みだが、承認待ちで中断し未実施。",
+        "CLAUDE.md「このリポジトリ固有の補足」のworker-room記述を書き換えるか(相談中)。"
       ]
     }
   ]
