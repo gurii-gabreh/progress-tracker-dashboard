@@ -6106,8 +6106,15 @@
           "task": "ポートフォリオ作品画像の実装(スクリーンショット+CSS吹き出し)",
           "priority": "高",
           "status": "未着手",
-          "updated": "-",
-          "note": "AIL-001のnextActionに記載されている残作業。"
+          "updated": "2026-11-16",
+          "note": "AIL-001のnextActionに記載されている残作業。 【2026-11-16ユーザー決定】作品集には、これまで作ったアプリ(kizashi・PTD・ServiceNow Sub Agent・Claude Voice Bridge・Mirai Journal・Supermarket Price Tracker等)は載せない。載せるのは、AI Lab/ブログに載せる専用に新しく作るもの(例: PTD-135『あとで見るメモ』)のみ。",
+          "nextAction": "専用作品(第1弾はPTD-135『あとで見るメモ』)の完成を待って、portfolio.jsonへの登録と画像(スクショ+CSS吹き出し)を行う。表紙WORKSパネルの文言(kizashi・PTDに言及)の修正可否をユーザーに相談中。",
+          "checkHistory": [
+            {
+              "date": "2026-11-16",
+              "summary": "ユーザー決定: 既存アプリは作品集に載せず、AI Lab/ブログ専用に作るものだけを載せる。"
+            }
+          ]
         },
         {
           "id": "AIL-016",
