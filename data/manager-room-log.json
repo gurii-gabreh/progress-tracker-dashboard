@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-15T01:29:17.671550+09:00",
+  "lastProcessedAt": "2026-11-16T00:16:06.348477+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -555,6 +555,31 @@
         "【相談11/14 01:33:50】Moz・EPIの扱い(①Mozのみ差し替えEPIは外す、が推奨)。",
         "【相談11/14 09:22:50】GitHubリポジトリの点検はユーザーが実施を指示済みだが、承認待ちで中断し未実施。",
         "CLAUDE.md「このリポジトリ固有の補足」のworker-room記述を書き換えるか(相談中)。"
+      ]
+    },
+    {
+      "date": "2026-11-15",
+      "generatedAt": "2026-11-16T00:16:06.348477+09:00",
+      "summary": "【ブログの残作業(相談)】ユーザー「ブログの方は、何があと残っているっけ?」に対し、data/blog-articles.jsonを確認。BLOG-001〜015の15本全てが下書き(draft)で未公開、WordPressへはXserverの国外IP制限で直接投稿できず(403)ユーザーがカスタムHTMLブロックへ貼り付ける方式(10/31合意)、SNS投稿文はBLOG-001・002のみ未作成、PTD-112/113/114は完了確認待ち、と整理(【相談11/15 01:29:49】)。23:59には詳細解説を求められ、残作業の分担・決めてほしいこと(001/002のSNS文作成可否・公開ペース・PTD-112/113は完了推奨/PTD-114は継続運用のため対応中推奨)・懸念(下書きが溜まり鮮度が落ちる)を説明した。\n\n【AI Labの残り・表紙(AIL-016)】ユーザー「AI labは後何が残っている?」「前のマネージャルームにも聞いてみて、モックデータについては既に作っているから」を受け、Claude Designのモックアップ(artifact 2ktTwDujNahY5CWo4jYePY、Main.dc.html)を確認。ユーザー「モック通りに表紙は作って」により、ai-labのindex.htmlのheroをスクロール連動の表紙(4パネル・円グリフ・ドット・カウンター・マーキー)に置き換え、js/cover.jsを新設(prefers-reduced-motion対応・JS無効時は縦積み)。ヘッダ描画前にcover.jsが動きヘッダ高さが0になる不具合、モック由来のドット位置計算のずれを修正。PC/スマホで確認しclaude/ail-016-cover(c63c7ac)→ユーザー「まーじして」でmain(5532e0e)へ反映、FTPSデプロイ成功。本番確認後の完了確認待ち。\n\n【AI LabのSSLエラー】ユーザーがChromeの「この接続ではプライバシーが保護されません」画面を共有。ERR_CERT_COMMON_NAME_INVALID(*.xserver.jpの証明書が返っていた)で、原因はXserver側でサブドメインのSSLがOFFだったこと。ユーザーがONにした。反映確認待ち。\n\n【AIL-015 作品集】ユーザー「あとは、アプリの画像だっけ?」に対し、ai-lab/data/portfolio.jsonが0件で、載せるアプリの指定待ちと説明(【相談11/15 12:23:25】)。23:59の詳細解説で、モックの6本(kizashi・PTD・ServiceNow Sub Agent・Claude Voice Bridge・Mirai Journal・Supermarket Price Tracker)、11/8決定の「AI LabからGitHubへリンクしない」によりリンク無し・個人情報を隠したスクショ+CSS吹き出しを推奨、と提示。\n\n【新規アプリ構想「あとで見るメモ」(PTD-135)】ユーザー相談「親しみが湧きやすく手軽に使えるもの、メモアプリ的な何か」「メモ系だけでなくてもいい」に対し、category6-issues.json(社会課題)とapp-idea-research.json(事例)を根拠に案A〜F+突発案G(入力しないメモ帳)を提示。ユーザーは案A(保存したリンク・メモを数日後に1件だけ再提示)を選択し、松竹梅の3レベル化を相談。Gemini無料枠を公式ドキュメント・フォーラムで確認(上限は保証されず、削減報告あり)した上で、梅でも核の価値が成り立つ・3段階でデータ形式統一・AI上限時は梅機能で継続・APIキーはGAS側、と意見。回答: 竹と松がAI段階、梅→竹→松の順に作る開発段階、両対応、同期は梅で入れる、new-app-kickoffで新ルーム。構想ルーム「あとで見るメモ(案A) 構想ルーム」(session_011sXeDnR2ytHMGBDRtht8xw)を作成し、①要件定義の聞き取りを委任(6cb0029)。\n\n【常設ルームの新設】ユーザー「servicenowの調査結果って別ルームで聞いたほうがいいかな?履歴とか見れるし」に対し、マネージャールームは週次ローテーションで履歴が切れる・調査用スキルがservicenow-sub-agent側にある・ここが軽くなる、の理由で分割を推奨。懸念として、同リポジトリのCLAUDE.mdがCROSS_REPO_PAT失効で古いまま(回答マーカーが3桁通し番号等)のため、初回指示でclaude-core-rules.mdを最新ルールとして読ませる暫定対策を提案し承認。「ServiceNow調査結果 相談ルーム(常設)」(session_011sXeDn7mRCR6bttiPP7vRg、PTD-046に記録f2e43d5)を作成。続けてユーザー指示「grok用とfelo用も作って、各ルーム側から今まで通り指定のJSONデータにまとめられるようにして」により、「Grok 調査結果 取り込みルーム(常設)」(session_011sXeDnx3JFrHUTsdHJmqbP)・「Felo 調査結果 取り込みルーム(常設)」(session_011sXeDkoVoMHdTGrqRGDerT)を作成。既存のx-research-{grok|felo}-日付-連番形式・sourceName・採用基準・取り込み前確認・記録後のPTD-126/credit-log更新を初回指示で伝えた(PTD-126に記録267b43f)。\n\n【本Routine(11/15分)の処理】tasks.json(全276件)の完了タスクにdetail空欄なし。credit-logは11/13以降に新たに完了したタスクなし(PTD-046/126は既に完了済みのタスクへの履歴追記のみ)。Task-WBSへPTD-135(対応中)を追加、AIL-016を未対応→対応中に更新(8daec51)。",
+      "unresolvedCarriedOver": [
+        "【相談11/15 12:23:25】AIL-015 作品集に載せるアプリ(推奨: モックの6本・リンク無し・スクショ+吹き出し)。",
+        "【相談11/15 01:29:49】ブログ下書き15本(BLOG-001/002のSNS投稿文作成可否・公開ペース・PTD-112/113/114の完了確認)。",
+        "AI LabのSSL反映確認(https://ai-lab.naruya0724.com)と、AIL-016(表紙)の完了確認。",
+        "PTD-135「あとで見るメモ」は構想ルームで①要件定義の聞き取り中。",
+        "【ユーザー作業】CROSS_REPO_PATの再発行(他リポジトリのCLAUDE.mdが古いまま。新設の常設ルーム3つは暫定対策で運用)。",
+        "【相談11/13 01:39:41-2】everything-claude-codeからの取り込み候補。",
+        "【相談11/13 01:39:41-3】plugin-rolloutスキルの修正。",
+        "research-items.jsonのsysId重複10組の扱い。",
+        "robots.txt導入の可否。",
+        "ECCの記述「新モデルでTaskCreate等が既定で外された」の裏付け確認。",
+        "Anthropic News取得失敗への対応。",
+        "【ユーザー作業】ServiceNowのu_category Choice\"11\"追加。",
+        "progress-tracker-dashboardの非公開化は見送り・現状維持。",
+        "【相談11/14 02:02:49】PTD-133/134の実機確認後の完了確認。",
+        "【相談11/14 01:38:38】計画タブのスマホ表示。",
+        "【相談11/14 01:33:50】Moz・EPIの扱い。",
+        "【相談11/14 09:22:50】GitHubリポジトリ点検(承認待ちで中断、未実施)。",
+        "CLAUDE.md固有補足のworker-room記述の書き換え(相談中)。"
       ]
     }
   ]
