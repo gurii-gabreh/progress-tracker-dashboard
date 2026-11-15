@@ -3334,7 +3334,7 @@
       "task": "ServiceNow PDIを使った5観点自動リサーチパイプラインの新規構築",
       "priority": "中",
       "status": "完了",
-      "updated": "2026-09-18",
+      "updated": "2026-11-15",
       "note": "2026-08-29、ユーザーが無料のServiceNow PDI(Personal Developer Instance)を作成完了。新規リポジトリ名は「servicenow-sub-agent」に確定。既存のai-research-radarには組み込まず、独立した新規リポジトリとして構築する方針。",
       "detail": "【worker-room実施結果(2026-08-29)】servicenow-sub-agentリポジトリに以下を実装しコミット・push済み(commit 28da0f9)。(1) CLAUDE.mdへCORE-RULESマーカーを設置(sync_claude_md.pyのTARGETSには既に登録済みのため、次回data/claude-core-rules.md更新時から自動同期される)。(2) 単一テーブル(u_ai_research_item)+category列という設計(正規化分割ではなく横断的な分類軸として1テーブルにまとめた。判断根拠はdata/concept-log.jsonのCL-005参照)。(3) arXiv/Hacker News/3ブログ向けのREST Message構成案と、実際にScheduled Jobへ貼り付けるスクリプト本体(servicenow/scheduled_job_ai_research_fetch.js)。ServiceNow側の認証情報は一切含めていない。\n\n【重要な制約】このworker-roomセッションはネットワークegressポリシーによりexport.arxiv.org・hn.algolia.com・www.anthropic.com等へ実地アクセスできず(PTD-051で判明した制約と同根)、情報源のAPI/RSS URL・レスポンス形式を実機検証できていない。arXiv APIとHacker News Algolia APIは長年安定した既知の公開APIのため形式には比較的自信があるが、3つのブログRSSのURLは変更されている可能性がある。またXML解析はServiceNowのXMLDocument2 APIの挙動を確認できなかったため、あえて正規表現ベースの単純な抽出方式にした(README「既知の制約」に詳細)。\n\n【ServiceNow側の実機セットアップ・検証(人の手作業が必要)】テーブル作成・REST Message作成・Scheduled Job作成・RSS URL検証の4点は、いずれもServiceNowのUI操作が必要で自動化できないため、PTD-047〜050としてsubtask化した(運用ルール7: 手動設定が2件以上あるためmanualSetupへ1文で詰め込まず分割)。",
       "output": "",
@@ -3621,6 +3621,10 @@
         {
           "date": "2026-09-18",
           "summary": "ユーザー指示「世の中のニーズと、常にAIで何ができるかを蓄積し、活用できる機能が必要」に対応。CLAUDE.mdルール23に基づき既存システムの拡張で実現(新アプリは作らず)。category 6(世の中のニーズ・困りごと)を追加し、情報源はHacker News Algolia APIのAsk HNタグ(既存REST Message流用、新規URL登録不要)を採用。GitHub Actions(servicenow-setup.yml、run 35330311481)を実行し、dry-run確認後、実際にServiceNow上へREST Messageのaskhnメソッドを新規作成(sys_id=d4df745793970310043532edfaba100f)、Scheduled Job「AI Research Fetcher」のscriptフィールドも自動更新済み(sync_scheduled_job.mjs)。これまでコード変更ごとに手動貼り付けが必要と誤認していたが、実際には既にこの自動反映の仕組みが整っていたと判明。u_categoryフィールドに値6の選択肢ラベルがまだ無い可能性があり、表示上の見た目(生の\"6\"表示)に影響する可能性はあるが機能的な支障は無い(要確認、優先度低)。次回のScheduled Job日次実行から収集が始まる想定。"
+        },
+        {
+          "date": "2026-11-15",
+          "summary": "調査結果の質問・相談・キュレーション依頼用に、servicenow-sub-agentを元にした常設ルーム「ServiceNow調査結果 相談ルーム(常設)」(session_011sXeDn7mRCR6bttiPP7vRg)を作成(ユーザー承認)。週次ローテーションの対象外で履歴を保持。CLAUDE.md同期停止(CROSS_REPO_PAT)の暫定対策として、初回指示で progress-tracker-dashboard の data/claude-core-rules.md を最新ルールとして読むよう指示。"
         }
       ]
     },
