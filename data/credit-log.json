@@ -1209,6 +1209,12 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-132: AI最新情報・社会課題タブへの未反映分の一括キュレーション",
       "note": "research-items.json 24件キュレーション(364→388)、category6-issues.json 113件追加(680→793)、カテゴリ8〜11の定義追加。Researchサブエージェント4体並列。コミットdf85b9c・26f7448。"
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-113: AI最新情報タブのキュレーション追いつかせ(ユーザー確認で完了)",
+      "note": "作業本体は2026-10-24〜11-13(PTD-132で最新分まで解消)。11/16はユーザー確認による完了更新のみ。"
     }
   ]
 }
