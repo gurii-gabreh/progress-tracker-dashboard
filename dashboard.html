@@ -4936,12 +4936,13 @@
     box.innerHTML = `
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th title="会話で参照する用の連番ID">No.</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>キーワード</th><th>出典</th></tr></thead>
+          <thead><tr><th class="rt-check-head" title="閲覧済み">👁</th><th class="rt-check-head" title="保存">💾</th><th class="rt-check-head" title="おすすめ(キュレーション時にAIが選んだ記事、読み取り専用)">⭐</th><th title="会話で参照する用の連番ID">No.</th><th>カテゴリ</th><th>タイトル</th><th>情報源</th><th>公開日</th><th>概要</th><th>ポイント</th><th>活かせる技術</th><th>キーワード</th><th>出典</th></tr></thead>
           <tbody>
             ${items.map((it) => `
               <tr>
                 ${researchViewedCheckboxTd(it.sysId)}
                 ${researchCheckboxTd(it.sysId)}
+                <td class="rt-check"><input type="checkbox" class="ai-trends-recommended-checkbox" disabled${it.recommended ? " checked" : ""} title="${it.recommended ? "おすすめ(" + escapeHtmlForDevDocs(it.recommendedAt || "") + " キュレーション時にAIが選定)" : "おすすめではない"}"></td>
                 <td>${escapeHtmlForDevDocs(AI_TRENDS_IDS[it.sysId] || "—")}</td>
                 <td>${escapeHtmlForDevDocs(AI_TRENDS_CATEGORIES[String(it.category)] || String(it.category || "不明"))}</td>
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>

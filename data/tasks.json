@@ -6612,6 +6612,30 @@
           "summary": "案A決定・松竹梅方針合意、new-app-kickoffで構想ルームを作成。"
         }
       ]
+    },
+    {
+      "id": "PTD-136",
+      "title": "キュレーション時の⭐おすすめ印(AI最新情報に読み取り専用の⭐列)",
+      "task": "キュレーションを実行した回にのみ、その回の項目からおすすめ記事を選びrecommended:trueを付け、ダッシュボードに⭐列として表示する",
+      "repo": "progress-tracker-dashboard",
+      "category": "ui",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "次回のキュレーション(依頼時)・Grok/Felo取り込みで実際に⭐が付き、ダッシュボードに表示されることを確認してから完了確認(ルール30)。",
+      "note": "ユーザー指示「キュレーション処理が動いた時にのみ、合わせておすすめの記事にチェックを入れろ」(2026-11-16)。AskUserQuestionで、チェック先=新しい⭐おすすめ列(ユーザー自身の💾保存とは分ける)、適用範囲=AI最新情報のキュレーションとGrok/Felo取り込みの両方、と確認。ユーザーは「さっきも言った」としていたが、日次ログ・tasks.json・会話記録からは以前の指示の記録を見つけられなかった旨を伝えた上で確認した。",
+      "detail": "(1) servicenow-sub-agentのexport_research_items.mjsで、日次エクスポート時にrecommended/recommendedAtを既存データから引き継ぐようにした(未対応だとServiceNow側に存在する項目は毎日のマージでフィールドが消えるため)。descriptionにも説明を追記。(2) research-item-curationスキルに手順3aを追加: キュレーションした回にのみ、その回の項目から特に読む価値が高いものをrecommended:true+recommendedAt(JST日付)にする。件数の目安なし、過去回の項目は変更しない、単独の付け直しはしない(servicenow-sub-agent 0c03c9a)。(3) dashboard.htmlの🤖AI最新情報の表に、💾保存の右へ読み取り専用(disabled)の⭐列を追加し、AIの選定とユーザー自身の保存が混ざらないようにした。(4) Grok/Felo取り込みルーム・ServiceNow相談ルームへ、create_trigger→fire_trigger→delete_trigger(ルール19)で仕様追加を連絡した。検証: Playwrightで1件だけrecommended:trueにしたテストデータを読み込ませ、PC(1400px)・iPhone 13の両方で見出しが👁/💾/⭐/No.の順、⭐が394件中1件だけチェック・全件disabled、JSエラー0件を確認。既存のキュレーション済み項目への遡及付与は行っていない(指示が「キュレーション処理が動いた時にのみ」のため)。",
+      "output": "dashboard.html、servicenow-sub-agent: export_research_items.mjs・research-item-curation/SKILL.md",
+      "updated": "2026-11-16",
+      "checkHistory": [
+        {
+          "date": "2026-11-16",
+          "summary": "⭐列・エクスポートでの保持・スキル手順・各ルームへの連絡を実装、PC/iPhoneで表示確認。実データでの初回付与待ち。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"
