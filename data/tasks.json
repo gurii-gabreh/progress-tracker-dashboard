@@ -5905,7 +5905,7 @@
       ],
       "issues": [],
       "output": "",
-      "nextAction": "作品画像(スクリーンショット+CSS吹き出し)の用意、トップページヒーロー部の実装を進める。",
+      "nextAction": "AIL-016(表紙)は本番公開済み・確認待ち。AIL-015(作品画像)は載せるアプリの指定待ち。",
       "checkHistory": [
         {
           "date": "2026-11-02",
@@ -6105,9 +6105,17 @@
           "repo": "ai-lab",
           "task": "トップページヒーロー部の実装(Claude Designモックアップ反映)",
           "priority": "高",
-          "status": "未着手",
-          "updated": "-",
-          "note": "AIL-001のnextActionに記載されている残作業。"
+          "status": "対応中",
+          "updated": "2026-11-15",
+          "note": "ユーザー指示「モック通りに表紙は作って」(2026-11-15)。モックアップの場所は前のマネージャールームに聞く前に、requirements.jsonのREQ-AIL-001 designSpecの記録から特定した。ai-labはmainへのpushで本番(Xサーバー)へ自動公開されるため、作業ブランチclaude/ail-016-coverで実装・確認後、ユーザーの「マージして」を受けて公開した。公開前にai-lab.naruya0724.comでSSL証明書エラー(ERR_CERT_COMMON_NAME_INVALID、*.xserver.jpの共用証明書)が出ていたが、原因はXサーバーのSSL設定がOFFだったことで、ユーザーがONにした。",
+          "detail": "Claude Designの「AI Lab トップページ モックアップ」(https://claude.ai/artifact/2ktTwDujNahY5CWo4jYePY、project/Main.dc.html)の表紙を、ai-labのindex.htmlにフレームワーク無しで再現した。スクロールに合わせて4枚のパネル(AI LAB/AI NEWS/WORKS/JOIN)が入れ替わるスティッキー演出(js/cover.js、モックアップのDCLogicと同じ計算)、浮遊する光の玉、右下の切替ドット、左下のカウンター、分野名のマーキー帯を実装し、旧.heroを置き換えた。モックアップでは点を押すとパネルの途中で止まる計算だったため正面に来る位置へ補正、ブレークポイントは既定方針の640px、JS無し環境では縦並び、prefers-reduced-motionで動きを止める配慮を加えた。PC(1440px)・iPhone幅で確認、既存Playwrightテスト20件成功。ユーザー承認後にmainへマージ(ai-lab 5532e0e)し、GitHub ActionsでXサーバーへ自動デプロイ。",
+          "nextAction": "本番(https://ai-lab.naruya0724.com)での表示確認(SSL反映後)、完了扱いの確認(ルール30)。",
+          "checkHistory": [
+            {
+              "date": "2026-11-15",
+              "summary": "表紙をモックアップどおりに実装し、ユーザー承認後にmainへマージ・自動デプロイ。本番表示確認と完了確認待ち。"
+            }
+          ]
         }
       ]
     },
