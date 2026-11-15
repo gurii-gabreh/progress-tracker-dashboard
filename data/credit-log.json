@@ -1221,6 +1221,12 @@
       "repo": "progress-tracker-dashboard",
       "task": "PTD-114: キュレーション+ブログ記事作成専用ルームの新設(ユーザー確認で完了)",
       "note": "構築は2026-11-01、日次Routineは11/09から停止・必要時手動実行。11/16はユーザー確認による完了更新のみ。"
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "progress-tracker-dashboard",
+      "task": "ルール18追記: 調べられないサイトはCodexへ依頼する(ServiceNow調査結果相談ルーム)",
+      "note": "claude-core-rules.md・ai-config.json・concept-log.json(CL-061)を更新。許可ドメイン15件はユーザーが環境設定で登録済み。"
     }
   ]
 }
