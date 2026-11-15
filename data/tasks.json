@@ -6563,6 +6563,30 @@
           "summary": "絞り込み欄・情報行の折りたたみを実装、iPhone/PC幅で確認。実機確認と完了確認待ち。"
         }
       ]
+    },
+    {
+      "id": "PTD-135",
+      "title": "新規アプリ構想「あとで見るメモ」(案A)の立ち上げ",
+      "task": "保存したリンク・メモを数日後に1件だけ再提示するアプリの①要件定義を、new-app-kickoffで作成した構想ルームで進める",
+      "repo": "progress-tracker-dashboard",
+      "category": "planning",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)で①要件定義の聞き取り→requirements.jsonへの記録を待つ。",
+      "note": "ユーザー相談「親しみが湧きやすく手軽に使えるものから作りたい」(2026-11-15)に対し、category6-issues.json・app-idea-research.jsonを根拠に案A〜Gを提示し、ユーザーが案Aを選択。松竹梅の3段階を梅→竹→松の順の開発段階とし、両対応(PC+iPhone)、同期は梅で入れる(AskUserQuestionで確認)。",
+      "detail": "new-app-kickoffスキルでprogress-tracker-dashboardをsource_urlにした構想ルーム「あとで見るメモ(案A) 構想ルーム」(session_011sXeDnR2ytHMGBDRtht8xw)をcreate_sessionで作成し、初回プロンプトで合意済みの前提(梅=ローカル+PC/iPhone同期・ルールベース再提示/竹=Gemini無料枠で要約・タグ/松=日次『今日のカード』・他アプリ連携、3段階でJSON形式統一、AI上限時は梅機能で継続、APIキーはGAS側、画像生成APIは無料枠なしのため不使用)とスキル手順3の内容を伝えた。Gemini無料枠は公式に上限非保証、フォーラムで削減報告あり(2026-11-15 WebSearch)のため、AIは補助扱いとする方針。",
+      "output": "構想ルームのセッション作成",
+      "updated": "2026-11-15",
+      "checkHistory": [
+        {
+          "date": "2026-11-15",
+          "summary": "案A決定・松竹梅方針合意、new-app-kickoffで構想ルームを作成。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"
