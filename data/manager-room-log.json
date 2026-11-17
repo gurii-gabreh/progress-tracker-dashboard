@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-16T00:16:06.348477+09:00",
+  "lastProcessedAt": "2026-11-17T12:04:28.372483+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -567,6 +567,33 @@
         "AI LabのSSL反映確認(https://ai-lab.naruya0724.com)と、AIL-016(表紙)の完了確認。",
         "PTD-135「あとで見るメモ」は構想ルームで①要件定義の聞き取り中。",
         "【ユーザー作業】CROSS_REPO_PATの再発行(他リポジトリのCLAUDE.mdが古いまま。新設の常設ルーム3つは暫定対策で運用)。",
+        "【相談11/13 01:39:41-2】everything-claude-codeからの取り込み候補。",
+        "【相談11/13 01:39:41-3】plugin-rolloutスキルの修正。",
+        "research-items.jsonのsysId重複10組の扱い。",
+        "robots.txt導入の可否。",
+        "ECCの記述「新モデルでTaskCreate等が既定で外された」の裏付け確認。",
+        "Anthropic News取得失敗への対応。",
+        "【ユーザー作業】ServiceNowのu_category Choice\"11\"追加。",
+        "progress-tracker-dashboardの非公開化は見送り・現状維持。",
+        "【相談11/14 02:02:49】PTD-133/134の実機確認後の完了確認。",
+        "【相談11/14 01:38:38】計画タブのスマホ表示。",
+        "【相談11/14 01:33:50】Moz・EPIの扱い。",
+        "【相談11/14 09:22:50】GitHubリポジトリ点検(承認待ちで中断、未実施)。",
+        "CLAUDE.md固有補足のworker-room記述の書き換え(相談中)。"
+      ]
+    },
+    {
+      "date": "2026-11-16",
+      "generatedAt": "2026-11-17T12:04:28.372483+09:00",
+      "summary": "【CLAUDE.md定期確認(0:04)】11/16(月)は祝日でない平日(内閣府・るるぶで11月の祝日は3日・23日のみと確認)。ルール変更なし・問題なし、週次ルームログ要約の常駐ルームは使用率約27%で対応不要と報告。12:04の発火は平日12時のためスキップ。\n\n【日次ログ(11/15分)の処理】11/15分のエントリを追記(0f747ed)、Task-WBSへPTD-135追加・AIL-016を対応中に更新(8daec51)。Task-WBSリポジトリはGitHub上でgurii-gabreh/Task-WBSへ名称変更されている旨のリダイレクト表示があった(push自体は成功)。\n\n【ブログの相談の続き】ユーザー「BLOG-001・002のSNS投稿文を、今作ってよいか、これってなんの?」に対し、副業ファネル(SNS→ブログ)用のインスタ/X向け紹介文であり、11/1指示以前に書いたBLOG-001・002だけ未作成と説明(作成可否は未回答)。PTD-113はユーザー「完了で」により完了(5e08f02)。PTD-114について「毎日の自動処理が今も正常に動いているか未確認」と書いた件をユーザーが質問。get_triggerで確認した結果、日次Routine(trig_011zBuNxpYB52P52yZwZaqsG)は11/09のユーザー判断(PTD-130)で停止済みで、前回の「続けて動かす仕組みなので対応中のまま推奨」は事実と異なっていたと訂正。ユーザー「完了にしてよい」によりPTD-114を完了(1ab174e)。PTD-112(blog-articles.json新設と「📝記事作成」列)の内容を説明し、完了でよいと提案(未回答)。\n\n【AIL-015 作品集の方針決定】ユーザー決定「今まで作ったアプリは載せない、載せるのは今のメモアプリやブログに載せる専用で作成したもののみ」をAIL-015に記録(c790493)。表紙WORKSパネルの文言がkizashi・PTDに言及していたため修正を相談し、ユーザー「これにして」で「AI Labのために作った小さなアプリを紹介します。」に変更(ai-lab 3b5aa40、ローカルPlaywright20件・CIテスト成功)。ただしXserverへのFTPSデプロイが「Failed to connect / Timeout (control socket)」で失敗し、本番は旧文言のまま。前日の表紙デプロイは成功しており変更内容が原因ではない。原因候補は一時的な不調か、Xserver側のFTP/国外IPアクセス制限の設定変更(SSL ON作業時の可能性、未確定)。再実行の可否を相談中。\n\n【⭐おすすめ印(PTD-136)】ユーザー指示「キュレーション処理が動いた時にのみ、合わせておすすめの記事にチェックを入れろ」(「さっきも言った」とのことだったが、日次ログ・tasks.json・会話記録に以前の指示は見つからず、その旨を伝えた上で確認)。AskUserQuestionで、新しい読み取り専用の⭐列(💾保存とは分ける)、適用範囲はAI最新情報のキュレーションとGrok/Felo取り込みの両方、と決定。export_research_items.mjsでrecommended/recommendedAtを日次エクスポートで引き継ぐよう修正、research-item-curationスキルに手順3a(キュレーションした回にのみ、その回の項目から選ぶ・遡及しない)を追加(servicenow-sub-agent 0c03c9a)、dashboard.htmlの🤖AI最新情報表に⭐列を追加(8e2454a)。PC・iPhone 13で⭐1件のみチェック・全件disabled・JSエラー0件を確認。Grok/Felo取り込みルーム・ServiceNow相談ルームへcreate_trigger→fire_trigger→delete_triggerで連絡。Task-WBSへPTD-136を追加(853fd56)。実データでの初回付与後に完了確認予定。\n\n【ルール18の追記(他ルーム)】data/claude-core-rules.mdに「調べられないサイトはCodexへ依頼する」追記が入った(a774f27、11/16 0:26 JST、このルーム以外のセッションによるコミット)。このコンテナではcodexはインストール済みだが未ログイン。\n\n【本Routine(11/16分)の処理】11/17 0:04の発火時にCLAUDE.md定期確認のget_sessionが承認待ちのまま中断し、ワーカー再起動で未完了になった(ルール変更はa774f27のみで矛盾なし。週次要約ルームの使用率は未確認)。日次ログの処理自体も同じ中断で約12時間遅れ、11/17 12:04頃に実施。tasks.json(277件)の完了タスクにdetail空欄なし、credit-logの記録漏れなし、Task-WBSとの差分なし。",
+      "unresolvedCarriedOver": [
+        "【相談11/16 00:47:01】AI LabのXserverデプロイ失敗(FTP接続タイムアウト)、再実行してよいか。本番はWORKS文言が旧のまま。",
+        "【相談11/15 01:29:49】ブログ: BLOG-001/002のSNS投稿文作成可否・公開ペース・PTD-112の完了可否。",
+        "PTD-136(⭐おすすめ)は実データでの初回付与後に完了確認。",
+        "AI LabのSSL反映確認とAIL-016の完了確認。",
+        "PTD-135「あとで見るメモ」は構想ルームで①要件定義の聞き取り中。",
+        "CLAUDE.md定期確認(11/17 0:04)の週次要約ルーム使用率確認が承認待ちで未完了。",
+        "【ユーザー作業】CROSS_REPO_PATの再発行(他リポジトリのCLAUDE.mdが古いまま)。",
         "【相談11/13 01:39:41-2】everything-claude-codeからの取り込み候補。",
         "【相談11/13 01:39:41-3】plugin-rolloutスキルの修正。",
         "research-items.jsonのsysId重複10組の扱い。",
