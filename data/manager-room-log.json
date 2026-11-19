@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-19T00:05:15.814770+09:00",
+  "lastProcessedAt": "2026-11-20T00:05:11.454569+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -640,6 +640,33 @@
       "date": "2026-11-18",
       "generatedAt": "2026-11-19T00:05:15.814770+09:00",
       "summary": "(この日はユーザーとの会話なし。定期Routineの処理のみ)\n\n【前日分の遅延処理】11/18 0:04のCLAUDE.md定期確認でget_sessionが承認待ちのまま中断したため、11/17分の日次ログは12:04頃に遅れて追記した(b116e7e)。\n\n【相談の提起】この承認待ち中断が2晩続き、毎回日次ログが約12時間遅れていることを報告。原因(推測)はget_sessionが自動許可リストに無いことで、data/claude-permissions.jsonへの追加可否を【相談11/18 12:04:32】として提起(設定ファイル変更のためパスワード確認対象)。12:04の発火は平日12時のためスキップ。\n\n【11/19 0:04の定期確認】ルール変更なし・問題なし。日次ログを遅らせないよう、週次要約ルームの使用率確認(get_session)は相談の回答が出るまで意図的に保留した(最終確認11/15時点で約27%)。\n\n【本Routine(11/18分)】予定どおり0:05に処理。tasks.json(277件)の完了タスクにdetail空欄なし、credit-log記録漏れなし、Task-WBS差分なし。",
+      "unresolvedCarriedOver": [
+        "【相談11/18 12:04:32】get_sessionを自動許可リスト(data/claude-permissions.json)へ追加してよいか。回答まで週次要約ルームの使用率確認は保留。",
+        "【相談11/16 00:47:01】AI LabのXserverデプロイ失敗(FTP接続タイムアウト)、再実行してよいか。本番はWORKS文言が旧のまま。",
+        "【相談11/15 01:29:49】ブログ: BLOG-001/002のSNS投稿文作成可否・公開ペース・PTD-112の完了可否。",
+        "PTD-136(⭐おすすめ)は実データでの初回付与後に完了確認。",
+        "AI LabのSSL反映確認とAIL-016の完了確認。",
+        "PTD-135「あとで見るメモ」は構想ルームで①要件定義の聞き取り中。",
+        "【ユーザー作業】CROSS_REPO_PATの再発行(他リポジトリのCLAUDE.mdが古いまま)。",
+        "【相談11/13 01:39:41-2】everything-claude-codeからの取り込み候補。",
+        "【相談11/13 01:39:41-3】plugin-rolloutスキルの修正。",
+        "research-items.jsonのsysId重複10組の扱い。",
+        "robots.txt導入の可否。",
+        "ECCの記述「新モデルでTaskCreate等が既定で外された」の裏付け確認。",
+        "Anthropic News取得失敗への対応。",
+        "【ユーザー作業】ServiceNowのu_category Choice\"11\"追加。",
+        "progress-tracker-dashboardの非公開化は見送り・現状維持。",
+        "【相談11/14 02:02:49】PTD-133/134の実機確認後の完了確認。",
+        "【相談11/14 01:38:38】計画タブのスマホ表示。",
+        "【相談11/14 01:33:50】Moz・EPIの扱い。",
+        "【相談11/14 09:22:50】GitHubリポジトリ点検(承認待ちで中断、未実施)。",
+        "CLAUDE.md固有補足のworker-room記述の書き換え(相談中)。"
+      ]
+    },
+    {
+      "date": "2026-11-19",
+      "generatedAt": "2026-11-20T00:05:11.454569+09:00",
+      "summary": "(この日はユーザーとの会話なし。定期Routineの処理のみ)\n\n【定期確認】11/19 0:04はCLAUDE.md確認・問題なし(get_sessionは【相談11/18 12:04:32】の回答待ちで保留)、11/18分の日次ログを予定どおり追記(848ce9b)。12:03の発火は平日12時のためスキップ。11/20 0:04のCLAUDE.md確認も問題なし(ルール変更なし、get_sessionは引き続き保留)。\n\n【本Routine(11/19分)】tasks.json(277件)の完了タスクにdetail空欄なし、credit-log記録漏れなし、Task-WBS差分なし。",
       "unresolvedCarriedOver": [
         "【相談11/18 12:04:32】get_sessionを自動許可リスト(data/claude-permissions.json)へ追加してよいか。回答まで週次要約ルームの使用率確認は保留。",
         "【相談11/16 00:47:01】AI LabのXserverデプロイ失敗(FTP接続タイムアウト)、再実行してよいか。本番はWORKS文言が旧のまま。",
