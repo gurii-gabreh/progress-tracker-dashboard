@@ -1,6 +1,6 @@
 {
   "description": "実装作業(このリポジトリに限らず、管理対象リポジトリ全体)の中で出てきた、AIエンジニア方向性(AIE-*)の6分野に該当する概念を記録する学習ログ。data/policy.json POL-004により、意味のある実装判断のたびに該当があれば自動的に追記される想定。毎日眺めて「✓ 確認した」を押すことで復習する使い方を想定(確認状態はブラウザのlocalStorageに保存し、GitHubへは書き込まない)。",
-  "updatedAt": "2026-11-16",
+  "updatedAt": "2026-11-21",
   "categories": [
     {
       "key": "architecture",
@@ -243,6 +243,12 @@
           "context": "2026-11-13、everything-claude-code(affaan-m、MIT、Anthropicハッカソン優勝者の構成集)の取り込み可否をResearchサブエージェント4体で評価した際、1体が公式ドキュメントとの食い違いを指摘。司令塔がcode.claude.com/docs/en/cloud-environmentsの「What carries over from your setup」表を直接取得し、「Plugins and marketplaces declared in your repo's .claude/settings.json: No」と確認した(ルール18の重要判断のダブルチェック)。",
           "note": "既存のplugin-rolloutスキル(全リポジトリの.claude/settings.jsonへenabledPluginsを配る仕組み)は「クラウドセッションが自動で読み込む」前提で作られており、この前提は公式仕様と矛盾する。スキルの修正はユーザー相談中(【相談11/13 01:39:41-3】)。.claude/rules/(path指定付きは対象ファイルを触った時だけ読み込み)はクラウドでも有効で、肥大化したCLAUDE.mdの分割先候補になる。",
           "date": "2026-11-13"
+        },
+        {
+          "id": "CL-062",
+          "concept": "裏付けの取れない調査結果も捨てずに同じフィードへ残し、出典名・概要の接頭辞・スコアで「裏付け済み」と見分けられるようにする",
+          "context": "2026-11-21、Felo調査結果取り込みルーム。出典URLの無い一般トレンド9トピックを一度は不採用としたが、ユーザー指示「不採用の記事も、もしかしたら記事となるからとりあえず記載して」「調査資料のAI最新情報の中に追記でいい」を受けて収録した。",
+          "note": "別ファイル(未確認トピック専用JSON)に分ける案も出したが、ユーザーは既存のAI最新情報(servicenow-sub-agentのresearch-items.json)への追記を選んだ。混在による誤用を防ぐため、sourceNameを「X (Felo X Research経由・裏付け未確認)」とし、summaryJaの先頭に【裏付け未確認・記事ネタ候補】、score 1、sourceUrl null、⭐(recommended)なしとして、裏付け済み項目(sourceName「…報道/公式で裏付け確認」)と一覧上で区別できるようにした。記事に使う際は一次情報で裏付けを取り直す前提(pointsJaにも明記)。新しいファイルや画面を作らず、既存の表示(出典列の空欄・情報源フィルタ)だけで区別できる点が利点。"
         }
       ]
     },
