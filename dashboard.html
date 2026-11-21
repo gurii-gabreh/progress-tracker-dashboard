@@ -7111,7 +7111,7 @@
   // 「自動収集処理やルーティン処理はAI基本設定タブに混在していて埋もれている」への対応)。
   // jsonDataIndexは個別の「自動処理」ではなく全リポジトリのJSON一覧という参照資料のため、
   // AI基本設定タブ側に残した。
-  const ROUTINE_SECTIONS = ["serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "managerRoomDailyLog", "claudeMdCheck"];
+  const ROUTINE_SECTIONS = ["routineLoopReview", "serviceNowResearch", "taskListJsonSync", "roomHistoryCapture", "creditLog", "managerRoomDailyLog", "claudeMdCheck"];
 
   // orchestration/secondOpinionCheck/managementの3セクションは文章だけだと分かりにくいという
   // 指摘を受け、図解を追加した(2026-08-11)。ヘッダーの🗺オーケストレーション構成モーダルと同じ
@@ -7247,6 +7247,11 @@
             const noteHtml = r.note ? `<p class="ai-config-overview">${escapeHtml(r.note)}</p>` : "";
             return `<div class="ai-config-subheading">📁 ${escapeHtml(r.appName || r.repo || "")}(${escapeHtml(r.repo || "")})</div>${filesHtml}${noteHtml}`;
           }).join("") + (section.note ? `<p class="ai-config-overview">${escapeHtml(section.note)}</p>` : "") + linkHtml
+        // routineLoopReviewは自動処理ごとの点検結果を表形式で表示する(2026-11-21追加、loop-design-check)。
+        : key === "routineLoopReview" && table.length
+        ? `<div class="ai-config-subheading">📋 点検結果(${table.length}件)</div><table class="ai-config-skills-table"><thead><tr><th>自動処理</th><th>終わる条件</th><th>やってはいけないこと</th><th>失敗したとき</th><th>人の判断</th><th>判定</th></tr></thead><tbody>${table.map((r) =>
+            `<tr><td class="skill-name" data-label="自動処理">${escapeHtml(r.routine || "")}<br><small>${escapeHtml(r.when || "")}・${escapeHtml(r.type || "")}</small></td><td data-label="終わる条件">${escapeHtml(r.exit || "")}</td><td data-label="やってはいけないこと">${escapeHtml(r.boundary || "")}</td><td data-label="失敗したとき">${escapeHtml(r.onFail || "")}</td><td data-label="人の判断">${escapeHtml(r.human || "")}</td><td data-label="判定"><strong>${escapeHtml(r.result || "")}</strong>${(r.findings || []).length ? `<ul class="ai-config-bullets">${r.findings.map((f) => `<li>${escapeHtml(f)}</li>`).join("")}</ul>` : ""}</td></tr>`
+          ).join("")}</tbody></table><ul class="ai-config-bullets">${points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>${linkHtml}`
         : key === "customSkills" && table.length
         ? `<div class="ai-config-subheading">📋 詳細(${table.length}件)</div><table class="ai-config-skills-table"><colgroup><col style="width:16%"><col style="width:22%"><col style="width:16%"><col style="width:46%"></colgroup><thead><tr><th>スキル名</th><th>適用リポジトリ</th><th>起動方法</th><th>概要</th></tr></thead><tbody>${table.map((s) => {
             const isUser = s.triggerType === "user";
