@@ -9,7 +9,7 @@
 - **manager-room(状況把握・優先度判断・振り分けのみ)とworker-room(実装担当)の役割分担がある。このセッションで実装作業をしているなら、それはworker-room役**
 - 実装したタスクの`detail`(実装ナレッジ)・`note`・`checkHistory`を、progress-tracker-dashboardの`data/tasks.json`側で空欄のまま完了させない
 - 意味のある実装判断(設計パターン・DB設計・セキュリティ対応・AI/LLM関連・テスト方針など)があれば、progress-tracker-dashboardの`data/concept-log.json`にも記録する(2026-08-13、自動同期の書き込み権限確認のための軽微な更新)
-- タスクを完了させたら、progress-tracker-dashboardの`data/credit-log.json`の`entries`へdate/repo/task/noteを1行追記する(可能ならtime/usage/rateLimitResetsAtも)。この運用ルールは元々`credit-log.json`自身の`description`とdashboard.htmlの説明文にしか書かれておらず、CLAUDE.mdに無かったため2026-08-20〜2026-10-03の約1ヶ月半、記録が完全に止まっていた(2026-10-03、ユーザー指摘により発覚・遡及backfill実施。再発防止のためここに明記)記録は作業の都度ではなく深夜の定期処理で一括して行ってよい(2026-11-21追記、ルール14の4参照)。
+- タスクを完了させたら、progress-tracker-dashboardの`data/credit-log.json`の`entries`へdate/repo/task/noteを1行追記する(可能ならtime/usage/rateLimitResetsAtも)。この運用ルールは元々`credit-log.json`自身の`description`とdashboard.htmlの説明文にしか書かれておらず、CLAUDE.mdに無かったため2026-08-20〜2026-10-03の約1ヶ月半、記録が完全に止まっていた(2026-10-03、ユーザー指摘により発覚・遡及backfill実施。再発防止のためここに明記)。記録は作業の都度ではなく深夜の定期処理で一括して行ってよい(2026-11-21追記、ルール14の4参照)。
 - **新規セッション・他のルームへ引き継ぐ際は、progress-tracker-dashboardの`data/manager-room-log.json`を必ず確認すること**。マネージャールーム(CCRセッション)の日々の経緯(相談・決定事項・完了作業・未解決事項を問わず)が時系列で記録されている、引き継ぎ用の正本(2026-10-03追加、ユーザー指示「他のルームに引き継ぐ際は、この記録したJSONをもとに引き継げるようにしろ、これにより今までやってきた内容を継承させろ」)。詳細はルール28参照。
 
 ## より詳しいルール(下記URLを実際にWebFetch等で取得すること。リンクを貼るだけでは中身は読み込まれない)
