@@ -6632,16 +6632,22 @@
       "goal": null,
       "steps": null,
       "subtasks": null,
-      "issues": [],
-      "nextAction": "構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)で①要件定義の聞き取り→requirements.jsonへの記録を待つ。",
-      "note": "ユーザー相談「親しみが湧きやすく手軽に使えるものから作りたい」(2026-11-15)に対し、category6-issues.json・app-idea-research.jsonを根拠に案A〜Gを提示し、ユーザーが案Aを選択。松竹梅の3段階を梅→竹→松の順の開発段階とし、両対応(PC+iPhone)、同期は梅で入れる(AskUserQuestionで確認)。",
-      "detail": "new-app-kickoffスキルでprogress-tracker-dashboardをsource_urlにした構想ルーム「あとで見るメモ(案A) 構想ルーム」(session_011sXeDnR2ytHMGBDRtht8xw)をcreate_sessionで作成し、初回プロンプトで合意済みの前提(梅=ローカル+PC/iPhone同期・ルールベース再提示/竹=Gemini無料枠で要約・タグ/松=日次『今日のカード』・他アプリ連携、3段階でJSON形式統一、AI上限時は梅機能で継続、APIキーはGAS側、画像生成APIは無料枠なしのため不使用)とスキル手順3の内容を伝えた。Gemini無料枠は公式に上限非保証、フォーラムで削減報告あり(2026-11-15 WebSearch)のため、AIは補助扱いとする方針。",
+      "issues": [
+        "手順3で照合予定の懸念: Safari ITPの7日上限(情報源2020-2022・現行未確認)/梅教材の販売・決済の仕組み(AI Labでは将来フェーズ)/入口の梅が有料であることの影響/竹のAPIキー秘匿にGASが必要だがGASは松へ移した"
+      ],
+      "nextAction": "ユーザー確認待ち: 【相談11/15 23:53:10】n7(保存する項目の案でよいか/松の保存先=案A学習者のGoogleアカウント(GAS+スプレッドシート)か案B学習者のGitHubか)。その後n8〜n17を聞き取り、手順3の照合へ。",
+      "note": "ユーザー相談「親しみが湧きやすく手軽に使えるものから作りたい」(2026-11-15)に対し、category6-issues.json・app-idea-research.jsonを根拠に案A〜Gを提示し、ユーザーが案Aを選択。松竹梅の3段階を梅→竹→松の順の開発段階とし、両対応(PC+iPhone)、同期は梅で入れる(AskUserQuestionで確認)。\n・2026-11-15ユーザー指示(原文): 「このターゲットは、あくまで初めてアプリ開発をする人、尚且つAIに初めて触る人」「１を梅にして、そこからさらに発展させるために２としたい、その後、動機(=同期)やデータの保存の仕組みの作成をさせたい」「初心者が躓きやすいのは次のレベルにしたい、まずはできたという達成感を味あわせたい」「今回はお試しにしたいから梅だけ有料にする、今後のアプリは製作時に要相談」。これにより当初前提の「梅に同期を含める」「松=今日のカード」は変更。servicenow調査結果を別ルームで聞くかの相談はユーザー指示で取り消し。",
+      "detail": "new-app-kickoffスキルでprogress-tracker-dashboardをsource_urlにした構想ルーム「あとで見るメモ(案A) 構想ルーム」(session_011sXeDnR2ytHMGBDRtht8xw)をcreate_sessionで作成し、初回プロンプトで合意済みの前提(梅=ローカル+PC/iPhone同期・ルールベース再提示/竹=Gemini無料枠で要約・タグ/松=日次『今日のカード』・他アプリ連携、3段階でJSON形式統一、AI上限時は梅機能で継続、APIキーはGAS側、画像生成APIは無料枠なしのため不使用)とスキル手順3の内容を伝えた。Gemini無料枠は公式に上限非保証、フォーラムで削減報告あり(2026-11-15 WebSearch)のため、AIは補助扱いとする方針。\n・【11/15〜11/21 ①要件定義の聞き取り経過(構想ルーム)】ユーザー指摘で前提を修正: ターゲットは「初めてアプリ開発をする人・初めてAIに触る人」。梅=教材型(初心者がAI(Claude等)にお願いして作る/更新する。HTML1ファイル+localStorage+GitHub Pages公開でiPhoneでも開ける。GitHubの使い方も教材に載せる。同期は入れない)、竹=作ったアプリにGemini無料枠で要約・タグ付け、松=同期・データ保存、発展編(別枠)=他アプリ連携。今日のカードは不要。教材はAI Labサイトの記事として掲載。梅・竹・松の教材を全て作り、梅の教材だけ有料(お試し)、学習者のツール費用は無料の範囲。n6=梅はAIへの4回のお願い(保存/一覧・削除/数日後に1件再提示(ルールベース)/見た・また後で)、日数と選び方は②基本設計で決定。根拠確認: GitHub Pagesは無料プランでは公開リポジトリのみ、localStorageはオリジン単位で永続(Web検索で公式ドキュメント要約を確認)。",
       "output": "構想ルームのセッション作成",
-      "updated": "2026-11-15",
+      "updated": "2026-11-21",
       "checkHistory": [
         {
           "date": "2026-11-15",
           "summary": "案A決定・松竹梅方針合意、new-app-kickoffで構想ルームを作成。"
+        },
+        {
+          "date": "2026-11-21",
+          "summary": "①要件定義の聞き取りn1〜n6確定(ターゲット=初心者、梅=教材型・竹=AI組込・松=同期、梅教材のみ有料)。n7回答待ち。"
         }
       ]
     },
@@ -6709,15 +6715,19 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "今夜23:40/23:42の初回実行で、両ルームが承認待ちで止まらず動くか確認する。その後、完了確認(ルール30)。",
+      "nextAction": "ユーザー確認待ち: 構想ルームの深夜記録にpush失敗時の決まりを追加してよいか/AI Lab構想ルームの深夜記録も計画metadata主体に変えるか。",
       "note": "ユーザー指示(2026-11-21)「作業は全て他と同様にtasks.jsonに記録してほしい」「ルールのところは随時でなくていいから深夜に一括で登録でいい」「ルーム毎に深夜に更新があればtasks.jsonに更新してほしい」「これ、実装ルームを作成するときのルームに設定しておいて」。きっかけはPTD-137(AI Lab構想ルームの11/08の作業がtasks.jsonに記録漏れ)。マネージャールームからは他ルームの会話・右側の「計画」が読めないため、各ルーム自身に記録させる方式にした。",
-      "detail": "(1) 既存のアプリ作成ルーム2つに、create_trigger(persistent_session_id指定)で毎晩の定期実行を設定: あとで見るメモ構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)=trig_01Wx8aAQBRpsUNBNmPz5mJXZ・JST23:40、AI Lab構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)=trig_01WygZvt26TRNGcCGqgymnyH・JST23:42。内容: その日の会話・計画(TaskList)・コミットを振り返り、更新があればtasks.jsonへ一括反映(checkHistory追加、note/detail/nextAction最新化、新規作業は新タスク、返事待ちはnextActionに明記)、statusを完了にする判断はしない(ルール30)、承認が要る操作は使わない。(2) new-app-kickoffスキルに手順3aを追加し、今後新しく作るルームにも同じ定期実行を必ず設定し、ルームを片付ける時はトリガーも削除するようにした。マネージャールーム0:05の日次ログより前に終わるよう23時台に設定。",
+      "detail": "(1) 既存のアプリ作成ルーム2つに、create_trigger(persistent_session_id指定)で毎晩の定期実行を設定: あとで見るメモ構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)=trig_01Wx8aAQBRpsUNBNmPz5mJXZ・JST23:40、AI Lab構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)=trig_01WygZvt26TRNGcCGqgymnyH・JST23:42。内容: その日の会話・計画(TaskList)・コミットを振り返り、更新があればtasks.jsonへ一括反映(checkHistory追加、note/detail/nextAction最新化、新規作業は新タスク、返事待ちはnextActionに明記)、statusを完了にする判断はしない(ルール30)、承認が要る操作は使わない。(2) new-app-kickoffスキルに手順3aを追加し、今後新しく作るルームにも同じ定期実行を必ず設定し、ルームを片付ける時はトリガーも削除するようにした。マネージャールーム0:05の日次ログより前に終わるよう23時台に設定。\n・(2026-11-21追記、構想ルーム側) ユーザー指示「深夜の記録の指示文を、計画のmetadataを主にする形に更新して」により、trig_01Wx8aAQBRpsUNBNmPz5mJXZの手順1・3を、計画タブのmetadata(taskId/detail/note/commits/checked)を主材料にし不足分だけ会話・当日コミットで補う形へupdate_triggerで変更(実行時刻・紐付け先・有効状態は不変、応答で反映確認)。AI Lab構想ルーム用(trig_01WygZvt26TRNGcCGqgymnyH)は未変更。\n・同日、マネージャールームから定期実行経由で「手順3末尾にpush失敗時の扱い(pull --rebaseで最大3回再試行、失敗時は計画を残して報告)を追加して」と依頼が届いた。ルール21に沿いユーザー本人の確認待ちで未反映。",
       "output": ".claude/skills/new-app-kickoff/SKILL.md、定期実行2件",
       "updated": "2026-11-21",
       "checkHistory": [
         {
           "date": "2026-11-21",
           "summary": "既存2ルームに深夜の記録Routineを設定、new-app-kickoffに標準手順として追加。初回実行の確認待ち。"
+        },
+        {
+          "date": "2026-11-21",
+          "summary": "構想ルームの深夜記録の指示文を計画metadata主体に更新。23:40の初回実行は承認待ちで止まらず発火しこの記録を実施。push失敗時の決まりの追加はユーザー確認待ち。"
         }
       ]
     },
