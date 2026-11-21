@@ -6664,6 +6664,30 @@
           "summary": "tasks.json記録漏れが判明し、コミット履歴から遡及記録。完了確認待ち。"
         }
       ]
+    },
+    {
+      "id": "PTD-138",
+      "title": "アプリ作成ルームごとの深夜のtasks.json一括記録(ルーム日次Routine)",
+      "task": "アプリ作成用の各ルームに、その日の会話・計画・コミットを振り返ってtasks.jsonへ一括記録する深夜の定期実行を付ける。新しく作るルームにも標準で設定する",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "今夜23:40/23:42の初回実行で、両ルームが承認待ちで止まらず動くか確認する。その後、完了確認(ルール30)。",
+      "note": "ユーザー指示(2026-11-21)「作業は全て他と同様にtasks.jsonに記録してほしい」「ルールのところは随時でなくていいから深夜に一括で登録でいい」「ルーム毎に深夜に更新があればtasks.jsonに更新してほしい」「これ、実装ルームを作成するときのルームに設定しておいて」。きっかけはPTD-137(AI Lab構想ルームの11/08の作業がtasks.jsonに記録漏れ)。マネージャールームからは他ルームの会話・右側の「計画」が読めないため、各ルーム自身に記録させる方式にした。",
+      "detail": "(1) 既存のアプリ作成ルーム2つに、create_trigger(persistent_session_id指定)で毎晩の定期実行を設定: あとで見るメモ構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)=trig_01Wx8aAQBRpsUNBNmPz5mJXZ・JST23:40、AI Lab構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)=trig_01WygZvt26TRNGcCGqgymnyH・JST23:42。内容: その日の会話・計画(TaskList)・コミットを振り返り、更新があればtasks.jsonへ一括反映(checkHistory追加、note/detail/nextAction最新化、新規作業は新タスク、返事待ちはnextActionに明記)、statusを完了にする判断はしない(ルール30)、承認が要る操作は使わない。(2) new-app-kickoffスキルに手順3aを追加し、今後新しく作るルームにも同じ定期実行を必ず設定し、ルームを片付ける時はトリガーも削除するようにした。マネージャールーム0:05の日次ログより前に終わるよう23時台に設定。",
+      "output": ".claude/skills/new-app-kickoff/SKILL.md、定期実行2件",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "既存2ルームに深夜の記録Routineを設定、new-app-kickoffに標準手順として追加。初回実行の確認待ち。"
+        }
+      ]
     }
   ],
   "updatedAt": "2026-11-07"
