@@ -1227,6 +1227,24 @@
       "repo": "progress-tracker-dashboard",
       "task": "ルール18追記: 調べられないサイトはCodexへ依頼する(ServiceNow調査結果相談ルーム)",
       "note": "claude-core-rules.md・ai-config.json・concept-log.json(CL-061)を更新。許可ドメイン15件はユーザーが環境設定で登録済み。"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-139: 記録を深夜に一括で行う運用への変更",
+      "note": "ユーザー指示「完了しているものはjson側に書いて」により完了として記録"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-140: 相談は選択肢の画面で出す運用の追加",
+      "note": "ユーザー指示「完了しているものはjson側に書いて」により完了として記録"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "claude-voice-bridge",
+      "task": "CVB-003: サイドパネルに⌨️コマンド一覧タブ新設・タスク抽出を非表示",
+      "note": "ユーザー指示「完了しているものはjson側に書いて」により完了として記録"
     }
   ]
 }

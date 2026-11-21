@@ -4148,6 +4148,30 @@
       ]
     },
     {
+      "id": "CVB-003",
+      "title": "サイドパネルに⌨️コマンド一覧タブを新設し、タスク抽出の表示を非表示に",
+      "task": "定例文・スキル呼び出し文言を専用タブにまとめ、役目を終えたタスク抽出を画面から外す(処理は参考に残す)",
+      "repo": "claude-voice-bridge",
+      "category": "ui",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "ユーザー指示(2026-11-21)「サイドアプリを改修しよう。タスク抽出の表示を非表示にして、関連部分も今後似たアプリを作る際の参考に処理だけ残しておきたい。AI開発情報一覧の左にタブを作りコマンド一覧を追加、📌定例文と後スキル呼び出し文言も」。AskUserQuestionで、非表示範囲=ボタンと一覧の両方、初期タブ=コマンド一覧、Web版の貼り付け欄も非表示、と確認。背景: Claude Codeのルームは右の計画+深夜のtasks.json一括記録(PTD-138・139)で代替できるため。",
+      "detail": "sidepanel.html/js: 最上位タブ左端に「⌨️ コマンド一覧」を追加し開いた時は常に表示。📌定例文・🔧スキル呼び出し文言を移動し、タスク抽出と一体だった読み込みとは別に「📥 最新の定例文を読み込む」(data/templates.jsonだけ取得)を追加。🔍抽出ボタン列・📋一覧サブタブ・タスク一覧を非表示にし、AI開発情報一覧の初期サブタブはボイス。webapp/index.htmlのroom-task-audit貼り付け欄も非表示。処理コード(抽出・同期・widget-tasks.html等)は残した。claude-voice-bridge 0edfc33。",
+      "output": "sidepanel.html、sidepanel.js、webapp/index.html",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "実装・mainへ反映。Playwright(chrome APIを模擬)でタブ順・初期表示・定例文16件読み込み・ボタン表示・非表示・タブ切替・JSエラー0件を確認。"
+        }
+      ]
+    },
+    {
       "repo": "servicenow-sub-agent",
       "id": "PTD-065",
       "task": "ハッカソン再挑戦に向けた情報収集強化(AI能力×世の中のニーズの蓄積・活用)",
@@ -6111,13 +6135,17 @@
           "task": "ポートフォリオ作品画像の実装(スクリーンショット+CSS吹き出し)",
           "priority": "高",
           "status": "未着手",
-          "updated": "2026-11-16",
+          "updated": "2026-11-21",
           "note": "AIL-001のnextActionに記載されている残作業。 【2026-11-16ユーザー決定】作品集には、これまで作ったアプリ(kizashi・PTD・ServiceNow Sub Agent・Claude Voice Bridge・Mirai Journal・Supermarket Price Tracker等)は載せない。載せるのは、AI Lab/ブログに載せる専用に新しく作るもの(例: PTD-135『あとで見るメモ』)のみ。",
-          "nextAction": "専用作品(第1弾はPTD-135『あとで見るメモ』)の完成を待って、portfolio.jsonへの登録と画像(スクショ+CSS吹き出し)を行う。表紙WORKSパネルの文言(kizashi・PTDに言及)の修正可否をユーザーに相談中。",
+          "nextAction": "専用作品(第1弾はPTD-135『あとで見るメモ』)の完成を待って、portfolio.jsonへの登録と画像(スクショ+CSS吹き出し)を行う。",
           "checkHistory": [
             {
               "date": "2026-11-16",
               "summary": "ユーザー決定: 既存アプリは作品集に載せず、AI Lab/ブログ専用に作るものだけを載せる。"
+            },
+            {
+              "date": "2026-11-21",
+              "summary": "表紙WORKSパネルの文言を「AI Labのために作った小さなアプリを紹介します。」に変更(ai-lab 3b5aa40、11/16)。11/16のXserverデプロイはFTP接続タイムアウトで失敗したが、11/21にユーザー了承のうえ再実行し成功、本番反映済み。"
             }
           ]
         },
@@ -6686,6 +6714,54 @@
         {
           "date": "2026-11-21",
           "summary": "既存2ルームに深夜の記録Routineを設定、new-app-kickoffに標準手順として追加。初回実行の確認待ち。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-139",
+      "title": "記録を深夜に一括で行う運用への変更(計画タブのmetadata・説明欄・完了項目の削除)",
+      "task": "作業中の処理時間を短くするため、tasks.json・credit-log・Task-WBSへの記録を深夜の定期処理でまとめて行う運用に変える",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "ユーザー指示(2026-11-21)「深夜に記録をまとめてやる方向に仕様」「その時に必要な情報も追記する方針でよろしく」「今後は説明欄内にタスクの詳細を明記してほしい、内容がタイトルだけだとわからない」「完了したものは下にずらすことはできる?」→推奨案で「そうして」。完了扱いはユーザーの「完了しているものはjson側に書いて」による。",
+      "detail": "(1) claude-core-rules.mdルール14の4に追記(a0f5f83・135cb20、句点修正3cbcedd): 作業中はtasks.json等へ記録せず、計画タブのmetadataにtaskId/detail/note/commits/checkedを書き、深夜の定期処理が一括記録する。説明欄には経緯・今の状態・決めてほしいことを書く。完了項目は深夜の記録後に計画タブから削除する(並び順は変更できないため)。冒頭のcredit-logルールにも「深夜一括でよい」を追記。ai-config.json(web/ai.consultationFormat)にも反映。(2) マネージャールーム日次ログRoutine(trig_013ikFJFo9uJtnc4PqHjSPb5)の手順7を記録の本番処理に変更、手順14(承認が要る操作を使わない)・手順15(記録成功後に計画の完了項目を削除)を追加。(3) new-app-kickoffスキル手順3aに計画metadata運用を追記(538edc6)。アプリ作成ルーム2つのRoutineの指示文は他ルームから変更できない仕様(update_triggerが拒否)のため、ユーザーが各ルームで更新を依頼済み。(4) 計画タブの未完了23件の説明欄を書き直した。",
+      "output": "data/claude-core-rules.md、data/ai-config.json、.claude/skills/new-app-kickoff/SKILL.md、日次ログRoutine",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "ルール14の4追記・Routine更新・new-app-kickoff追記・計画の説明欄書き直しを実施。ユーザー指示で完了として記録。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-140",
+      "title": "相談は選択肢の画面(AskUserQuestion)で出す運用の追加",
+      "task": "その場で決めてほしい相談を、タップだけで答えられる選択肢の画面で出す",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "ユーザー相談(2026-11-21)「回答する時に、相談の内容を簡単にコピーする方法ってないかな？いちいちドラッグしてやるのが面倒」→「じゃあ、それで進めて」。",
+      "detail": "claude-core-rules.mdルール14の2に追記(70d70ff): その場で決めてほしい相談はAskUserQuestion(1回最大4問・各2〜4択)で出す。回答まで作業が止まるため溜まっている相談の一括提示には使わず、それらは文章で一覧にし「日時+番号」で答えてよい。ai-config.jsonにも反映。あわせて、/メニュー用のカスタムコマンドは「PCはサイドアプリで足りる」ため作らないとユーザーが決定。",
+      "output": "data/claude-core-rules.md、data/ai-config.json",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "ルール14の2追記。/メニュー用コマンドは作らない方針に決定。"
         }
       ]
     }
