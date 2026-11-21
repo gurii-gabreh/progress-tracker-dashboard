@@ -142,6 +142,11 @@ README運用ルール31)を起動するための**自動化された別入口**(
      何もしない/あればtasks.jsonへ一括反映(checkHistory追加・note/detail/nextAction最新化・新規作業は新タスク・
      返事待ちはnextActionに明記)/statusを完了に変える判断はしない(ルール30)/Pythonで書いてmainへpush/
      承認が要る操作は使わない。
+   - 2026-11-21追記: ルール14の4の追記により、作業中はtasks.json等へ記録せず、計画の項目のmetadataに
+     taskId/detail/note/commits/checkedを書いておく方針になった。新しく作るルームのプロンプトでは、手順1の
+     主な材料を「計画(TaskList)の各項目とそのmetadata」とし、不足分を会話・当日コミットで補う形にする。
+     (最初の2件のトリガーは、他ルームのRoutineの指示文をマネージャールームから書き換えられない仕様のため
+     初期版のまま。各ルームはCLAUDE.mdのルール14の4でmetadata運用を読むので実害は小さい。)
    - ルームを片付ける(archive)ときは、このトリガーも`delete_trigger`で一緒に消す。
    - 作成したtrigger_idは手順5の記録に含める。
 
