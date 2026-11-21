@@ -5996,6 +5996,14 @@
         {
           "date": "2026-11-07",
           "summary": "記事アイキャッチ画像の方針を確定(CSSグラデーション+タイトル表示、画像生成プロンプトのコピー機能)。Gemini API画像生成に無料枠が無いことを公式ページで確認した上での判断。"
+        },
+        {
+          "date": "2026-11-07",
+          "summary": "課題管理表(requirements.jsonのissueLog)へ、AI Lab開発開始から今までに発生した課題を遡及記録(当初9件、ユーザー指摘「少なすぎる、もっとあるだろ」を受け追加7件、計16件)。GAS文字化けバグ・GAS書き込み未有効化・Google Fonts未読み込み・ダークモード仕様の手戻り等。"
+        },
+        {
+          "date": "2026-11-07",
+          "summary": "ユーザー指示「WBS荷物活かして」→「開発資料側のWBSに追加して」を受け、AIL-001のcheckHistory(当時13件)をAIL-002〜016のsubtaskへ分解し、dashboard.htmlの🗓WBSガントチャートで個別タスクとして表示されるようにした(既存のcheckHistoryは経緯記録としてそのまま維持)。"
         }
       ],
       "subtasks": [
@@ -6719,7 +6727,7 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "ユーザー確認待ち: 構想ルームの深夜記録にpush失敗時の決まりを追加してよいか/AI Lab構想ルームの深夜記録も計画metadata主体に変えるか。",
+      "nextAction": "AI Lab構想ルームのトリガーへ、push失敗時のリトライ・報告手順(git pull --rebase再試行、失敗時は計画項目を残しルームへ報告)を追記するupdate_triggerを再実行する。",
       "note": "ユーザー指示(2026-11-21)「作業は全て他と同様にtasks.jsonに記録してほしい」「ルールのところは随時でなくていいから深夜に一括で登録でいい」「ルーム毎に深夜に更新があればtasks.jsonに更新してほしい」「これ、実装ルームを作成するときのルームに設定しておいて」。きっかけはPTD-137(AI Lab構想ルームの11/08の作業がtasks.jsonに記録漏れ)。マネージャールームからは他ルームの会話・右側の「計画」が読めないため、各ルーム自身に記録させる方式にした。",
       "detail": "(1) 既存のアプリ作成ルーム2つに、create_trigger(persistent_session_id指定)で毎晩の定期実行を設定: あとで見るメモ構想ルーム(session_011sXeDnR2ytHMGBDRtht8xw)=trig_01Wx8aAQBRpsUNBNmPz5mJXZ・JST23:40、AI Lab構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)=trig_01WygZvt26TRNGcCGqgymnyH・JST23:42。内容: その日の会話・計画(TaskList)・コミットを振り返り、更新があればtasks.jsonへ一括反映(checkHistory追加、note/detail/nextAction最新化、新規作業は新タスク、返事待ちはnextActionに明記)、statusを完了にする判断はしない(ルール30)、承認が要る操作は使わない。(2) new-app-kickoffスキルに手順3aを追加し、今後新しく作るルームにも同じ定期実行を必ず設定し、ルームを片付ける時はトリガーも削除するようにした。マネージャールーム0:05の日次ログより前に終わるよう23時台に設定。\n・(2026-11-21追記、構想ルーム側) ユーザー指示「深夜の記録の指示文を、計画のmetadataを主にする形に更新して」により、trig_01Wx8aAQBRpsUNBNmPz5mJXZの手順1・3を、計画タブのmetadata(taskId/detail/note/commits/checked)を主材料にし不足分だけ会話・当日コミットで補う形へupdate_triggerで変更(実行時刻・紐付け先・有効状態は不変、応答で反映確認)。AI Lab構想ルーム用(trig_01WygZvt26TRNGcCGqgymnyH)は未変更。\n・同日、マネージャールームから定期実行経由で「手順3末尾にpush失敗時の扱い(pull --rebaseで最大3回再試行、失敗時は計画を残して報告)を追加して」と依頼が届いた。ルール21に沿いユーザー本人の確認待ちで未反映。",
       "output": ".claude/skills/new-app-kickoff/SKILL.md、定期実行2件",
@@ -6732,6 +6740,10 @@
         {
           "date": "2026-11-21",
           "summary": "構想ルームの深夜記録の指示文を計画metadata主体に更新。23:40の初回実行は承認待ちで止まらず発火しこの記録を実施。push失敗時の決まりの追加はユーザー確認待ち。"
+        },
+        {
+          "date": "2026-11-21",
+          "summary": "AI Lab構想ルームのトリガー(trig_01WygZvt26TRNGcCGqgymnyH、毎晩23:42 JST)の指示文を、ユーザー指示「深夜の記録の指示文を、計画のmetadataを主にする形に更新して」に沿って更新。手順1・3を「計画タブ(TaskList/TaskGet)の各項目のmetadataを主材料にする」形へ変更し、claude-core-rules.mdルール14の4・2026-11-21追記と整合させた(get_triggerで反映確認済み)。マネージャールームからの追加依頼(loop-design-check点検での指摘: push失敗時の扱いが無い)で、手順3末尾へpush失敗時のリトライ・報告手順を追記しようとしたが、update_trigger呼び出しが承認待ちのまま中断され未反映。次回のこのルームの作業時に再実行が必要。"
         }
       ]
     },
@@ -6784,5 +6796,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-07"
+  "updatedAt": "2026-11-21"
 }
