@@ -1245,6 +1245,13 @@
       "repo": "claude-voice-bridge",
       "task": "CVB-003: サイドパネルに⌨️コマンド一覧タブ新設・タスク抽出を非表示",
       "note": "ユーザー指示「完了しているものはjson側に書いて」により完了として記録"
+    },
+    {
+      "date": "2026-11-21",
+      "time": "21:05",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-126: Felo X Research調査結果の取り込み(11/21分)",
+      "note": "裏付け確認済み2件を追加(x-research-felo-2026-11-21-01〜02、両件⭐おすすめ)、不採用9トピック。itemCount 10026・curatedCount 396。コミット459853b。"
     }
   ]
 }
