@@ -157,6 +157,22 @@
       "addedAt": "2026-11-07T10:47:26.805893+00:00",
       "articleCreated": true,
       "articleCreatedAt": "2026-11-07T11:01:15.390362+00:00"
+    },
+    {
+      "id": "x-research-felo-2026-11-21-01",
+      "sourceType": "ai-trend",
+      "title": "AIエージェントの権限管理パターン(最小権限・目的と行動に紐づく権限付与・承認・監査ログ)",
+      "summary": "AIエージェントに渡す権限は、人向け・アプリ向けの従来のアクセス制御をそのまま流用せず、目的と行動の範囲に紐づけて必要最小限に絞り、影響の大きい操作には人の承認と操作ログを組み合わせる、という設計の考え方。BCGが2026年に「権限の空白(authorization gap)」として問題提起し、国内でもAI事業者ガイドライン第1.2版でAIエージェントへの対応が追記された。",
+      "url": "https://www.bcg.com/ja-jp/publications/2026/authorization-gap-ai-agent-governance",
+      "addedAt": "2026-11-21T12:07:22.024280+00:00"
+    },
+    {
+      "id": "x-research-felo-2026-11-21-02",
+      "sourceType": "ai-trend",
+      "title": "マルチエージェントの設計パターン(目的・出力形式・使うツール・作業範囲を明確にして渡す)",
+      "summary": "マルチエージェントは数を増やせば良くなるわけではなく、親エージェントが子エージェントへ作業を渡す際に「目的・出力形式・使うツール/情報源・作業範囲」をはっきり伝えないと、作業の重複や誤解が起きる。Anthropicが自社のリサーチ用マルチエージェントの構築経験として公開しており、OpenAIもGPT-5.6でサブエージェント並列実行をベータ提供している。",
+      "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "addedAt": "2026-11-21T12:07:22.024280+00:00"
     }
   ],
   "analysis": {
