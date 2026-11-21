@@ -1252,6 +1252,30 @@
       "repo": "servicenow-sub-agent",
       "task": "PTD-126: Felo X Research調査結果の取り込み(11/21分)",
       "note": "裏付け確認済み2件を追加(x-research-felo-2026-11-21-01〜02、両件⭐おすすめ)、不採用9トピック。itemCount 10026・curatedCount 396。コミット459853b。"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-137: WBSガントチャート表示改善5件(11/08実装分)",
+      "note": "ユーザーが完了を了承(遡及記録はPTD-137作成時)。"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-142: 要件定義の聞き取り18番「AIに許す操作の範囲と承認の要否」追加",
+      "note": "ddee6a8。③機能要件2番・④詳細設計9番も追加。"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "progress-tracker-dashboard",
+      "task": "PTD-143: AI最新情報C-番号41件採番+深夜一本化",
+      "note": "c6175db、C-365〜C-405。"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "claude-voice-bridge",
+      "task": "CVB-005: サイドアプリ拡張機能消失の復旧案内",
+      "note": "コード変更なし、ユーザー復旧確認。"
     }
   ]
 }

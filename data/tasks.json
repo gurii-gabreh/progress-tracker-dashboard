@@ -6694,12 +6694,12 @@
       "repo": "progress-tracker-dashboard",
       "category": "ui",
       "priority": "中",
-      "status": "対応中",
+      "status": "完了",
       "goal": null,
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "実装・mainへの反映は2026-11-08に済んでいる。完了扱いにしてよいかユーザーに確認(ルール30)。",
+      "nextAction": null,
       "note": "2026-11-08にAI技術公開サイト(AI Lab)構想ルーム(session_011sXeDjvTxjWcKQoJBPHuFu)で実装されたが、tasks.jsonへの記録が漏れていた。2026-11-21、マネージャールームでのユーザーとの確認(「作業は全て他と同様にtasks.jsonに記録してほしい」)を受け、コミット履歴とコミットメッセージから遡及記録した。夜中の日次ログRoutineはマネージャールームの会話しか見返さないため、他ルームでの作業の記録漏れは拾えなかった。",
       "detail": "11/08にユーザー指示を受けてdashboard.htmlのWBSを5回改修した(いずれもmain反映済み)。(1) 05be9f7: 月行を日付行・曜日行の上に追加し、.wbs-cal-wrapを内部スクロール化して3行のヘッダーをposition:stickyで固定(左上角は縦横とも固定)。(2) f68156c: 月ごとに--surface/--surface-2を交互に塗り分け、全日付に縦の区切り線を追加。(3) 50160b7: 対応中バーを赤いハッチングに(他画面の対応中バッジに影響しないようWBSバー専用の上書き)、課題管理表の行クリックで詳細モーダルを表示。(4) 3cefd43: WBSのタスク名クリックを課題管理表への遷移から詳細モーダル表示に変更(showWbsTaskDetailModal新設、課題管理表のモーダルの部品を再利用)。(5) 5f44f49: ラベル列の右端にドラッグハンドルを追加し、幅を120〜480pxで調整・localStorage(wbsLabelWidthPx)へ保存して次回も復元。※この記録はコミット履歴からの遡及で、当時のテスト内容はコミットメッセージに書かれた範囲しか確認できていない。",
       "output": "dashboard.html",
@@ -6712,6 +6712,10 @@
         {
           "date": "2026-11-21",
           "summary": "tasks.json記録漏れが判明し、コミット履歴から遡及記録。完了確認待ち。"
+        },
+        {
+          "date": "2026-11-21",
+          "summary": "ユーザーが完了を了承(「完了で」)。"
         }
       ]
     },
@@ -6792,6 +6796,246 @@
         {
           "date": "2026-11-21",
           "summary": "ルール14の2追記。/メニュー用コマンドは作らない方針に決定。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-141",
+      "title": "自動処理の点検表(loop-design-check)の導入と夜間Routineの修正",
+      "task": "夜間Routineが止まる・暴走する・甘く合否判定する壊れ方をしないか点検し、見える化して直す",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "他ルーム2件のRoutineに追記されたか確認し、連絡用トリガー(trig_016gr9HqmzMVSe69wFjpzdjp・trig_01QMFRUiZLm3YafYB6fwKwUm)を削除。その後ユーザーに完了確認。",
+      "note": "ユーザー指示「チェックする内容を見える化」「出す場所は🔄ルーティンの処理一覧」「1だね」、修正案は「この案で実装(推奨)」「私から依頼を届ける(推奨)」(2026-11-21)。",
+      "detail": "everything-claude-code(MIT)のloop-design-checkを日本語化して.claude/skills/loop-design-checkに追加し、ai-config.jsonのweb.routineLoopReviewに夜間Routine4件の点検表を作成、🔄ルーティン→処理一覧の先頭に表で表示(c824ca1)。点検で×だったCLAUDE.md定期確認は、使用率70%超時のセッション自動作成・削除・片付けをやめ報告のみにし、get_sessionを使う作業Bは承認待ち問題(#44)解決まで休止。△だった日次ログにはpush失敗時の再試行(最大3回)と失敗時は計画を残して報告する手順を追加し、ai-configの旧トリガーIDも修正(d941594)。他ルーム2件(メモ構想23:40・AI Lab 23:42)へはルール19の手順で同じ追記を依頼済み。",
+      "output": ".claude/skills/loop-design-check/SKILL.md、data/ai-config.json、dashboard.html(c824ca1、d941594)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "Playwright 1280/390pxで点検表4行・JSエラー0・横スクロール無し。update_triggerの返却で2Routineの指示文更新を確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-142",
+      "title": "要件定義の聞き取り18番「AIに許す操作の範囲と承認の要否」追加",
+      "task": "アプリ内でAIに何を許すか(閲覧/作成/更新/削除/外部送信×AIだけ/人が確認/人の承認後)を要件定義段階で決める",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "Felo X Research取り込みルームからの引き継ぎ(BCG「The Authorization Gap in AI Agent Governance」2026)。ユーザー「OK」→完了了承「完了でいい」(2026-11-21)。",
+      "detail": "requirements.jsonのinterviewChecklistに18番を末尾追加(既存回答のn番号を崩さないため依頼の13番ではなく18番)、functionalRequirementsChecklistに2番「AI操作の承認フロー」、detailedDesignChecklistに9番「AI操作の操作ログ設計」を追加。dashboard.htmlのプロンプト文中の固定件数(17項目・11項目・8項目)を実件数追従に修正(ddee6a8)。5分類は公式標準ではなく目安と明記。",
+      "output": "data/requirements.json、dashboard.html(ddee6a8)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "Playwright 1280/390pxで読み込みエラー0、件数18/2/9、新規相談プロンプトに18番表示を確認。ユーザーが完了を了承。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-143",
+      "title": "AI最新情報のC-番号を未採番41件に採番し、今後は深夜0:05に一本化",
+      "task": "Felo/Grok取り込み分を含むキュレーション済み項目にC-番号を付け漏れなく管理する",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "Feloルームからの参考連絡。ユーザー「不採用も結果的にAI最新情報だからCかな」「今41件+今後は深夜(推奨)」→「完了でいい」(2026-11-21)。",
+      "detail": "ai-trends-ids.jsonで未採番だった41件(Felo13・Grok4・ServiceNow24)に公開日の古い順でC-365〜C-405を採番(c6175db)。マネージャールーム日次ログRoutineに手順9a(未採番の自動採番、採番はこの手順のみ)を追加。A-ハッカソン/B-コンテスト/C-AI最新情報の体系はそのまま。",
+      "output": "data/ai-trends-ids.json(c6175db)、日次ログRoutine",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "採番後mappingの重複なし・未採番0件(405/405)。ユーザーが完了を了承。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-144",
+      "title": "Felo/Grok調査結果取り込みルームに深夜のtasks.json一括記録Routineを設置",
+      "task": "作業中は記録せず深夜一括記録にした方針(ルール14の4)を、記録の仕組みが無かったFelo/Grokルームにも広げる",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "初回実行の結果を確認し、ユーザーに完了確認。",
+      "note": "Feloルームからの連絡を受け、ユーザー選択「各ルームに深夜記録(推奨)」(2026-11-21)。",
+      "detail": "Felo(trig_019VuSMApNDmeoH5E47KtjUJ、毎晩23:44)・Grok(trig_01UVQHCw5gENymP9RQS62MPe、23:46)を作成。計画metadata主体・push失敗時の再試行・C-番号はマネージャールームが採番する旨を含む。Feloは初回で11/21の未記録分(69c42ab・94852a4)も拾う。",
+      "output": "CCR Routine 2件",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "create_triggerでCREATED・次回実行11/21 23:44/23:46を確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-145",
+      "title": "AI Lab・GitHub Pages全アプリにAI学習拒否のrobots.txtを導入",
+      "task": "作成したアプリの内容がAIの学習に使われないよう意思表示する",
+      "repo": "progress-tracker-dashboard",
+      "category": "security",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "AI Labのコメント英語化後の表示確認と、完了にしてよいかユーザー確認待ち。",
+      "note": "ユーザー指示「作成したアプリで相手側の学習に使われるタイミングがあったら、禁止してほしい」、範囲「AI Lab+GitHub Pages(推奨)」、内容「共通合図+名前指定(推奨)」、コメントは「すぐ治るなら直しておいて」(2026-11-21)。",
+      "detail": "共通トークン__usage_ai-training(IETF draft-kelley-aipref-training-preference-signal-01、11/16)と各社の学習用クローラー/制御トークン(GPTBot・ClaudeBot・Google-Extended・Applebot-Extended・CCBot・meta-externalagent)をDisallow、検索クロールは許可。名前はCodex(公式ページ)・Claude(Anthropic公式)で確認。AI Lab(85d9690、文字化け対策でコメント英語化976dec6)。GitHub Pagesはドメイン直下にしか効かないため、ユーザーがgurii-gabreh.github.ioを作成→robots.txt・README(eb6ecf8)・READMEをトップに出さない空index.html(0cb1ee5)。GitHub上のソースコード自体は守れない(非公開化#13が必要)。OpenAI数か月以内・Google 2027年・Microsoft 2027-02-01から対応と各社公式発表(2026-10-30)。",
+      "output": "ai-lab robots.txt(85d9690・976dec6)、gurii-gabreh.github.io(eb6ecf8・0cb1ee5)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "robotparserで学習用7種拒否・Googlebot/Bingbot許可。ユーザーが実サイトでAI Lab・github.ioのrobots.txt表示とトップ白紙を確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-146",
+      "title": "ルール33追加: AIの調査・最新情報への回答には必ずAIBLの内容を含める",
+      "task": "AIの最新情報を聞かれたら日本語AIニュースAIBLも必ず確認して回答する",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "CROSS_REPO_PAT作り直し(ユーザー作業)後に同期を再実行。",
+      "note": "ユーザー指示「いつもAIの調査情報や最新情報について聞いたときは、必ずAIBLの内容入れてほしい」、選択「共通ルール化+両方の方法(推奨)」(2026-11-21)。",
+      "detail": "claude-core-rules.mdにルール33、ai-config.json informationSourcing(web.points/ai.aiblRequired)に反映(6a7ab80)。方法は(1)夜間収集したAIBLのタイトル・URL参照(2)その場でAIBL公式MCP検索。利用規約第6条(無断複製・転載禁止)に配慮し要約の丸写しはしない。AIBLのAPIキーはクラウド環境(Default)のネットワーク秘密情報としてaibl-portal.com宛に登録済み(ユーザー入力)、list_newsで取得確認。CLAUDE.md同期(run 55)は他リポジトリがCROSS_REPO_PAT期限切れ(401)で失敗。",
+      "output": "data/claude-core-rules.md、data/ai-config.json(6a7ab80)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "PTD自身のCLAUDE.mdに反映済み、他リポジトリは同期失敗(401)。MCPでlist_news・tools/list応答を確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-147",
+      "title": "AIBL(日本語AIニュース)をServiceNowの日次収集に追加",
+      "task": "AIBLの記事をタイトル・URL・公開日のみresearch-items.jsonへ蓄積する",
+      "repo": "servicenow-sub-agent",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "次回の定期実行後、check_fetch_logとresearch-items.jsonでAIBL記事・エラー有無を確認。",
+      "note": "ユーザー「どんな情報が習得できるかと、これもservicenowで情報収集したい」→A「タイトルとURLだけ(推奨)」→実装案「この案で実装(推奨)」(2026-11-21)。AIBL内容はCodexで公式ページ確認(無料会員でニュース読み放題・MCP APIキー発行可・RSS無し・規約第6条)。",
+      "detail": "RSSが無いため公式MCP(https://aibl-portal.com/api/mcp)のlist_newsをJSON-RPC tools/call単発(POST)で呼ぶ。REST Message「AI Research - AIBL」/news、システムプロパティaibl.api_key(password2、GitHub Secrets AIBL_API_KEY→setup_aibl_api_key.mjs)、fetchAiblNews(Authorizationヘッダー、SSE/JSON両対応、直近30日・50件、category 2、要約は保存せずAIBLカテゴリ名のみ)を実装(4bc23dc)。servicenow-setup run 35で3つとも作成・同期成功。MCPの最新記事が11/06まで(原因未確認)のため取得範囲を30日とした。",
+      "output": "servicenow-sub-agent 4bc23dc",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "スタブ環境でジョブ全体を実行し実AIBL応答から5件登録を確認。run 35でaibl.api_key・REST Message作成、Scheduled Job同期成功。PDIでの実収集は未確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-148",
+      "title": "research-items.jsonのsysId重複を自動で1件にまとめる",
+      "task": "同じsysIdの重複項目(11/13に10組発見)を解消し今後も自動で防ぐ",
+      "repo": "servicenow-sub-agent",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "次回の自動エクスポート後に重複0を確認し、ユーザーに完了確認。",
+      "note": "ユーザー指示「そうだね、重複があったら一つになるように調整して」(2026-11-21)。",
+      "detail": "export_research_items.mjsのマージ後にsysIdで重複除去(先に来たServiceNow側の最新行を優先)を追加し、既存の重複10組を除去(9905→9895件、キュレーション済み394件は不変)(48a742f)。",
+      "output": "servicenow/scripts/export_research_items.mjs、data/research-items.json(48a742f)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "重複除去後の件数・キュレーション件数を確認。"
+        }
+      ]
+    },
+    {
+      "id": "CVB-004",
+      "title": "コマンド一覧タブに「計画のタスク」件名を読み込み、クリックで入力欄へ挿入+折りたたみ状態の保存",
+      "task": "Claude Codeの計画欄の件名をクリックだけで返答に使えるようにする",
+      "repo": "claude-voice-bridge",
+      "category": "ui",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "完了にしてよいかユーザー確認。",
+      "note": "ユーザー指示「最新の定例文読み取りで、計画のタスク内容も読み込んでくれる?」「件名だけ取り込んでほしい」「完了は除外」「折りたたみできるようにして」「最後の状態を覚える(推奨)」(2026-11-21)。",
+      "detail": "content.jsにextractPlanItems()とcvb-extract-plan-itemsを追加し、「📥 最新の定例文・計画を読み込む」で計画の件名を取り込み(完了は除外、再取り込み時は一旦削除して入れ直し)、クリックでcvb-insert-textにより入力欄へ挿入(741884f)。計画・定例文・スキル文言の折りたたみの開閉状態をcvb_commands_openに保存・復元(274bf8d)。",
+      "output": "content.js、sidepanel.html/js(741884f、274bf8d)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "Playwright(chrome API模擬)で動作確認、ユーザーが実画面で読み込み・折りたたみを確認(「できた」)。"
+        }
+      ]
+    },
+    {
+      "id": "CVB-005",
+      "title": "サイドアプリが拡張機能一覧から消えた件の復旧",
+      "task": "chrome://extensionsから消えたサイドアプリを戻す",
+      "repo": "claude-voice-bridge",
+      "category": "ops",
+      "priority": "中",
+      "status": "完了",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": null,
+      "note": "ユーザー「なんかサイドアプリが、拡張機能のところから消えた」「拡張機能の一覧から消えた」→「もどった」(2026-11-21)。",
+      "detail": "リポジトリ側は274bf8d以降変更なし・manifest.jsonも11/14から不変で正しい形式と確認し、PC側Chromeの問題(フォルダ移動・削除やデベロッパーモードオフ)と判断。デベロッパーモード確認→「パッケージ化されていない拡張機能を読み込む」でmanifest.jsonのあるフォルダを選び直す手順と、今後はフォルダを置き換えず上書き更新する注意を案内し、ユーザーが復旧。コード変更なし。",
+      "output": "(変更なし)",
+      "updated": "2026-11-21",
+      "checkHistory": [
+        {
+          "date": "2026-11-21",
+          "summary": "ユーザーの実機で復旧を確認。"
         }
       ]
     }

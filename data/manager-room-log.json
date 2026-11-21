@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-21T00:04:52.765581+09:00",
+  "lastProcessedAt": "2026-11-22T01:44:07.694827+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -716,6 +716,20 @@
         "【相談11/14 09:22:50】GitHubリポジトリ点検(承認待ちで中断、未実施)。",
         "CLAUDE.md固有補足のworker-room記述の書き換え(相談中)。",
         "マネージャールームの週次ローテーション(作り直し)の可否・日程の確認待ち。"
+      ]
+    },
+    {
+      "date": "2026-11-21",
+      "generatedAt": "2026-11-22T01:44:07.694785+09:00",
+      "summary": "【体調不良明けの状況整理と保留案件の処理】ユーザーが数日ぶりに復帰し、進捗を整理。AI Labの本番公開(FTPタイムアウト)は再実行して成功。夜中0:04にget_sessionが承認待ちで止まる件は、許可リスト上は登録済みで原因不明のまま、CLAUDE.md定期確認の作業Bを休止する方向に。\n\n【記録の深夜一括化と計画タブの運用変更】ユーザー指示「深夜に記録をまとめてやる方向に仕様」により、作業中はtasks.json・credit-log・Task-WBSに書かず、計画(TaskCreate/TaskUpdate)のmetadata(taskId/detail/note/commits/checked)に材料を残し、夜間Routineが一括記録する方式へ変更(ルール14の4追記)。計画の件名は「【ステータス】【アプリ名】【タスクID】要件」、説明欄に経緯・状態・決めてほしいことを書き、完了項目は記録後に削除。アプリ作成ルーム(メモ構想23:40・AI Lab 23:42)にも深夜記録Routineを設置しnew-app-kickoffの手順3aに標準化(PTD-138)。その場で決めてほしい相談はAskUserQuestion(選択肢の画面)で出すことに(PTD-140)。\n\n【サイドアプリ(claude-voice-bridge)改修】⌨️コマンド一覧タブを新設しタスク抽出表示を非表示(CVB-003)。計画の件名を読み込んでクリックで入力欄へ挿入する機能と折りたたみ状態の保存を追加(CVB-004、ユーザー「できた」、完了確認待ち)。夜にサイドアプリがchrome://extensionsから消えたが、リポジトリ側に変更は無くPC側の問題と判断し再読み込み手順を案内、ユーザーが復旧(CVB-005)。PTD-137(11/08のWBS改修5件)はユーザー了承で完了。\n\n【loop-design-check導入と夜間Routineの修正(PTD-141)】everything-claude-code(MIT)のloop-design-checkを日本語化して取り込み、夜間Routine4件を点検し🔄ルーティン→処理一覧に表示(c824ca1)。CLAUDE.md定期確認の自動セッション作成・削除・片付け(禁止線)をやめ報告のみ・作業Bは休止、日次ログにpush失敗時の再試行3回+計画を残して報告を追加(d941594)。他ルーム2件にはルール19の手順で同じ追記を依頼。\n\n【Feloルームからの引き継ぎ3件】(1)要件定義の聞き取りに18番「AIに許す操作の範囲と承認の要否」、③に承認フロー・④に操作ログ設計を追加(PTD-142、完了)。(2)Felo/Grokルームに深夜記録Routine(23:44/23:46)を設置(PTD-144)。(3)AI最新情報のC-番号41件をC-365〜C-405で採番し、今後は日次ログRoutineの手順9aに一本化(PTD-143、完了)。servicenow-sub-agentのsysId重複10組は自動除去を実装(PTD-148、48a742f)。\n\n【AI学習拒否のrobots.txt(PTD-145)】IETF草案の共通トークン__usage_ai-training(OpenAI・Google・Microsoftが2026-10-30に対応表明)と各社学習用クローラー名をCodexで公式確認し、AI Lab(85d9690→コメント英語化976dec6)と、ユーザーが作成したgurii-gabreh.github.io(robots.txt・README・空index.html、eb6ecf8・0cb1ee5)に導入。ユーザーが実サイトで表示を確認。GitHub上のソースコード自体は守れない点も説明。\n\n【AIBL(日本語AIニュース)の取り込み】AIBL=株式会社グレイトフルエージェントの会員制サービス、無料会員でニュース読み放題・RSS無し・公式MCP(APIキー)あり・規約第6条で無断複製転載禁止とCodexで確認。ユーザー指示でルール33「AIの調査・最新情報には必ずAIBLを含める」を追加(PTD-146、6a7ab80)。ユーザーが無料登録・APIキー発行し、クラウド環境とGitHub Secretsに登録。ServiceNowにタイトル・URL・公開日のみ収集する仕組みを実装・反映(PTD-147、4bc23dc、setup run 35成功)。MCPの最新記事が11/06までしか返らない事象あり(原因未確認)。CLAUDE.md同期はCROSS_REPO_PAT期限切れで他リポジトリ失敗。",
+      "unresolvedCarriedOver": [
+        "CROSS_REPO_PATの作り直し(ユーザー作業、#14・#65)。ルール33ほか10/17以降のルール変更が他リポジトリのCLAUDE.mdに未反映",
+        "AIBL収集の初回定期実行結果の確認(PTD-147)、MCPの最新記事が11/06止まりの原因不明",
+        "メモ構想・AI Labルームの深夜記録Routineにpush失敗時の手順が追記されたかの確認と連絡用トリガー2件の削除(PTD-141)",
+        "Felo/Grok・メモ構想・AI Labの深夜記録Routine初回(11/21夜)の結果確認(PTD-138・PTD-144)",
+        "完了確認待ち: PTD-145(robots.txt)、CVB-004、PTD-148、PTD-141",
+        "get_sessionの承認待ち停止の原因(#44、作業Bは休止中)",
+        "既存の未解決相談: Anthropic News収集失敗(#11)、Moz/EPI(#17)、plugin-rollout(#19)、worker-room記述(#20)、リポジトリ点検(#30)、ブログ(#31)、週次ルーム作り直し(#46)など"
       ]
     }
   ]

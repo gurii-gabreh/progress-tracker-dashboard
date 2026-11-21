@@ -249,6 +249,13 @@
           "concept": "裏付けの取れない調査結果も捨てずに同じフィードへ残し、出典名・概要の接頭辞・スコアで「裏付け済み」と見分けられるようにする",
           "context": "2026-11-21、Felo調査結果取り込みルーム。出典URLの無い一般トレンド9トピックを一度は不採用としたが、ユーザー指示「不採用の記事も、もしかしたら記事となるからとりあえず記載して」「調査資料のAI最新情報の中に追記でいい」を受けて収録した。",
           "note": "別ファイル(未確認トピック専用JSON)に分ける案も出したが、ユーザーは既存のAI最新情報(servicenow-sub-agentのresearch-items.json)への追記を選んだ。混在による誤用を防ぐため、sourceNameを「X (Felo X Research経由・裏付け未確認)」とし、summaryJaの先頭に【裏付け未確認・記事ネタ候補】、score 1、sourceUrl null、⭐(recommended)なしとして、裏付け済み項目(sourceName「…報道/公式で裏付け確認」)と一覧上で区別できるようにした。記事に使う際は一次情報で裏付けを取り直す前提(pointsJaにも明記)。新しいファイルや画面を作らず、既存の表示(出典列の空欄・情報源フィルタ)だけで区別できる点が利点。"
+        },
+        {
+          "id": "CL-064",
+          "concept": "夜間の自動処理は「無限に回るか」より「取り返しにくい操作を人の確認なしでやっていないか」「承認待ちや失敗で黙って止まらないか」を点検する。止めてはいけない処理ほど、失敗時の扱い(再試行回数・記録を消さない・報告先)を事前に書く",
+          "context": "2026-11-21、loop-design-check(everything-claude-code、MIT)を取り込み夜間Routine4件を点検(PTD-141)。",
+          "note": "定時に1回動いて終わる作りなので暴走は無かったが、CLAUDE.md定期確認が使用率70%超でセッションの作成・削除・片付けを自動実行する指示(禁止線)と、get_sessionの承認待ちで止まる問題(11/17・18)が×。報告のみ・休止に変更。記録系3件はpush失敗時の扱いが無く△で、再試行3回+計画を消さず報告を追記。点検結果はai-configのweb.routineLoopReviewで見える化。",
+          "date": "2026-11-21"
         }
       ]
     },
@@ -393,6 +400,13 @@
           "context": "2026-11-16、ServiceNow調査結果相談ルームで、InfoQのAQuA記事とGoogle Developers Blogが許可リスト外で読めず、検索要約だけで回答した。ユーザー質問「codex側だとこっちで調べられないところも調べられるの?」と指示「調査できなければcodex側に依頼するように今後はしたい」への対応。",
           "note": "対策は2段構え。(1)よく読むサイトはユーザーが環境のAllowed domainsへ登録(openai.com・huggingface.co・news.ycombinator.com・arxiv.org・dev.to・deepmind.google・www.marktechpost.com・www.infoq.com・developers.googleblog.com・martinfowler.com・blog.bytebytego.com・qiita.com・zenn.dev・www.architecture-weekly.com・www.anthropic.comの15件、research-items.jsonの10/15以降の出典ドメイン件数から選定)。登録後にcurlで確認し13件は200、openai.comとmarktechpost.comはプロキシ通過後にサイト側Cloudflareが403を返した(許可リストでは解決しない種類の拒否)。(2)それでも読めない場合はCodexへ。`--search`はexecのオプションではなくcodex本体のオプション(`codex --search exec \"...\"`、codex-cli 0.169.0のhelpで確認)。Codexのログインはコンテナ限定で、再作成のたびにユーザーの再ログインが必要(ユーザー了承済み、CCX-001の恒久化は未着手のまま)。APIキー方式は従量課金のためルール9に照らし不採用。ルール18へ追記(claude-core-rules.md・ai-config.jsonのcodexDelegation.researchFallback)。",
           "date": "2026-11-16"
+        },
+        {
+          "id": "CL-063",
+          "concept": "RSSの無い情報源でも、公式のMCP連携があれば「tools/callを1回POSTするだけのJSON-RPC」として普通のREST呼び出しで取得でき、保存項目は相手の利用規約(無断複製・転載の禁止)に合わせて絞る",
+          "context": "2026-11-21、servicenow-sub-agentにAIBL(日本語AIニュース)を収集元として追加(PTD-147)。",
+          "note": "AIBLはRSS無し・無料会員向けの公式MCP(Bearer APIキー)のみ。initializeを省略したtools/call単発POSTで応答(SSE形式「data: {JSON}」)が返ることを実機確認し、ServiceNowのRESTMessageV2(POST+setRequestHeader/setRequestBody)で呼ぶ設計にした。キーはYouTube同様システムプロパティ(password2)で保持しリポジトリに置かない。規約第6条に配慮し要約文は保存せずタイトル・URL・公開日のみ、日本語分析はClaudeが自分の言葉で書く。",
+          "date": "2026-11-21"
         }
       ]
     },
