@@ -1,7 +1,7 @@
 {
   "description": "既存の正本JSON(tasks.json・concept-log.json・ai-list.json・ai-research-radarのresearch-log.json・servicenow-sub-agentのresearch-items.json[日本語要約済みcurated:trueのみ])から抽出したチャンクを、ローカルの埋め込みモデル(fastembed、sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)でベクトル化したもの。scripts/knowledge/build_vector_index.pyによる自動生成。正本側は一切変更しない一方向の派生データ。検索はscripts/knowledge/search_knowledge.py(コサイン類似度の総当たり)で行う。外部AI企業のAPIキーは不要。",
   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "generatedAt": "2026-11-22T04:27:53Z",
+  "generatedAt": "2026-11-22T04:38:54Z",
   "chunkCount": 762,
   "chunks": [
     {
@@ -128519,8 +128519,8 @@
       "id": "concept-log:CL-065",
       "source": "concept-log.json",
       "ref": "CL-065",
-      "text": "正本が移ったあとに残った「写し」の仕組み(シート同期)は、使われていないなら止めて記録を残す。止めるときは、その写しに書き込む機能(ダッシュボードのボタン等)も一緒に洗い出す\n2026-11-22、progress-tracker-dashboardのスプレッドシート「実装進捗管理シート」と同期用GAS(Apps Script「自立型アプリ用」)を廃止。\n7/26の立ち上げ時はシートが唯一の正本だったが、8/1(PTD-009)にClaude実行環境からscript.google.comへの通信が遮断されると判明し、GASが1時間おきにtasks.jsonを取りに行くプル型同期へ逆転。以後の実際の正本はtasks.jsonで、シートは写しになっていた。ユーザーがシートを見ていないことを確認し廃止を決定、ユーザーがトリガーを削除。影響調査でダッシュボードにGAS経由の機能が8つ(タスク追加・コメント送信・完了予約/取消・シート更新・今すぐ同期・GitHub活動反映確認・CLAUDE.md核心ルール編集送信)あり、いずれもシート書き込み用で役目を終えたことを確認。シート自体は8月以前の記録が残る可能性があるため削除しない。gas/Code.gsとREADMEに廃止を注記。",
-      "hash": "bb7cba6b5be27a92",
+      "text": "正本が移ったあとに残った「写し」の仕組み(シート同期)は、使われていないなら止めて記録を残す。止めるときは、その写しに書き込む機能(ダッシュボードのボタン等)も一緒に洗い出す\n2026-11-22、progress-tracker-dashboardのスプレッドシート「実装進捗管理シート」と同期用GAS(Apps Script「自立型アプリ用」)を廃止。\n7/26の立ち上げ時はシートが唯一の正本だったが、8/1(PTD-009)にClaude実行環境からscript.google.comへの通信が遮断されると判明し、GASが1時間おきにtasks.jsonを取りに行くプル型同期へ逆転。以後の実際の正本はtasks.jsonで、シートは写しになっていた。ユーザーがシートを見ていないことを確認し廃止を決定、ユーザーがトリガーを削除。影響調査でダッシュボードにGAS経由の機能が8つ(タスク追加・コメント送信・完了予約/取消・シート更新・今すぐ同期・GitHub活動反映確認・CLAUDE.md核心ルール編集送信)あり、いずれもシート書き込み用で役目を終えたことを確認。シート自体は8月以前の記録が残る可能性があるため削除しない。gas/Code.gsとREADMEに廃止を注記。 追記(同日): 突き合わせで、ai-research-radarのGemini用GAS(別プロジェクト)が今もシートの依頼タスクタブを毎日読み書きしていると判明(11/22 07:21の書き込み)。ユーザー指示「これは動かしておいて」により継続とし、シートは完全には止まっていない(このGASが使う範囲だけ稼働)。廃止の際は、正本の写し以外にそのデータを入口として使う別の仕組みが無いかも洗い出すこと。",
+      "hash": "8dc8acaf153e8e71",
       "embedding": [
         -0.17047040164470673,
         0.12870442867279053,
