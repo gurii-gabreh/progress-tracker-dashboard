@@ -1218,6 +1218,13 @@
     transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200;
   }
   .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+  /* 2026-11-22追加、スプレッドシート「実装進捗管理シート」と同期用GASの廃止(ユーザー指示)に伴い、
+     シートへ書き込むためのGAS経由の操作(タスク追加・コメント送信・完了予約/取消・シート反映・GitHub活動反映確認・
+     CLAUDE.md核心ルール編集送信)を画面から隠す。仕組み(関数)は今後の参考に残し、SHEET_RETIREDで呼び出しも止める。 */
+  body.sheet-retired #sync-now-btn, body.sheet-retired .add-task-btn, body.sheet-retired .complete-btn,
+  body.sheet-retired .cancel-btn, body.sheet-retired #github-diff-btn, body.sheet-retired [data-comment-send],
+  body.sheet-retired [data-comment-input], body.sheet-retired #core-rules-apply-btn,
+  body.sheet-retired .help-item-sheet { display: none !important; }
 </style>
 
 <div class="app-shell">
@@ -1320,7 +1327,7 @@
       <h1>アプリ制作進捗管理</h1>
       <div class="meta">
         最終更新: <span id="updated-at">2026-08-03</span> ・
-        データ元: <a href="https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit" target="_blank" rel="noopener">実装進捗管理シート</a>
+        データ元: data/tasks.json(スプレッドシート「実装進捗管理シート」は2026-11-22に廃止)
       </div>
       <div class="settings-caption">「Routine設定」は変更依頼文を作成するだけです。コピーしてClaude Codeのチャットに貼ると実際に反映されます。</div>
       <!-- 普段は使わない操作(通常のフローの安全網・例外対応用)をここにまとめる。
@@ -1385,7 +1392,7 @@
           </div>
           <div class="usecase-heading-sub">↓ 各ボタン・操作の詳しい説明</div>
         </div>
-        <div class="help-item"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
+        <div class="help-item help-item-sheet"><span class="help-term">⏩ Web→スプレッドシート反映</span><span class="help-desc">Web(tasks.json)側の完了・追加指示の最新内容を、次回の定期更新を待たずGAS経由でスプレッドシートへ反映します。</span></div>
         <div class="help-item"><span class="help-term">📋 依頼文作成</span><span class="help-desc">ルームを開くときに貼る依頼文テンプレートをまとめたドロップダウンです(2026-08-08、ボタン数が増えたため集約)。4つから選べます:</span></div>
         <div class="help-item"><span class="help-term">┗ 🗨 タスク相談ルーム</span><span class="help-desc">タスクごとに専用のClaude Codeルームを開いて相談する運用向けの、初回に貼る依頼文テンプレートを表示します。タスクIDの部分(🆔タグをクリックしてコピーできます)だけ書き換えれば使い回せます。決まったことを自動でdata/tasks.json等へ反映してもらうための運用ルールも含んでいます。</span></div>
         <div class="help-item"><span class="help-term">┗ 🗨 マネージャールーム</span><span class="help-desc">全リポジトリを横断して状況を把握し、優先度の相談・懸念点の整理・実行の振り分け(自動Routineに任せる/その場で直接実行する)を行うマネージャールームを開くときの、新規チャット最初に貼る依頼文テンプレートを表示します。定期実行の設定はしない、呼んだときだけ動く使い捨てのルームです。</span></div>
@@ -2082,6 +2089,10 @@
   // ダッシュボードから追加した新規タスクをスプレッドシートの依頼タスクタブへ反映するためのGASエンドポイント。
   // このファイルは公開リポジトリにあるため、このトークンは「追記のみ」の最小権限として運用すること
   // (依頼タスク行の削除・完了シートへの移動など強い操作はこのエンドポイントからは呼び出さない)。
+  // 2026-11-22: スプレッドシート・同期用GAS(Apps Script「自立型アプリ用」)を廃止。trueの間は下記GAS経由の
+  // 関数を呼んでも何もしない(画面のボタンもbody.sheet-retiredのCSSで非表示)。経緯はREADME・concept-log.json CL-065。
+  const SHEET_RETIRED = true;
+  if (SHEET_RETIRED) document.body.classList.add("sheet-retired");
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyBq4sD_LZBbgRhGpYYcDzve3jLOJ0_lrxlT89bFHjFlUWhgO975uArRicaveEJMKP9/exec";
   const GAS_TOKEN = "8a2fad1907b8d935f758ede8f66d05d7";
   const PRIORITY_ORDER = { "高": 0, "中": 1, "低": 2, "-": 3 };
@@ -3011,6 +3022,7 @@
   }
 
   function addNewTask(parentPath, repo, task, priority) {
+    if (SHEET_RETIRED) return;
     const today = new Date().toISOString().slice(0, 10);
     const isRepoLevel = parentPath.startsWith("repo:");
     const id = nextTaskId(repo);
@@ -3064,6 +3076,7 @@
   // 1行追記する。次回のRoutine実行時にこのコメントが読み取られ、内容に応じて既存タスクの再オープン・
   // manualSetup解消などが行われる想定(新規タスクの作成はしない)。
   function sendComment(path, repo, text) {
+    if (SHEET_RETIRED) return;
     const node = findNodeByPath(path);
     if (!node.comments) node.comments = [];
     const at = new Date().toISOString().slice(0, 16).replace("T", " ");
@@ -3113,6 +3126,7 @@
   // その期限を過ぎてから初めて、既存の1時間おきのsyncFromGithubトリガーが完了タブへ実際に移動させる。
   // 誤って押した場合は期限内なら「↩ 元に戻す」で取り消せる(cancelCompleteManually)。
   function completeTaskManually(path, repo) {
+    if (SHEET_RETIRED) return;
     const node = findNodeByPath(path);
     if (!node) return;
     node._priorStatus = node.status;
@@ -3148,6 +3162,7 @@
   // 「✓ 完了にする」の誤操作を取り消す。取消期限(翌日9:00 JST)を過ぎるとGAS側で既に完了タブへ
   // 移動済みの可能性があり、その場合はcancelComplete側で何も起きない(該当行が見つからないため)。
   function cancelCompleteManually(path, repo) {
+    if (SHEET_RETIRED) return;
     const node = findNodeByPath(path);
     if (!node) return;
     node.status = node._priorStatus || "未着手";
@@ -3245,6 +3260,7 @@
   // コメント(comments)を静かに取り込む役割は引き続き必要なため、関数自体とページ読み込み時の
   // silent呼び出しは残す。ボタンが無くなったのでDOM操作はすべてbtnが存在する場合のみ行う。
   function refreshFromSheet(silent) {
+    if (SHEET_RETIRED) return;
     const btn = document.getElementById("refresh-btn");
     const original = btn ? btn.textContent : "";
     if (!silent && btn) {
@@ -3275,6 +3291,7 @@
   }
 
   function syncNow() {
+    if (SHEET_RETIRED) return;
     const btn = document.getElementById("sync-now-btn");
     const original = btn.textContent;
     btn.disabled = true;
@@ -3319,6 +3336,7 @@
   // セッション)に任せる。ここでは「＋新規タスク」と同じ追記専用のGASエンドポイントを使い、
   // 依頼タスクタブへ「反映確認」タスクを自動追加するところまでを行う。
   async function checkGithubActivity() {
+    if (SHEET_RETIRED) return;
     const btn = document.getElementById("github-diff-btn");
     const original = btn.textContent;
     btn.disabled = true;
@@ -7391,6 +7409,7 @@
   loadPermissionsData();
 
   document.getElementById("core-rules-apply-btn").addEventListener("click", () => {
+    if (SHEET_RETIRED) return;
     const textarea = document.getElementById("core-rules-edit-textarea");
     const edited = textarea.value;
 
