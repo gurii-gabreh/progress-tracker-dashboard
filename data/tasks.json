@@ -7771,15 +7771,19 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "AI Labのコメント英語化後の表示確認と、完了にしてよいかユーザー確認待ち。",
+      "nextAction": "ユーザー確認待ち: gurii-gabreh.github.io/robots.txtの表示確認と、完了にしてよいか。",
       "note": "ユーザー指示「作成したアプリで相手側の学習に使われるタイミングがあったら、禁止してほしい」、範囲「AI Lab+GitHub Pages(推奨)」、内容「共通合図+名前指定(推奨)」、コメントは「すぐ治るなら直しておいて」(2026-11-21)。",
       "detail": "共通トークン__usage_ai-training(IETF draft-kelley-aipref-training-preference-signal-01、11/16)と各社の学習用クローラー/制御トークン(GPTBot・ClaudeBot・Google-Extended・Applebot-Extended・CCBot・meta-externalagent)をDisallow、検索クロールは許可。名前はCodex(公式ページ)・Claude(Anthropic公式)で確認。AI Lab(85d9690、文字化け対策でコメント英語化976dec6)。GitHub Pagesはドメイン直下にしか効かないため、ユーザーがgurii-gabreh.github.ioを作成→robots.txt・README(eb6ecf8)・READMEをトップに出さない空index.html(0cb1ee5)。GitHub上のソースコード自体は守れない(非公開化#13が必要)。OpenAI数か月以内・Google 2027年・Microsoft 2027-02-01から対応と各社公式発表(2026-10-30)。",
       "output": "ai-lab robots.txt(85d9690・976dec6)、gurii-gabreh.github.io(eb6ecf8・0cb1ee5)",
-      "updated": "2026-11-21",
+      "updated": "2026-11-22",
       "checkHistory": [
         {
           "date": "2026-11-21",
           "summary": "robotparserで学習用7種拒否・Googlebot/Bingbot許可。ユーザーが実サイトでAI Lab・github.ioのrobots.txt表示とトップ白紙を確認。"
+        },
+        {
+          "date": "2026-11-22",
+          "summary": "AI Labのrobots.txtの文字化けコメントを英語に変更(ai-lab 976dec6)。gurii-gabreh.github.ioに空のindex.html(noindex)を追加し(0cb1ee5)、トップが白紙になることをユーザーが確認。"
         }
       ]
     },
@@ -7838,20 +7842,24 @@
       "repo": "servicenow-sub-agent",
       "category": "process",
       "priority": "中",
-      "status": "対応中",
+      "status": "完了",
       "goal": null,
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "次回の自動エクスポート後に重複0を確認し、ユーザーに完了確認。",
+      "nextAction": "なし(完了)",
       "note": "ユーザー指示「そうだね、重複があったら一つになるように調整して」(2026-11-21)。",
       "detail": "export_research_items.mjsのマージ後にsysIdで重複除去(先に来たServiceNow側の最新行を優先)を追加し、既存の重複10組を除去(9905→9895件、キュレーション済み394件は不変)(48a742f)。",
       "output": "servicenow/scripts/export_research_items.mjs、data/research-items.json(48a742f)",
-      "updated": "2026-11-21",
+      "updated": "2026-11-22",
       "checkHistory": [
         {
           "date": "2026-11-21",
           "summary": "重複除去後の件数・キュレーション件数を確認。"
+        },
+        {
+          "date": "2026-11-22",
+          "summary": "ユーザーが完了を了承(11/22、計画#66)。"
         }
       ]
     },
@@ -7862,20 +7870,24 @@
       "repo": "claude-voice-bridge",
       "category": "ui",
       "priority": "中",
-      "status": "対応中",
+      "status": "完了",
       "goal": null,
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "完了にしてよいかユーザー確認。",
+      "nextAction": "なし(完了)",
       "note": "ユーザー指示「最新の定例文読み取りで、計画のタスク内容も読み込んでくれる?」「件名だけ取り込んでほしい」「完了は除外」「折りたたみできるようにして」「最後の状態を覚える(推奨)」(2026-11-21)。",
       "detail": "content.jsにextractPlanItems()とcvb-extract-plan-itemsを追加し、「📥 最新の定例文・計画を読み込む」で計画の件名を取り込み(完了は除外、再取り込み時は一旦削除して入れ直し)、クリックでcvb-insert-textにより入力欄へ挿入(741884f)。計画・定例文・スキル文言の折りたたみの開閉状態をcvb_commands_openに保存・復元(274bf8d)。",
       "output": "content.js、sidepanel.html/js(741884f、274bf8d)",
-      "updated": "2026-11-21",
+      "updated": "2026-11-22",
       "checkHistory": [
         {
           "date": "2026-11-21",
           "summary": "Playwright(chrome API模擬)で動作確認、ユーザーが実画面で読み込み・折りたたみを確認(「できた」)。"
+        },
+        {
+          "date": "2026-11-22",
+          "summary": "ユーザーが完了を了承(11/22、計画#66)。"
         }
       ]
     },
@@ -7902,7 +7914,127 @@
           "summary": "ユーザーの実機で復旧を確認。"
         }
       ]
+    },
+    {
+      "id": "PTD-149",
+      "title": "スプレッドシート「実装進捗管理シート」と同期用GASを廃止",
+      "task": "tasks.jsonが正本になり使われなくなったシートと同期用GAS「自立型アプリ用」を止め、記録を残す",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザー作業: 「自立型アプリ用」のWebアプリをアーカイブ。ai-research-radarのGemini用GASのトリガー停止が済んだか確認し、README・CL-065を「停止」に更新。gemini-monitorのシートも止めるか、ルール13のGemini系シートURLを外すかはユーザー確認待ち。",
+      "note": "ユーザー指示「スプレッドシートは廃止でいいかな だから、それに伴うGASも停止で この記録を何処かに残しておいてくれる？」「外す(推奨)」。ai-research-radarのGemini用GAS(collectAIResearch)は一度「動かしておいて」とされ65cd70dで記録を訂正したが、その後「やっパ停止でいいかな 今gemini API使っていないから」と停止の指示があり、手順を案内済み(停止の完了は未確認)。",
+      "detail": "8/1以降の正本はtasks.jsonで、シートはGASが1時間おきに作る写しになっていた。ユーザーがシートを見ていないと確認し廃止を決定、ユーザーがGASのトリガーを削除。ダッシュボードのGAS経由の操作8つを非表示・呼び出し停止(bf6a68d)、ルール13のナレッジ確認URLから削除(da9710d)、README・gas/Code.gs・CL-065に経緯を記録(71ed86e)。シートにしかない情報が無いことはサブエージェントで突き合わせて確認。",
+      "output": "dashboard.html、data/claude-core-rules.md、README.md、gas/Code.gs、data/concept-log.json(CL-065)",
+      "updated": "2026-11-22",
+      "checkHistory": [
+        {
+          "date": "2026-11-22",
+          "summary": "突き合わせ: シート76/61/119/4行とtasks.jsonを比較しシート限定の情報なし。ダッシュボードをPlaywrightで開きGASへの通信0件を確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-150",
+      "title": "どのAIでもGitHubを見れば分かる仕組み(AGENTS.md・ルール34・課題の一本化)",
+      "task": "Codex・ChatGPT等どのAIでも、GitHubの中身だけでアプリの内容・経緯・最新状態・課題が分かるようにする",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "3 🔄ルーティンの最新化(Felo/Grok深夜記録・PDIリマインダー・Secret名・ServiceNowプロパティ名などの不足分)の案をユーザーに見せる。その後4・5。5はCROSS_REPO_PATの作り直しが必要。",
+      "note": "ユーザー指示「様々なAIがアクセスし、git hubにアクセスすればアプリの内容、いままでの開発経緯、最新状態と課題をわかるようにしたい」「データは全て1つにまとめたい、大部分のデータがあるのはtasks.json側だよね？」「進めて」。進め方は1 AGENTS.md+ルール34→2 課題一本化→3 🔄ルーティン最新化→4 READMEの更新日点検→5 各リポジトリのAGENTS.md、各段階で案を見せてから実装。",
+      "detail": "AI共通の入口AGENTS.mdと、情報の置き場を定めたルール34を追加(2810477)。AI基本設定に「🧭 情報の置き場」を追加。requirements.jsonのissueLog等に散らばっていた課題76件をtasks.jsonの各タスクのissues(ISS-001〜076)へ移行し、他リポジトリの課題4件はアプリの親タスクへ付け直し、課題管理表は選んだアプリの課題だけをまとめて表示(6105c2c)。",
+      "output": "AGENTS.md、data/claude-core-rules.md、data/ai-config.json、data/tasks.json、data/requirements.json、dashboard.html",
+      "updated": "2026-11-22",
+      "checkHistory": [
+        {
+          "date": "2026-11-22",
+          "summary": "課題件数: 移行前76件=移行後76件。ダッシュボードの課題管理表をPlaywrightでアプリ別に表示確認、エラー0。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-151",
+      "title": "ChatGPTの音声会話で要件定義し、Claude Codeへ引き継いで実装する流れ",
+      "task": "ChatGPT(Plus)の音声で要件定義の聞き取りをし、結果をGitHubのdata/inbox経由と引き継ぎプロンプトでClaude Codeのマネージャールームへ渡す",
+      "repo": "progress-tracker-dashboard",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザー作業: ChatGPTでProject「アプリ開発」を作り、指示文を貼り、AGENTS.mdとrequirements.jsonを添付、Codex CloudでGitHubの書き込みをつなぐ。Bは後日試す。",
+      "note": "ユーザー指示「会話しながら遣り取りをする」(音声会話はClaudeではできないためChatGPT)、「chat GPT側にもgit hub更新させるようにすればいいよね？」、「codex側からclaude codeに連携はできないのかな？難しそうなら、claude codeのマネージャアプリへの実装引継ぎプロンプトを最後に作成することをルール化して」。選択「この形で反映(推奨)」、B(Codexの取り込み依頼をきっかけに即時取り込み、試験提供の機能)は「後で試す(推奨)」。音声の3時間上限後は、同じ会話を文字で続けられる(OpenAIヘルプ)。",
+      "detail": "CodexからClaude Codeへ直接渡す公式の機能は確認できなかったため、①Claude以外のAIはdata/inbox/だけに書ける(ルール34変更)、②聞き取りの最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」を出す(ルール化)、③毎晩0:05の日次ログ手順9bでinboxを取り込む、の3点で連携する形にした(9c27fc3、trig_013ikFJFo9uJtnc4PqHjSPb5を更新)。ChatGPT Projectに貼る指示文の正本はdocs/chatgpt-project-instructions.md。実装はユーザーの確認後に開始する。",
+      "output": "data/claude-core-rules.md(ルール34)、AGENTS.md、data/ai-config.json、data/inbox/README.md、data/inbox/_template.json、docs/chatgpt-project-instructions.md",
+      "updated": "2026-11-22",
+      "checkHistory": [
+        {
+          "date": "2026-11-22",
+          "summary": "JSONの読み込み確認、ダッシュボードをPlaywrightで開きエラー0・新しい文言の表示を確認、日次ログRoutineの更新内容を確認。"
+        }
+      ]
+    },
+    {
+      "id": "CVB-006",
+      "title": "サイドアプリの計画のタスクをステータス順→タスクID順に並べ替え",
+      "task": "「📋 計画のタスク」を、相談→承認待ち→あなたの作業→あなたの確認→確認待ち→保留の順、その中をタスクID順(未採番は最後)に並べる",
+      "repo": "claude-voice-bridge",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザー確認待ち: 拡張機能を更新(git pull→chrome://extensionsで🔄)し、並びを確認、完了でよいか。",
+      "note": "ユーザー指示「サイドアプリの計画タスクの表示なんだけど、タスクIDでソートできる？」「Bでまとめてから、A(おすすめ)でまとめて」。",
+      "detail": "件名の【ステータス】【アプリ名】【タスクID】を読み取るparsePlanSubjectと、並べ替えるsortPlanItemsをsidepanel.jsに追加(21995e9)。",
+      "output": "sidepanel.js",
+      "updated": "2026-11-22",
+      "checkHistory": [
+        {
+          "date": "2026-11-22",
+          "summary": "Playwrightで並び順を確認。"
+        }
+      ]
+    },
+    {
+      "id": "ESA-003",
+      "title": "ChatGPTレッスン指示文を15分(トピック10分+フリートーク5分)に変更し進め方の要望4点を反映",
+      "task": "11/22のレッスンで出た要望(15分基本・数文で終わらせない・続けるか何度も聞かない・終わりは自分から言う)をchatgpt.htmlの指示文に反映",
+      "repo": "English-Speaking-App",
+      "category": "feature",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザー作業: 新しい指示文をChatGPTのプロジェクトに貼り直して試し、完了でよいか確認。",
+      "note": "ユーザー指示「すべてのレッスンを15分にする その中で、トピックとフリートークを分けてほしい」、選択「トピック10分+フリー5分(推奨)」。",
+      "detail": "全レッスンを15分(トピック約10分+フリートーク約5分)にし、進め方の要望4点とフリートークのコマンドを更新(cdbe98d)。あわせて11/22のレッスン記録をdata/lessons.jsonに追加(e72778e)。",
+      "output": "chatgpt.html、data/lessons.json",
+      "updated": "2026-11-22",
+      "checkHistory": [
+        {
+          "date": "2026-11-22",
+          "summary": "PC・モバイル幅で表示確認。"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-11-21"
+  "updatedAt": "2026-11-23T01:04:20+09:00"
 }

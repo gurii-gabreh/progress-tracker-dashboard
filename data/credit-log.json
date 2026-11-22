@@ -1276,6 +1276,18 @@
       "repo": "claude-voice-bridge",
       "task": "CVB-005: サイドアプリ拡張機能消失の復旧案内",
       "note": "コード変更なし、ユーザー復旧確認。"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "claude-voice-bridge",
+      "task": "CVB-004: 計画の件名読み込み+折りたたみ状態の保存",
+      "note": "ユーザーが完了を了承(計画#66)。"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "servicenow-sub-agent",
+      "task": "PTD-148: research-items.jsonのsysId重複の自動除去",
+      "note": "48a742f、ユーザーが完了を了承(計画#66)。"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-22T01:44:07.694827+09:00",
+  "lastProcessedAt": "2026-11-23T01:04:20+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -730,6 +730,19 @@
         "完了確認待ち: PTD-145(robots.txt)、CVB-004、PTD-148、PTD-141",
         "get_sessionの承認待ち停止の原因(#44、作業Bは休止中)",
         "既存の未解決相談: Anthropic News収集失敗(#11)、Moz/EPI(#17)、plugin-rollout(#19)、worker-room記述(#20)、リポジトリ点検(#30)、ブログ(#31)、週次ルーム作り直し(#46)など"
+      ]
+    },
+    {
+      "date": "2026-11-22",
+      "generatedAt": "2026-11-23T01:04:20+09:00",
+      "summary": "【AI学習拒否・AIBLの残作業】AI Labのrobots.txtの文字化けしたコメントを英語に直し(ai-lab 976dec6)、ユーザーが新しく作ったgurii-gabreh.github.ioに空のトップページ(noindex)を追加(0cb1ee5)。完了にしてよいかはユーザー確認待ち(PTD-145)。CVB-004とPTD-148はユーザーが完了を了承。\n\n【英会話】11/22のレッスン(講師Alex)を記録(e72778e)。レッスンで出た要望を受け、ChatGPTの指示文を全レッスン15分(トピック約10分+フリートーク約5分)にし、進め方の要望4点を反映(cdbe98d、ESA-003)。ChatGPTへの貼り直しはユーザー作業。\n\n【サイドアプリ】計画のタスクを、ステータス順(相談→承認待ち→あなたの作業→あなたの確認→確認待ち→保留)→タスクID順に並べ替え(21995e9、CVB-006)。拡張機能を更新しての確認待ち。\n\n【音声中心の開発環境の相談】12問の相談に調査結果で回答(推奨は案1)。ユーザー選択「今は調査結果だけでよい」で保留。\n\n【どのAIでもGitHubで分かる仕組み】ユーザー「様々なAIがGitHubを見ればアプリの内容・経緯・最新状態・課題が分かるようにしたい」。全AI共通の入口AGENTS.mdとルール34(情報の置き場)を追加(2810477)。課題はtasks.jsonに一本化し、既存76件を各タスクのissuesへ移行、課題管理表はアプリ別表示に(6105c2c、PTD-150)。残りは3 🔄ルーティン最新化→4 README更新日点検→5 各リポジトリのAGENTS.md。\n\n【スプレッドシート廃止】実装進捗管理シートと同期用GAS「自立型アプリ用」を廃止。ユーザーがトリガーを削除、ダッシュボードのGAS経由ボタン8つを停止、ルール13からURL削除、CL-065に記録(PTD-149)。ユーザーがGASのURLを求めた際、最初に正しいものを出せず叱責を受け、Drive検索で特定した。ai-research-radarのGemini用GASは一度継続とされたが、最終的に「停止でいい」の指示で手順を案内(停止完了は未確認)。\n\n【ChatGPT音声で要件定義→Claude Codeで実装】要件定義は会話しながら行う前提で、それはClaudeでは音声会話ができないためChatGPT(Plus)を使う。ここで前提を取り違えてClaude Codeでの聞き取りを勧め、さらに英語で返答してしまい、ユーザーから強く指摘された(以後は日本語で、ChatGPT音声前提)。CodexからClaude Codeへの直接連携は公式に確認できず、Claude以外のAIはdata/inbox/だけに書ける・聞き取りの最後に実装引き継ぎプロンプトを必ず出す・毎晩0:05にinboxを取り込む、の形でルール34を変更(9c27fc3、日次ログRoutineに手順9b追加、PTD-151、CL-066)。音声の3時間上限後は同じ会話を文字で続けられる(OpenAIヘルプ)。",
+      "unresolvedCarriedOver": [
+        "ChatGPT Project「アプリ開発」の作成とCodex CloudのGitHub接続(ユーザー作業、PTD-151)",
+        "どのAIでも分かる仕組みの3〜5(PTD-150)",
+        "「自立型アプリ用」Webアプリのアーカイブ、Gemini用GAS停止の確認、gemini-monitorシート停止・ルール13のGemini系URL削除の要否(PTD-149)",
+        "CROSS_REPO_PATの作り直し(ルール33・34が他リポジトリに配布されない)",
+        "robots.txt(PTD-145)・ESA-003・CVB-006の完了確認",
+        "未回答の相談: Anthropic News(#11)、Moz・EPI(#17)、plugin-rollout(#19)、固有補足の古い記述(#20)、乗っ取り点検(#30)、ブログ(#31)、週次ルーム作り直し(#46)"
       ]
     }
   ]
