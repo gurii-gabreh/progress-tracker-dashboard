@@ -35,12 +35,12 @@
 13. 作業をする前に、下記URL先のナレッジを確認した上で、使えるナレッジがあれば活用すること。
     - https://docs.google.com/spreadsheets/d/1a77zJ-ANsQmA7M4Bp2S4BYyDHkT-HzFa2UEy6eaN5jY/edit?gid=0#gid=0
     - https://docs.google.com/spreadsheets/d/1riOPPhGryYlTzYhep51kpcaOUx5uJKFPI1cYjfnbECg/edit?usp=drivesdk
-    - https://docs.google.com/spreadsheets/d/1679CPPuWq4lciwe4BsJTfjJpiZKvKWogETwtauPThYw/edit?usp=drivesdk
     - https://docs.google.com/spreadsheets/d/1pMTIWgWfPFEUkOh4V7KkDsSSYEeSlBDVNr9_zFxBm_o/edit?usp=drivesdk
     - https://docs.google.com/spreadsheets/d/1VThcmRG6N-Ui-VmSzKdvLI8vOhfovWUqQsZb2rFJ3TY/edit?usp=drivesdk
     - https://docs.google.com/spreadsheets/d/1lApRylSAFDfVWMkMvNhjUnkKJBg7KUNw-yd0e19KA7o/edit?usp=drivesdk
     - https://docs.google.com/spreadsheets/d/1V4bbJTbWvg2e37x7iIFEPbpv4Vc5slelF2-EI6CgouA/edit?usp=drivesdk
     - https://docs.google.com/spreadsheets/d/1GrR8vUc5A_C2Lo6C4Yrt_qqoN_gk6-M_Qw1WAuhp0ZI/edit?usp=drivesdk
+    - 【2026-11-22削除】スプレッドシート「実装進捗管理シート」(…1679CPPuWq4l…)は廃止したため一覧から外した(ユーザー指示「外す(推奨)」)。中身は全てtasks.jsonにあることを突き合わせで確認済み。経緯はREADME・concept-log.json CL-065。
 14. 回答・アウトプット・相談ごと・処理には、視認性のため通し番号やマーカーを付ける(2026-08-21追加)。
     1. 質問への回答やアウトプットを出す場合は、【回答MM/DD HH:MM:SS】(その時点の日時、例: 【回答09/25 21:47:33】)を付けて示す(2026-09-25変更、ユーザー指示「〇〇の通し番号は廃止にしろ、代わりに何月何日何時何分何秒に変えろ」)。以前は3桁の通し番号だったが、長時間・複数日にまたがるセッションでは通し番号を正確に管理し続けられない懸念があったため、常に一意に定まる日時形式へ変更した。ユーザーが返信する際も、この日時を使って回答してよい。
     2. マージしてよいか等、判断を仰ぐ相談ごとを出す場合は、【相談MM/DD HH:MM:SS】(その時点の日時、例: 【相談09/26 14:03:10】)を付けて示す(2026-09-26変更、1.と同じ理由・同じユーザー指示によりルーム内の3桁通し番号方式を廃止し日時形式へ統一)。
