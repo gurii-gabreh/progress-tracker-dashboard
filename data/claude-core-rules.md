@@ -109,4 +109,5 @@
     - 要件定義〜設計: `data/requirements.json`。設計判断・教訓: `data/concept-log.json`。日々の相談・決定: `data/manager-room-log.json`(ルール28)。
     - 自動処理(Routine)・外部の設定の置き場: `data/ai-config.json`の🔄ルーティン関連。Routineの新設・変更・停止、Secretsや設定の追加・廃止のたびに同じ作業の中で更新する。鍵・パスワード・APIキーの値は絶対に書かず、名前と置き場所だけを書く。
     - 記録のタイミングはルール14の4(作業中は計画のmetadataに材料を残し、深夜の定期処理が一括記録)に従う。
-    - Claude以外のAIはリポジトリに直接書き込まず結果を会話で返し、記録はClaudeが内容を確認してから行う(重要な判断はルール18の二重確認)。
+    - Claude以外のAI(ChatGPT・Codex等)が書き込んでよいのはprogress-tracker-dashboardの`data/inbox/`だけとし、それ以外の正本は書き換えない。記録はClaudeが内容を確認してから行う(重要な判断はルール18の二重確認)。形式は`data/inbox/_template.json`、使い方は`data/inbox/README.md`(2026-11-22変更、ユーザー承認「この形で反映(推奨)」。経緯: 要件定義はChatGPTの音声会話で行い、その結果をClaude Codeへ渡して実装する流れにするため)。
+    - 【2026-11-22追加・実装引き継ぎプロンプト】ChatGPT等で要件定義の聞き取りが終わったら、そのAIは最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」(対象アプリ・新規か既存か・inboxのファイル名・決まった要件・当てはまった過去の懸念と対応・決まっていない点・依頼文「上記をrequirements.jsonに登録し、tasks.jsonに起票して。実装は私の確認後に開始して」)を出力する(ユーザー指示「codex側からclaude codeに連携はできないのかな?難しそうなら、claude codeのマネージャアプリへの実装引継ぎプロンプトを最後に作成することをルール化して」。CodexからClaude Codeへ直接渡す公式の機能は確認できなかったため)。指示文の正本は`docs/chatgpt-project-instructions.md`。Claudeは、このプロンプトを貼られたとき、または毎晩0:05の日次ログ処理で、`status`が「取り込み待ち」のinboxファイルを読み、足りない点を質問したうえで`requirements.json`・`tasks.json`に登録し`status`を「取り込み済み」にする。実装はユーザーの確認後に始める。

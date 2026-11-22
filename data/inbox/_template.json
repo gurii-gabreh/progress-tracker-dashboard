@@ -1,0 +1,17 @@
+{
+  "type": "requirements-draft",
+  "createdBy": "ChatGPT または Codex",
+  "createdAt": "YYYY-MM-DDTHH:MM:SS+09:00",
+  "appName": "アプリ名(仮)",
+  "isNewApp": true,
+  "repo": "新規なら null、既存なら gurii-gabreh/リポジトリ名",
+  "answers": [
+    { "n": 1, "question": "アプリ名(仮)", "answer": "" }
+  ],
+  "concernsMatched": [
+    { "concern": "当てはまった過去の懸念(requirements.json の concerns)", "response": "その対応" }
+  ],
+  "openQuestions": ["決まっていない点(Claude Codeが最初に確認すべきこと)"],
+  "status": "取り込み待ち",
+  "importedTo": null
+}

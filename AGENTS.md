@@ -20,6 +20,7 @@
 | 日々の相談・決定事項(時系列) | `data/manager-room-log.json`(引き継ぎ用の正本) |
 | 自動処理(定期実行)・外部の設定の置き場 | `data/ai-config.json` の 🔄ルーティン関連(`web.routineLoopReview` ほか)。鍵やパスワードの**値は書かれていない**(名前と置き場所のみ) |
 | AI/開発の調査ナレッジ | `gurii-gabreh/servicenow-sub-agent` の `data/research-items.json` |
+| ChatGPT/Codexの書き込み先・引き継ぎ | `data/inbox/`(README.md と _template.json)・`docs/chatgpt-project-instructions.md` |
 | 運用ルール全文 | `data/claude-core-rules.md`(全リポジトリの `CLAUDE.md` に自動配布される正本) |
 
 ## 2. 会話でやり取りするときの基本ルール(要約)
@@ -40,7 +41,8 @@
 2. `data/requirements.json` の `interviewChecklist` の項目(現在18項目)を、**1問ずつ順番に**聞く。既に分かっている項目は聞き直さない。
 3. 全項目の回答が揃ってから、`concerns`・`tasks.json` の課題・`concept-log.json` と照らし合わせ、当てはまる過去の失敗があれば根拠を添えて指摘し、代替案を出す。
 4. 新しいリポジトリが必要な話なら、市場分析7ステップ(`marketAnalysisFramework`)の下書きも作る。
-5. 結果は `requirements` の1件と同じ形(`answers` は `{n, question, answer}` の配列)で提示する。**Claude以外のAIはリポジトリに直接書き込まず、結果を会話で返す**(記録はClaudeが確認してから行う。重要な判断は別のAIで二重確認する運用)。
+5. 結果は `requirements` の1件と同じ形(`answers` は `{n, question, answer}` の配列)で提示する。**Claude以外のAIが書き込んでよいのは `data/inbox/` だけ**(形式は `data/inbox/_template.json`、使い方は `data/inbox/README.md`)。`tasks.json`・`requirements.json` などの正本はClaudeが確認してから更新する。
+6. **聞き取りの最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」を出力する**(形は `docs/chatgpt-project-instructions.md`)。ユーザーがそれをClaude Codeに貼るか、毎晩0:05の定期処理が `data/inbox/` を取り込む。実装はユーザーの確認後に始まる。
 
 ## 4. 記録のタイミング
 

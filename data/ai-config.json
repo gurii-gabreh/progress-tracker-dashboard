@@ -616,7 +616,8 @@
         "作業の履歴: 各リポジトリのコミット履歴",
         "要件定義〜設計: requirements.json/設計判断: concept-log.json/日々の相談: manager-room-log.json",
         "自動処理・外部設定の置き場: ai-config.jsonの🔄ルーティン(値は書かず名前と置き場所のみ)",
-        "Claude以外のAIは書き込まず会話で返し、記録はClaudeが確認してから行う"
+        "Claude以外のAIが書き込んでよいのはdata/inbox/だけ(形式はdata/inbox/_template.json)。正本の記録はClaudeが確認してから行う",
+        "要件定義の聞き取りが終わったら、ChatGPT等は最後に必ずClaude Codeのマネージャールームへの実装引き継ぎプロンプトを出す(指示文の正本: docs/chatgpt-project-instructions.md)。Claudeは貼られたとき、または毎晩0:05にinboxを取り込み、実装はユーザー確認後"
       ]
     }
   },
@@ -1344,6 +1345,6 @@
       "citeRuleSource": "data/claude-core-rules.md ルール32(2026-11-01追加、ユーザー指示)"
     },
     "routineLoopReview": "Routineを新設・変更したら、loop-design-checkスキル(.claude/skills/loop-design-check)の5つの壊れ方と3つの禁止線で点検し、web.routineLoopReview.tableに1行追加・更新する。△・×の項目は勝手に直さずユーザーと相談する(2026-11-21追加、ユーザー指示)。",
-    "informationMap": "**どのAIでもGitHubの中身を見るだけで、アプリの内容・開発経緯・最新状態・課題が分かる状態を保つ**ため、情報は次の置き場に書き、置き場を増やさない(2026-11-22追加、ユーザー指示「会話しながらAIとのやり取りをさせる方面にしたい。GitHubの中身を見ればすべて分かるようにしたい」「データは全て1つにまとめたい、大部分のデータがあるのはtasks.json側だよね?それならそっちにまとめたい」)。入口はprogress-tracker-dashboardの`AGENTS.md`(Codex等Claude以外のAIも読む共通の案内)で、このルールと内容を揃えること(食い違いはこのファイルを優先)。"
+    "informationMap": "**どのAIでもGitHubの中身を見るだけで、アプリの内容・開発経緯・最新状態・課題が分かる状態を保つ**ため、情報は次の置き場に書き、置き場を増やさない(2026-11-22追加、ユーザー指示「会話しながらAIとのやり取りをさせる方面にしたい。GitHubの中身を見ればすべて分かるようにしたい」「データは全て1つにまとめたい、大部分のデータがあるのはtasks.json側だよね?それならそっちにまとめたい」)。入口はprogress-tracker-dashboardの`AGENTS.md`(Codex等Claude以外のAIも読む共通の案内)で、このルールと内容を揃えること(食い違いはこのファイルを優先)。\n    - アプリの概要・使い方: 各リポジトリの`README.md`。機能追加・仕様変更のコミットと同じコミットで更新する。\n    - 開発経緯・最新状態・課題・残課題: `data/tasks.json`に一本化する。課題は各タスクの`issues`(課題のリスト。1件ごとに課題ID・件名・内容・発生日・状態〔未対応/対応中/解決済み/保留〕・対応内容)に書き、`data/requirements.json`の`issueLog`など他の場所には新しく書かない(既存の課題76件は2026-11-22にtasks.jsonへ移行済み)。\n    - 作業の履歴: 各リポジトリのコミット履歴(ルール24)。\n    - 要件定義〜設計: `data/requirements.json`。設計判断・教訓: `data/concept-log.json`。日々の相談・決定: `data/manager-room-log.json`(ルール28)。\n    - 自動処理(Routine)・外部の設定の置き場: `data/ai-config.json`の🔄ルーティン関連。Routineの新設・変更・停止、Secretsや設定の追加・廃止のたびに同じ作業の中で更新する。鍵・パスワード・APIキーの値は絶対に書かず、名前と置き場所だけを書く。\n    - 記録のタイミングはルール14の4(作業中は計画のmetadataに材料を残し、深夜の定期処理が一括記録)に従う。\n    - Claude以外のAI(ChatGPT・Codex等)が書き込んでよいのはprogress-tracker-dashboardの`data/inbox/`だけとし、それ以外の正本は書き換えない。記録はClaudeが内容を確認してから行う(重要な判断はルール18の二重確認)。形式は`data/inbox/_template.json`、使い方は`data/inbox/README.md`(2026-11-22変更、ユーザー承認「この形で反映(推奨)」。経緯: 要件定義はChatGPTの音声会話で行い、その結果をClaude Codeへ渡して実装する流れにするため)。\n    - 【2026-11-22追加・実装引き継ぎプロンプト】ChatGPT等で要件定義の聞き取りが終わったら、そのAIは最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」(対象アプリ・新規か既存か・inboxのファイル名・決まった要件・当てはまった過去の懸念と対応・決まっていない点・依頼文「上記をrequirements.jsonに登録し、tasks.jsonに起票して。実装は私の確認後に開始して」)を出力する(ユーザー指示「codex側からclaude codeに連携はできないのかな?難しそうなら、claude codeのマネージャアプリへの実装引継ぎプロンプトを最後に作成することをルール化して」。CodexからClaude Codeへ直接渡す公式の機能は確認できなかったため)。指示文の正本は`docs/chatgpt-project-instructions.md`。Claudeは、このプロンプトを貼られたとき、または毎晩0:05の日次ログ処理で、`status`が「取り込み待ち」のinboxファイルを読み、足りない点を質問したうえで`requirements.json`・`tasks.json`に登録し`status`を「取り込み済み」にする。実装はユーザーの確認後に始める。"
   }
 }
