@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "description": "様々なAI(Claude Codeの複数ルーム、および外部AI)を使う上での基本設定・オーケストレーション方針をまとめた正本。data/policy.json(タスク運用ルール)とは別軸で、こちらは『どのAIを・どういう役割分担で・どう検証しながら使うか』というAI利用そのものの基本設定を扱う。マネージャールームが司令塔として自動的に読み書き・更新する想定(README運用ルール33参照)。`web`(人が読む箇条書き要約)と`ai`(AIが実際に従う詳細情報)を分けて持つ(2026-08-11、schemaVersion 2。ダッシュボードは`web`のみ表示する)。",
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-22",
   "web": {
     "orchestration": {
       "title": "🧭 オーケストレーション",
@@ -605,6 +605,18 @@
       "points": [
         "点検の手順は .claude/skills/loop-design-check/SKILL.md(everything-claude-code、MITを日本語化)",
         "Routineを新設・変更したら、この表に1行追加・更新する"
+      ]
+    },
+    "informationMap": {
+      "title": "🧭 情報の置き場(どのAIでもGitHubで分かるように)",
+      "overview": "どのAIでもGitHubの中身を見るだけで、アプリの内容・開発経緯・最新状態・課題が分かるようにするための置き場のルール(2026-11-22追加、ユーザー指示。claude-core-rules.md ルール34)。入口はprogress-tracker-dashboardのAGENTS.md。",
+      "points": [
+        "アプリの概要: 各リポジトリのREADME.md(機能追加・仕様変更と同じコミットで更新)",
+        "開発経緯・最新状態・課題・残課題: data/tasks.jsonに一本化(課題は各タスクのissuesにリストで記録。requirements.jsonのissueLogには新しく書かない)",
+        "作業の履歴: 各リポジトリのコミット履歴",
+        "要件定義〜設計: requirements.json/設計判断: concept-log.json/日々の相談: manager-room-log.json",
+        "自動処理・外部設定の置き場: ai-config.jsonの🔄ルーティン(値は書かず名前と置き場所のみ)",
+        "Claude以外のAIは書き込まず会話で返し、記録はClaudeが確認してから行う"
       ]
     }
   },
@@ -1331,6 +1343,7 @@
       "addedAt": "2026-11-01",
       "citeRuleSource": "data/claude-core-rules.md ルール32(2026-11-01追加、ユーザー指示)"
     },
-    "routineLoopReview": "Routineを新設・変更したら、loop-design-checkスキル(.claude/skills/loop-design-check)の5つの壊れ方と3つの禁止線で点検し、web.routineLoopReview.tableに1行追加・更新する。△・×の項目は勝手に直さずユーザーと相談する(2026-11-21追加、ユーザー指示)。"
+    "routineLoopReview": "Routineを新設・変更したら、loop-design-checkスキル(.claude/skills/loop-design-check)の5つの壊れ方と3つの禁止線で点検し、web.routineLoopReview.tableに1行追加・更新する。△・×の項目は勝手に直さずユーザーと相談する(2026-11-21追加、ユーザー指示)。",
+    "informationMap": "**どのAIでもGitHubの中身を見るだけで、アプリの内容・開発経緯・最新状態・課題が分かる状態を保つ**ため、情報は次の置き場に書き、置き場を増やさない(2026-11-22追加、ユーザー指示「会話しながらAIとのやり取りをさせる方面にしたい。GitHubの中身を見ればすべて分かるようにしたい」「データは全て1つにまとめたい、大部分のデータがあるのはtasks.json側だよね?それならそっちにまとめたい」)。入口はprogress-tracker-dashboardの`AGENTS.md`(Codex等Claude以外のAIも読む共通の案内)で、このルールと内容を揃えること(食い違いはこのファイルを優先)。"
   }
 }
