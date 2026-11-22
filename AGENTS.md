@@ -12,7 +12,7 @@
 |---|---|
 | アプリの概要・使い方 | 各アプリのリポジトリの `README.md` |
 | 管理しているアプリ(リポジトリ)の一覧 | `data/tasks.json` の `knownRepos` と、各タスクの `repo` |
-| 開発の経緯・最新の状態・課題・残課題 | `data/tasks.json`(タスクごとの `status`・`detail`・`note`・`checkHistory`・`nextAction`・`issues`)。課題は各タスクの `issues` に一本化する(2026-11-22決定、移行作業中) |
+| 開発の経緯・最新の状態・課題・残課題 | `data/tasks.json`(タスクごとの `status`・`detail`・`note`・`checkHistory`・`nextAction`・`issues`)。課題は各タスクの `issues` に一本化(2026-11-22、既存76件を移行済み) |
 | 何を変えたか(作業の履歴) | 各リポジトリのコミット履歴(コミットメッセージに経緯と確認結果を書く運用) |
 | 要件定義〜設計(アプリごと) | `data/requirements.json` の `requirements` 配列(各工程の回答)。聞き取り項目は `interviewChecklist`(要件定義)・`basicDesignChecklist`ほか各工程の `*Checklist` |
 | 陥りやすい失敗・過去の懸念 | `data/requirements.json` の `concerns`(`confirmedByUser: true` のもの) |

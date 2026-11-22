@@ -2179,7 +2179,7 @@
   // 未完了の孫タスクが完了サマリの中に埋もれて見えなくなるため、再帰的に確認する。
   function isFullyDone(node) {
     if (node.status !== "完了") return false;
-    if (node.issues && String(node.issues).trim()) return false;
+    if (hasIssues(node.issues)) return false;
     if (node.subtasks && node.subtasks.length) return node.subtasks.every(isFullyDone);
     return true;
   }
@@ -2276,7 +2276,7 @@
   function detailPanel(node, path, category) {
     const hasContent = !!(node.content && node.content.length);
     const hasSteps = !!(node.steps && node.steps.length);
-    const hasKnowledge = !!(node.note || node.detail || node.issues || node.output);
+    const hasKnowledge = !!(node.note || node.detail || hasIssues(node.issues) || node.output);
     if (!hasContent && !hasSteps && !hasKnowledge) return "";
     const tabs = [];
     // 「実施手順」を一番左に配置(2026-08-07変更)。まず何をどの順でやるかが最優先で目に入るように、
@@ -2311,7 +2311,7 @@
       body = `
         <div class="knowledge-panel">
           ${node.detail ? `<div class="k-detail">${node.detail}</div>` : ""}
-          ${node.issues ? `<div class="k-issues"><div class="k-issues-label">⚠ 問題点</div>${node.issues}</div>` : ""}
+          ${hasIssues(node.issues) ? `<div class="k-issues"><div class="k-issues-label">⚠ 課題</div>${formatIssuesHtml(node.issues)}</div>` : ""}
           ${node.note ? `<div class="k-note">${node.note}</div>` : ""}
           ${node.output ? `<div class="k-output"><a href="${node.output}" target="_blank" rel="noopener">成果物を見る →</a></div>` : ""}
         </div>`;
@@ -2366,7 +2366,7 @@
   function renderRow(node, path, { child, repo, isLast = true, trail = [], flatRepoBadge = false } = {}) {
     const effectiveRepo = repo || node.repo;
     const hasChildren = node.subtasks && node.subtasks.length > 0;
-    const hasDetailInfo = !!((node.content && node.content.length) || node.note || node.detail || node.issues || node.output);
+    const hasDetailInfo = !!((node.content && node.content.length) || node.note || node.detail || hasIssues(node.issues) || node.output);
     const hasCompletedItems = !!(node.completedItems && node.completedItems.length);
     const isPlaceholder = node.task.startsWith("(");
     const status = aggregateStatus(node);
@@ -3142,7 +3142,7 @@
         token: GAS_TOKEN,
         scheduleComplete: [{
           repo, task: node.task, id: node.id,
-          note: node.note || "", detail: node.detail || "", issues: node.issues || "", output: node.output || "",
+          note: node.note || "", detail: node.detail || "", issues: issuesToText(node.issues), output: node.output || "",
         }],
       }),
     })
@@ -6466,12 +6466,16 @@
     const box = document.getElementById("appdev-issuelog");
     if (!box) return;
     const repo = devDocsSelectedRepo();
-    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo);
-    if (!req) {
-      box.innerHTML = `<div class="empty">このアプリはまだ要件定義が登録されていません。先に「📋 要件定義」タブで要件定義を済ませてください。</div>`;
-      return;
-    }
-    const issues = req.issueLog || [];
+    const req = REQUIREMENTS.requirements.find((r) => r.repo === repo) || { repo, title: repo };
+    // 2026-11-22変更: 課題はtasks.jsonの各タスクのissuesに一本化(ルール34)。選んだアプリ(repo)のタスクから集めて表示する。
+    const issues = [];
+    (function collect(nodes, inheritedRepo) {
+      (nodes || []).forEach((n) => {
+        const r = n.repo || inheritedRepo;
+        if (r === repo && Array.isArray(n.issues)) n.issues.forEach((it) => issues.push(typeof it === "string" ? { title: it, content: it, taskId: n.id } : { ...it, taskId: n.id }));
+        collect(n.subtasks, r);
+      });
+    })(TASKS, null);
     const headHtml = `
       <div class="devdocs-head">
         <h3>${escapeHtmlForDevDocs(req.title || req.repo || "")}</h3>
@@ -6479,17 +6483,19 @@
         <span class="devdocs-tag">課題: ${issues.length}件</span>
       </div>`;
     if (!issues.length) {
-      box.innerHTML = `${headHtml}<div class="empty">このアプリで記録されている課題はまだありません。実装中に課題が発生した場合、Claude Codeがここへ記録します。</div>`;
+      box.innerHTML = `${headHtml}<div class="empty">このアプリのタスクに記録されている課題はまだありません。課題はdata/tasks.jsonの各タスクのissuesに記録され、ここに集めて表示されます(2026-11-22〜)。</div>`;
       return;
     }
     box.innerHTML = `
       ${headHtml}
       <div class="research-table-wrap">
         <table class="research-table">
-          <thead><tr><th>タイトル</th><th>内容</th><th>作成日</th><th>ステータス</th><th>対応内容</th></tr></thead>
+          <thead><tr><th>課題ID</th><th>タスクID</th><th>タイトル</th><th>内容</th><th>作成日</th><th>ステータス</th><th>対応内容</th></tr></thead>
           <tbody>
             ${issues.map((it, idx) => `
               <tr class="issuelog-row" data-issuelog-index="${idx}" tabindex="0">
+                <td>${escapeHtmlForDevDocs(it.id || "")}</td>
+                <td>${escapeHtmlForDevDocs(it.taskId || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.title || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.content || "")}</td>
                 <td>${escapeHtmlForDevDocs(it.createdAt || "")}</td>
@@ -7215,6 +7221,22 @@
       </div>`,
   };
 
+  // 2026-11-22追加(claude-core-rules.md ルール34、ユーザー指示「データは全て1つにまとめたい、tasks.json側にまとめたい」):
+  // 課題はtasks.jsonの各タスクのissues(課題オブジェクトの配列)に一本化した。旧形式(文字列)も読めるようにする。
+  function hasIssues(v) {
+    if (Array.isArray(v)) return v.length > 0;
+    return !!(v && String(v).trim());
+  }
+  function issuesToText(v) {
+    if (Array.isArray(v)) return v.map((i) => typeof i === "string" ? i : `【${i.status || "未対応"}】${i.title || ""}`).join("\n");
+    return v || "";
+  }
+  function formatIssuesHtml(v) {
+    if (!Array.isArray(v)) return v || "";
+    return `<ul class="k-issue-list">${v.map((i) => typeof i === "string" ? `<li>${i}</li>` :
+      `<li><b>【${escapeHtmlForDevDocs(i.status || "未対応")}】${escapeHtmlForDevDocs(i.title || "")}</b>${i.id ? ` <span class="ci-date">(${escapeHtmlForDevDocs(i.id)})</span>` : ""}` +
+      `${i.content && i.content !== i.title ? `<div>${escapeHtmlForDevDocs(i.content)}</div>` : ""}${i.resolution ? `<div>対応: ${escapeHtmlForDevDocs(i.resolution)}</div>` : ""}</li>`).join("")}</ul>`;
+  }
   function findNodeById(id, nodes = TASKS) {
     for (const node of nodes) {
       if (node.id === id) return node;
