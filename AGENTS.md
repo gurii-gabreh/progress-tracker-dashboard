@@ -21,6 +21,7 @@
 | 自動処理(定期実行)・外部の設定の置き場 | `data/ai-config.json` の 🔄ルーティン関連(`web.routineLoopReview` ほか)。鍵やパスワードの**値は書かれていない**(名前と置き場所のみ) |
 | AI/開発の調査ナレッジ | `gurii-gabreh/servicenow-sub-agent` の `data/research-items.json` |
 | ChatGPT/Codexの書き込み先・引き継ぎ | `data/inbox/`(README.md と _template.json)・`docs/chatgpt-project-instructions.md` |
+| ChatGPTのProjectの指示文(正本) | 要件定義「アプリ開発」: `docs/chatgpt-project-instructions.md`/ServiceNow相談: `docs/chatgpt-project-servicenow.md`/実績相談: `docs/chatgpt-project-history.md` |
 | 運用ルール全文 | `data/claude-core-rules.md`(全リポジトリの `CLAUDE.md` に自動配布される正本) |
 
 ## 2. 会話でやり取りするときの基本ルール(要約)

@@ -618,7 +618,8 @@
         "自動処理・外部設定の置き場: ai-config.jsonの🔄ルーティン(値は書かず名前と置き場所のみ)",
         "Claude以外のAIが書き込んでよいのはdata/inbox/だけ(形式はdata/inbox/_template.json)。正本の記録はClaudeが確認してから行う",
         "要件定義の聞き取りが終わったら、ChatGPT等は最後に必ずClaude Codeのマネージャールームへの実装引き継ぎプロンプトを出す(指示文の正本: docs/chatgpt-project-instructions.md)。Claudeは貼られたとき、または毎晩0:05にinboxを取り込み、実装はユーザー確認後",
-        "要件定義をClaude側で起動されたら、まず「ChatGPTのProject「アプリ開発」で音声でできる。最後に文字で引き継ぎプロンプトを出させ、Claude Codeのマネージャールームに貼る」と案内し、どちらで行うか選んでもらう(2026-11-23追加、ユーザー指示)"
+        "要件定義をClaude側で起動されたら、まず「ChatGPTのProject「アプリ開発」で音声でできる。最後に文字で引き継ぎプロンプトを出させ、Claude Codeのマネージャールームに貼る」と案内し、どちらで行うか選んでもらう(2026-11-23追加、ユーザー指示)",
+        "ChatGPTのProjectは3つ: 要件定義「アプリ開発」(docs/chatgpt-project-instructions.md)・「ServiceNow相談」(docs/chatgpt-project-servicenow.md)・「実績相談」(docs/chatgpt-project-history.md)。共通ルールと最後の引き継ぎプロンプトは同じで、目的と添付だけ変える(2026-11-23追加、ユーザー承認)"
       ]
     }
   },
