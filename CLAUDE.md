@@ -116,6 +116,7 @@
     - 記録のタイミングはルール14の4(作業中は計画のmetadataに材料を残し、深夜の定期処理が一括記録)に従う。
     - Claude以外のAI(ChatGPT・Codex等)が書き込んでよいのはprogress-tracker-dashboardの`data/inbox/`だけとし、それ以外の正本は書き換えない。記録はClaudeが内容を確認してから行う(重要な判断はルール18の二重確認)。形式は`data/inbox/_template.json`、使い方は`data/inbox/README.md`(2026-11-22変更、ユーザー承認「この形で反映(推奨)」。経緯: 要件定義はChatGPTの音声会話で行い、その結果をClaude Codeへ渡して実装する流れにするため)。
     - 【2026-11-22追加・実装引き継ぎプロンプト】ChatGPT等で要件定義の聞き取りが終わったら、そのAIは最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」(対象アプリ・新規か既存か・inboxのファイル名・決まった要件・当てはまった過去の懸念と対応・決まっていない点・依頼文「上記をrequirements.jsonに登録し、tasks.jsonに起票して。実装は私の確認後に開始して」)を出力する(ユーザー指示「codex側からclaude codeに連携はできないのかな?難しそうなら、claude codeのマネージャアプリへの実装引継ぎプロンプトを最後に作成することをルール化して」。CodexからClaude Codeへ直接渡す公式の機能は確認できなかったため)。指示文の正本は`docs/chatgpt-project-instructions.md`。Claudeは、このプロンプトを貼られたとき、または毎晩0:05の日次ログ処理で、`status`が「取り込み待ち」のinboxファイルを読み、足りない点を質問したうえで`requirements.json`・`tasks.json`に登録し`status`を「取り込み済み」にする。実装はユーザーの確認後に始める。
+    - 【2026-11-23追加・Claude側で要件定義を起動されたときの案内】新規アプリ構想・要件定義(new-app-kickoff等の*-kickoffスキル、dashboard.htmlの「🆕 新規相談」)をClaude側で起動されたら、聞き取りを始める前に、まず次の旨を回答する: ①要件定義はChatGPTの音声会話でできること、②やる場所は**ChatGPT(アプリ・Web)のProject「アプリ開発」**(指示文と、AGENTS.md・requirements.jsonの添付を設定済み)であること、③流れは「音声で聞き取り→最後に文字で『引き継ぎプロンプトを出して』と頼む→出た【実装引き継ぎ】を**Claude Codeのマネージャールーム**(このルール群を管理しているprogress-tracker-dashboardのルーム)に貼る」であること。そのうえで、ChatGPTで行うか、このままClaudeで行うかをユーザーに選んでもらう(ユーザー指示「多分忘れる可能性もあるから、もしここで要件定義アプリをきどうしたら、chatGPTでできる旨を回答して」「どこのルームでやればできるかも合わせて、ルール化しておいて」)。
 <!-- CORE-RULES:END -->
 
 ## このリポジトリ固有の補足
