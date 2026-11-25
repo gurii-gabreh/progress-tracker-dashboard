@@ -7823,15 +7823,19 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "次回の定期実行後、check_fetch_logとresearch-items.jsonでAIBL記事・エラー有無を確認。",
+      "nextAction": "ユーザー確認待ち: 収集の継続を確認済み、完了にしてよいか。",
       "note": "ユーザー「どんな情報が習得できるかと、これもservicenowで情報収集したい」→A「タイトルとURLだけ(推奨)」→実装案「この案で実装(推奨)」(2026-11-21)。AIBL内容はCodexで公式ページ確認(無料会員でニュース読み放題・MCP APIキー発行可・RSS無し・規約第6条)。",
       "detail": "RSSが無いため公式MCP(https://aibl-portal.com/api/mcp)のlist_newsをJSON-RPC tools/call単発(POST)で呼ぶ。REST Message「AI Research - AIBL」/news、システムプロパティaibl.api_key(password2、GitHub Secrets AIBL_API_KEY→setup_aibl_api_key.mjs)、fetchAiblNews(Authorizationヘッダー、SSE/JSON両対応、直近30日・50件、category 2、要約は保存せずAIBLカテゴリ名のみ)を実装(4bc23dc)。servicenow-setup run 35で3つとも作成・同期成功。MCPの最新記事が11/06まで(原因未確認)のため取得範囲を30日とした。",
       "output": "servicenow-sub-agent 4bc23dc",
-      "updated": "2026-11-21",
+      "updated": "2026-11-25",
       "checkHistory": [
         {
           "date": "2026-11-21",
           "summary": "スタブ環境でジョブ全体を実行し実AIBL応答から5件登録を確認。run 35でaibl.api_key・REST Message作成、Scheduled Job同期成功。PDIでの実収集は未確認。"
+        },
+        {
+          "date": "2026-11-25",
+          "summary": "夜間収集のAIBL記事が61件(前回50件)・最新11/24に増え、収集の継続を確認。11/7〜11/22の空白はAIBL側のlist_newsでも該当期間が0件だったため。"
         }
       ]
     },
@@ -8036,6 +8040,30 @@
         {
           "date": "2026-11-22",
           "summary": "PC・モバイル幅で表示確認。"
+        }
+      ]
+    },
+    {
+      "id": "PTD-152",
+      "title": "全リポジトリの読み取り点検(鍵の漏えい・乗っ取りの痕跡)",
+      "task": "公開24リポジトリを全履歴まで読み取りのみで点検し、鍵ファイル・鍵の文字列・自動処理の外部送信・不審な作者が無いか確かめる",
+      "repo": "progress-tracker-dashboard",
+      "category": "process",
+      "priority": "中",
+      "status": "対応中",
+      "goal": null,
+      "steps": null,
+      "subtasks": null,
+      "issues": [],
+      "nextAction": "ユーザー確認待ち: ①コミット作者gurii0516(PTD、8/7〜8/8の4件)はあなたの別アカウントか ②GitHubアカウント側(2段階認証・ログイン履歴・発行済みトークン)の確認 ③完了にしてよいか。",
+      "note": "きっかけ: 11/14紹介のGitHubアカウント乗っ取りでCIの秘密情報を盗む手口(計画#30)と、11/22のInfoQ記事「Claude Codeの『次回から確認しない』機能から秘密情報が漏れていた」(Apiiro調査、settings.local.json等に約2,300件)。ユーザー「これやって」(11/25)。",
+      "detail": "list_reposで公開24リポジトリを取得し、作業用フォルダへgit clone --mirrorで読み取り専用取得して全履歴を点検。①鍵の入りやすいファイル(.claude/settings.local.json・会話記録.jsonl・.env・認証情報json・秘密鍵等)は履歴含め0件。②鍵の書式(GitHub・OpenAI/Anthropic・Google・Slack・AWS・秘密鍵)は93件ヒットしたが全てURLの一部(risk-/ask-/task-等)の誤検知で、単語境界付きで再検索すると0件。③GitHub Actions15本に秘密情報を外部へ送る書き方なし(外部送信先は本人のServiceNowのみ)。④9月以降に自動処理を変えたのはClaudeのみ。作者はgurii-gabreh・Claude・github-actions[bot]のほか、gurii0516名義が4件。",
+      "output": "作業用フォルダのaudit.py・result.json(リポジトリには保存していない)",
+      "updated": "2026-11-25",
+      "checkHistory": [
+        {
+          "date": "2026-11-25",
+          "summary": "24リポジトリ全履歴を点検、鍵ファイル0・鍵文字列は誤検知のみ・自動処理の外部送信なしを確認。"
         }
       ]
     }
