@@ -1,7 +1,7 @@
 {
   "schema": "progress-tracker-dashboard manager-room daily log v1",
   "description": "このマネージャールーム(CCRセッション)自身の会話内容を、毎日1回Routineが自己判断で要約して追記する記録。claude-voice-bridgeのroom-log.json方式(ブラウザ拡張専用、CCRルーム対象外)とは別の仕組み。2026-10-03新設。",
-  "lastProcessedAt": "2026-11-27T00:04:59+09:00",
+  "lastProcessedAt": "2026-11-28T00:05:11+09:00",
   "entries": [
     {
       "date": "2026-10-02",
@@ -784,6 +784,18 @@
       "date": "2026-11-26",
       "generatedAt": "2026-11-27T00:04:59+09:00",
       "summary": "(この日は対象の会話なし)ユーザーとのやり取りは無し。定期処理のみ: 0時に11/25分の日次ログを記録(PTD-152追加、CL-068)、0時のCLAUDE.md定期確認は問題なし、12時の回は平日のためスキップ。",
+      "unresolvedCarriedOver": [
+        "PTD-152: gurii0516名義の確認・GitHubアカウント側の確認・完了の可否",
+        "PTD-147: 完了にしてよいか",
+        "【相談11/23 14:08】ChatGPTの引き継ぎへの対応(PTD-151)",
+        "CROSS_REPO_PATの作り直し(#14・#65)",
+        "未回答の相談: #11・#17・#19・#20・#31・#46・#71"
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "generatedAt": "2026-11-28T00:05:11+09:00",
+      "summary": "(この日は対象の会話なし)ユーザーとのやり取りは無し。定期処理のみ: 0時に11/26分の日次ログを記録(会話なし)、0時のCLAUDE.md定期確認は問題なし、12時の回は平日のためスキップ。",
       "unresolvedCarriedOver": [
         "PTD-152: gurii0516名義の確認・GitHubアカウント側の確認・完了の可否",
         "PTD-147: 完了にしてよいか",
