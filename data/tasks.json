@@ -7979,11 +7979,11 @@
       "steps": null,
       "subtasks": null,
       "issues": [],
-      "nextAction": "ユーザー確認待ち: 【相談11/23 14:08】①GitHubを読めたのは音声中か文字か ②変更案A(アプリ開発の指示文に「GitHub最新を優先・添付は予備」を追加)・B(AGENTS.mdに確認結果を1行)・C(添付は予備として残す)を反映してよいか ③この確認をPTD-151に記録でよいか。その後、アプリ開発Projectで要件定義を音声で試す。",
+      "nextAction": "ユーザー確認待ち: 【相談11/28 12:25】変更案A(アプリ開発の指示文に「GitHub最新を優先・添付は予備」を追加)・B(AGENTS.md等に「音声中もGitHubを読める」と記載)・C(添付は予備として残す)を入れるか、PTD-151への記録でよいか(選択肢の画面が途中で閉じて未回答)。その後、アプリ開発Projectで要件定義を音声で試す。",
       "note": "ユーザー指示「会話しながら遣り取りをする」(音声会話はClaudeではできないためChatGPT)、「chat GPT側にもgit hub更新させるようにすればいいよね？」、「codex側からclaude codeに連携はできないのかな？難しそうなら、claude codeのマネージャアプリへの実装引継ぎプロンプトを最後に作成することをルール化して」。選択「この形で反映(推奨)」、B(Codexの取り込み依頼をきっかけに即時取り込み、試験提供の機能)は「後で試す(推奨)」。音声の3時間上限後は、同じ会話を文字で続けられる(OpenAIヘルプ)。",
       "detail": "CodexからClaude Codeへ直接渡す公式の機能は確認できなかったため、①Claude以外のAIはdata/inbox/だけに書ける(ルール34変更)、②聞き取りの最後に必ず「Claude Codeのマネージャールームへの実装引き継ぎプロンプト」を出す(ルール化)、③毎晩0:05の日次ログ手順9bでinboxを取り込む、の3点で連携する形にした(9c27fc3、trig_013ikFJFo9uJtnc4PqHjSPb5を更新)。ChatGPT Projectに貼る指示文の正本はdocs/chatgpt-project-instructions.md。実装はユーザーの確認後に開始する。 11/23追記: 自動化(B=Codex経由でGitHubのアクションからClaudeの定期タスクを外部API(/fire)で起動、A=自作GPTのアクション→GAS)を調べたが、ChatGPTのチャットからCodexへ自動で渡す公式機能が無く、自作GPTは音声会話中にアクションを使えない(旧音声は2026-12-11終了予定)ため見送り、貼り付け方式に決定。Claude側で要件定義を起動されたらChatGPTでもできると案内するルールを追加(ルール34追記・new-app-kickoff手順0、44decaa)。音声相談用のProject「ServiceNow相談」(3d17d71)と「相談(実績・ナレッジ活用)」(ce87258、当初の『実績相談』から趣旨変更)の指示文を追加し、ユーザーが3つのProjectを作成。「相談」Projectからの引き継ぎで、ChatGPTのGitHub連携が24リポジトリと最新のAGENTS.mdを読めることを確認(貼り付けで通しの流れが初めて動いた)。",
       "output": "data/claude-core-rules.md(ルール34)、AGENTS.md、data/ai-config.json、data/inbox/README.md、data/inbox/_template.json、docs/chatgpt-project-instructions.md、docs/chatgpt-project-servicenow.md、docs/chatgpt-project-consult.md、.claude/skills/new-app-kickoff/SKILL.md",
-      "updated": "2026-11-23",
+      "updated": "2026-11-28",
       "checkHistory": [
         {
           "date": "2026-11-22",
@@ -7992,6 +7992,10 @@
         {
           "date": "2026-11-23",
           "summary": "ユーザーが3つのProject(アプリ開発・ServiceNow相談・相談)を作成・添付。相談Projectから【引き継ぎ】が出て、このルームへの貼り付けまで通しで動作。ChatGPTのGitHub連携で24リポジトリ・最新AGENTS.mdを読めたとの報告。dashboard.htmlをPlaywrightで開きエラー0。"
+        },
+        {
+          "date": "2026-11-28",
+          "summary": "ユーザー回答「音声のやり取り中にGitHubを確認できた」。ChatGPTは音声会話の最中もGitHub連携で最新の記録を読めることを確認(11/23時点の未確認事項が解決)。"
         }
       ]
     },
